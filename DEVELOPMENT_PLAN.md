@@ -433,7 +433,17 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - [ ] Improve the F-16 to the approved mockup's tiny-detail level, then compare the actual game render against the Blender sheet. Do not call the photoreal gate passed while the canopy/material and overall appearance remain stylized.
 - [ ] Improve physics for every moving system (rigid-body momentum, G-force, aerodynamic lift/drag, air density/wind/weather, tire and foot friction by material, suspension, rotor lift/wash, impacts and damage) and verify with telemetry and interactive routes.
 - [ ] Make world impacts depend on collision shape, material, speed, angle and mass. Prioritize accurate tree/trunk/branch hitboxes and aircraft tree strikes, then buildings, terrain, props, other vehicles, water, debris and repeated damage persistence.
-- [ ] Record what was executed, what was visually inspected and what remains unverified. No simplified harness or screenshot substitutes for manual control evidence.
+- [x] Record what was executed, what was visually inspected and what remains unverified. No simplified harness or screenshot substitutes for manual control evidence.
+
+### Scripted tree collision and F-16 weapon QA — 2026-10-26
+
+- Rebuilt the pinned Windows x64 target with `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1`. The unchanged sandbox attempt first failed at MSBuild Windows SDK registry discovery (`MSB4184`); the same wrapper then succeeded outside the sandbox. No toolchain pin was changed.
+- Car/tree target test exited 0. Seed 1030 registered wood contact at 41.8 m/s, tree damage 1.00, tree felled, target-specific confirmation and an in-game screenshot. The first approach-normal implementation allowed the car to pass through the intended trunk; the normal now flips against the incoming velocity, and the retest confirms the intended tree.
+- F-16/tree target test exited 0. The nose hit seed 94 at 60.0 m/s, registered wood/crown damage and entered the crash state. The capture shows the F-16 rendered in the forest, but the aircraft remains visually intact; impact breakup, wreckage and persistent debris are not implemented or verified.
+- On the same executable, the scripted AIM-9 fixture exited 0 with one launch, one hit and target destroyed after 2.29 s. The M61 fixture exited 0 with five recorded hits and a rotorcraft kill. These fixtures do not establish natural aiming, realistic missile guidance/flight envelopes, ballistic dispersion or combat balance.
+- Reviewed the actual current-build captures: `screenshots/Breakwater_1793022814440_1.png` (car/tree), `screenshots/Breakwater_1793022870547_1.png` (F-16/tree), `screenshots/Breakwater_1793022876269_1.png` and `screenshots/Breakwater_1793022877936_2.png` (AIM-9), and `screenshots/Breakwater_1793022882429_1.png` (M61). The car felling response works but the crown looks coarse; the F-16 remains below the approved mockup and War Thunder comparison, with an opaque-looking canopy. Continue visual and physics refinement.
+- The tree collision changes use 896 seeded tree profiles and trunk/crown probes, but only selected tree collisions were tested. Other materials, obstacle shapes, weather effects, G-force response, repeated damage, and all vehicle/world crash combinations remain open. No human-play test was performed during this pass.
+- No ImageGen call was made in this pass. Existing cumulative count remains 64 including failed attempts; token/cost usage is unavailable.
 
 ## Safehouse glazing review — 2026-10-26
 

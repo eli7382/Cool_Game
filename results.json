@@ -85,13 +85,13 @@
   "build_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\build.ps1",
   "standard_build_wrapper": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\build.ps1",
   "standard_output_path_latest_source_verified": true,
-  "build_note": "Pinned Windows x64 build of the current F-16 integration succeeded through build.ps1 with exit code 0. The initial sandboxed SDK registry lookup failed with MSB4184; the unchanged pinned build was retried through the approved elevated path. No compiler warnings were shown in the successful output. A seeded plane-capture process returned 0 but produced no fresh in-game screenshot or session log.",
+  "build_note": "Pinned Windows x64 wrapper succeeded after the unchanged sandbox invocation hit MSB4184 during Windows SDK registry discovery. Final incremental compilation of gameplay.cpp succeeded; no compiler warnings were shown. Final executable: build/bin/Release/game.exe.",
   "build_warning_count_full_clean": null,
   "final_incremental_build_warning_count": 0,
   "executable_location": "C:\\AI-Game-Benchmark\\runs\\luna-max\\build\\bin\\Release\\game.exe",
   "executable_architecture": "Windows x64 PE (0x8664)",
-  "executable_size_bytes": 1835520,
-  "executable_sha256": "2F892300D9FBA4788F42D3CB143AE6CEF93D175CE4531B6D656B53B30958C186",
+  "executable_size_bytes": 1873408,
+  "executable_sha256": "D092E1F65E2254D3869C6CC18D56DCE0F1EBC97F92A66D65B51B06569F65CB17",
   "source_location": "C:\\AI-Game-Benchmark\\runs\\luna-max\\src\\breakwater",
   "source_files": [
     "main.cpp",
@@ -372,7 +372,17 @@
     "screenshots/Breakwater_LiveQA_forest_1792918092823.png",
     "screenshots/Breakwater_LiveQA_house-exterior.png",
     "screenshots/Breakwater_LiveQA_house-interior.png",
-    "screenshots/Breakwater_LiveQA_house-upstairs.png"
+    "screenshots/Breakwater_LiveQA_house-upstairs.png",
+    "screenshots/Breakwater_1793022814440_1.png",
+    "screenshots/Breakwater_1793022870547_1.png",
+    "screenshots/Breakwater_1793022876269_1.png",
+    "screenshots/Breakwater_1793022877936_2.png",
+    "screenshots/Breakwater_1793022882429_1.png",
+    "screenshots/F16_Netz_Blender_HighDetail.png",
+    "screenshots/F16_Netz_Blender_Top.png",
+    "screenshots/F16_Netz_Blender_Side.png",
+    "screenshots/F16_Netz_Blender_Nose.png",
+    "screenshots/F16_Netz_Blender_Intake.png"
   ],
   "qa": {
     "final_binary_launch_and_menu_smoke": true,
@@ -463,7 +473,7 @@
     "audio_device_acoustic_quality_verified": false,
     "audio_full_task_cue_coverage_verified": true,
     "vehicle_visual_capture_count": 36,
-    "vehicle_visual_capture_note": "Thirty-six High-preset vehicle views are registered across iterations. The latest executable rendered seeded impact states for all three hero vehicles and each capture process exited 0. Visual review confirms a visible car body scrape; airplane cowling and helicopter side damage remain subtle in wide chase views. These fixtures validate rendering, not physical collision response.",
+    "vehicle_visual_capture_note": "Earlier 36 High-preset vehicle views remain registered. This pass adds five actual High-preset car/tree, F-16/tree, AIM-9 and M61 captures; reviewed images show the intended seeded interactions and also the stylized tree crown, dark F-16 canopy and intact crash model. Captures validate rendering and scripted collision/weapon paths, not human play or photoreal quality.",
     "vehicle_model_refinement": "Vehicle module condition feeds acceleration, steering, tire grip, aircraft thrust/authority/lift, and helicopter main/tail rotor behavior. Impacts retain localized surface marks; damaged engines can smoke; crash/landing states let propellers and rotors wind down. The latest pass aligned marks to imported hero transforms, made the fixed-wing cowling scorch and helicopter skin scrape larger, and seeded camera-facing QA impacts. Vehicle art remains visibly stylized and below the requested photoreal AAA target.",
     "audio_task_tour_evidence": {
       "log": "logs/qa_task_narration.log",
@@ -860,10 +870,10 @@
       "source_script": "scripts/build_f16_netz.py",
       "source_blend": "assets/f16_netz_source.blend",
       "glb": "assets/f16_netz.glb",
-      "gltf_mesh_count": 108,
-      "raylib_primitive_count": 154,
+      "gltf_mesh_count": 112,
+      "raylib_primitive_count": 156,
       "material_count": 30,
-      "glb_size_bytes": 13934948,
+      "glb_size_bytes": 14394280,
       "render_screenshots": [
         "screenshots/F16_Netz_Blender_HighDetail.png",
         "screenshots/F16_Netz_Blender_Top.png",
@@ -874,26 +884,66 @@
       "blender_process_exit_code": 0,
       "build_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\build.ps1",
       "build_process_exit_code": 0,
-      "in_game_capture_command": ".\\build\\bin\\Release\\game.exe --qa-capture=plane",
+      "in_game_capture_command": ".\\build\\bin\\Release\\game.exe --qa-plane-tree-impact",
       "in_game_capture_process_exit_code": 0,
-      "in_game_screenshot_created": false,
-      "in_game_session_log_updated": false,
+      "in_game_screenshot_created": true,
+      "in_game_session_log_updated": true,
       "interactive_ui_runtime_available": false,
-      "visual_assessment": "Improved geometry and surface detail, but still visibly stylized and not a photoreal or War Thunder fidelity match.",
+      "visual_assessment": "Current in-game screenshots verify the F-16 is rendered and enters a seeded tree-strike crash state. It remains visibly stylized, the canopy reads nearly opaque, and the airframe shows no convincing breakup; fidelity remains below the approved photoreal mockup and War Thunder reference.",
       "limitations": [
-        "Current in-game appearance is unverified because no new game capture was produced.",
-        "The Blender screenshot is an authored asset render, not a game-renderer screenshot.",
-        "Aircraft physics are approximate and no new flight/landing route was run in this pass."
-      ]
-    }
+        "Blender renders and in-game screenshots are not photorealistic or artist-reviewed.",
+        "The in-game tree fixture confirms render integration and crash-state code, but not a realistic breakup or wreckage simulation.",
+        "Aircraft and weapon dynamics remain approximations; no ordinary human-controlled flight/combat route was performed in this pass."
+      ],
+      "runtime_mesh_count": 156,
+      "runtime_material_count": 31
+    },
+    "current_tree_collision_qa": {
+      "tree_profiles": 896,
+      "car_fixture_exit_code": 0,
+      "car_target_seed": 1030,
+      "car_impact_speed_mps": 41.8,
+      "car_tree_damage": 1.0,
+      "car_tree_felled": true,
+      "car_target_confirmation": true,
+      "plane_fixture_exit_code": 0,
+      "plane_target_seed": 94,
+      "plane_impact_part": "NOSE",
+      "plane_impact_speed_mps": 60.0,
+      "plane_material": "wood",
+      "plane_tree_damage": 1.0,
+      "plane_crash_state_confirmed": true,
+      "images_inspected": true,
+      "scope_note": "Selected deterministic trunk/crown fixtures only; no all-material or natural driving/flight collision survey."
+    },
+    "current_f16_weapon_qa": {
+      "missile_fixture_exit_code": 0,
+      "aim9_launches": 1,
+      "aim9_hits": 1,
+      "aim9_target_destroyed_after_seconds": 2.29,
+      "m61_fixture_exit_code": 0,
+      "m61_hits": 5,
+      "m61_rotorcraft_kill": true,
+      "mode": "Scripted current-build fixtures",
+      "limits": "Not evidence of natural aiming, realistic guidance or ballistic envelope, damage modeling breadth, or combat balance."
+    },
+    "current_tree_collision_screenshots": [
+      "screenshots/Breakwater_1793022814440_1.png",
+      "screenshots/Breakwater_1793022870547_1.png"
+    ],
+    "current_f16_weapon_screenshots": [
+      "screenshots/Breakwater_1793022876269_1.png",
+      "screenshots/Breakwater_1793022877936_2.png",
+      "screenshots/Breakwater_1793022882429_1.png"
+    ]
   },
   "quality_gates": {
     "innovation": "Gaugework changes water state through normal interaction and the scripted mission logs rising/falling water, but its combined traction, route-access, debris and enemy-cover consequences are not validated in a normal playthrough.",
     "gameplay": "Partial. The final-executable mission fixture completed three gauges and beacon with narration, and current-executable combat registered 4/4 hits, enemy response and a takedown. Current car/helicopter input routes and a seeded short airplane touchdown passed; a normal airplane circuit, manual full mission, replay and difficulty balance remain unverified.",
-    "vehicles": "Partial. Prior car, helicopter and seeded airplane-route evidence remains as recorded. The approved standard-Netz F-16 mesh now builds and is integrated, but its fresh in-game appearance and dynamic surfaces were not rendered in this pass; aircraft handling remains approximate and a normal airplane circuit is still unverified.",
-    "interactivity": "Scripted gate interaction logged rising/falling water; the final mission fixture completed all three gates and beacon with four narration cues. Combat damage/takedown, track marks and current-build forest interactions are evidenced. Tree/grass sway responds to ambient wind, footsteps, vehicle wake, rotor wash and nearby explosions, but remains shader-based rather than physical; natural traction/debris outcomes, rotor wash in live flight and ordinary mission pacing are not fully validated.",
-    "graphics": "Fails the requested photoreal AAA target. The approved standard-Netz F-16 is now authored in Blender with 108 meshes/154 raylib primitives, a detailed intake/cockpit/gear/stores and surface maps, but reviewed Blender renders remain visibly stylized and below the orthographic mockup fidelity; no fresh in-game F-16 render was captured.",
-    "reliability": "Pinned Windows x64 build succeeds without incremental warnings. Current-binary car and helicopter operation scripts, seeded short airplane touchdown, three vehicle impact renderer fixtures, prior mission/narration fixture, and woodland captures passed. The normal airplane circuit and manual full-session/replay reliability remain unverified.",
+    "vehicles": "Partial. The car target-tree fixture confirms a wood impact, full tree damage and felling; the F-16 nose/tree fixture registers a crash state. Scripted AIM-9 and M61 fixtures destroy the seeded target. These do not establish natural collision handling, realistic weapon envelopes, manual vehicle control, or a normal airplane circuit.",
+    "interactivity": "Scripted gate interaction logged rising/falling water; the final mission fixture completed all three gates and beacon with four narration cues. Combat damage/takedown, track marks and current-build forest interactions are evidenced. Tree/grass sway responds to ambient wind, footsteps, vehicle wake, rotor wash and nearby explosions, but remains shader-based rather than physical; natural traction/debris outcomes, rotor wash in live flight and ordinary mission pacing are not fully validated. Selected tree strikes now use seeded trunk/crown collision profiles and register material-specific impact events; the two deterministic fixtures do not establish full-world reactive physics.",
+    "graphics": "Fails the requested photoreal AAA target. The 112-node Blender-authored F-16 asset is integrated and fresh in-game tree-strike and weapon captures exist, but direct review shows stylized geometry/materials, an almost opaque canopy and no convincing crash breakup. This remains below the approved mockup and War Thunder-level reference.",
+    "reliability": "Pinned Windows x64 build succeeds. Current binary exits 0 for intended car/tree and plane/tree collision fixtures, one AIM-9 target kill and an M61 rotorcraft kill, with matching in-game captures. Normal aircraft route, manual full mission/replay and broad collision combinations remain unverified.",
     "polish": "Menus, HUD, settings, cameras, narrator coverage and stereo mix are implemented. Current vehicle and environment surfaces are more detailed, but normal runway return, full player progression, measured acoustic output and AAA asset fidelity remain open.",
     "audio": "Final-executable mission fixture loaded 16 narrator clips and 5 streams, logged West/East/South/Beacon cues, completed the mission fixture and captured four caption frames. Physical output quality, HRTF, full acoustic propagation and convolution reverb remain unverified."
   },
@@ -907,11 +957,12 @@
     "Current Low/High four-objective tours completed in 60.59/61.66 s and sampled process CPU/memory only. GUI process exit codes, controlled FPS/frame time, GPU utilization and GPU memory remain unavailable.",
     "The research register contains 551 distinct source IDs/exact URLs and 550 canonical pages: 450 direct page excerpts and 101 search-result excerpts. This is not 512 full-document reviews.",
     "Current High safehouse views are seeded renderer captures only; interactive door use and stair ascent/descent are unverified, and the visible house remains sparse and stylized.",
-    "The new F-16 model remains visibly stylized and below the approved photoreal mockup target; no fresh in-game F-16 frame was captured in this pass.",
     "The generated F-16 normal and roughness maps are approximations derived from a generated microdetail tile, not measured or sculpt-baked PBR maps.",
-    "A seeded game renderer invocation returned exit code 0 but emitted no new screenshot/session log; desktop automation did not initialize."
+    "Tree collision uses 896 deterministic profiles; only the target car/trunk and F-16 nose/crown cases were validated, while other materials, shapes, speeds, weather states and repeated damage remain untested.",
+    "The seeded F-16 tree strike enters crash state but has no convincing visible aircraft breakup, debris field or wreckage; the model still fails the requested photoreal comparison.",
+    "AIM-9 and M61 functionality passed scripted target fixtures only. Real weapon aerodynamics, seeker performance, dispersal, fuzes, damage envelopes and natural combat remain approximated or unverified."
   ],
-  "notes": "Latest pinned Windows x64 build succeeded without incremental warnings. Current forest/map refinement adds two deterministic foothill groves while preserving the original 15-grove tree placement sequence, expands textured coastal leaf litter and understory, and retains a clear runway approach. High and Low full-forest, close-forest and tree-detail renderer captures exited 0. Current Low/High four-objective tours completed and sampled process CPU/memory only. Vehicles remain partially verified: normal airplane takeoff-return, manual damage response, full mission, natural combat, replay and difficulty balance remain open. Models and scenery remain stylized and below AAA. Research has 536 source IDs/URLs (443 direct-page excerpts, 93 search excerpts), not 512 full-document reviews. ImageGen record: 57 invocations, 50 generated outputs, 47 listed project-local paths; token/cost usage unavailable.\nF-16 mockup/model approval gate is active: no aircraft mesh has been started. Three generated mockups are listed under research/f16-netz-mockups.\nThe safehouse visual pass is a renderer-only capture; its interactive walk-through remains unverified.\nF-16 approval and modeling update (2026-10-26): the user approved the orthographic standard-Netz direction; Blender 5.2.3 produced a 108-mesh / 154-raylib-primitive model with five Blender inspection renders, and the pinned Windows build succeeded. The model remains stylized below the reference. The seeded in-game plane capture produced no new frame; do not treat Blender renders as game screenshots. Research register has 551 distinct URLs/source IDs (450 direct page excerpts, 101 search-only excerpts), not 512 complete document reviews. Cumulative ImageGen invocations are 64 including failed attempts; total output count was not reconciled and is null.",
+  "notes": "Latest pinned Windows x64 build succeeded without incremental warnings. Current forest/map refinement adds two deterministic foothill groves while preserving the original 15-grove tree placement sequence, expands textured coastal leaf litter and understory, and retains a clear runway approach. High and Low full-forest, close-forest and tree-detail renderer captures exited 0. Current Low/High four-objective tours completed and sampled process CPU/memory only. Vehicles remain partially verified: normal airplane takeoff-return, manual damage response, full mission, natural combat, replay and difficulty balance remain open. Models and scenery remain stylized and below AAA. Research has 536 source IDs/URLs (443 direct-page excerpts, 93 search excerpts), not 512 full-document reviews. ImageGen record: 57 invocations, 50 generated outputs, 47 listed project-local paths; token/cost usage unavailable.\nF-16 mockup/model approval gate is active: no aircraft mesh has been started. Three generated mockups are listed under research/f16-netz-mockups.\nThe safehouse visual pass is a renderer-only capture; its interactive walk-through remains unverified.\nF-16 approval and modeling update (2026-10-26): the user approved the orthographic standard-Netz direction; Blender 5.2.3 produced a 108-mesh / 154-raylib-primitive model with five Blender inspection renders, and the pinned Windows build succeeded. The model remains stylized below the reference. The seeded in-game plane capture produced no new frame; do not treat Blender renders as game screenshots. Research register has 551 distinct URLs/source IDs (450 direct page excerpts, 101 search-only excerpts), not 512 complete document reviews. Cumulative ImageGen invocations are 64 including failed attempts; total output count was not reconciled and is null.2026-10-26 refinement: current-build scripted target car/tree and F-16/tree impacts passed; AIM-9 destroyed its seeded target and M61 recorded five hits plus a rotorcraft kill. Five actual in-game captures were reviewed. The F-16 and environment remain visibly stylized; crash breakup and realistic full-envelope weapon physics are not implemented or verified. No ImageGen calls were made in this pass; total remains 64. Model/token/cost usage remains unavailable.",
   "resource_usage": {
     "cpu_time_seconds": 65.203,
     "peak_working_set_bytes": 1833967616,
@@ -998,7 +1049,7 @@
     "behavior": "Enemy health, damage, accuracy, alert range, movement speed, and firing cadence scale by selected difficulty.",
     "interactive_menu_and_balance_verified": false
   },
-  "recent_image_generation_calls": 1,
+  "recent_image_generation_calls": 0,
   "image_generation_assets_reported_count": null,
   "image_generation_asset_paths_listed": 53,
   "model_preproduction": {

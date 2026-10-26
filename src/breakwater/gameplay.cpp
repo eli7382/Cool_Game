@@ -33,6 +33,11 @@ Vector3 ClosestPointOnSegment(Vector3 a,Vector3 b,Vector3 p,float &fraction){
     fraction=lengthSq>.00001f?Clamp(Vector3DotProduct(Sub(p,a),span)/lengthSq,0,1):0.0f;
     return Add(a,Mul(span,fraction));
 }
+bool TreeCollisionActiveAt(const TreeCollider &tree,Vector3 viewer){
+    // Match Low's streamed canopy population so omitted distant trees cannot
+    // create an invisible aircraft or vehicle collision.
+    return !(g.graphics==GraphicsMode::Low&&!tree.lowPresetVisible&&DistXZ(tree.base,viewer)>132.0f);
+}
 PlaneTreeImpact FindPlaneTreeImpact(const Vehicle &before,const Vehicle &after){
     std::array<AircraftProbe,20> probes{};int probeCount=0;
     for(int i=0;i<9;++i){const float station=-6.8f+i*1.7f;probes[(size_t)probeCount++]={station,0,0,.62f,station>3.0f?"NOSE":"FUSELAGE"};}
@@ -40,7 +45,7 @@ PlaneTreeImpact FindPlaneTreeImpact(const Vehicle &before,const Vehicle &after){
     PlaneTreeImpact best{};float earliest=2.0f;
     const Vector3 motionMid=Mul(Add(before.p,after.p),.5f);const float aircraftMotion=Vector3Distance(before.p,after.p);
     for(TreeCollider &tree:g.treeColliders){
-        if(tree.felled||tree.base.y<g.water-.2f)continue;
+        if(tree.felled||tree.base.y<g.water-.2f||!TreeCollisionActiveAt(tree,motionMid))continue;
         const float broad=aircraftMotion*.5f+tree.crownRadius+8.0f;
         if(DistXZ(motionMid,tree.base)>broad)continue;
         for(int i=0;i<probeCount;++i){
@@ -467,6 +472,7 @@ void MarkTires(){
 }
 void UpdateCar(float dt){
     if(g.vehicle!=VehicleKind::Car)return;
+    const Vector3 carPreviousPosition=g.car.p;
     float throttle=(IsKeyDown(KEY_W)||IsKeyDown(KEY_UP)?1.0f:0.0f)-(IsKeyDown(KEY_S)||IsKeyDown(KEY_DOWN)?1.0f:0.0f);
     const float steerInput=(IsKeyDown(KEY_D)?1.0f:0.0f)-(IsKeyDown(KEY_A)?1.0f:0.0f);
     const float centerGround=TerrainHeight(g.car.p.x,g.car.p.z);
@@ -582,6 +588,73 @@ void UpdateCar(float dt){
             PlaySpatial(surface,g.car.p,.92f,.34f,72.0f);
         }
         break;}}
+    // Sweep the car body against the same deterministic stem proxies used by
+    // the aircraft. A swept segment prevents a fast car stepping through a
+    // narrow trunk between frames; the low restitution and tyre scrub retain
+    // the energy loss of a wood strike without treating foliage as concrete.
+    {
+        const Vector3 segmentMid=Mul(Add(carPreviousPosition,g.car.p),.5f);
+        const float carTravel=Vector3Distance(carPreviousPosition,g.car.p);
+        for(TreeCollider &tree:g.treeColliders){
+            if(g.qaCarTreeImpactActive&&tree.seed==g.qaCarTreeImpactTargetSeed&&DistXZ(g.car.p,tree.base)<8.0f&&g.qaCarTreeProbeFrames<18){
+                const float bodyProbeY=TerrainHeight(g.car.p.x,g.car.p.z)+.58f;
+                LogEvent(TextFormat("qa-car-tree-probe,seed=%d,dist=%.2f,body-ground-delta=%.2f,car-x=%.1f,car-z=%.1f,vz=%.1f,yaw=%.2f",
+                                    tree.seed,DistXZ(g.car.p,tree.base),bodyProbeY-tree.base.y,g.car.p.x,g.car.p.z,g.car.velocity.z,g.car.yaw));
+                ++g.qaCarTreeProbeFrames;
+            }
+            if(tree.felled||tree.base.y<g.water-.2f||!TreeCollisionActiveAt(tree,segmentMid))continue;
+            const float broad=tree.buttressRadius*std::max(tree.spreadX,tree.spreadZ)+2.4f+carTravel*.5f;
+            if(DistXZ(segmentMid,tree.base)>broad)continue;
+            const float bodyY=TerrainHeight(g.car.p.x,g.car.p.z)+.58f;
+            if(bodyY<tree.base.y-.08f||bodyY>tree.base.y+std::min(1.55f,tree.height*.22f))continue;
+            float along{};const Vector3 closest=ClosestPointOnSegment(carPreviousPosition,g.car.p,tree.base,along);(void)along;
+            const float localHeight=Clamp((bodyY-tree.base.y)/std::max(.1f,tree.height),0,.22f);
+            const float stemRadius=Lerp(tree.trunkBaseRadius,tree.trunkTopRadius,localHeight);
+            const float c=cosf(tree.yaw),s=sinf(tree.yaw);
+            const float rx=stemRadius*tree.spreadX+1.08f,rz=stemRadius*tree.spreadZ+1.08f;
+            const float dx=closest.x-tree.base.x,dz=closest.z-tree.base.z;
+            const float lx=dx*c-dz*s,lz=dx*s+dz*c;
+            if((lx*lx)/(rx*rx)+(lz*lz)/(rz*rz)>=1.0f)continue;
+            Vector3 normal=Norm(V(dx,0,dz));
+            const Vector3 approach=Norm(V(carPreviousPosition.x-tree.base.x,0,carPreviousPosition.z-tree.base.z));
+            if(Vector3LengthSqr(normal)<.01f||Vector3DotProduct(g.car.velocity,normal)>-.05f)normal=approach;
+            if(Vector3LengthSqr(normal)<.01f)normal=Mul(Forward(g.car.yaw),-1.0f);
+            if(Vector3DotProduct(g.car.velocity,normal)>0.0f)normal=Mul(Norm(g.car.velocity),-1.0f);
+            const float shapeRadius=sqrtf(rx*rz);
+            g.car.p.x=tree.base.x+normal.x*(shapeRadius+.025f);
+            g.car.p.z=tree.base.z+normal.z*(shapeRadius+.025f);
+            const float closing=Vector3DotProduct(g.car.velocity,normal),impact=std::max(0.0f,-closing);
+            if(closing<0){
+                g.car.velocity=Sub(g.car.velocity,Mul(normal,(1.0f+.055f)*closing));
+                const Vector3 tangent=Sub(g.car.velocity,Mul(normal,Vector3DotProduct(g.car.velocity,normal)));
+                g.car.velocity=Sub(g.car.velocity,Mul(tangent,Clamp(.16f+contactSurface.friction*.10f,0,.35f)));
+                const float structuralSpeed=Clamp(19.0f+tree.trunkBaseRadius*40.0f,24.0f,48.0f);
+                tree.damage=Clamp(tree.damage+(impact*impact)/(structuralSpeed*structuralSpeed),0,1);
+                if(tree.damage>=1.0f)tree.felled=true;
+                if(impact>3.0f){
+                    const float moduleLoss=Clamp((impact-3.0f)*.009f,0.0f,.36f);
+                    g.car.powerplantHealth=Clamp(g.car.powerplantHealth-moduleLoss*.46f,0,1);
+                    if(fabsf(Vector3DotProduct(normal,Right(g.car.yaw)))>.48f)g.car.steeringHealth=Clamp(g.car.steeringHealth-moduleLoss*.64f,0,1);
+                    if(impact>10.0f){
+                        const std::size_t wheel=(Vector3DotProduct(normal,Forward(g.car.yaw))>.0f?2u:0u)+(Vector3DotProduct(normal,Right(g.car.yaw))<0.0f?0u:1u);
+                        g.car.tireHealth[wheel]=Clamp(g.car.tireHealth[wheel]-moduleLoss*.58f,0,1);
+                    }
+                    g.car.lastImpactLocal=V(Vector3DotProduct(Sub(tree.base,g.car.p),Forward(g.car.yaw)),.78f,
+                                            Vector3DotProduct(Sub(tree.base,g.car.p),Right(g.car.yaw)));
+                    g.car.impactSeverity=Clamp(impact/24.0f,.16f,1.0f);g.car.hasImpactMark=true;
+                }
+                if(impact>1.5f){
+                    SpawnParticles(V(tree.base.x,bodyY,tree.base.z),tree.felled?Color{128,99,66,235}:Color{148,119,80,220},tree.felled?22:7,tree.felled?3.4f:1.6f,.09f);
+                    PlaySpatial(g.treeImpactSfx,tree.base,Clamp(.82f+impact*.002f,.82f,1.10f),Clamp(.22f+impact*.012f,.22f,.75f),90.0f);
+                    LogEvent(TextFormat("car-tree-impact,tree-seed=%d,material=wood,speed-ms=%.1f,stem-radius-m=%.2f,break-speed-ms=%.1f,tree-damage=%.2f,tree-felled=%d",
+                                        tree.seed,impact,tree.trunkBaseRadius,structuralSpeed,tree.damage,tree.felled?1:0));
+                    if(g.qaCarTreeImpactActive&&tree.seed==g.qaCarTreeImpactTargetSeed)g.qaCarTreeImpact=true;
+                }
+                if(impact>5.0f)g.car.damage=Clamp(g.car.damage+impact*impact*.00012f,0,1);
+            }
+            break;
+        }
+    }
     for(auto &debris:g.debris){
         const float distance=DistXZ(g.car.p,debris.p),minimum=2.55f;
         if(distance>=minimum||distance<.01f)continue;
@@ -617,8 +690,13 @@ void CrashPlane(const char *msg,const char *event="plane-hard-landing"){
 }
 void CrashPlaneIntoTree(const PlaneTreeImpact &impact){
     if(!impact.tree)return;const float impactSpeed=std::max(0.0f,g.plane.speed);
-    impact.tree->damage=Clamp(impact.tree->damage+impactSpeed*impactSpeed/1800.0f,0,1);
-    if(impactSpeed>31.0f)impact.tree->felled=true;
+    const float trunkFailureSpeed=Clamp(21.0f+impact.tree->trunkBaseRadius*32.0f,30.0f,48.0f);
+    const float treeDamageScale=impact.canopy?3600.0f:1900.0f;
+    impact.tree->damage=Clamp(impact.tree->damage+impactSpeed*impactSpeed/treeDamageScale,0,1);
+    // Foliage and small branches can be stripped without the rooted stem
+    // failing. A trunk strike can fell the tree only when the hit speed also
+    // clears a size-dependent bending threshold.
+    if(!impact.canopy&&impactSpeed>trunkFailureSpeed)impact.tree->felled=true;
     const Vector3 forward=V(-sinf(g.plane.yaw)*cosf(g.plane.pitch),sinf(g.plane.pitch),-cosf(g.plane.yaw)*cosf(g.plane.pitch));
     const Vector3 right=V(cosf(g.plane.yaw),0,-sinf(g.plane.yaw));
     const Vector3 up=Norm(Vector3CrossProduct(right,forward));
@@ -627,18 +705,33 @@ void CrashPlaneIntoTree(const PlaneTreeImpact &impact){
     g.plane.lastImpactLocal=V(Clamp(Vector3DotProduct(relative,forward),-6.8f,6.8f),
                               Clamp(Vector3DotProduct(relative,up),0,2.0f),
                               Clamp(Vector3DotProduct(relative,wing),-5.2f,5.2f));
-    const float severity=Clamp(impactSpeed/90.0f,.24f,1.0f);
-    g.plane.impactSeverity=severity;g.plane.hasImpactMark=true;
-    CrashPlane("TREE STRIKE — AIRFRAME LOST — R TO RESET AT AIRFIELD","plane-tree-strike");
+    const float severity=Clamp(impactSpeed/90.0f,.10f,1.0f);
+    const bool catastrophic=impactSpeed>=(impact.canopy?34.0f:20.0f);
     g.plane.lastImpactLocal=V(Clamp(Vector3DotProduct(relative,forward),-6.8f,6.8f),
                               Clamp(Vector3DotProduct(relative,up),0,2.0f),
                               Clamp(Vector3DotProduct(relative,wing),-5.2f,5.2f));
     g.plane.impactSeverity=severity;g.plane.hasImpactMark=true;
-    SpawnParticles(impact.point,Color{134,104,69,245},34,5.6f,.12f);
-    SpawnParticles(Add(impact.point,V(0,.2f,0)),Color{76,109,59,230},22,3.8f,.18f);
-    PlaySpatial(g.impactSfx,impact.point,.55f,.9f,150.0f,Sound{},true);
-    LogEvent(TextFormat("plane-tree-impact,tree-seed=%d,part=%s,material=wood,crown=%d,speed-ms=%.1f,tree-felled=%d",
-                        impact.tree->seed,impact.part,impact.canopy?1:0,impactSpeed,impact.tree->felled?1:0));
+    if(catastrophic){
+        CrashPlane("TREE STRIKE — AIRFRAME LOST — R TO RESET AT AIRFIELD","plane-tree-strike");
+        g.plane.lastImpactLocal=V(Clamp(Vector3DotProduct(relative,forward),-6.8f,6.8f),
+                                  Clamp(Vector3DotProduct(relative,up),0,2.0f),
+                                  Clamp(Vector3DotProduct(relative,wing),-5.2f,5.2f));
+        g.plane.impactSeverity=severity;g.plane.hasImpactMark=true;
+    }else{
+        const float speedLoss=Clamp(impactSpeed/45.0f,0,.65f)*.42f;
+        g.plane.velocity=Mul(g.plane.velocity,1.0f-speedLoss);g.plane.speed*=1.0f-speedLoss;
+        const float structuralLoss=.08f+.38f*severity;
+        g.plane.airframeHealth=Clamp(g.plane.airframeHealth-structuralLoss,0,1);
+        g.plane.flightControlsHealth=Clamp(g.plane.flightControlsHealth-structuralLoss*(impact.part[0]=='W'?.9f:.45f),0,1);
+        g.plane.damage=Clamp(1.0f-g.plane.airframeHealth,0,1);
+        g.plane.rollRate=Clamp(g.plane.rollRate+(g.plane.lastImpactLocal.z>=0?1.0f:-1.0f)*speedLoss*.6f,-.9f,.9f);
+        Notify("TREE BRUSH — AIRFRAME DAMAGED",2.6f);LogEvent("plane-tree-brush");
+    }
+    SpawnParticles(impact.point,Color{134,104,69,245},catastrophic?34:15,catastrophic?5.6f:2.8f,.12f);
+    SpawnParticles(Add(impact.point,V(0,.2f,0)),Color{76,109,59,230},impact.canopy?24:12,3.8f,.18f);
+    PlaySpatial(g.treeImpactSfx,impact.point,Clamp(.92f-impactSpeed*.002f,.72f,.92f),Clamp(.24f+impactSpeed*.009f,.24f,.74f),140.0f,Sound{},true);
+    LogEvent(TextFormat("plane-tree-impact,tree-seed=%d,part=%s,material=wood,crown=%d,speed-ms=%.1f,stem-radius-m=%.2f,break-speed-ms=%.1f,tree-damage=%.2f,tree-felled=%d",
+                        impact.tree->seed,impact.part,impact.canopy?1:0,impactSpeed,impact.tree->trunkBaseRadius,trunkFailureSpeed,impact.tree->damage,impact.tree->felled?1:0));
 }
 void UpdatePlane(float dt){
     if(g.vehicle!=VehicleKind::Plane)return;if(g.plane.crashed){

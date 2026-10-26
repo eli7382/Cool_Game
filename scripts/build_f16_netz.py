@@ -31,7 +31,7 @@ for block in bpy.data.meshes:
     if block.users == 0:
         bpy.data.meshes.remove(block)
 
-def material(name, color, metallic=0.0, roughness=0.5, alpha=1.0):
+def material(name, color, metallic=0.0, roughness=0.5, alpha=1.0, transmission=0.12):
     mat = bpy.data.materials.new(name)
     mat.diffuse_color = (*color, alpha)
     mat.use_nodes = True
@@ -43,7 +43,7 @@ def material(name, color, metallic=0.0, roughness=0.5, alpha=1.0):
         mat.surface_render_method = "BLENDED"
         bsdf.inputs["Alpha"].default_value = alpha
         bsdf.inputs["IOR"].default_value = 1.46
-        bsdf.inputs["Transmission Weight"].default_value = 0.12
+        bsdf.inputs["Transmission Weight"].default_value = transmission
     return mat
 
 MAT = [
@@ -51,7 +51,7 @@ MAT = [
     material("Netz | muted olive drab", (0.245, 0.275, 0.205), 0.08, 0.60),
     material("Netz | dark earth brown", (0.225, 0.175, 0.13), 0.07, 0.62),
     material("Netz | warm grey underside", (0.365, 0.366, 0.337), 0.10, 0.58),
-    material("Canopy | smoke bronze laminated glass - deep tint", (0.065, 0.085, 0.080), 0.16, 0.18, 0.66),
+    material("Canopy | warm olive bronze laminated glass", (0.12, 0.14, 0.105), 0.035, 0.13, 0.46, 0.58),
     material("Intake | deep carbon cavity", (0.012, 0.017, 0.019), 0.15, 0.78),
     material("Graphite | tyres and seals", (0.035, 0.042, 0.041), 0.02, 0.86),
     material("Oxidized titanium | exhaust", (0.205, 0.225, 0.22), 0.78, 0.32),
@@ -1034,8 +1034,8 @@ ids={"Canopy":find_mesh("Canopy | one-piece"),"NoseWheel":find_mesh("Wheel | Nos
      "Rudder":find_mesh("Rudder | independent"),"GearNose":find_mesh("Landing gear | Nose"),
      "GearPort":find_mesh("Landing gear | Port"),"GearStarboard":find_mesh("Landing gear | Starboard"),
      "NoseWheelHub":find_mesh("Wheel hub | Nose"),"PortWheelHub":find_mesh("Wheel hub | Port"),
-     "StarboardWheelHub":find_mesh("Wheel hub | Starboard"),"CanopyMaterial":find_mat("Canopy | smoke bronze"),
-     "GlassMaterial":find_mat("Canopy | smoke bronze"),"IntakeMaterial":find_mat("Intake | deep carbon"),
+     "StarboardWheelHub":find_mesh("Wheel hub | Starboard"),"CanopyMaterial":find_mat("Canopy | warm olive bronze"),
+     "GlassMaterial":find_mat("Canopy | warm olive bronze"),"IntakeMaterial":find_mat("Intake | deep carbon"),
      "PortSpeedbrake":find_mesh("Speedbrake | Port"),"StarboardSpeedbrake":find_mesh("Speedbrake | Starboard"),
      "PortMissile":find_mesh("AIM-9 | Port"),"StarboardMissile":find_mesh("AIM-9 | Starboard")}
 dynamic_ranges={

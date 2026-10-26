@@ -176,11 +176,12 @@ struct Game {
     int activeVehicleRoughness{-1};
     int activeVehiclePaintDetail{-1};
     std::array<Sound,WEAPON_COUNT> weaponSfx{},muffledWeaponSfx{};
-    Sound valveSfx{},impactSfx{},explosionSfx{},muffledExplosionSfx{},gravelImpactSfx{},concreteImpactSfx{},waterImpactSfx{},planeCannonSfx{},muffledPlaneCannonSfx{},planeMissileSfx{},muffledPlaneMissileSfx{};
+    Sound valveSfx{},impactSfx{},treeImpactSfx{},explosionSfx{},muffledExplosionSfx{},gravelImpactSfx{},concreteImpactSfx{},waterImpactSfx{},planeCannonSfx{},muffledPlaneCannonSfx{},planeMissileSfx{},muffledPlaneMissileSfx{};
     std::array<Sound,static_cast<size_t>(NarrationCue::Count)> narrator{};
     std::deque<NarrationCue> narratorQueue;
     ProceduralAudio coastAudio{},scoreAudio{},carAudio{},planeAudio{},heliAudio{};
-    bool audioReady{},muted{},subtitles{true},spatialAudio{true},nightMix{},fullscreen{},showMap{true},missionStarted{},missionComplete{},settingsReturnPause{},exitRequested{},screenshotRequested{},cameraInitialized{},qaCaptureActive{},qaCaptureFront{},qaCaptureWheelView{},qaCaptureWorldVehicles{},qaCombatAim{},qaSafehouse{},qaCombatAutoFirePending{},qaCombatProjectionLogged{},qaTaskInteractPending{},qaAAMissileTest{},qaAAMissileLaunchPending{},qaAAGunTest{},qaPlaneTreeImpact{};
+    bool audioReady{},muted{},subtitles{true},spatialAudio{true},nightMix{},fullscreen{},showMap{true},missionStarted{},missionComplete{},settingsReturnPause{},exitRequested{},screenshotRequested{},cameraInitialized{},qaCaptureActive{},qaCaptureFront{},qaCaptureWheelView{},qaCaptureWorldVehicles{},qaCombatAim{},qaSafehouse{},qaCombatAutoFirePending{},qaCombatProjectionLogged{},qaTaskInteractPending{},qaAAMissileTest{},qaAAMissileLaunchPending{},qaAAGunTest{},qaPlaneTreeImpact{},qaCarTreeImpact{},qaCarTreeImpactActive{};
+    Vector3 qaCarTreeImpactTarget{};int qaCarTreeImpactTargetSeed{-1},qaCarTreeProbeFrames{};
     int qaCaptureHouseView{};
     float masterVolume{0.82f},effectsVolume{0.82f},ambienceVolume{0.7f},musicVolume{0.28f},voiceVolume{0.95f};
     float narratorSubtitleTime{},activeNarratorWait{},voiceDuck{1.0f};

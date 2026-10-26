@@ -1656,7 +1656,7 @@ void DrawHeroVehicle(Model &model,Vector3 position,const Vehicle &vehicle,int ve
       if(g.locHeroGlassAlpha>=0){
           rlDrawRenderBatchActive();const float forceMaterialAlpha=pass==1?1.0f:0.0f;SetShaderValue(g.worldShader,g.locHeroGlassAlpha,&forceMaterialAlpha,SHADER_UNIFORM_FLOAT);
           if(pass==1&&g.locHeroGlassTint>=0){
-              const float carTint[3]{.105f,.145f,.16f},planeTint[3]{.55f,.66f,.62f},heliTint[3]{.16f,.24f,.25f};
+              const float carTint[3]{.105f,.145f,.16f},planeTint[3]{.42f,.50f,.43f},heliTint[3]{.16f,.24f,.25f};
               const float *glassTint=vehicleKind==0?carTint:(vehicleKind==1?planeTint:heliTint);
               SetShaderValue(g.worldShader,g.locHeroGlassTint,glassTint,SHADER_UNIFORM_VEC3);
           }
@@ -1665,7 +1665,7 @@ void DrawHeroVehicle(Model &model,Vector3 position,const Vehicle &vehicle,int ve
           rlDrawRenderBatchActive();
           rlDisableDepthMask();
           if(g.locHeroGlassOpacity>=0){
-               const float glassOpacity=cockpitView?.09f:(vehicleKind==0?.23f:(vehicleKind==1?.36f:.17f));
+               const float glassOpacity=cockpitView?(vehicleKind==1?.075f:.09f):(vehicleKind==0?.23f:(vehicleKind==1?.14f:.17f));
               SetShaderValue(g.worldShader,g.locHeroGlassOpacity,&glassOpacity,SHADER_UNIFORM_FLOAT);
           }
       }
@@ -2241,14 +2241,28 @@ bool FoliageInView(Vector3 p,float maxDistance,float radius){
 }
 void Tree(Vector3 p,float h,Vector2 wind,int species,int seed,TreeCollider *collisionState=nullptr){
     if(TerrainHeight(p.x,p.z)<g.water-.2f)return;
+    const bool pine=species==0;const std::size_t variant=(std::size_t)(Noise(seed+species*101,911)%g.pineTrunks.size());
+    const float yaw=Rand01(seed+31,119)*360.0f,shade=.82f+.18f*Rand01(seed+53,271);
+    const Color foliage{(unsigned char)(255*shade),(unsigned char)(255*shade),(unsigned char)(255*shade),255};
+    const Color bark{(unsigned char)(255*shade),(unsigned char)(246*shade),(unsigned char)(232*shade),255};
+    const Model &wood=pine?g.pineTrunks[variant]:g.broadleafTrunks[variant];
+    const Model &crown=pine?g.pineNeedles[variant]:g.broadleafCrowns[variant];
+    const float spreadX=Lerp(pine?.88f:.80f,pine?1.16f:1.25f,Rand01(seed+79,313));
+    const float spreadZ=Lerp(pine?.86f:.82f,pine?1.18f:1.22f,Rand01(seed+97,337));
     if(collisionState&&collisionState->felled){
-        const float yaw=collisionState->yaw,logLength=h*.72f;
-        const Vector3 end=Add(p,V(cosf(yaw)*logLength,.055f*h,sinf(yaw)*logLength));
-        const Color bark{173,151,118,255};
-        DrawCylinderEx(Add(p,V(0,.055f*h,0)),end,std::max(.06f,collisionState->trunkBaseRadius*.68f*std::max(collisionState->spreadX,collisionState->spreadZ)),
-                       std::max(.035f,collisionState->trunkBaseRadius*.36f*std::max(collisionState->spreadX,collisionState->spreadZ)),12,bark);
-        DrawCylinderEx(end,Add(end,V(cosf(yaw)*.16f*h,0,sinf(yaw)*.16f)),
-                       std::max(.035f,collisionState->trunkBaseRadius*.36f),.006f,8,bark);
+        const float logLength=h*.82f;const Vector3 axis=V(cosf(collisionState->yaw),0,sinf(collisionState->yaw));
+        const Vector3 end=Add(p,Mul(axis,logLength));const Vector3 center=Add(p,V(0,h*.045f,0));
+        const Vector3 view=Norm(Sub(g.camera.target,g.camera.position));
+        if(Vector3Length(Sub(center,g.camera.position))>430.0f||Vector3DotProduct(Sub(center,g.camera.position),view)<-h)return;
+        // Reuse the authored branching trunk and needle/leaf meshes in a
+        // ground-felled orientation. A textured, broken tree keeps its species
+        // silhouette; the pale cylinder-only placeholder read like a slab.
+        rlPushMatrix();rlTranslatef(center.x,center.y,center.z);rlRotatef(-collisionState->yaw/DEG,0,1,0);rlRotatef(-90,0,0,1);
+        rlScalef(h*spreadX,h,h*spreadZ);DrawModel(wood,V(0,0,0),1,bark);
+        const Vector2 bend{wind.x*.10f,wind.y*.10f};SetFoliagePass(1.0f,bend);DrawModel(crown,V(0,0,0),1,foliage);SetFoliagePass(0.0f,Vector2{0,0});rlPopMatrix();
+        const float endRadius=std::max(.06f,collisionState->trunkBaseRadius*.43f*std::max(spreadX,spreadZ));
+        DrawCylinderEx(Sub(end,Mul(axis,.055f*h)),end,endRadius,endRadius,14,Color{190,166,121,255});
+        DrawCylinderEx(Sub(end,Mul(axis,.062f*h)),Sub(end,Mul(axis,.056f*h)),endRadius*.48f,endRadius*.48f,12,Color{143,119,84,255});
         return;
     }
     const Vector3 view=Norm(Sub(g.camera.target,g.camera.position)),toTree=Sub(p,g.camera.position);
@@ -2258,9 +2272,6 @@ void Tree(Vector3 p,float h,Vector2 wind,int species,int seed,TreeCollider *coll
     const float aspect=GetScreenHeight()>0?(float)GetScreenWidth()/(float)GetScreenHeight():1.0f;
     const float horizontalLimit=std::max(0.0f,forwardDistance)*tanf(g.camera.fovy*DEG*.5f)*aspect+h*.95f;
     if(std::fabs(Vector3DotProduct(toTree,right))>horizontalLimit)return;
-    const bool pine=species==0;const std::size_t variant=(std::size_t)(Noise(seed+species*101,911)%g.pineTrunks.size());
-    const float yaw=Rand01(seed+31,119)*360.0f,shade=.82f+.18f*Rand01(seed+53,271);
-    const Color foliage{(unsigned char)(255*shade),(unsigned char)(255*shade),(unsigned char)(255*shade),255};
     // Preserve the full generated silhouette deeper into the mid-range where
     // the authored cutout reads better than the lightweight branch geometry.
     const float billboardStart=g.graphics==GraphicsMode::High?36.0f:24.0f;
@@ -2273,12 +2284,7 @@ void Tree(Vector3 p,float h,Vector2 wind,int species,int seed,TreeCollider *coll
             return;
         }
     }
-    const Model &wood=pine?g.pineTrunks[variant]:g.broadleafTrunks[variant];
-    const Model &crown=pine?g.pineNeedles[variant]:g.broadleafCrowns[variant];
     if(!IsModelValid(wood)||!IsModelValid(crown))return;
-    const float spreadX=Lerp(pine?.88f:.80f,pine?1.16f:1.25f,Rand01(seed+79,313));
-    const float spreadZ=Lerp(pine?.86f:.82f,pine?1.18f:1.22f,Rand01(seed+97,337));
-    const Color bark{(unsigned char)(255*shade),(unsigned char)(246*shade),(unsigned char)(232*shade),255};
     rlPushMatrix();rlTranslatef(p.x,p.y,p.z);rlRotatef(yaw,0,1,0);rlScalef(h*spreadX,h,h*spreadZ);
     DrawModel(wood,V(0,0,0),1,bark);
     // Per-vertex bending tapers to zero at the bough roots, so gusts move the outer canopy rather than rotating it like a rigid umbrella.

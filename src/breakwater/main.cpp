@@ -142,7 +142,7 @@ void SetStreamMix(ProceduralAudio &p,float volume,float pitch,float pan){
 }
 Sound MakeOneShot(int kind,bool muffled=false){
     const unsigned rate=44100;
-    const float seconds=kind==10?1.42f:(kind==1?.72f:(kind==2?.44f:(kind==5?.50f:(kind==6?.62f:(kind==8?.78f:(kind==9?1.05f:(kind==11?.90f:(kind==12?.18f:.34f))))))));
+    const float seconds=kind==10?1.42f:(kind==1?.72f:(kind==2?.44f:(kind==5?.50f:(kind==6?.62f:(kind==8?.78f:(kind==9?1.05f:(kind==11?.90f:(kind==12?.18f:(kind==13?.66f:.34f)))))))));
     const unsigned frames=(unsigned)(seconds*(float)rate);
     auto *data=(int16_t*)MemAlloc(frames*sizeof(int16_t));
     ProceduralAudio noise{};noise.seed=0x1234abcdu+(uint32_t)kind*7919u;
@@ -193,6 +193,12 @@ Sound MakeOneShot(int kind,bool muffled=false){
         }else if(kind==4){
             const float ring=sinf(2.0f*PI*510.0f*t)+.36f*sinf(2.0f*PI*920.0f*t);
             v=.26f*ring*expf(-t*19.0f)+.21f*n*fast+.09f*sinf(2.0f*PI*130.0f*t)*tail;
+        }else if(kind==13){
+            const float snap=Noise(noise)*expf(-t*38.0f);
+            const float timber=sinf(2.0f*PI*(114.0f*t-18.0f*t*t))*expf(-t*5.9f);
+            const float creak=sinf(2.0f*PI*(302.0f*t+96.0f*t*t))*expf(-t*10.5f);
+            const float foliage=Noise(noise)*expf(-t*3.6f);
+            v=.38f*snap+.33f*timber+.17f*creak+.12f*foliage;
         }else if(kind==10){
             const float boom=sinf(2.0f*PI*(58.0f*t-10.5f*t*t))*expf(-t*3.0f);
             const float pressure=Noise(noise)*expf(-t*11.5f);
@@ -273,7 +279,7 @@ void InitAudioSystem(){
     SetAudioStreamBufferSizeDefault(AUDIO_CHUNK);
     constexpr std::array<int,WEAPON_COUNT> soundKinds{{0,6,7,8,9}};
     for(std::size_t i=0;i<WEAPON_COUNT;++i){g.weaponSfx[i]=MakeOneShot(soundKinds[i]);g.muffledWeaponSfx[i]=MakeOneShot(soundKinds[i],true);}
-    g.valveSfx=MakeOneShot(1);g.impactSfx=MakeOneShot(2);g.explosionSfx=MakeOneShot(10);g.muffledExplosionSfx=MakeOneShot(10,true);
+    g.valveSfx=MakeOneShot(1);g.impactSfx=MakeOneShot(2);g.treeImpactSfx=MakeOneShot(13);g.explosionSfx=MakeOneShot(10);g.muffledExplosionSfx=MakeOneShot(10,true);
     g.gravelImpactSfx=MakeOneShot(3);g.concreteImpactSfx=MakeOneShot(4);g.waterImpactSfx=MakeOneShot(5);
     g.planeCannonSfx=MakeOneShot(12);g.muffledPlaneCannonSfx=MakeOneShot(12,true);g.planeMissileSfx=MakeOneShot(11);g.muffledPlaneMissileSfx=MakeOneShot(11,true);
     for(std::size_t i=0;i<VOICE_FILES.size();++i)g.narrator[i]=LoadSound(VOICE_FILES[i]);
@@ -316,7 +322,7 @@ void UpdateAudio(float dt){
     if(g.muted){
         for(Sound s:g.weaponSfx)if(IsSoundValid(s))StopSound(s);
         for(Sound s:g.muffledWeaponSfx)if(IsSoundValid(s))StopSound(s);
-        const std::array<Sound,11> oneShots{{g.valveSfx,g.impactSfx,g.explosionSfx,g.muffledExplosionSfx,g.gravelImpactSfx,g.concreteImpactSfx,g.waterImpactSfx,g.planeCannonSfx,g.muffledPlaneCannonSfx,g.planeMissileSfx,g.muffledPlaneMissileSfx}};
+        const std::array<Sound,12> oneShots{{g.valveSfx,g.impactSfx,g.treeImpactSfx,g.explosionSfx,g.muffledExplosionSfx,g.gravelImpactSfx,g.concreteImpactSfx,g.waterImpactSfx,g.planeCannonSfx,g.muffledPlaneCannonSfx,g.planeMissileSfx,g.muffledPlaneMissileSfx}};
         for(Sound s:oneShots)if(IsSoundValid(s))StopSound(s);
     }
     const bool playing=g.screen==Screen::Playing;
@@ -358,7 +364,7 @@ void ShutdownAudioSystem(){
     for(Sound s:g.weaponSfx)if(IsSoundValid(s))UnloadSound(s);
     for(Sound s:g.muffledWeaponSfx)if(IsSoundValid(s))UnloadSound(s);
     if(IsSoundValid(g.valveSfx))UnloadSound(g.valveSfx);
-    if(IsSoundValid(g.impactSfx))UnloadSound(g.impactSfx);if(IsSoundValid(g.explosionSfx))UnloadSound(g.explosionSfx);
+    if(IsSoundValid(g.impactSfx))UnloadSound(g.impactSfx);if(IsSoundValid(g.treeImpactSfx))UnloadSound(g.treeImpactSfx);if(IsSoundValid(g.explosionSfx))UnloadSound(g.explosionSfx);
     if(IsSoundValid(g.muffledExplosionSfx))UnloadSound(g.muffledExplosionSfx);if(IsSoundValid(g.gravelImpactSfx))UnloadSound(g.gravelImpactSfx);
     if(IsSoundValid(g.concreteImpactSfx))UnloadSound(g.concreteImpactSfx);if(IsSoundValid(g.waterImpactSfx))UnloadSound(g.waterImpactSfx);
     if(IsSoundValid(g.planeCannonSfx))UnloadSound(g.planeCannonSfx);if(IsSoundValid(g.muffledPlaneCannonSfx))UnloadSound(g.muffledPlaneCannonSfx);
@@ -370,7 +376,7 @@ void ShutdownAudioSystem(){
 
 int main(int argc,char **argv) {
     using namespace bw;
-    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;
+    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
     for(int i=1;i<argc;++i){
         const std::string_view arg(argv[i]);
         constexpr std::string_view prefix="--qa-capture=";
@@ -382,6 +388,8 @@ int main(int argc,char **argv) {
         constexpr std::string_view tokenPrefix="--qa-task-token=";
         if(arg.rfind(tokenPrefix,0)==0)qaTaskToken=std::string(arg.substr(tokenPrefix.size()));
         if(arg=="--qa-plane-landing")qaPlaneLanding=true;
+        if(arg=="--qa-plane-tree-impact")qaPlaneTreeImpact=true;
+        if(arg=="--qa-car-tree-impact")qaCarTreeImpactRun=true;
         if(arg=="--qa-aircombat")qaAirCombat=true;
         if(arg=="--qa-airgun")qaAirGun=true;
         if(arg=="--qa-combat")qaCombat=true;
@@ -484,6 +492,43 @@ int main(int argc,char **argv) {
         g.cameraDistance=11.5f;g.cameraActualDistance=11.5f;g.cameraInitialized=false;
         LogEvent("qa-plane-landing-fixture");
     }
+    if(qaPlaneTreeImpact&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding){
+        StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Plane;g.graphics=GraphicsMode::High;
+        const TreeCollider *target=nullptr;
+        for(const TreeCollider &tree:g.treeColliders)if(DistXZ(tree.base,V(0,0,0))<245.0f&&tree.height>9.0f){target=&tree;break;}
+        if(!target&&!g.treeColliders.empty())target=&g.treeColliders.front();
+        if(target){
+            g.plane.p=V(target->base.x,target->base.y+target->height*.70f,target->base.z-34.0f);
+            g.plane.yaw=PI;g.plane.pitch=0;g.plane.roll=0;g.plane.speed=60.0f;g.plane.engineRpm=.72f;
+            g.plane.verticalSpeed=0;g.plane.airborne=true;g.plane.crashed=false;g.plane.landingGearDown=false;g.plane.gearExtension=0;
+            g.plane.velocity=V(0,0,60);g.cameraDistance=13.0f;g.cameraActualDistance=13.0f;g.cameraInitialized=false;g.qaPlaneTreeImpact=true;
+            LogEvent(TextFormat("qa-plane-tree-impact-fixture,seed=%d,x=%.1f,z=%.1f,height=%.1f",target->seed,target->base.x,target->base.z,target->height));
+        }else LogEvent("qa-plane-tree-impact-fixture-unavailable");
+    }
+    if(qaCarTreeImpactRun&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding&&!qaPlaneTreeImpact){
+        StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Car;g.graphics=GraphicsMode::High;
+        const TreeCollider *target=nullptr;float bestClearance=-1.0f;
+        for(const TreeCollider &tree:g.treeColliders){
+            if(DistXZ(tree.base,V(0,0,0))>=245.0f||tree.height<=8.0f||tree.height>10.6f)continue;
+            float nearest=1000.0f;
+            for(const TreeCollider &other:g.treeColliders){if(other.seed==tree.seed&&other.species==tree.species)continue;nearest=std::min(nearest,DistXZ(tree.base,other.base));}
+            const Vector3 routeStart=V(tree.base.x,0,tree.base.z-8.0f),routeEnd=V(tree.base.x,0,tree.base.z);
+            float obstacleClearance=1000.0f;
+            for(const Obstacle &obstacle:g.obstacles){const float along=std::min(1.0f,std::max(0.0f,(obstacle.p.z-routeStart.z)/8.0f));const Vector3 closest=V(tree.base.x,0,routeStart.z+along*8.0f);
+                obstacleClearance=std::min(obstacleClearance,DistXZ(closest,obstacle.p)-obstacle.radius-1.8f);}
+            if(obstacleClearance<0.0f)continue;
+            const float score=std::min(nearest,obstacleClearance+30.0f);
+            if(score>bestClearance){bestClearance=score;target=&tree;}
+        }
+        if(target){
+            qaCarTreeTarget=target->base;qaCarTreeTargetSeed=target->seed;g.qaCarTreeImpactTarget=target->base;g.qaCarTreeImpactTargetSeed=target->seed;g.qaCarTreeImpactActive=true;g.qaCarTreeProbeFrames=0;
+            const float startZ=target->base.z-6.0f,startY=TerrainHeight(target->base.x,startZ)+.72f;
+            g.car.p=V(target->base.x,startY,startZ);g.car.yaw=PI;g.car.speed=42.0f;g.car.velocity=V(0,0,42.0f);g.car.engineRpm=.86f;g.car.yawRate=0;g.car.damage=0;
+            g.car.powerplantHealth=1;g.car.steeringHealth=1;g.car.tireHealth.fill(1);g.car.hasImpactMark=false;
+            g.cameraDistance=8.5f;g.cameraActualDistance=8.5f;g.cameraInitialized=false;g.qaCarTreeImpact=false;qaCarNearLogged=false;
+            LogEvent(TextFormat("qa-car-tree-impact-fixture,seed=%d,x=%.1f,z=%.1f,clearance-score-m=%.1f,stem-radius-m=%.2f",target->seed,target->base.x,target->base.z,bestClearance,target->trunkBaseRadius));
+        }else LogEvent("qa-car-tree-impact-fixture-unavailable");
+    }
     if((qaAirCombat||qaAirGun)&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding){
         StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Plane;g.graphics=GraphicsMode::High;
         g.plane.p=V(-7,TerrainHeight(-7,43)+190.0f,43);g.plane.yaw=PI;g.plane.pitch=.18f;g.plane.roll=0;g.plane.speed=220;g.plane.engineRpm=.88f;
@@ -518,6 +563,11 @@ int main(int argc,char **argv) {
             else if(qaCapture.empty())UpdateGameplay(dt);
             else{g.clock+=dt;g.car.wheelAngle+=g.car.speed*dt/.48f;g.plane.propAngle+=dt*(24.0f+g.plane.engineRpm*152.0f);g.heli.rotorAngle+=dt*(g.heli.rotorRpm*78.0f);}
         }else UpdateUI(dt);
+        if(qaPlaneTreeImpact&&!g.exitRequested&&g.plane.crashed){LogEvent("qa-plane-tree-impact-confirmed");g.screenshotRequested=true;g.exitRequested=true;}
+        if(qaPlaneTreeImpact&&!g.exitRequested&&g.elapsed>=4.0f&&!g.plane.crashed){LogEvent("qa-plane-tree-impact-missed");g.screenshotRequested=true;g.exitRequested=true;}
+        if(qaCarTreeImpactRun&&!g.exitRequested&&g.qaCarTreeImpact){LogEvent("qa-car-tree-impact-confirmed");g.qaCarTreeImpactActive=false;g.screenshotRequested=true;g.exitRequested=true;}
+        if(qaCarTreeImpactRun&&!g.exitRequested&&!qaCarNearLogged&&DistXZ(g.car.p,qaCarTreeTarget)<7.0f){LogEvent(TextFormat("qa-car-tree-proximity,seed=%d,tree-x=%.1f,tree-z=%.1f,car-x=%.1f,car-z=%.1f,speed-ms=%.1f,heading=%.2f",qaCarTreeTargetSeed,qaCarTreeTarget.x,qaCarTreeTarget.z,g.car.p.x,g.car.p.z,g.car.speed,g.car.yaw));qaCarNearLogged=true;}
+        if(qaCarTreeImpactRun&&!g.exitRequested&&g.elapsed>=4.0f&&!g.qaCarTreeImpact){LogEvent(TextFormat("qa-car-tree-impact-missed,seed=%d,tree-x=%.1f,tree-z=%.1f,car-x=%.1f,car-z=%.1f,speed-ms=%.1f,heading=%.2f",qaCarTreeTargetSeed,qaCarTreeTarget.x,qaCarTreeTarget.z,g.car.p.x,g.car.p.z,g.car.speed,g.car.yaw));g.qaCarTreeImpactActive=false;g.screenshotRequested=true;g.exitRequested=true;}
         UpdateAudio(dt);
         if(qaTaskTour&&qaTaskStage<4&&g.taskAnnounced[(std::size_t)qaTaskStage]){
             if(qaTaskCaptureStage!=qaTaskStage){g.screenshotRequested=true;qaTaskCaptureStage=qaTaskStage;}
