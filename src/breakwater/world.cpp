@@ -2887,15 +2887,48 @@ void DrawParticles(){
     for(const GuidedIRMissile &missile:g.guidedMissiles){
         const Vector3 direction=Norm(missile.velocity);Vector3 reference=V(0,1,0);if(fabsf(Vector3DotProduct(direction,reference))>.92f)reference=V(0,0,1);
         const Vector3 right=Norm(Vector3CrossProduct(direction,reference)),up=Norm(Vector3CrossProduct(right,direction));
-        const Vector3 tail=Sub(missile.p,Mul(direction,.40f)),nose=Add(missile.p,Mul(direction,.43f));
-        DrawCylinderEx(tail,nose,.047f,.027f,10,Color{147,151,143,255});
-        DrawCylinderEx(tail,Add(tail,Mul(direction,.10f)),.052f,.052f,10,Color{80,87,81,255});
-        DrawSphere(nose,.027f,Color{190,183,153,255});
+        const auto point=[&](float along,float lateral=0.0f,float vertical=0.0f){
+            return Add(missile.p,Add(Mul(direction,along),Add(Mul(right,lateral),Mul(up,vertical))));
+        };
+        constexpr float missileLength=2.83f,bodyRadius=.064f;
+        const Color body{158,162,153,255},bodyShade{119,126,119,255},olive{105,112,91,255},darkMetal{48,55,52,255},steel{193,193,178,255};
+        // The projectile position is the aft end of the rail release. Keep the
+        // in-flight store at the same 2.83 m scale as the authored wingtip AIM-9.
+        DrawCylinderEx(point(.05f),point(2.28f),bodyRadius,bodyRadius*.94f,20,body);
+        DrawCylinderEx(point(2.24f),point(2.31f),bodyRadius*.94f,bodyRadius*.92f,20,steel);
+        DrawCylinderEx(point(2.29f),point(missileLength-.015f),bodyRadius*.92f,.006f,20,olive);
+        DrawSphere(point(missileLength-.035f),.042f,Color{43,51,48,255});
+        // Aft nozzle and two restrained service/paint bands.
+        DrawCylinderEx(point(.005f),point(.075f),bodyRadius*1.04f,bodyRadius,20,darkMetal);
+        DrawCylinderEx(point(.075f),point(.105f),bodyRadius*.80f,bodyRadius*.76f,20,Color{88,94,87,255});
+        DrawCylinderEx(point(.48f),point(.535f),bodyRadius*1.005f,bodyRadius*1.005f,20,olive);
+        DrawCylinderEx(point(1.92f),point(1.955f),bodyRadius,bodyRadius,20,bodyShade);
+        DrawCylinderEx(point(1.96f),point(1.985f),bodyRadius*1.015f,bodyRadius*1.015f,20,steel);
+        // Four swept forward control canards and four aft cruciform stabilizers.
+        const auto sweptFin=[&](float rootLead,float rootTrail,float tipLead,float tipTrail,float rootRadius,float tipRadius,float thickness){
+            for(int axis=0;axis<2;++axis)for(int sign:{-1,1}){
+                const Vector3 radial=Mul(axis==0?right:up,(float)sign),crossAxis=axis==0?up:right;
+                const auto finPoint=[&](float along,float radius,float offset){return Add(point(along),Add(Mul(radial,radius),Mul(crossAxis,offset)));};
+                const Vector3 a=finPoint(rootLead,rootRadius,0),b=finPoint(tipLead,tipRadius,0),c=finPoint(tipTrail,tipRadius*.82f,0),d=finPoint(rootTrail,rootRadius,0);
+                Quad(a,b,c,d,bodyShade);
+                const Vector3 ao=finPoint(rootLead,rootRadius,thickness),bo=finPoint(tipLead,tipRadius,thickness),co=finPoint(tipTrail,tipRadius*.82f,thickness),doo=finPoint(rootTrail,rootRadius,thickness);
+                Quad(ao,bo,co,doo,body);
+                Quad(a,ao,bo,b,olive);Quad(d,c,co,doo,olive);
+            }
+        };
+        sweptFin(1.30f,1.60f,1.42f,1.62f,bodyRadius*.90f,.164f,.008f);
+        sweptFin(2.02f,2.78f,2.37f,2.80f,bodyRadius*.90f,.355f,.012f);
+        // Small, restrained longitudinal seams catch the game light without
+        // turning the missile body into a striped placeholder cylinder.
         for(int sign:{-1,1}){
-            Between(Add(tail,Mul(right,.075f*sign)),Add(tail,Mul(direction,-.08f)),.012f,Color{76,84,79,255},5);
-            Between(Add(tail,Mul(up,.075f*sign)),Add(tail,Mul(direction,-.08f)),.012f,Color{76,84,79,255},5);
+            const Vector3 lineOffset=Mul(right,(float)sign*bodyRadius*.58f);
+            DrawLine3D(Add(point(.63f),lineOffset),Add(point(1.82f),lineOffset),Color{119,124,115,190});
         }
-        if(missile.age<1.6f){const float pulse=.72f+.28f*sinf(g.clock*48.0f+missile.age*9.0f);DrawSphere(Sub(tail,Mul(direction,.11f)),.075f*pulse,Color{255,156,66,225});}
+        if(missile.age<1.55f){
+            const float pulse=.82f+.18f*sinf(g.clock*35.0f+missile.age*7.0f);
+            DrawCylinderEx(point(-.035f),point(-.57f),.071f*pulse,.008f,16,Color{255,154,69,205});
+            DrawCylinderEx(point(-.04f),point(-.34f),.039f*pulse,.004f,14,Color{255,216,147,225});
+        }
     }
     for(const auto &e:g.explosions){
         const float t=1.0f-e.life/e.duration,fade=Clamp(e.life/e.duration,0,1),reach=.35f+e.radius*.19f*Smooth(0,.24f,t);

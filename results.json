@@ -85,13 +85,13 @@
   "build_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\build.ps1",
   "standard_build_wrapper": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\build.ps1",
   "standard_output_path_latest_source_verified": true,
-  "build_note": "Latest pinned Windows x64 build adds a hostile F-16 interceptor with approximate dynamic flight, lead pursuit and difficulty-scaled 20 mm bursts. Seeded hostile-aircraft, player M61 and AIM-9-vs-F-16 fixtures passed; natural flight/combat, real-world calibration and AAA visual fidelity remain incomplete.",
+  "build_note": "Pinned Windows x64 build includes the detailed in-flight AIM-9 render mesh. Both the build executable and packaged executable passed the current seeded AIM-9 fixture under --qa-silent (one launch, one hit, target destroyed). AAA visual fidelity, real-world weapon calibration and a normal human-played flight loop remain open.",
   "build_warning_count_full_clean": null,
   "final_incremental_build_warning_count": 0,
   "executable_location": "C:\\AI-Game-Benchmark\\runs\\luna-max\\build\\bin\\Release\\game.exe",
   "executable_architecture": "Windows x64 PE (0x8664)",
-  "executable_size_bytes": 1959936,
-  "executable_sha256": "25F5E0668174DB31A792EB4C782F3C0472392BC35BEE08D4B67BF9BDB13936E",
+  "executable_size_bytes": 1970688,
+  "executable_sha256": "3491279599DEC373DFEC8A5A1E8A8937EC477D66FE54800CD0700BE1E9A04A62",
   "source_location": "C:\\AI-Game-Benchmark\\runs\\luna-max\\src\\breakwater",
   "source_files": [
     "main.cpp",
@@ -422,7 +422,9 @@
     "screenshots/Breakwater_LiveQA_hostile-road-vehicle_1793045722553.png",
     "screenshots/Breakwater_LiveQA_hostile-road-vehicle_1793046253101.png",
     "screenshots/Breakwater_1793046295843_1.png",
-    "screenshots/Breakwater_LiveQA_hostile-fixed-wing_1793048274243.png"
+    "screenshots/Breakwater_LiveQA_hostile-fixed-wing_1793048274243.png",
+    "screenshots/Breakwater_1793056529736_1.png",
+    "screenshots/Breakwater_1793056531691_2.png"
   ],
   "qa": {
     "final_binary_launch_and_menu_smoke": true,
@@ -909,10 +911,10 @@
       "source_script": "scripts/build_f16_netz.py",
       "source_blend": "assets/f16_netz_source.blend",
       "glb": "assets/f16_netz.glb",
-      "gltf_mesh_count": 112,
-      "raylib_primitive_count": 156,
+      "gltf_mesh_count": 111,
+      "raylib_primitive_count": 161,
       "material_count": 30,
-      "glb_size_bytes": 14779700,
+      "glb_size_bytes": 14904856,
       "render_screenshots": [
         "screenshots/F16_Netz_Blender_HighDetail.png",
         "screenshots/F16_Netz_Blender_Top.png",
@@ -946,8 +948,12 @@
         "screenshots/Breakwater_LiveQA_plane-front_1793037368299.png",
         "screenshots/Breakwater_1793037381554_1.png"
       ],
-      "source_blend_size_bytes": 16998788,
-      "detail_pass": "Lower-wing panel seams, three underside access covers per side and two rows of flush fasteners per side; mesh data names for text stencils now survive GLB export and runtime-range validation."
+      "source_blend_size_bytes": 17048535,
+      "detail_pass": "Rounded lathed tires and swept cruciform wingtip AIM-9 fins with seeker/nozzle detail; runtime guided AIM-9 now uses a full-length tapered body with canards, aft fins, bands and powered exhaust.",
+      "latest_build_executable_size_bytes": 1970688,
+      "latest_build_executable_sha256": "3491279599DEC373DFEC8A5A1E8A8937EC477D66FE54800CD0700BE1E9A04A62",
+      "package_executable_hash_matches_build": true,
+      "package_executable_sha256": "3491279599DEC373DFEC8A5A1E8A8937EC477D66FE54800CD0700BE1E9A04A62"
     },
     "current_tree_collision_qa": {
       "tree_profiles": 896,
@@ -1067,7 +1073,8 @@
         "lower-wing seam paths",
         "three lower-surface access covers per side",
         "flush fastener rows on both wing skins",
-        "preserved text mesh names for generated runtime ranges"
+        "preserved text mesh names for generated runtime ranges",
+        "full-length 2.83 m in-flight AIM-9 body, seeker, bands, swept canards and cruciform aft fins"
       ],
       "blender_render_exit_code": 0,
       "blender_captures": [
@@ -1094,7 +1101,10 @@
       "visual_assessment": "Added closed swept missile fins and seeker/nozzle detail alongside the rounded tire profile. Updated Blender and actual game renders reviewed; cockpit/lighting remain stylized below target.",
       "game_gear_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-gear_1793055211080.png",
       "game_close_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-close_1793055238547.png",
-      "game_top_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-top_1793055225197.png"
+      "game_top_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-top_1793055225197.png",
+      "in_flight_capture": "screenshots/Breakwater_1793056529736_1.png",
+      "in_flight_capture_inspected": true,
+      "in_flight_visual_assessment": "The actual renderer draws the detailed flight model and exhaust on launch; the missile remains small at chase-camera distance and the overall aircraft/world remain stylized."
     },
     "current_ballistic_impact_qa": {
       "command": "build/bin/Release/game.exe --qa-ballistics",
@@ -1336,7 +1346,26 @@
     "windows_package_launch_instruction": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\Launch-Game.ps1",
     "plane_landing_fixture_run": "20261027_005400",
     "plane_landing_fixture_process_exit_code": 0,
-    "plane_landing_fixture_seconds": 2.0
+    "plane_landing_fixture_seconds": 2.0,
+    "latest_f16_aim9_flight_visual_qa": {
+      "build_process_exit_code": 0,
+      "packaged_process_exit_code": 0,
+      "packaged_executable_matches_build": true,
+      "executable_sha256": "3491279599DEC373DFEC8A5A1E8A8937EC477D66FE54800CD0700BE1E9A04A62",
+      "executable_size_bytes": 1970688,
+      "command": "dist/Breakwater_Windows_x64.exe --qa-f16-fixedwing-missile --qa-silent",
+      "audio_muted_confirmed": true,
+      "shots": 1,
+      "hits": 1,
+      "target_destroyed": true,
+      "target_destroyed_after_sim_seconds": 2.11,
+      "launch_capture": "screenshots/Breakwater_1793056529736_1.png",
+      "impact_capture": "screenshots/Breakwater_1793056531691_2.png",
+      "launch_capture_reviewed": true,
+      "log": "logs/breakwater-session.log",
+      "rendered_missile": "2.83 m tapered body, dark seeker dome, service bands, swept forward canards, swept cruciform aft fins and pulsed rocket exhaust",
+      "limitation": "Deterministic seeded launch/kill only; guidance, motor, fuze and flight envelope remain gameplay approximations. The current aircraft, missile, cockpit and world do not meet the AAA photoreal target."
+    }
   },
   "quality_gates": {
     "innovation": "Gaugework changes water state through normal interaction and the scripted mission logs rising/falling water, but its combined traction, route-access, debris and enemy-cover consequences are not validated in a normal playthrough.",
