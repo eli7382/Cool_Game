@@ -634,6 +634,30 @@ void MarkTires(){
     g.tireTracksInitialized=true;
     if(g.tracks.size()>700)g.tracks.erase(g.tracks.begin(),g.tracks.begin()+80);
 }
+} // namespace
+std::array<float,4> CarCornerNormalLoads(float longitudinalAcceleration,float lateralAcceleration,float normalG){
+    // Wheel order is rear-left, rear-right, front-left, front-right. The
+    // simplified sprung-mass model conserves total normal load while moving
+    // load between axles and across each axle under acceleration and cornering.
+    constexpr float massKg=1900.0f,wheelbaseM=2.76f,trackM=1.72f,cgHeightM=.55f;
+    const float verticalLoad=massKg*9.80665f*Clamp(normalG,.15f,3.0f);
+    const float frontFraction=Clamp(.56f-longitudinalAcceleration*cgHeightM/(wheelbaseM*9.80665f),.36f,.74f);
+    const float rearSideLoad=verticalLoad*(1.0f-frontFraction)*.5f;
+    const float frontSideLoad=verticalLoad*frontFraction*.5f;
+    const float totalSideTransfer=massKg*Clamp(lateralAcceleration,-12.0f,12.0f)*cgHeightM/trackM;
+    const float transferDirection=lateralAcceleration>=0.0f?1.0f:-1.0f;
+    const float rearTransfer=Clamp(totalSideTransfer*.5f*.44f,-rearSideLoad*.90f,rearSideLoad*.90f);
+    const float frontTransfer=Clamp(totalSideTransfer*.5f*.56f,-frontSideLoad*.90f,frontSideLoad*.90f);
+    std::array<float,4> loads{};
+    for(std::size_t wheel=0;wheel<loads.size();++wheel){
+        const bool front=wheel>=2,left=(wheel%2)==0;
+        const float sideLoad=front?frontSideLoad:rearSideLoad;
+        const float transfer=front?frontTransfer:rearTransfer;
+        loads[wheel]=std::max(sideLoad*.10f,sideLoad+(left?1.0f:-1.0f)*transferDirection*transfer);
+    }
+    return loads;
+}
+namespace {
 void UpdateCar(float dt){
     if(g.vehicle!=VehicleKind::Car)return;
     const Vector3 carPreviousPosition=g.car.p;
@@ -656,8 +680,6 @@ void UpdateCar(float dt){
         grip+=wheelSurfaces[wheel].friction*wheelTireGrip[wheel]*.25f;
         meanRollingResistance+=wheelSurfaces[wheel].rollingResistance*.25f;
     }
-    const float frontSurfaceGrip=wheelSurfaces[2].friction*wheelTireGrip[2]+wheelSurfaces[3].friction*wheelTireGrip[3];
-    const float rearSurfaceGrip=wheelSurfaces[0].friction*wheelTireGrip[0]+wheelSurfaces[1].friction*wheelTireGrip[1];
     const Vector3 f=Forward(g.car.yaw),r=Right(g.car.yaw);
     const float oldForward=Vector3DotProduct(g.car.velocity,Forward(g.car.yaw));
     float drive=throttle,brake=IsKeyDown(KEY_SPACE)?1.0f:0.0f;
@@ -682,25 +704,49 @@ void UpdateCar(float dt){
     const float steerAngle=g.car.steer*.57f*Lerp(.24f,1.0f,g.car.steeringHealth)*(forwardSpeed>=0?1.0f:-1.0f);
     const float frontSlip=atan2f(lateral+g.car.yawRate*1.34f,std::max(1.0f,fabsf(forwardSpeed)))-steerAngle;
     const float rearSlip=atan2f(lateral-g.car.yawRate*1.42f,std::max(1.0f,fabsf(forwardSpeed)));
-    // Transfer vertical tire load with longitudinal acceleration and enforce a friction circle per axle.
+    // Solve each wheel's approximate normal load, then apply a combined-slip
+    // friction circle independently at the four contact patches.
     constexpr float vehicleMassKg=1900.0f;
     const float frontLoadFraction=Clamp(.56f-estimatedLongitudinal*.55f/(2.76f*9.80665f),.36f,.74f);
-    const float frontCapacity=.5f*frontSurfaceGrip*vehicleMassKg*9.80665f*frontLoadFraction;
-    const float rearCapacity=.5f*rearSurfaceGrip*vehicleMassKg*9.80665f*(1.0f-frontLoadFraction);
-    // Convert acceleration demand to axle force before applying the friction circle (N).
-    const float frontLongitudinalForce=Clamp(tireLongitudinalDemand*vehicleMassKg*frontLoadFraction,-frontCapacity,frontCapacity);
-    const float rearLongitudinalForce=Clamp(tireLongitudinalDemand*vehicleMassKg*(1.0f-frontLoadFraction),-rearCapacity,rearCapacity);
-    const float longitudinal=(frontLongitudinalForce+rearLongitudinalForce)/vehicleMassKg+externalLongitudinal;
-    const float frontLateralLimit=sqrtf(std::max(0.0f,frontCapacity*frontCapacity-frontLongitudinalForce*frontLongitudinalForce));
-    const float rearLateralLimit=sqrtf(std::max(0.0f,rearCapacity*rearCapacity-rearLongitudinalForce*rearLongitudinalForce));
-    const float frontForce=Clamp(-frontSlip*36500.0f,-frontLateralLimit,frontLateralLimit);
-    const float rearForce=Clamp(-rearSlip*31500.0f,-rearLateralLimit,rearLateralLimit);
+    const float gravityLateral=-9.80665f*(gradeX*r.x+gradeZ*r.z);
+    const float predictedLateral=Clamp((-frontSlip*36500.0f-rearSlip*31500.0f)/vehicleMassKg+
+                                      Vector3DotProduct(aerodynamicAcceleration,r)+gravityLateral,-12.0f,12.0f);
+    const std::array<float,4> normalLoad=CarCornerNormalLoads(estimatedLongitudinal,predictedLateral,g.car.normalG);
+    std::array<float,4> tireCapacity{},tireLongitudinalForce{},tireLateralForce{};
+    float frontCapacity=0.0f,rearCapacity=0.0f,frontNormalLoad=0.0f,rearNormalLoad=0.0f;
+    for(std::size_t wheel=0;wheel<4;++wheel){
+        const bool front=wheel>=2;
+        const float axleLoad=front?vehicleMassKg*9.80665f*Clamp(g.car.normalG,.15f,3.0f)*frontLoadFraction:
+                                      vehicleMassKg*9.80665f*Clamp(g.car.normalG,.15f,3.0f)*(1.0f-frontLoadFraction);
+        const float referenceWheelLoad=std::max(1.0f,axleLoad*.5f);
+        const float loadSensitivity=Clamp(powf(normalLoad[wheel]/referenceWheelLoad,-.07f),.88f,1.08f);
+        tireCapacity[wheel]=std::max(0.0f,wheelSurfaces[wheel].friction*wheelTireGrip[wheel]*loadSensitivity*normalLoad[wheel]);
+        if(front){frontCapacity+=tireCapacity[wheel];frontNormalLoad+=normalLoad[wheel];}
+        else{rearCapacity+=tireCapacity[wheel];rearNormalLoad+=normalLoad[wheel];}
+    }
+    const float frontAxleDemand=Clamp(tireLongitudinalDemand*vehicleMassKg*frontLoadFraction,-frontCapacity,frontCapacity);
+    const float rearAxleDemand=Clamp(tireLongitudinalDemand*vehicleMassKg*(1.0f-frontLoadFraction),-rearCapacity,rearCapacity);
+    for(std::size_t wheel=0;wheel<4;++wheel){
+        const bool front=wheel>=2;
+        const float axleLoad=front?frontNormalLoad:rearNormalLoad;
+        const float axleDemand=front?frontAxleDemand:rearAxleDemand;
+        const float longitudinalShare=normalLoad[wheel]/std::max(axleLoad,1.0f);
+        tireLongitudinalForce[wheel]=Clamp(axleDemand*longitudinalShare,-tireCapacity[wheel],tireCapacity[wheel]);
+        const float lateralDemand=-(front?frontSlip*36500.0f:rearSlip*31500.0f)*longitudinalShare;
+        const float lateralLimit=sqrtf(std::max(0.0f,tireCapacity[wheel]*tireCapacity[wheel]-
+                                                     tireLongitudinalForce[wheel]*tireLongitudinalForce[wheel]));
+        tireLateralForce[wheel]=Clamp(lateralDemand,-lateralLimit,lateralLimit);
+    }
+    const float longitudinal=(tireLongitudinalForce[0]+tireLongitudinalForce[1]+
+                              tireLongitudinalForce[2]+tireLongitudinalForce[3])/vehicleMassKg+externalLongitudinal;
+    const float frontForce=tireLateralForce[2]+tireLateralForce[3];
+    const float rearForce=tireLateralForce[0]+tireLateralForce[1];
     const float frontSlipSpeed=fabsf(forwardSpeed*tanf(frontSlip));
     const float rearSlipSpeed=fabsf(forwardSpeed*tanf(rearSlip));
     const float ambientC=weather.temperatureKelvin-273.15f;
     for(std::size_t wheel=0;wheel<4;++wheel){
         const bool front=wheel>=2;
-        const float axleShearPower=.5f*fabsf(front?frontForce:rearForce)*(front?frontSlipSpeed:rearSlipSpeed);
+        const float axleShearPower=fabsf(tireLateralForce[wheel])*(front?frontSlipSpeed:rearSlipSpeed);
         const float temperature=g.car.tireTemperatureC[wheel];
         const float heatGain=axleShearPower*.72f/26000.0f;
         const SurfaceSample &tireSurface=wheelSurfaces[wheel];
@@ -715,7 +761,6 @@ void UpdateCar(float dt){
         g.car.tireTemperatureC[wheel]=Clamp(temperature+(heatGain+(ambientC-temperature)*coolingRate)*dt,-60.0f,160.0f);
         g.car.tireWear[wheel]=Clamp(g.car.tireWear[wheel]+axleShearPower*dt*9.0e-10f*abrasion,0.0f,1.0f);
     }
-    const float gravityLateral=-9.80665f*(gradeX*r.x+gradeZ*r.z);
     const float lateralAcceleration=(frontForce+rearForce)/vehicleMassKg+Vector3DotProduct(aerodynamicAcceleration,r)+gravityLateral;
     const float yawAcceleration=(frontForce*1.34f-rearForce*1.42f)/4300.0f;
     g.car.velocity.x+=(f.x*longitudinal+r.x*lateralAcceleration)*dt;

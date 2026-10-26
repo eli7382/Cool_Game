@@ -156,3 +156,9 @@ run=20261026_212256
 capture_valid=true
 capture_source=game-internal F12 screenshot-taken events
 game_log=mission-start,enter-car,exit-car,summary car_mps=11.16 tire_track_segments=20 footprints=8
+timestamp=20261026_214938
+process_id=5508
+car_controls=attempted
+capture_source=game_internal_renderer
+output_screenshots=Title,Foot,Car,CarCockpit,CarDriving,AfterCar
+

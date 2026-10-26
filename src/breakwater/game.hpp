@@ -232,6 +232,7 @@ float SurfaceMarkHeight(float x,float z);
 bool IsHardSurface(float x,float z);
 AtmosphereSample SampleAtmosphere(Vector3 position,float altitude);
 SurfaceSample SampleSurface(float x,float z);
+std::array<float,4> CarCornerNormalLoads(float longitudinalAcceleration,float lateralAcceleration,float normalG);
 void InitWorld();
 bool RunBallisticImpactQA();
 void ShutdownWorld();

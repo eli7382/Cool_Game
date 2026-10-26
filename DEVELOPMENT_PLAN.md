@@ -511,3 +511,19 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - [ ] Calibrate thermal, wear, pressure and force curves against measured tire data.
 - [ ] Reach the requested photoreal vehicle, cockpit and environment fidelity.
 - [ ] Verify full normal player-controlled airplane takeoff, combat, return and landing on the final binary.
+
+## Four-corner tire load-transfer continuation — 2026-10-26
+
+- Replaced axle-aggregate grip limits with four contact-patch normal loads. The sprung-mass approximation transfers load front-to-rear under longitudinal acceleration and across each axle under cornering; per-wheel load sensitivity modifies friction capacity, and each wheel gets its own longitudinal/lateral friction circle using its sampled surface, wetness, tire health, temperature and wear.
+- Added deterministic fixture checks for static normal-load conservation, rearward transfer under acceleration, forward transfer under braking, and outside-wheel loading in a turn. The current pinned build passed: 18,632.6 N total static load; acceleration shifted the front/rear split to 8,919.8/9,712.9 N; braking raised front load to 13,463.3 N; a positive lateral case loaded the left side to 10,835.2 N versus 7,797.4 N on the right.
+- The combined high-slip tire fixture exited 0 and passed after 1.54 simulated seconds: 20.73 C maximum tire temperature, 0.00008172 total wear, and 16.00 m/s peak speed. The refreshed x64 executable is 1,917,440 bytes with SHA-256 `E2D6EA9FD6911D6E5EE5F72F160634ABF4471B5C32B65E329FCC73766047F19D`.
+- Interactive current-binary car route 20261026_214938 exited 0; it logged mission start, entry, driving and exit after throttle, steering, braking and camera inputs. Peak speed was 11.09 m/s, with 20 tire-track segments, 8 footprints and 0.02 damage. Five current in-game F12 screenshots were captured; four show the car/exterior or cockpit route, and one shows the foot approach.
+- These calculations remain a deliberately compact handling model. Center-of-gravity height, front/rear roll-stiffness share, load sensitivity, tire-force curves and thermal/wear rates are fixed approximations rather than measurements from this SUV, its suspension or its tires. The fixture validates force-transfer direction and bookkeeping, not real-world calibration or a complete maneuver envelope.
+
+### Four-wheel contact gates
+
+- [x] Conserve static load and transfer it in the expected direction under acceleration, braking and cornering.
+- [x] Apply each wheel's surface-dependent grip and combined longitudinal/lateral force cap independently.
+- [x] Re-run the high-slip tire fixture and a current-binary interactive car input route.
+- [ ] Measure and tune vehicle center of gravity, suspension, tire curves, temperature response and wear against suitable real vehicle/tire data.
+- [ ] Test split-friction surfaces, combined braking/steering, high-speed transient handling, and repeated impacts across a broad material/weather matrix.

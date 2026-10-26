@@ -376,7 +376,7 @@ void ShutdownAudioSystem(){
 
 int main(int argc,char **argv) {
     using namespace bw;
-    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
+    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarLoadTransferPassed=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
     for(int i=1;i<argc;++i){
         const std::string_view arg(argv[i]);
         constexpr std::string_view prefix="--qa-capture=";
@@ -543,6 +543,20 @@ int main(int argc,char **argv) {
     }
     if(qaCarTireThermal&&qaCapture.empty()){
         StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Car;
+        const auto straightLoads=CarCornerNormalLoads(0.0f,0.0f,1.0f);
+        const auto accelerationLoads=CarCornerNormalLoads(4.0f,0.0f,1.0f);
+        const auto brakingLoads=CarCornerNormalLoads(-8.0f,0.0f,1.0f);
+        const auto corneringLoads=CarCornerNormalLoads(0.0f,5.0f,1.0f);
+        const float straightFront=straightLoads[2]+straightLoads[3],straightRear=straightLoads[0]+straightLoads[1];
+        const float accelerationFront=accelerationLoads[2]+accelerationLoads[3],accelerationRear=accelerationLoads[0]+accelerationLoads[1];
+        const float brakingFront=brakingLoads[2]+brakingLoads[3];
+        const float corneringLeft=corneringLoads[0]+corneringLoads[2],corneringRight=corneringLoads[1]+corneringLoads[3];
+        const float equilibrium=straightFront+straightRear;
+        qaCarLoadTransferPassed=fabsf(equilibrium-1900.0f*9.80665f)<.1f&&
+            accelerationFront<straightFront&&accelerationRear>straightRear&&brakingFront>straightFront&&corneringLeft>corneringRight&&
+            *std::min_element(corneringLoads.begin(),corneringLoads.end())>0.0f;
+        LogEvent(TextFormat("qa-car-load-transfer,pass=%d,static-load-n=%.1f,accel-front-n=%.1f,accel-rear-n=%.1f,brake-front-n=%.1f,corner-left-n=%.1f,corner-right-n=%.1f",
+                            qaCarLoadTransferPassed?1:0,equilibrium,accelerationFront,accelerationRear,brakingFront,corneringLeft,corneringRight));
         g.car.p=V(0,TerrainHeight(0,165)+.72f,165);g.car.yaw=0;g.car.speed=16.0f;g.car.velocity=V(8,0,16);
         g.car.yawRate=0;g.car.steer=0;g.car.lateralSpeed=0;g.car.engineRpm=.45f;g.car.damage=0;
         g.car.powerplantHealth=1;g.car.steeringHealth=1;g.car.tireHealth.fill(1);g.car.tireTemperatureC.fill(20);g.car.tireWear.fill(0);
@@ -594,8 +608,8 @@ int main(int argc,char **argv) {
         if(qaCarTreeImpactRun&&!g.exitRequested&&g.elapsed>=4.0f&&!g.qaCarTreeImpact){LogEvent(TextFormat("qa-car-tree-impact-missed,seed=%d,tree-x=%.1f,tree-z=%.1f,car-x=%.1f,car-z=%.1f,speed-ms=%.1f,heading=%.2f",qaCarTreeTargetSeed,qaCarTreeTarget.x,qaCarTreeTarget.z,g.car.p.x,g.car.p.z,g.car.speed,g.car.yaw));g.qaCarTreeImpactActive=false;g.screenshotRequested=true;g.exitRequested=true;}
         if(qaCarTireThermal&&!g.exitRequested&&g.elapsed>=1.5f){
             float maxTemperature=0.0f,totalWear=0.0f;for(std::size_t wheel=0;wheel<4;++wheel){maxTemperature=std::max(maxTemperature,g.car.tireTemperatureC[wheel]);totalWear+=g.car.tireWear[wheel];}
-            const bool passed=maxTemperature>20.5f&&totalWear>0.0f;
-            LogEvent(TextFormat("qa-car-tire-thermal-result,pass=%d,max-temp-c=%.2f,total-wear=%.8f,peak-speed-mps=%.2f",passed?1:0,maxTemperature,totalWear,g.maxCar));
+            const bool passed=maxTemperature>20.5f&&totalWear>0.0f&&qaCarLoadTransferPassed;
+            LogEvent(TextFormat("qa-car-tire-thermal-result,pass=%d,load-transfer-pass=%d,max-temp-c=%.2f,total-wear=%.8f,peak-speed-mps=%.2f",passed?1:0,qaCarLoadTransferPassed?1:0,maxTemperature,totalWear,g.maxCar));
             g.exitRequested=true;
         }
         UpdateAudio(dt);
