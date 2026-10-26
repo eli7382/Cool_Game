@@ -14,7 +14,7 @@ The latest pinned Windows x64 build completed with zero incremental compiler war
 
 The aircraft can take off and maneuver, but a normal return-route landing remains unverified. The latest full-route harness ditched before reaching the runway. The current-binary short final-approach fixture (`20261025_025325`) logged touchdown at 2.56 s inside the runway bounds and then 1.25 s of braking; it does not prove a normal takeoff-return-landing circuit. Vehicle exteriors and cockpits remain stylized rather than photorealistic.
 
-The current F-16 weapon fixture (`--qa-aircombat`, 2026-10-26) acquired a moving rotorcraft IR target, launched the port store, and destroyed it 1.34 seconds after launch. It recorded one shot and one hit, then exited 0. A separate scripted M61-vs-rotorcraft fixture is recorded in `results.json`. These deterministic fixtures validate combat code paths, not human timing, physical audio output, or the weapon's full real-world envelope. The game uses an approximate guided-missile model and scripted patrol targets.
+The latest muted fixed-wing fixtures passed on 2026-10-27: nine M61 rounds destroyed a seeded target, and an AIM-9 destroyed its seeded target after 2.13 simulated seconds. The hostile F-16 fixture passed with six cannon rounds and 78 player damage; the aircraft remained airborne. These deterministic fixtures validate selected combat code paths, not human timing, realistic weapon performance, or the weapon's full real-world envelope. The game uses an approximate guided-missile model and scripted patrol targets.
 
 Current-executable combat fixture (`20261025_030444`) registered four hits from four shots, one enemy-fire response, and a takedown. The latest final-binary mission fixture (`20261025_025102`) used normal gauge/beacon interactions, completed all three gates, logged all four task narration cues, loaded 16/16 voice files, captured four frames and exited 0. It teleports between objectives and disables enemies, so it validates objective progression rather than a normal playthrough or replay. The latest High/Low forest-close, tree-detail and nine vehicle renderer captures are listed in `results.json`.
 
@@ -65,6 +65,14 @@ Tree collision uses 896 deterministic tree profiles generated from the same seed
 
 ## Build and launch
 
+To run the packaged Windows x64 build with the repository root as its working directory, use:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Launch-Game.ps1
+```
+
+The executable is `dist\Breakwater_Windows_x64.exe`. To rebuild from source with the pinned benchmark toolchain, run:
+
 From this folder in Windows PowerShell:
 
 ```powershell
@@ -73,7 +81,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 
 The project uses the benchmark's pinned C++20/MSVC and raylib 5.5 build. Keep this folder as the working directory so relative assets and output folders resolve.
 
-The latest pinned Windows x64 build wrapper completed on 2026-10-26 with no incremental compiler warnings shown. `build\bin\Release\game.exe` is 1,890,304 bytes, SHA-256 `594C5460A55426040F9DFB5A7686C70576D377F67386D529582A3A576D6C6D1B`. The updated F-16 front-view and tree-breakup fixtures exited 0 and were reviewed. Existing safehouse, car and helicopter records come from earlier scripted runs; a normal aircraft circuit and human-play session remain unverified. Launch it with:
+The latest pinned Windows x64 build wrapper completed on 2026-10-27 with no compiler warning lines shown. `build\bin\Release\game.exe` is 1,963,008 bytes, SHA-256 `C3E0D274EC74AE5B7D97289678BA9F9D29DFE9F975829DEBC3627766B7290258D`. The landing fixture passed with gear down, a 73.10 m/s touchdown speed and −2.57 m/s sink rate; the seeded tree-strike breakup and fixed-wing weapon fixtures also exited 0. All these QA game launches were muted. A normal takeoff-return-landing circuit, human-play session and controlled FPS measurement remain unverified. The aircraft and world remain stylized rather than photoreal. Launch it with:
 
 ```powershell
 Set-Location 'C:\AI-Game-Benchmark\runs\luna-max'
@@ -112,8 +120,8 @@ The three imported hero exteriors are CC0 1.0 models from Innerscene; sources an
 
 A CC0 two-storey house shell has an authored hinged front door, ground/upper floor navigation, a stair flight with rails, localized warm lights and three CC0 furniture pieces. Current High renderer captures exist for exterior, ground-floor interior and upstairs. They all exited 0; this verifies those renderer views only. The glazing now draws through a low-opacity pass, but the panes still look pale and flat; the furnishing/layout remains sparse. Interactive entry, stair ascent/descent and door handling are not revalidated on the current executable because the Windows input path is unavailable.
 
-The user approved the orthographic mockup and standard Netz configuration. `assets/f16_netz.glb` is an original Blender-authored, metric-scale aircraft asset with 112 exported glTF mesh nodes and 156 raylib primitives; the current runtime loader reports 156 meshes and 31 materials. It includes a canopy/cockpit, pilot silhouette, IDF markings, movable control surfaces, retractable gear, speedbrakes, intake, nozzle, tanks and wingtip stores. The source scene and builder are `assets/f16_netz_source.blend` and `scripts/build_f16_netz.py`; the game uses the generated mesh map in `src/breakwater/f16_netz_mesh_ids.hpp`.
+The user approved the orthographic mockup and standard Netz configuration. `assets/f16_netz.glb` is an original Blender-authored, metric-scale aircraft asset with 111 named source meshes, 161 raylib mesh primitives and 30 materials. It includes a canopy/cockpit, pilot silhouette, IDF markings, movable control surfaces, retractable gear, speedbrakes, intake, nozzle, tanks and wingtip stores. The source scene and builder are `assets/f16_netz_source.blend` and `scripts/build_f16_netz.py`; the game uses the generated mesh map in `src/breakwater/f16_netz_mesh_ids.hpp`.
 
-Blender renders for high-detail, top, side, nose and intake views are in `screenshots/F16_Netz_Blender_*.png`. A new authored surface pass adds underside wing seams, access covers and flush fasteners; the GLB now contains 112 glTF mesh nodes, 156 raylib primitives and 30 materials at 14,779,700 bytes. The asset remains stylized beside the photoreal approved mockup and below War Thunder-level fidelity; its body/cockpit and weathering are not photogrammetric or artist-reviewed. Current in-game frames render the F-16 during scripted tree-strike, AIM-9 and M61 fixtures; these verify selected integration paths, not visual fidelity or hands-on operation. The canopy is transparent in chase and cockpit captures, and the first-person view uses authored pilot, HUD and instrument meshes with live readouts on the three MFDs. The latest tree-breakup fixture separates the modeled port wing with its related authored stores and lights, shows a broken wing root, and simulates both pieces contacting terrain. The current capture is `screenshots/Breakwater_1793037381554_1.png`; a front view is `screenshots/Breakwater_LiveQA_plane-front_1793037368299.png`. Both are scripted renderer fixtures. The airframe and cockpit remain stylized, and breakup covers one deterministic case; weapon behavior and flight physics remain gameplay approximations. The scripted missile fixture recorded one target kill in 2.29 simulated seconds, while the M61 fixture recorded five hits and a rotorcraft kill; these are code-path checks, not a natural engagement or realistic weapon-envelope validation.
+Blender renders for high-detail, top, side, nose and intake views are in `screenshots/F16_Netz_Blender_*.png`. The current GLB is 14,884,724 bytes. The latest mesh pass adds a rounded, closed tire sidewall profile and bead detail; current Blender and game-rendered gear views are recorded in `results.json`. The asset remains stylized beside the approved mockup and below War Thunder-level fidelity; its body, cockpit and weathering are not photogrammetric or artist-reviewed. Actual game-renderer gear, close and top captures show the current runtime asset, but do not establish visual fidelity or hands-on operation. The first-person view uses authored pilot, HUD and instrument meshes with live readouts on the three MFDs. The latest seeded tree-breakup fixture separated the port wing, then logged fuselage and wing-fragment ground contact; the tree was damaged but not felled. The airframe and cockpit remain stylized, and breakup covers one deterministic case; weapon behavior and flight physics remain gameplay approximations.
 
 

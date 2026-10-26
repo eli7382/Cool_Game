@@ -580,3 +580,12 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - [ ] Validate natural encounters, human-controlled air combat, and the complete mission loop.
 - [ ] Calibrate the aerodynamic, cannon, seeker, damage, and structural models against measured F-16/weapon data.
 - [ ] Bring the in-game F-16, cockpit, and environment to the approved reference fidelity.
+
+## F-16 tire and muted QA refresh - 2026-10-27
+
+- Updated the approved standard-Netz Blender asset with a closed lathed tire profile, rounded shoulders, sidewalls and bead transitions. The regenerated GLB is 14,884,724 bytes, with 111 named source meshes, 161 raylib mesh primitives and 30 materials. The Blender source is 17,041,891 bytes.
+- Rebuilt successfully with the pinned Windows x64 Release wrapper after the asset export. Executable: 1,963,008 bytes; SHA-256 `C3E0D274EC74AE5B7D97289678BA9F9D29DFE9F975829DEBC3627766B7290258D`. No compiler warning lines appeared in the successful build output. The initial sandbox attempt was blocked by Windows SDK registry access; the same wrapper then succeeded via the approved host path.
+- All fresh QA launches used `--qa-silent` and logged `qa-audio-output-muted`. The seeded landing fixture passed at 73.10 m/s, with gear down, on the runway, and a −2.57 m/s sink rate. This does not prove a normal takeoff-return-landing circuit.
+- Seeded F-16 checks passed: tree-crown strike at 61.3 m/s, port-wing separation, fuselage and fragment ground contact, six hostile cannon rounds/78 player damage, nine M61 shots to destroy a target, and an AIM-9 target kill at 2.13 simulated seconds. The hostile aircraft remained airborne, and the struck tree was damaged but not felled.
+- Reviewed actual game-renderer captures from gear, close and top views, plus Blender renders. The revised tire reads as a solid sidewall assembly. The F-16 and game environment remain visibly stylized and do not meet the requested War Thunder/AAA fidelity gate. No controlled FPS or GPU measurement was collected.
+- The research register contains 550 distinct canonical source pages, with 450 direct page excerpts and 101 search-result-only excerpts; it does not claim that all 550 pages were read in full. See `research/README.md` and `research/sources.csv`.

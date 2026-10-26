@@ -1639,7 +1639,14 @@ void UpdatePlane(float dt){
             if(waterContact){g.plane.p.y=ground+1.35f;CrashPlane("DITCHED AT SEA — R TO RESET AT AIRFIELD","plane-water-ditching");}
             else if(!g.plane.landingGearDown)CrashPlane("GEAR-UP LANDING — R TO RESET AT AIRFIELD","plane-gear-up-landing");
             else if(g.plane.verticalSpeed<-5.2f||g.plane.speed>92)CrashPlane("HARD LANDING — R TO RESET AT AIRFIELD");
-            else{g.plane.p.y=ground+1.35f;g.plane.verticalSpeed=0;g.plane.airborne=false;g.plane.pitch=0;g.plane.pitchRate=0;g.plane.roll*=.4f;g.plane.rollRate=0;Notify("WHEELS DOWN",2);LogEvent("plane-landing");}
+            else{
+                const float touchdownSink=g.plane.verticalSpeed,touchdownSpeed=g.plane.speed;
+                const float touchdownX=g.plane.p.x,touchdownZ=g.plane.p.z;
+                g.plane.p.y=ground+1.35f;g.plane.verticalSpeed=0;g.plane.airborne=false;g.plane.pitch=0;g.plane.pitchRate=0;g.plane.roll*=.4f;g.plane.rollRate=0;
+                LogEvent(TextFormat("plane-landing-touchdown,x=%.2f,z=%.2f,speed-mps=%.2f,sink-mps=%.2f,gear=%d",
+                    touchdownX,touchdownZ,touchdownSpeed,touchdownSink,g.plane.landingGearDown?1:0));
+                Notify("WHEELS DOWN",2);LogEvent("plane-landing");
+            }
         }
     }
     g.plane.velocity=Add(Mul(f,g.plane.speed),Mul(right,g.plane.lateralSpeed));g.plane.velocity.y=g.plane.verticalSpeed;

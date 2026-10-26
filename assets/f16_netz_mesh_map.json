@@ -1,6 +1,6 @@
 {
-  "mesh_count": 112,
-  "raylib_mesh_count": 156,
+  "mesh_count": 111,
+  "raylib_mesh_count": 161,
   "material_count": 30,
   "meshes": [
     "Aft | paired ventral fins and spine fairingMesh",
@@ -8,6 +8,7 @@
     "Aileron | Starboard elevonMesh",
     "AIM-9 | Port wingtip air-to-air missileMesh",
     "AIM-9 | Starboard wingtip air-to-air missileMesh",
+    "Canopy | internal ejection-fracture cordMesh",
     "Canopy | one-piece smoked bubble glassMesh",
     "Canopy | satin sill, bow and hidden fastenersMesh",
     "Centerline store | conformal tank and antennasMesh",
@@ -66,6 +67,7 @@
     "IDF upper wing roundel | -1 | filled blue starMesh",
     "IDF upper wing roundel | -1 | white fieldMesh",
     "Intake | lower compression rampMesh",
+    "Intake | recessed 24-blade compressor stageMesh",
     "Intake | rounded shadowed variable ductMesh",
     "Intake | rounded variable-area lipMesh",
     "Landing gear | Nose shock strut and doorsMesh",
@@ -94,11 +96,8 @@
     "Wheel hub | Nose ventilated discMesh",
     "Wheel hub | Port ventilated discMesh",
     "Wheel hub | Starboard ventilated discMesh",
-    "Wheel | Nose circumferential tread channelsMesh",
     "Wheel | Nose high-pressure tyreMesh",
-    "Wheel | Port circumferential tread channelsMesh",
     "Wheel | Port high-pressure tyreMesh",
-    "Wheel | Starboard circumferential tread channelsMesh",
     "Wheel | Starboard high-pressure tyreMesh",
     "Wing detail | panel seams, inspection covers and flush fastenersMesh",
     "Wing | fuel service stencilMesh",
@@ -123,9 +122,10 @@
     "Stores | pale aerospace enamel",
     "Stores | seeker glass and shadow",
     "Stores | faded yellow safety band",
+    "Marking | warm white",
+    "Brushed aircraft alloy",
     "Canopy | warm olive bronze laminated glass",
     "Canopy | satin charcoal frame",
-    "Brushed aircraft alloy",
     "Netz | desert sand polyurethane",
     "Cockpit | charcoal anti-glare",
     "Cockpit | fabric and leather",
@@ -143,7 +143,6 @@
     "Panel joint | graphite shadow",
     "Radome | graphite composite",
     "Marking | deep blue",
-    "Marking | warm white",
     "Lamp | amber",
     "Lamp | red",
     "Graphite | tyres and seals"
@@ -180,645 +179,639 @@
       "raylib_mesh_count": 3
     },
     {
-      "node": "Canopy | one-piece smoked bubble glass",
+      "node": "Canopy | internal ejection-fracture cord",
       "mesh": 5,
       "raylib_mesh_start": 11,
+      "raylib_mesh_count": 2
+    },
+    {
+      "node": "Canopy | one-piece smoked bubble glass",
+      "mesh": 6,
+      "raylib_mesh_start": 13,
       "raylib_mesh_count": 1
     },
     {
       "node": "Canopy | satin sill, bow and hidden fasteners",
-      "mesh": 6,
-      "raylib_mesh_start": 12,
-      "raylib_mesh_count": 2
-    },
-    {
-      "node": "Centerline store | conformal tank and antennas",
       "mesh": 7,
       "raylib_mesh_start": 14,
       "raylib_mesh_count": 2
     },
     {
-      "node": "Centerline tank | 300 gallon streamlined drop tank",
+      "node": "Centerline store | conformal tank and antennas",
       "mesh": 8,
       "raylib_mesh_start": 16,
+      "raylib_mesh_count": 2
+    },
+    {
+      "node": "Centerline tank | 300 gallon streamlined drop tank",
+      "mesh": 9,
+      "raylib_mesh_start": 18,
       "raylib_mesh_count": 1
     },
     {
       "node": "Cockpit | HUD combiner",
-      "mesh": 9,
-      "raylib_mesh_start": 17,
+      "mesh": 10,
+      "raylib_mesh_start": 19,
       "raylib_mesh_count": 1
     },
     {
       "node": "Cockpit | pilot, ejection seat, MFD bezels and controls",
-      "mesh": 10,
-      "raylib_mesh_start": 18,
+      "mesh": 11,
+      "raylib_mesh_start": 20,
       "raylib_mesh_count": 10
     },
     {
       "node": "Exhaust detail | 00",
-      "mesh": 11,
-      "raylib_mesh_start": 28,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Exhaust detail | 01",
       "mesh": 12,
-      "raylib_mesh_start": 29,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Exhaust detail | 02",
-      "mesh": 13,
       "raylib_mesh_start": 30,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 03",
-      "mesh": 14,
+      "node": "Exhaust detail | 01",
+      "mesh": 13,
       "raylib_mesh_start": 31,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 04",
-      "mesh": 15,
+      "node": "Exhaust detail | 02",
+      "mesh": 14,
       "raylib_mesh_start": 32,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 05",
-      "mesh": 16,
+      "node": "Exhaust detail | 03",
+      "mesh": 15,
       "raylib_mesh_start": 33,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 06",
-      "mesh": 17,
+      "node": "Exhaust detail | 04",
+      "mesh": 16,
       "raylib_mesh_start": 34,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 07",
-      "mesh": 18,
+      "node": "Exhaust detail | 05",
+      "mesh": 17,
       "raylib_mesh_start": 35,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 08",
-      "mesh": 19,
+      "node": "Exhaust detail | 06",
+      "mesh": 18,
       "raylib_mesh_start": 36,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 09",
-      "mesh": 20,
+      "node": "Exhaust detail | 07",
+      "mesh": 19,
       "raylib_mesh_start": 37,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 10",
-      "mesh": 21,
+      "node": "Exhaust detail | 08",
+      "mesh": 20,
       "raylib_mesh_start": 38,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 11",
-      "mesh": 22,
+      "node": "Exhaust detail | 09",
+      "mesh": 21,
       "raylib_mesh_start": 39,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 12",
-      "mesh": 23,
+      "node": "Exhaust detail | 10",
+      "mesh": 22,
       "raylib_mesh_start": 40,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 13",
-      "mesh": 24,
+      "node": "Exhaust detail | 11",
+      "mesh": 23,
       "raylib_mesh_start": 41,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 14",
-      "mesh": 25,
+      "node": "Exhaust detail | 12",
+      "mesh": 24,
       "raylib_mesh_start": 42,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust detail | 15",
-      "mesh": 26,
+      "node": "Exhaust detail | 13",
+      "mesh": 25,
       "raylib_mesh_start": 43,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 00",
-      "mesh": 27,
+      "node": "Exhaust detail | 14",
+      "mesh": 26,
       "raylib_mesh_start": 44,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 01",
-      "mesh": 28,
+      "node": "Exhaust detail | 15",
+      "mesh": 27,
       "raylib_mesh_start": 45,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 02",
-      "mesh": 29,
+      "node": "Exhaust petal | 00",
+      "mesh": 28,
       "raylib_mesh_start": 46,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 03",
-      "mesh": 30,
+      "node": "Exhaust petal | 01",
+      "mesh": 29,
       "raylib_mesh_start": 47,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 04",
-      "mesh": 31,
+      "node": "Exhaust petal | 02",
+      "mesh": 30,
       "raylib_mesh_start": 48,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 05",
-      "mesh": 32,
+      "node": "Exhaust petal | 03",
+      "mesh": 31,
       "raylib_mesh_start": 49,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 06",
-      "mesh": 33,
+      "node": "Exhaust petal | 04",
+      "mesh": 32,
       "raylib_mesh_start": 50,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 07",
-      "mesh": 34,
+      "node": "Exhaust petal | 05",
+      "mesh": 33,
       "raylib_mesh_start": 51,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 08",
-      "mesh": 35,
+      "node": "Exhaust petal | 06",
+      "mesh": 34,
       "raylib_mesh_start": 52,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 09",
-      "mesh": 36,
+      "node": "Exhaust petal | 07",
+      "mesh": 35,
       "raylib_mesh_start": 53,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 10",
-      "mesh": 37,
+      "node": "Exhaust petal | 08",
+      "mesh": 36,
       "raylib_mesh_start": 54,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 11",
-      "mesh": 38,
+      "node": "Exhaust petal | 09",
+      "mesh": 37,
       "raylib_mesh_start": 55,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 12",
-      "mesh": 39,
+      "node": "Exhaust petal | 10",
+      "mesh": 38,
       "raylib_mesh_start": 56,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 13",
-      "mesh": 40,
+      "node": "Exhaust petal | 11",
+      "mesh": 39,
       "raylib_mesh_start": 57,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 14",
-      "mesh": 41,
+      "node": "Exhaust petal | 12",
+      "mesh": 40,
       "raylib_mesh_start": 58,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust petal | 15",
-      "mesh": 42,
+      "node": "Exhaust petal | 13",
+      "mesh": 41,
       "raylib_mesh_start": 59,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Exhaust | concentric hot-section rings",
-      "mesh": 43,
+      "node": "Exhaust petal | 14",
+      "mesh": 42,
       "raylib_mesh_start": 60,
+      "raylib_mesh_count": 1
+    },
+    {
+      "node": "Exhaust petal | 15",
+      "mesh": 43,
+      "raylib_mesh_start": 61,
+      "raylib_mesh_count": 1
+    },
+    {
+      "node": "Exhaust | concentric hot-section rings",
+      "mesh": 44,
+      "raylib_mesh_start": 62,
       "raylib_mesh_count": 2
     },
     {
       "node": "External fuel tank | Port",
-      "mesh": 44,
-      "raylib_mesh_start": 62,
+      "mesh": 45,
+      "raylib_mesh_start": 64,
       "raylib_mesh_count": 1
     },
     {
       "node": "External fuel tank | Starboard",
-      "mesh": 45,
-      "raylib_mesh_start": 63,
+      "mesh": 46,
+      "raylib_mesh_start": 65,
       "raylib_mesh_count": 1
     },
     {
       "node": "Fuselage detail | fasteners, access panels and cooling slots",
-      "mesh": 46,
-      "raylib_mesh_start": 64,
+      "mesh": 47,
+      "raylib_mesh_start": 66,
       "raylib_mesh_count": 2
     },
     {
       "node": "Fuselage | 16-station pressure shell",
-      "mesh": 47,
-      "raylib_mesh_start": 66,
+      "mesh": 48,
+      "raylib_mesh_start": 68,
       "raylib_mesh_count": 3
     },
     {
       "node": "Fuselage | intake warning",
-      "mesh": 48,
-      "raylib_mesh_start": 69,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Fuselage | intake warning.001",
       "mesh": 49,
-      "raylib_mesh_start": 70,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "IDF fuselage roundel | 1 | blue circumference",
-      "mesh": 50,
       "raylib_mesh_start": 71,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF fuselage roundel | 1 | filled blue Star of David",
-      "mesh": 51,
+      "node": "Fuselage | intake warning.001",
+      "mesh": 50,
       "raylib_mesh_start": 72,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF fuselage roundel | 1 | white field",
-      "mesh": 52,
+      "node": "IDF fuselage roundel | 1 | blue circumference",
+      "mesh": 51,
       "raylib_mesh_start": 73,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF fuselage roundel | -1 | blue circumference",
-      "mesh": 53,
+      "node": "IDF fuselage roundel | 1 | filled blue Star of David",
+      "mesh": 52,
       "raylib_mesh_start": 74,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF fuselage roundel | -1 | filled blue Star of David",
-      "mesh": 54,
+      "node": "IDF fuselage roundel | 1 | white field",
+      "mesh": 53,
       "raylib_mesh_start": 75,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF fuselage roundel | -1 | white field",
-      "mesh": 55,
+      "node": "IDF fuselage roundel | -1 | blue circumference",
+      "mesh": 54,
       "raylib_mesh_start": 76,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF upper wing roundel | 1 | blue circumference",
-      "mesh": 56,
+      "node": "IDF fuselage roundel | -1 | filled blue Star of David",
+      "mesh": 55,
       "raylib_mesh_start": 77,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF upper wing roundel | 1 | filled blue star",
-      "mesh": 57,
+      "node": "IDF fuselage roundel | -1 | white field",
+      "mesh": 56,
       "raylib_mesh_start": 78,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF upper wing roundel | 1 | white field",
-      "mesh": 58,
+      "node": "IDF upper wing roundel | 1 | blue circumference",
+      "mesh": 57,
       "raylib_mesh_start": 79,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF upper wing roundel | -1 | blue circumference",
-      "mesh": 59,
+      "node": "IDF upper wing roundel | 1 | filled blue star",
+      "mesh": 58,
       "raylib_mesh_start": 80,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF upper wing roundel | -1 | filled blue star",
-      "mesh": 60,
+      "node": "IDF upper wing roundel | 1 | white field",
+      "mesh": 59,
       "raylib_mesh_start": 81,
       "raylib_mesh_count": 1
     },
     {
-      "node": "IDF upper wing roundel | -1 | white field",
-      "mesh": 61,
+      "node": "IDF upper wing roundel | -1 | blue circumference",
+      "mesh": 60,
       "raylib_mesh_start": 82,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Intake | lower compression ramp",
-      "mesh": 62,
+      "node": "IDF upper wing roundel | -1 | filled blue star",
+      "mesh": 61,
       "raylib_mesh_start": 83,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Intake | rounded shadowed variable duct",
-      "mesh": 63,
+      "node": "IDF upper wing roundel | -1 | white field",
+      "mesh": 62,
       "raylib_mesh_start": 84,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Intake | rounded variable-area lip",
-      "mesh": 64,
+      "node": "Intake | lower compression ramp",
+      "mesh": 63,
       "raylib_mesh_start": 85,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Landing gear | Nose shock strut and doors",
-      "mesh": 65,
+      "node": "Intake | recessed 24-blade compressor stage",
+      "mesh": 64,
       "raylib_mesh_start": 86,
+      "raylib_mesh_count": 3
+    },
+    {
+      "node": "Intake | rounded shadowed variable duct",
+      "mesh": 65,
+      "raylib_mesh_start": 89,
+      "raylib_mesh_count": 1
+    },
+    {
+      "node": "Intake | rounded variable-area lip",
+      "mesh": 66,
+      "raylib_mesh_start": 90,
+      "raylib_mesh_count": 1
+    },
+    {
+      "node": "Landing gear | Nose shock strut and doors",
+      "mesh": 67,
+      "raylib_mesh_start": 91,
       "raylib_mesh_count": 2
     },
     {
       "node": "Landing gear | Port shock strut and doors",
-      "mesh": 66,
-      "raylib_mesh_start": 88,
+      "mesh": 68,
+      "raylib_mesh_start": 93,
       "raylib_mesh_count": 2
     },
     {
       "node": "Landing gear | Starboard shock strut and doors",
-      "mesh": 67,
-      "raylib_mesh_start": 90,
-      "raylib_mesh_count": 2
-    },
-    {
-      "node": "Landing gear | wheel wells, brake lines and doors",
-      "mesh": 68,
-      "raylib_mesh_start": 92,
-      "raylib_mesh_count": 3
-    },
-    {
-      "node": "Leading edge flap | Port",
       "mesh": 69,
       "raylib_mesh_start": 95,
       "raylib_mesh_count": 2
     },
     {
-      "node": "Leading edge flap | Starboard",
+      "node": "Landing gear | wheel wells, brake lines and doors",
       "mesh": 70,
       "raylib_mesh_start": 97,
+      "raylib_mesh_count": 3
+    },
+    {
+      "node": "Leading edge flap | Port",
+      "mesh": 71,
+      "raylib_mesh_start": 100,
+      "raylib_mesh_count": 2
+    },
+    {
+      "node": "Leading edge flap | Starboard",
+      "mesh": 72,
+      "raylib_mesh_start": 102,
       "raylib_mesh_count": 2
     },
     {
       "node": "LEX | Port leading-edge strake",
-      "mesh": 71,
-      "raylib_mesh_start": 99,
+      "mesh": 73,
+      "raylib_mesh_start": 104,
       "raylib_mesh_count": 2
     },
     {
       "node": "LEX | Starboard leading-edge strake",
-      "mesh": 72,
-      "raylib_mesh_start": 101,
+      "mesh": 74,
+      "raylib_mesh_start": 106,
       "raylib_mesh_count": 2
     },
     {
       "node": "Nose | pitot, static ports, lights",
-      "mesh": 73,
-      "raylib_mesh_start": 103,
+      "mesh": 75,
+      "raylib_mesh_start": 108,
       "raylib_mesh_count": 5
     },
     {
       "node": "Pylon | Port station",
-      "mesh": 74,
-      "raylib_mesh_start": 108,
+      "mesh": 76,
+      "raylib_mesh_start": 113,
       "raylib_mesh_count": 1
     },
     {
       "node": "Pylon | Starboard station",
-      "mesh": 75,
-      "raylib_mesh_start": 109,
+      "mesh": 77,
+      "raylib_mesh_start": 114,
       "raylib_mesh_count": 1
     },
     {
       "node": "Rudder | independent trailing panel",
-      "mesh": 76,
-      "raylib_mesh_start": 110,
+      "mesh": 78,
+      "raylib_mesh_start": 115,
       "raylib_mesh_count": 1
     },
     {
       "node": "Speedbrake | exposed hydraulic jacks and hinge pins",
-      "mesh": 77,
-      "raylib_mesh_start": 111,
+      "mesh": 79,
+      "raylib_mesh_start": 116,
       "raylib_mesh_count": 1
     },
     {
       "node": "Speedbrake | Port dorsal petal",
-      "mesh": 78,
-      "raylib_mesh_start": 112,
+      "mesh": 80,
+      "raylib_mesh_start": 117,
       "raylib_mesh_count": 2
     },
     {
       "node": "Speedbrake | Starboard dorsal petal",
-      "mesh": 79,
-      "raylib_mesh_start": 114,
+      "mesh": 81,
+      "raylib_mesh_start": 119,
       "raylib_mesh_count": 2
     },
     {
       "node": "Stabilator | Port",
-      "mesh": 80,
-      "raylib_mesh_start": 116,
+      "mesh": 82,
+      "raylib_mesh_start": 121,
       "raylib_mesh_count": 2
     },
     {
       "node": "Stabilator | Starboard",
-      "mesh": 81,
-      "raylib_mesh_start": 118,
+      "mesh": 83,
+      "raylib_mesh_start": 123,
       "raylib_mesh_count": 2
     },
     {
       "node": "Tail | rescue triangle",
-      "mesh": 82,
-      "raylib_mesh_start": 120,
+      "mesh": 84,
+      "raylib_mesh_start": 125,
       "raylib_mesh_count": 1
     },
     {
       "node": "Tail | rescue triangle.001",
-      "mesh": 83,
-      "raylib_mesh_start": 121,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Tail | serial stencil",
-      "mesh": 84,
-      "raylib_mesh_start": 122,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Tail | serial stencil.001",
       "mesh": 85,
-      "raylib_mesh_start": 123,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Underbody | drains, antennas and static wicks",
-      "mesh": 86,
-      "raylib_mesh_start": 124,
-      "raylib_mesh_count": 2
-    },
-    {
-      "node": "Vertical tail | Netz fin",
-      "mesh": 87,
       "raylib_mesh_start": 126,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wheel hub | Nose ventilated disc",
-      "mesh": 88,
+      "node": "Tail | serial stencil",
+      "mesh": 86,
       "raylib_mesh_start": 127,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wheel hub | Port ventilated disc",
-      "mesh": 89,
+      "node": "Tail | serial stencil.001",
+      "mesh": 87,
       "raylib_mesh_start": 128,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wheel hub | Starboard ventilated disc",
-      "mesh": 90,
+      "node": "Underbody | drains, antennas and static wicks",
+      "mesh": 88,
       "raylib_mesh_start": 129,
-      "raylib_mesh_count": 1
+      "raylib_mesh_count": 2
     },
     {
-      "node": "Wheel | Nose circumferential tread channels",
-      "mesh": 91,
-      "raylib_mesh_start": 130,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Wheel | Nose high-pressure tyre",
-      "mesh": 92,
+      "node": "Vertical tail | Netz fin",
+      "mesh": 89,
       "raylib_mesh_start": 131,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wheel | Port circumferential tread channels",
-      "mesh": 93,
+      "node": "Wheel hub | Nose ventilated disc",
+      "mesh": 90,
       "raylib_mesh_start": 132,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wheel | Port high-pressure tyre",
-      "mesh": 94,
+      "node": "Wheel hub | Port ventilated disc",
+      "mesh": 91,
       "raylib_mesh_start": 133,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wheel | Starboard circumferential tread channels",
-      "mesh": 95,
+      "node": "Wheel hub | Starboard ventilated disc",
+      "mesh": 92,
       "raylib_mesh_start": 134,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wheel | Starboard high-pressure tyre",
-      "mesh": 96,
+      "node": "Wheel | Nose high-pressure tyre",
+      "mesh": 93,
       "raylib_mesh_start": 135,
-      "raylib_mesh_count": 1
+      "raylib_mesh_count": 2
+    },
+    {
+      "node": "Wheel | Port high-pressure tyre",
+      "mesh": 94,
+      "raylib_mesh_start": 137,
+      "raylib_mesh_count": 2
+    },
+    {
+      "node": "Wheel | Starboard high-pressure tyre",
+      "mesh": 95,
+      "raylib_mesh_start": 139,
+      "raylib_mesh_count": 2
     },
     {
       "node": "Wing detail | panel seams, inspection covers and flush fasteners",
-      "mesh": 97,
-      "raylib_mesh_start": 136,
+      "mesh": 96,
+      "raylib_mesh_start": 141,
       "raylib_mesh_count": 2
     },
     {
       "node": "Wing | fuel service stencil",
-      "mesh": 98,
-      "raylib_mesh_start": 138,
+      "mesh": 97,
+      "raylib_mesh_start": 143,
       "raylib_mesh_count": 1
     },
     {
       "node": "Wing | fuel service stencil.001",
-      "mesh": 99,
-      "raylib_mesh_start": 139,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Wing | no-step stencil",
-      "mesh": 100,
-      "raylib_mesh_start": 140,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Wing | no-step stencil.001",
-      "mesh": 101,
-      "raylib_mesh_start": 141,
-      "raylib_mesh_count": 1
-    },
-    {
-      "node": "Wing | Port cranked trapezoid",
-      "mesh": 102,
-      "raylib_mesh_start": 142,
-      "raylib_mesh_count": 2
-    },
-    {
-      "node": "Wing | safety stencil 1",
-      "mesh": 103,
+      "mesh": 98,
       "raylib_mesh_start": 144,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wing | safety stencil -1",
-      "mesh": 104,
+      "node": "Wing | no-step stencil",
+      "mesh": 99,
       "raylib_mesh_start": 145,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wing | Starboard cranked trapezoid",
-      "mesh": 105,
+      "node": "Wing | no-step stencil.001",
+      "mesh": 100,
       "raylib_mesh_start": 146,
-      "raylib_mesh_count": 2
-    },
-    {
-      "node": "Wing | station stencil",
-      "mesh": 106,
-      "raylib_mesh_start": 148,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wing | station stencil.001",
-      "mesh": 107,
+      "node": "Wing | Port cranked trapezoid",
+      "mesh": 101,
+      "raylib_mesh_start": 147,
+      "raylib_mesh_count": 2
+    },
+    {
+      "node": "Wing | safety stencil 1",
+      "mesh": 102,
       "raylib_mesh_start": 149,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wingtip launcher | Port",
-      "mesh": 108,
+      "node": "Wing | safety stencil -1",
+      "mesh": 103,
       "raylib_mesh_start": 150,
+      "raylib_mesh_count": 1
+    },
+    {
+      "node": "Wing | Starboard cranked trapezoid",
+      "mesh": 104,
+      "raylib_mesh_start": 151,
       "raylib_mesh_count": 2
     },
     {
-      "node": "Wingtip launcher | Starboard",
-      "mesh": 109,
-      "raylib_mesh_start": 152,
-      "raylib_mesh_count": 2
+      "node": "Wing | station stencil",
+      "mesh": 105,
+      "raylib_mesh_start": 153,
+      "raylib_mesh_count": 1
     },
     {
-      "node": "Wingtip nav lamp | Port",
-      "mesh": 110,
+      "node": "Wing | station stencil.001",
+      "mesh": 106,
       "raylib_mesh_start": 154,
       "raylib_mesh_count": 1
     },
     {
-      "node": "Wingtip nav lamp | Starboard",
-      "mesh": 111,
+      "node": "Wingtip launcher | Port",
+      "mesh": 107,
       "raylib_mesh_start": 155,
+      "raylib_mesh_count": 2
+    },
+    {
+      "node": "Wingtip launcher | Starboard",
+      "mesh": 108,
+      "raylib_mesh_start": 157,
+      "raylib_mesh_count": 2
+    },
+    {
+      "node": "Wingtip nav lamp | Port",
+      "mesh": 109,
+      "raylib_mesh_start": 159,
+      "raylib_mesh_count": 1
+    },
+    {
+      "node": "Wingtip nav lamp | Starboard",
+      "mesh": 110,
+      "raylib_mesh_start": 160,
       "raylib_mesh_count": 1
     }
   ],

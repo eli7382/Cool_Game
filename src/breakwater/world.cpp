@@ -1809,6 +1809,12 @@ void DrawHeroVehicle(Model &model,Vector3 position,const Vehicle &vehicle,int ve
                 ||inRange(mesh,F16NetzMesh::NoseWheelHubStart,F16NetzMesh::NoseWheelHubCount)
                 ||inRange(mesh,F16NetzMesh::PortWheelHubStart,F16NetzMesh::PortWheelHubCount)
                 ||inRange(mesh,F16NetzMesh::StarboardWheelHubStart,F16NetzMesh::StarboardWheelHubCount);
+            static bool loggedGearVisibility=false;
+            if(g.qaCaptureActive&&!loggedGearVisibility&&(mesh==F16NetzMesh::NoseWheelStart||mesh==F16NetzMesh::PortMainWheelStart)){
+                LogEvent(TextFormat("qa-f16-wheel-filter,mesh=%d,gear-body=%d,down=%d,extension=%.3f,nose-range=%d+%d,main-range=%d+%d",
+                    mesh,gearBody?1:0,vehicle.landingGearDown?1:0,vehicle.gearExtension,F16NetzMesh::NoseWheelStart,F16NetzMesh::NoseWheelCount,
+                    F16NetzMesh::PortMainWheelStart,F16NetzMesh::PortMainWheelCount));loggedGearVisibility=true;
+            }
             if(!vehicle.landingGearDown&&vehicle.gearExtension<.015f&&gearBody)continue;
             if(inRange(mesh,F16NetzMesh::GearNoseStart,F16NetzMesh::GearNoseCount)){
                 drawF16Gear(mesh,V(2.25f,.92f,0),V(2.17f,.42f,0),0,false,true);continue;
@@ -2833,6 +2839,19 @@ void DrawObstacles(){
     }
 }
 void DrawVehicles(){
+    if(g.qaCaptureActive&&g.qaCaptureOnlyHostileFixedWing){
+        static bool loggedIsolatedF16Capture=false;
+        if(!loggedIsolatedF16Capture){LogEvent("qa-hostile-f16-render-isolated");loggedIsolatedF16Capture=true;}
+        // Keep the inspection capture focused on the airborne F-16. Mission setup
+        // also places the player's parked aircraft in the world; drawing both
+        // made their wings and extended gear overlap in the close QA frame.
+        for(const HostileFixedWing &contact:g.hostileFixedWings)if(contact.alive||contact.downed){
+            const float h=Clamp(contact.vehicle.p.y-TerrainHeight(contact.vehicle.p.x,contact.vehicle.p.z),0,80);
+            if(h<55.0f)DrawGroundShadow(contact.vehicle.p,2.0f+h*.10f,3.0f+h*.08f,26.0f,contact.vehicle.yaw);
+            DrawPlane(contact.vehicle);DrawVehicleImpactOverlay(contact.vehicle,1);
+        }
+        return;
+    }
     if(g.qaCaptureActive&&g.vehicle==VehicleKind::Foot&&!g.qaCaptureWorldVehicles)return;
     if(g.qaCaptureActive&&g.vehicle!=VehicleKind::Foot){
         // Isolate the selected asset during renderer QA so the vehicle occupies the frame without nearby props hiding its geometry.

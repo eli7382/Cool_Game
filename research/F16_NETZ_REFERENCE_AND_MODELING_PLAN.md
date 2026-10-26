@@ -1,11 +1,11 @@
 # F-16A Netz reference and modeling plan
 
-Status: pre-production research and three visual mockups are ready. **No F-16 3D mesh has been started. The mesh begins only after the user approves a mockup and chooses the Netz configuration.**
+Status: the user approved the orthographic mockup as the geometry basis and selected the standard Netz configuration. A Blender source asset and game-ready GLB now exist and are integrated into the game. The current aircraft has substantial modeled surface and cockpit detail, but inspection in the actual game still shows a stylized result below the requested War Thunder reference fidelity; this is an active refinement target, not a completed quality gate.
 
-## Approval target
+## Approved visual and configuration basis
 
-- The primary shape proposal is `f16-netz-mockups/F16_Netz_orthographic-review.png`. The stormfield image is a lighting/material presentation proposal; the detail sheet is for canopy, landing gear, intake, panel and surface treatment. All three are generated concepts, not engineering drawings.
-- Approve the standard Israeli F-16A Block 10 Netz or the War Thunder premium “Netz (Mod)”. Gaijin says its premium presentation differs from the researchable Netz by stabilator design, added countermeasures and an expanded weapon fit including the GBU-31 JDAM. The mockup should be treated as a direction proposal until this choice is made.
+- The approved geometry basis is `f16-netz-mockups/F16_Netz_orthographic-review.png`. The stormfield image guides lighting and materials; the detail sheet guides the canopy, landing gear, intake, panels and surface treatment. These generated images are visual direction, not engineering drawings.
+- The selected configuration is the standard Israeli F-16A Block 10 Netz, not the War Thunder premium “Netz (Mod)”. The model includes a representative M61 and AIM-9 loadout. Its model and gameplay systems are not asserted to reproduce classified or proprietary aircraft/weapon systems.
 - No War Thunder geometry, textures, screenshots or other game assets will be copied. Use public aircraft references and the generated images only as visual direction.
 
 ## Shape and scale evidence
@@ -14,15 +14,15 @@ Status: pre-production research and three visual mockups are ready. **No F-16 3D
 - NAVAIR’s F-16A reference gives 14.52 m length, 9.45 m wingspan and 5.01 m height. This is a general F-16A reference rather than a Netz Block 10 drawing. The length figures differ, so 15.1 m remains a provisional game-target scale and will not be treated as a validated Block 10 measurement.
 - Before scale is locked, compare orthographic photographs and variant-specific documentation, record the measurement convention (including any nose probe or stores), and mark unknown dimensions. The generated images can invent or distort small forms and must never serve as the sole source for proportions.
 
-## High-detail asset workflow
+## High-detail asset workflow and current status
 
-1. Lock the exact Block 10 configuration and livery after approval. Build a reference board with top, front, side and detail views plus a measurement ledger with confidence notes.
-2. Model a metric-scale blockout around fuselage stations, intake, wing planform, leading-edge extensions, vertical fin, stabilators, canopy, gear and nozzle. Compare orthographic silhouettes before adding small detail.
-3. Keep canopy, landing gear and doors, wheels, control surfaces, nozzle, pylons and stores as independent, correctly pivoted parts. Use real geometry for silhouette-critical forms; model crisp but restrained panel gaps, vents, fasteners, lights, probes and access panels.
-4. Create a dense source mesh for curvature and bevel detail, then a real-time mesh with clean normals, smoothing groups and intentional bevels. Avoid deep panel grooves that break highlight flow.
-5. Unwrap after major geometry is stable. Keep texel density consistent, place seams deliberately, preserve padding, and inspect a distortion grid. Bake tangent-space normal and ambient-occlusion maps from the detailed source; author distinct painted metal, bare metal, rubber, glass, exhaust and fabric response rather than one generic finish.
-6. Export glTF/GLB with applied scale, consistent axes, correct normals, compact material sets and useful pivots. Validate the exported asset in the actual raylib renderer, not only in the authoring application.
-7. Build controlled LODs and a low-cost path for integrated graphics. Inspect silhouette, cockpit readability, livery, materials, animation, gear, collision bounds, memory and frame-time at Low and High presets.
+1. **Completed as a prototype:** lock the standard Netz basis, generated reference board and metric-scale model workflow. Variant dimensions still need stronger primary references.
+2. **Implemented, still under visual review:** model fuselage, intake, wing planform, leading-edge extensions, fin, stabilators, canopy, cockpit, gear, nozzle, pylons, tanks, stores, panels and surface details as named Blender components.
+3. **Implemented in the source model:** separate animated control surfaces, landing gear and doors, wheels, pylons and AIM-9 stores. The latest pass replaced thin tire rings with rounded, closed sidewall/shoulder profiles and a bead detail.
+4. **Implemented:** a 111-object Blender source model with 161 raylib mesh primitives and 30 materials, plus generated normal/roughness textures. These counts describe asset complexity, not realism.
+5. **Partially validated:** export the asset to GLB and generate Blender renders. The game renderer captures the actual in-game plane from gear, close and top views; Blender still gives a cleaner material result than the game renderer.
+6. **Not met:** high-fidelity silhouette, canopy/cockpit realism and game lighting remain below the approved mockup/War Thunder target. No calibrated variant-specific engineering drawing or professional external model has been obtained.
+7. **Open:** inspect LOD transitions, collision bounds, model memory and controlled frame-time on Low and High presets after the next visual pass.
 
 ## Flight and contact model plan
 
@@ -30,8 +30,8 @@ Use SI units and the chosen airframe’s documented mass, wing area, center of g
 
 ## Authoring environment and runtime constraints
 
-- The current game is C++20, raylib 5.5 and OpenGL 3.3. Its existing GLB import/render path and Low/High presets can host a detailed asset, but the F-16 asset, materials, LODs and flight model have not been implemented or locally verified.
-- Blender is not discoverable as `blender.exe` on this host. If the approved model needs Blender, install a project-local copy under this run; do not alter the pinned compiler, raylib or shared software.
+- The current game is C++20, raylib 5.5 and OpenGL 3.3. The GLB is loaded by the game. Current Low/High lighting and material handling constrain its appearance; the actual game image is the authority for runtime presentation.
+- Blender 5.2.3 is installed project-locally under `tools/`; the pinned compiler, raylib and shared software were left unchanged.
 - Current target hardware includes integrated Intel Iris Xe graphics. Use baked detail, sensible texture budgets, LODs and a lightweight material path; GPU utilization and GPU memory are not presently measurable here.
 
 ## Sources consulted
@@ -44,3 +44,10 @@ Use SI units and the chosen airframe’s documented mass, wing area, center of g
 - [Blender Manual: render baking](https://docs.blender.org/manual/en/dev/render/cycles/baking.html) — normal and ambient-occlusion bake workflow.
 - [Blender Manual: UV operators](https://docs.blender.org/manual/en/4.4/modeling/meshes/editing/uv.html) — UV workflow.
 - [Blender Manual: bevel modifier](https://docs.blender.org/manual/de/4.2/modeling/modifiers/generate/bevel.html) — bevel workflow.
+
+## 2026-10-27 tire and current-build QA refresh
+
+- Rebuilt the F-16 tires with a closed, lathed section, rounded shoulder and sidewall, and a bead transition. The Blender side render shows a solid rounded tire; a fresh gear-down game render confirms the updated mesh is present in the runtime asset.
+- Rebuilt the pinned Windows executable after exporting the revised GLB. The seeded landing fixture passed at 73.10 m/s with landing gear down, inside runway bounds, and a measured −2.57 m/s touchdown sink rate. This remains a short seeded final-approach fixture, not a normal takeoff-and-return route.
+- Current silent scripted runs passed the seeded F-16/tree breakup, hostile F-16, M61 and AIM-9 cases. The hostile F-16 remained airborne; the breakup fixture did not fell the tree. These are deterministic gameplay fixtures and do not validate real-aircraft or weapon performance.
+- Captures reviewed in the actual renderer: `screenshots/Breakwater_LiveQA_hostile-fixed-wing-gear_1793053242111.png`, `screenshots/Breakwater_LiveQA_hostile-fixed-wing-close_1793053349004.png`, and `screenshots/Breakwater_LiveQA_hostile-fixed-wing-top_1793053358297.png`. They expose the current stylized cockpit/surface rendering and are not evidence of the requested photoreal target.

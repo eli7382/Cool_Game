@@ -407,6 +407,37 @@ b=[[],[],[]]
 add_box(b,(.13,0,.335),(.78,.68,.035),5,.0)
 keep(simple_mesh("Intake | lower compression ramp",b,[MAT[5]]))
 
+# A recessed compressor face sits at the end of the shadowed duct. The annular
+# lip, 24 swept blades, root fasteners and spinner make the inlet read as an
+# actual turbofan passage when the aircraft is inspected up close.
+b=[[],[],[]]
+fan_x=-.095;fan_z=.63;fan_radius=.185
+segments=64
+for x,radius in ((fan_x,.174),(fan_x+.018,.188)):
+    for i in range(segments):
+        a=2*math.pi*i/segments
+        b[0].append((x,radius*math.cos(a),fan_z+radius*math.sin(a)))
+for i in range(segments):
+    a=i;bb=(i+1)%segments;c=segments+(i+1)%segments;d=segments+i
+    b[1].append((a,bb,c,d));b[2].append(0)
+for blade in range(24):
+    base_angle=2*math.pi*blade/24
+    start=len(b[0]);radial_steps=5
+    for step in range(radial_steps+1):
+        t=step/radial_steps;r=.055+t*(fan_radius*.91-.055)
+        sweep=.36*(1.0-t)
+        for edge in (0,1):
+            a=base_angle+sweep+edge*(.115*(1.0-.24*t))
+            b[0].append((fan_x+.020,r*math.cos(a),fan_z+r*math.sin(a)))
+    for step in range(radial_steps):
+        a=start+step*2;bb=a+2;c=bb+1;d=a+1
+        b[1].append((a,bb,c,d));b[2].append(0 if blade%3==0 else 1)
+add_cylinder(b,(fan_x+.022,0,fan_z),(fan_x+.145,0,fan_z),.042,2,24,radius2=.105)
+for bolt in range(12):
+    a=2*math.pi*bolt/12
+    add_ellipsoid(b,(fan_x+.026,.143*math.cos(a),fan_z+.143*math.sin(a)),(.010,.008,.008),2,6,8)
+keep(simple_mesh("Intake | recessed 24-blade compressor stage",b,[MAT[15],MAT[7],MAT[8]]))
+
 # Main cranked wing, leading-edge extensions and independently animated elevons.
 wing_stations=[(.70,1.30,5.15,1.23),(1.48,.50,4.85,1.25),(2.45,-.35,4.20,1.30),
                (3.48,-1.28,3.15,1.36),(4.32,-2.25,1.90,1.42),(4.725,-2.88,1.35,1.44)]
@@ -510,6 +541,24 @@ for i in range(24):
     a=2*math.pi*i/24
     add_ellipsoid(b,(cx+rx*.97*math.cos(a),ry*.97*math.sin(a),cz+.018),(.007,.007,.006),8,6,8)
 keep(simple_mesh("Canopy | satin sill, bow and hidden fasteners",b,[MAT[29],MAT[8]]))
+
+# The F-16's transparent bubble carries a fine internal canopy-fracture cord.
+# It follows the curved inner surface and remains visible through the tinted
+# glazing as a small braided zig-zag instead of a flat painted decal.
+b=[[],[],[]]
+cord_start=cx-rx*.82;cord_end=cx+rx*.82;cord_steps=96;previous=None
+for i in range(cord_steps+1):
+    u=i/cord_steps;x=cord_start+(cord_end-cord_start)*u
+    envelope=max(0.0,1.0-((x-cx)/rx)**2)
+    y=(.026 if i%2 else -.026)*min(1.0,envelope*5.0)
+    z=cz+rz*math.sqrt(max(0.0,envelope-(y/ry)**2))-.025
+    point=(x,y,z)
+    if previous is not None:
+        add_cylinder(b,previous,point,.0034,12,6)
+    previous=point
+add_ellipsoid(b,(cord_start,0,cz+rz*math.sqrt(1.0-((cord_start-cx)/rx)**2)-.028),(.018,.014,.012),8,8,10)
+add_ellipsoid(b,(cord_end,0,cz+rz*math.sqrt(1.0-((cord_end-cx)/rx)**2)-.028),(.018,.014,.012),8,8,10)
+keep(simple_mesh("Canopy | internal ejection-fracture cord",b,[MAT[12],MAT[8]]))
 
 # A dressed single-seat office and seated pilot. All eye-line parts remain below
 # the canopy crown so the glazings read as a bubble rather than a solid dark block.
@@ -616,37 +665,32 @@ for x,side,label,radius in ((2.25,0,"Nose",.255),(-1.55,1,"Port",.405),(-1.55,-1
     add_box(b,(x+.12,y*.65,.72),(.42,.25,.055),3)
     add_box(b,(x+.34,y*.65,.67),(.29,.19,.04),3,-.16)
     keep(simple_mesh("Landing gear | "+label+" shock strut and doors",b,[MAT[8],MAT[3]]))
-    # wheel itself is a tire ring aligned to the lateral axle.
+    # The tire is a rounded pneumatic section rather than a single unfilled
+    # tread hoop. Bead, sidewall, shoulders and three recessed circumferential
+    # grooves give the wheel a real cross-section from the common game camera.
     b=[[],[],[]]
     center=Vector(hub)
-    for j in range(5):
-        yy=y-.12+j*.06
-        rad=radius*(.88 if j in (0,4) else (1.0 if j in (1,3) else .985))
-        for i in range(32):
-            ang=2*math.pi*i/32
-            b[0].append((center.x+rad*math.cos(ang),yy,center.z+rad*math.sin(ang)))
-    for j in range(4):
-        for i in range(32):
-            a=j*32+i;bb=j*32+(i+1)%32;c=(j+1)*32+(i+1)%32;d=(j+1)*32+i
-            b[1].append((a,bb,c,d));b[2].append(0)
-    keep(simple_mesh("Wheel | "+label+" high-pressure tyre",b,[MAT[6],MAT[8]]))
-    # Three shallow circumferential channels and staggered shoulder cuts make the rubber read as a tyre.
-    b=[[],[],[]]
-    for groove_y in (y-.045,y,y+.045):
-        major=radius*.978;minor=.004
-        base=len(b[0]);segments=64;tube=6
-        for i in range(segments):
-            a=2*math.pi*i/segments
-            for j in range(tube):
-                q=2*math.pi*j/tube
-                rr=major+minor*math.cos(q)
-                b[0].append((center.x+rr*math.cos(a),groove_y+minor*math.sin(q),center.z+rr*math.sin(a)))
-        for i in range(segments):
-            for j in range(tube):
-                a=base+i*tube+j;bb=base+i*tube+(j+1)%tube
-                c=base+((i+1)%segments)*tube+(j+1)%tube;d=base+((i+1)%segments)*tube+j
-                b[1].append((a,bb,c,d));b[2].append(0)
-    keep(simple_mesh("Wheel | "+label+" circumferential tread channels",b,[MAT[17]]))
+    tire_profile=[
+        (-.120,.540,6),(-.120,.680,6),(-.116,.815,6),(-.107,.918,6),
+        (-.091,.964,6),(-.074,.978,6),(-.059,.957,6),(-.052,.929,17),
+        (-.040,.986,17),(-.025,.998,6),(-.011,.991,6),(-.006,.981,17),
+        (.006,.981,17),(.011,.991,6),(.025,.998,6),(.040,.986,17),
+        (.052,.929,17),(.059,.957,6),(.074,.978,6),(.091,.964,6),
+        (.107,.918,6),(.116,.815,6),(.120,.680,6),(.120,.540,6),
+        (.088,.510,6),(0.0,.495,6),(-.088,.510,6),
+    ]
+    tread_segments=48
+    for axial_offset,radial_scale,_surface in tire_profile:
+        for i in range(tread_segments):
+            ang=2*math.pi*i/tread_segments
+            b[0].append((center.x+radius*radial_scale*math.cos(ang),y+axial_offset,center.z+radius*radial_scale*math.sin(ang)))
+    for j,(_axial,_radial,surface) in enumerate(tire_profile):
+        next_j=(j+1)%len(tire_profile)
+        for i in range(tread_segments):
+            a=j*tread_segments+i;bb=j*tread_segments+(i+1)%tread_segments
+            c=next_j*tread_segments+(i+1)%tread_segments;d=next_j*tread_segments+i
+            b[1].append((a,bb,c,d));b[2].append(surface)
+    keep(simple_mesh("Wheel | "+label+" high-pressure tyre",b,[MAT[6],MAT[17]]))
     b=[[],[],[]]
     for hubside in (-1,1):
         yy=y+hubside*.125
@@ -980,6 +1024,8 @@ scene.render.filepath=os.path.join(SHOTS,"F16_Netz_Blender_HighDetail.png")
 scene.eevee.taa_render_samples=72
 
 # Keep editable source with studio setup, then render.
+bpy.context.preferences.filepaths.save_version=0
+bpy.context.preferences.filepaths.file_preview_type="NONE"
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(ASSETS,"f16_netz_source.blend"))
 bpy.ops.render.render(write_still=True)
 
@@ -1053,6 +1099,13 @@ def find_mesh_range(prefix):
     for i,name in enumerate(mesh_names):
         if name.startswith(prefix):return (mesh_starts[i],len(gltf["meshes"][i].get("primitives",[])))
     return (-1,0)
+def find_mesh_prefix_range(prefix):
+    """Return every adjacent exported primitive whose Blender name shares a prefix."""
+    matches=[i for i,name in enumerate(mesh_names) if name.startswith(prefix)]
+    if not matches:return (-1,0)
+    start=mesh_starts[matches[0]]
+    end=max(mesh_starts[i]+len(gltf["meshes"][i].get("primitives",[])) for i in matches)
+    return (start,end-start)
 def find_mat(needle):
     for i,name in enumerate(mat_names):
         if needle in name:return i
@@ -1093,8 +1146,8 @@ dynamic_ranges={
     "PortSpeedbrake":find_mesh_range("Speedbrake | Port"),"StarboardSpeedbrake":find_mesh_range("Speedbrake | Starboard"),
     "GearNose":find_mesh_range("Landing gear | Nose"),"GearPort":find_mesh_range("Landing gear | Port"),
     "GearStarboard":find_mesh_range("Landing gear | Starboard"),"GearBays":find_mesh_range("Landing gear | wheel wells"),
-    "NoseWheel":find_mesh_range("Wheel | Nose"),"PortMainWheel":find_mesh_range("Wheel | Port"),
-    "StarboardMainWheel":find_mesh_range("Wheel | Starboard"),"NoseWheelHub":find_mesh_range("Wheel hub | Nose"),
+    "NoseWheel":find_mesh_prefix_range("Wheel | Nose"),"PortMainWheel":find_mesh_prefix_range("Wheel | Port"),
+    "StarboardMainWheel":find_mesh_prefix_range("Wheel | Starboard"),"NoseWheelHub":find_mesh_range("Wheel hub | Nose"),
     "PortWheelHub":find_mesh_range("Wheel hub | Port"),"StarboardWheelHub":find_mesh_range("Wheel hub | Starboard"),
     "PortMissile":find_mesh_range("AIM-9 | Port"),"StarboardMissile":find_mesh_range("AIM-9 | Starboard")}
 dynamic_ranges.update({

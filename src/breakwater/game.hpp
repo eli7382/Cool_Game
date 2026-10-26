@@ -210,7 +210,7 @@ struct Game {
     std::array<Sound,static_cast<size_t>(NarrationCue::Count)> narrator{};
     std::deque<NarrationCue> narratorQueue;
     ProceduralAudio coastAudio{},scoreAudio{},carAudio{},planeAudio{},heliAudio{};
-    bool audioReady{},muted{},subtitles{true},spatialAudio{true},nightMix{},fullscreen{},showMap{true},missionStarted{},missionComplete{},settingsReturnPause{},exitRequested{},screenshotRequested{},cameraInitialized{},qaCaptureActive{},qaCaptureFront{},qaCaptureWheelView{},qaCaptureWorldVehicles{},qaCombatAim{},qaSafehouse{},qaCombatAutoFirePending{},qaCombatProjectionLogged{},qaTaskInteractPending{},qaAAMissileTest{},qaAAMissileLaunchPending{},qaAAGunTest{},qaFixedWingTargetHold{},qaFixedWingGunTest{},qaHostileF16Test{},qaPlaneTreeImpact{},qaCarTreeImpact{},qaCarTreeImpactActive{},qaHostileRoadVehicleTest{};
+    bool audioReady{},muted{},subtitles{true},spatialAudio{true},nightMix{},fullscreen{},showMap{true},missionStarted{},missionComplete{},settingsReturnPause{},exitRequested{},screenshotRequested{},cameraInitialized{},qaCaptureActive{},qaCaptureFront{},qaCaptureWheelView{},qaCaptureWorldVehicles{},qaCaptureOnlyHostileFixedWing{},qaCombatAim{},qaSafehouse{},qaCombatAutoFirePending{},qaCombatProjectionLogged{},qaTaskInteractPending{},qaAAMissileTest{},qaAAMissileLaunchPending{},qaAAGunTest{},qaFixedWingTargetHold{},qaFixedWingGunTest{},qaHostileF16Test{},qaPlaneTreeImpact{},qaCarTreeImpact{},qaCarTreeImpactActive{},qaHostileRoadVehicleTest{};
     Vector3 qaCarTreeImpactTarget{};int qaCarTreeImpactTargetSeed{-1},qaCarTreeProbeFrames{};
     int qaCaptureHouseView{};
     float masterVolume{0.82f},effectsVolume{0.82f},ambienceVolume{0.7f},musicVolume{0.28f},voiceVolume{0.95f};

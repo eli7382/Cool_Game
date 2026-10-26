@@ -376,9 +376,10 @@ void ShutdownAudioSystem(){
 
 int main(int argc,char **argv) {
     using namespace bw;
-    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0,qaHostileF16Deadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarLoadTransferPassed=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaF16Gun=false,qaF16Missile=false,qaHostileF16=false,qaCombat=false,qaHostileRoadVehicle=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{},qaHostileF16Start{};int qaCarTreeTargetSeed=-1;
+    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0,qaHostileF16Deadline=0.0;bool qaHasRunMode=false,qaAudioEnabled=false,qaTaskTour=false,qaPlaneLanding=false,qaPlaneLandingLogged=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarLoadTransferPassed=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaF16Gun=false,qaF16Missile=false,qaHostileF16=false,qaCombat=false,qaHostileRoadVehicle=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{},qaHostileF16Start{};int qaCarTreeTargetSeed=-1;
     for(int i=1;i<argc;++i){
         const std::string_view arg(argv[i]);
+        if(arg.rfind("--qa-",0)==0){if(arg=="--qa-audio-enabled")qaAudioEnabled=true;else qaHasRunMode=true;}
         constexpr std::string_view prefix="--qa-capture=";
         if(arg.rfind(prefix,0)==0)qaCapture=std::string(arg.substr(prefix.size()));
         if(arg=="--qa-task-tour")qaTaskTour=true;
@@ -402,10 +403,11 @@ int main(int argc,char **argv) {
         if(arg=="--qa-safehouse")qaSafehouse=true;
         if(arg=="--qa-safehouse-descent")qaSafehouseDescent=true;
     }
+    const bool qaSilent=qaHasRunMode&&!qaAudioEnabled;
     SetConfigFlags(FLAG_WINDOW_RESIZABLE|FLAG_WINDOW_HIGHDPI|FLAG_VSYNC_HINT|FLAG_MSAA_4X_HINT);
     InitWindow(1280,720,"BREAKWATER: HIGH WATER");
-    SetTargetFPS(60);SetExitKey(KEY_NULL);
-    InitWorld();InitAudioSystem();EnableCursor();
+    SetTargetFPS(60);SetExitKey(KEY_NULL);if(qaSilent)g.muted=true;
+    InitWorld();InitAudioSystem();if(qaSilent)LogEvent("qa-audio-output-muted");EnableCursor();
     if(qaBallistics){StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;qaBallisticsPassed=RunBallisticImpactQA();LogEvent(qaBallisticsPassed?"qa-ballistics-pass":"qa-ballistics-fail");g.exitRequested=true;}
     if(!qaCapture.empty()){
         StartMission();g.screen=Screen::Playing;g.clock=5.4f;g.graphics=qaCaptureLow?GraphicsMode::Low:GraphicsMode::High;
@@ -451,12 +453,17 @@ int main(int argc,char **argv) {
             }
         }else if(qaCapture=="hostile-road-vehicle"){
             g.vehicle=VehicleKind::Foot;g.player.firstPerson=true;
-        }else if(qaCapture=="hostile-fixed-wing"){
-            g.vehicle=VehicleKind::Foot;g.player.firstPerson=true;g.graphics=GraphicsMode::High;g.qaCaptureWorldVehicles=true;
+        }else if(qaCapture=="hostile-fixed-wing"||qaCapture=="hostile-fixed-wing-front"||qaCapture=="hostile-fixed-wing-top"||qaCapture=="hostile-fixed-wing-gear"||qaCapture=="hostile-fixed-wing-close"){
+            g.vehicle=VehicleKind::Foot;g.player.firstPerson=true;g.graphics=GraphicsMode::High;g.qaCaptureWorldVehicles=true;g.qaCaptureOnlyHostileFixedWing=true;
             HostileFixedWing &contact=g.hostileFixedWings[0];contact.alive=true;contact.downed=false;contact.health=180;contact.vehicle=Vehicle{};
-            contact.vehicle.p=V(-7,TerrainHeight(-7,93)+40.0f,93);contact.vehicle.yaw=PI;contact.vehicle.pitch=.025f;contact.vehicle.roll=.035f;
-            contact.vehicle.airborne=true;contact.vehicle.landingGearDown=false;contact.vehicle.gearExtension=0;contact.vehicle.speed=190;contact.vehicle.engineRpm=.75f;
-            g.player.p=Add(contact.vehicle.p,V(0,0,10.0f));g.cameraYaw=PI;g.cameraPitch=-.045f;g.cameraDistance=8.0f;g.cameraActualDistance=8.0f;g.cameraInitialized=false;
+            const bool front=qaCapture=="hostile-fixed-wing-front",top=qaCapture=="hostile-fixed-wing-top",gear=qaCapture=="hostile-fixed-wing-gear",close=qaCapture=="hostile-fixed-wing-close";
+            contact.vehicle.p=V(-7,TerrainHeight(-7,93)+(gear?5.0f:40.0f),93);contact.vehicle.yaw=PI;contact.vehicle.pitch=gear||close?0.0f:.025f;contact.vehicle.roll=gear||close?0.0f:.035f;
+            contact.vehicle.airborne=!gear;contact.vehicle.landingGearDown=gear;contact.vehicle.gearExtension=gear?1.0f:0.0f;contact.vehicle.speed=gear?0.0f:190;contact.vehicle.engineRpm=gear?.18f:.75f;
+            // Separate the hero inspection views: an oblique full airframe,
+            // a clean nose/intake view, and a top view for wing and store detail.
+            g.player.p=Add(contact.vehicle.p,V(0,-1.2f,close?3.2f:0.0f));
+            g.cameraYaw=gear?PI*.5f:(front?PI:(close?2.30f:.40f));g.cameraPitch=top?-.82f:(front?-.10f:(gear?.10f:(close?-.03f:-.18f)));
+            g.cameraDistance=top?14.0f:(close?7.5f:11.0f);g.cameraActualDistance=g.cameraDistance;g.cameraInitialized=false;
         }else if(qaCapture=="character"){
             g.vehicle=VehicleKind::Foot;g.player.firstPerson=false;g.player.p=V(0,TerrainHeight(0,165)+1,165);
             g.player.yaw=0;g.cameraYaw=0;g.cameraPitch=-.08f;g.cameraDistance=4.2f;
@@ -507,12 +514,21 @@ int main(int argc,char **argv) {
         LogEvent(TextFormat("qa-safehouse-start,x=%.2f,z=%.2f,yaw=%.2f,door=%.2f",g.player.p.x,g.player.p.z,g.cameraYaw/DEG,g.safehouse.doorAngle));
     }
     if(qaPlaneLanding&&qaCapture.empty()&&!qaTaskTour){
-        StartMission();g.screen=Screen::Playing;g.vehicle=VehicleKind::Plane;
-        g.plane.p=V(-7,TerrainHeight(-7,-50)+8.2f,-50);g.plane.yaw=PI;g.plane.speed=42.0f;
-        g.plane.engineRpm=.58f;g.plane.pitch=-.055f;g.plane.pitchRate=0;g.plane.roll=0;g.plane.rollRate=0;
-        g.plane.yawRate=0;g.plane.verticalSpeed=-2.3f;g.plane.lateralSpeed=0;g.plane.airborne=true;g.plane.crashed=false;
+        StartMission();g.screen=Screen::Playing;g.vehicle=VehicleKind::Plane;g.narratorQueue.clear();
+        for(auto &enemy:g.enemies)enemy.alive=false;
+        for(auto &contact:g.hostileRotorcraft)contact.alive=false;
+        for(auto &contact:g.hostileFixedWings)contact.alive=false;
+        for(auto &contact:g.hostileRoadVehicles)contact.alive=false;
+        // A 74 m/s (266 km/h) short-final state with near-one-g trim, gear
+        // extended and a mild 2 m/s sink. The old 42 m/s setup was below this
+        // model's stall speed, and a distant start crossed rough terrain.
+        g.plane.p=V(-7,TerrainHeight(-7,100)+6.0f,100);g.plane.yaw=PI;g.plane.speed=74.0f;
+        g.plane.engineRpm=.39f;g.plane.pitch=.137f;g.plane.pitchRate=0;g.plane.roll=0;g.plane.rollRate=0;
+        g.plane.yawRate=0;g.plane.verticalSpeed=-2.0f;g.plane.lateralSpeed=0;g.plane.airborne=true;g.plane.crashed=false;
+        g.plane.landingGearDown=true;g.plane.gearExtension=1.0f;g.plane.speedBrakeExtension=0.0f;
+        g.plane.velocity=V(0,-2.0f,74.0f);
         g.cameraDistance=11.5f;g.cameraActualDistance=11.5f;g.cameraInitialized=false;
-        LogEvent("qa-plane-landing-fixture");
+        LogEvent("qa-plane-landing-fixture,final-approach=74mps,6m-agl,sink=-2mps,gear=down");
     }
     if(qaPlaneTreeImpact&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding){
         StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Plane;g.graphics=GraphicsMode::High;
@@ -655,6 +671,17 @@ int main(int argc,char **argv) {
             else if(qaCapture.empty())UpdateGameplay(dt);
             else{g.clock+=dt;g.car.wheelAngle+=g.car.speed*dt/.48f;g.plane.propAngle+=dt*(24.0f+g.plane.engineRpm*152.0f);g.heli.rotorAngle+=dt*(g.heli.rotorRpm*78.0f);}
         }else UpdateUI(dt);
+        if(qaPlaneLanding&&!qaPlaneLandingLogged&&g.vehicle==VehicleKind::Plane&&!g.plane.airborne&&!g.plane.crashed){
+            const bool onRunway=std::fabs(g.plane.p.x)<=14.5f&&g.plane.p.z>=43.0f&&g.plane.p.z<=337.0f;
+            LogEvent(TextFormat("qa-plane-landing-contact,x=%.2f,z=%.2f,speed-mps=%.2f,vertical-speed-post-contact-mps=%.2f,runway=%d",
+                g.plane.p.x,g.plane.p.z,g.plane.speed,g.plane.verticalSpeed,onRunway?1:0));qaPlaneLandingLogged=true;
+            const bool passed=onRunway&&g.plane.landingGearDown&&g.plane.speed>45.0f&&g.plane.speed<=92.0f;
+            LogEvent(TextFormat("qa-plane-landing-result,pass=%d,runway=%d,gear=%d,speed-mps=%.2f",
+                passed?1:0,onRunway?1:0,g.plane.landingGearDown?1:0,g.plane.speed));
+            g.screenshotRequested=true;g.exitRequested=true;
+        }else if(qaPlaneLanding&&!qaPlaneLandingLogged&&g.vehicle==VehicleKind::Plane&&g.plane.crashed){
+            LogEvent("qa-plane-landing-result,pass=0,crashed=1");qaPlaneLandingLogged=true;g.screenshotRequested=true;g.exitRequested=true;
+        }
         if(qaPlaneTreeImpact&&!g.exitRequested&&g.plane.crashed&&g.plane.wreckAge>=2.8f){
             LogEvent(TextFormat("qa-plane-tree-impact-confirmed,wreck-age-s=%.2f,fuselage-grounded=%d,wing-fragments=%d",
                                 g.plane.wreckAge,g.plane.wreckOnGround?1:0,(int)g.f16Breakaway[0].active+(int)g.f16Breakaway[1].active));
