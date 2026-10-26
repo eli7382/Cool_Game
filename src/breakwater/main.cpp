@@ -376,7 +376,7 @@ void ShutdownAudioSystem(){
 
 int main(int argc,char **argv) {
     using namespace bw;
-    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
+    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
     for(int i=1;i<argc;++i){
         const std::string_view arg(argv[i]);
         constexpr std::string_view prefix="--qa-capture=";
@@ -393,6 +393,7 @@ int main(int argc,char **argv) {
         if(arg=="--qa-aircombat")qaAirCombat=true;
         if(arg=="--qa-airgun")qaAirGun=true;
         if(arg=="--qa-combat")qaCombat=true;
+        if(arg=="--qa-ballistics")qaBallistics=true;
         if(arg=="--qa-safehouse")qaSafehouse=true;
         if(arg=="--qa-safehouse-descent")qaSafehouseDescent=true;
     }
@@ -400,6 +401,7 @@ int main(int argc,char **argv) {
     InitWindow(1280,720,"BREAKWATER: HIGH WATER");
     SetTargetFPS(60);SetExitKey(KEY_NULL);
     InitWorld();InitAudioSystem();EnableCursor();
+    if(qaBallistics){StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;qaBallisticsPassed=RunBallisticImpactQA();LogEvent(qaBallisticsPassed?"qa-ballistics-pass":"qa-ballistics-fail");g.exitRequested=true;}
     if(!qaCapture.empty()){
         StartMission();g.screen=Screen::Playing;g.clock=5.4f;g.graphics=qaCaptureLow?GraphicsMode::Low:GraphicsMode::High;
         if(qaMidTide&&qaCapture=="coastal-water"){g.water=-.6f;g.waterTarget=-.6f;}
@@ -635,5 +637,5 @@ int main(int argc,char **argv) {
         g.elapsed,g.shots,g.hits,accuracy,g.gatesOperated,g.vehiclesEntered,g.maxCar,g.car.p.x,g.car.p.z,g.car.damage,g.maxPlane,g.plane.p.x,g.plane.p.z,planeAlt,g.plane.verticalSpeed,g.plane.pitch/DEG,g.plane.yaw/DEG,g.plane.roll/DEG,g.maxHeli,g.heli.p.x,g.heli.p.z,heliAlt,g.heli.verticalSpeed,g.maxAltitude,footprintMarks,tireTrackSegments);
         std::fclose(f);
     }
-    ShutdownAudioSystem();ShutdownWorld();CloseWindow();return 0;
+    ShutdownAudioSystem();ShutdownWorld();CloseWindow();return qaBallistics&&!qaBallisticsPassed?2:0;
 }

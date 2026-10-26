@@ -20,6 +20,8 @@ bool SafehouseInterior(Vector3 local){return fabsf(local.x)<4.78f&&local.z>-6.18
 bool SafehouseStairwell(Vector3 local){return fabsf(local.x-3.45f)<.63f&&local.z>=-5.05f&&local.z<=-.25f;}
 struct PlaneTreeImpact { TreeCollider *tree{};Vector3 point{};const char *part{"FUSELAGE"};bool canopy{}; };
 struct AircraftProbe { float forward{},lateral{},up{},radius{};const char *part{}; };
+enum class BallisticMaterial : uint8_t { None, Water, Wood, Foliage, Asphalt, Concrete, Gravel, Mud, Grass, Rock };
+struct BallisticContact { Vector3 point{};float distance{};BallisticMaterial material{BallisticMaterial::None};TreeCollider *tree{};bool valid{}; };
 Vector3 PlaneProbeWorld(const Vehicle &plane,const AircraftProbe &probe){
     const Vector3 forward=V(-sinf(plane.yaw)*cosf(plane.pitch),sinf(plane.pitch),-cosf(plane.yaw)*cosf(plane.pitch));
     const Vector3 right=V(cosf(plane.yaw),0,-sinf(plane.yaw));
@@ -37,6 +39,103 @@ bool TreeCollisionActiveAt(const TreeCollider &tree,Vector3 viewer){
     // Match Low's streamed canopy population so omitted distant trees cannot
     // create an invisible aircraft or vehicle collision.
     return !(g.graphics==GraphicsMode::Low&&!tree.lowPresetVisible&&DistXZ(tree.base,viewer)>132.0f);
+}
+BallisticMaterial BallisticMaterialForSurface(float x,float z){
+    switch(SampleSurface(x,z).kind){
+        case SurfaceKind::Water:return BallisticMaterial::Water;
+        case SurfaceKind::Asphalt:return BallisticMaterial::Asphalt;
+        case SurfaceKind::Concrete:return BallisticMaterial::Concrete;
+        case SurfaceKind::Gravel:return BallisticMaterial::Gravel;
+        case SurfaceKind::Mud:return BallisticMaterial::Mud;
+        case SurfaceKind::Grass:return BallisticMaterial::Grass;
+        case SurfaceKind::Rock:return BallisticMaterial::Rock;
+    }
+    return BallisticMaterial::Gravel;
+}
+bool RayEllipsoid(Vector3 origin,Vector3 direction,Vector3 center,Vector3 radii,float maximum,float &distance){
+    const Vector3 offset=Sub(origin,center);
+    const float ox=offset.x/std::max(.001f,radii.x),oy=offset.y/std::max(.001f,radii.y),oz=offset.z/std::max(.001f,radii.z);
+    const float dx=direction.x/std::max(.001f,radii.x),dy=direction.y/std::max(.001f,radii.y),dz=direction.z/std::max(.001f,radii.z);
+    const float a=dx*dx+dy*dy+dz*dz,b=2.0f*(ox*dx+oy*dy+oz*dz),c=ox*ox+oy*oy+oz*oz-1.0f;
+    if(c<=0){distance=0;return true;}if(a<1.0e-8f)return false;
+    const float discriminant=b*b-4.0f*a*c;if(discriminant<0)return false;
+    const float root=std::sqrt(discriminant),near=(-b-root)/(2.0f*a),far=(-b+root)/(2.0f*a);
+    const float hit=near>=0?near:far;if(hit<0||hit>maximum)return false;distance=hit;return true;
+}
+bool RayEllipseCylinder(Vector3 origin,Vector3 direction,float radiusX,float radiusZ,float height,float maximum,float &distance){
+    const float rx=std::max(.025f,radiusX),rz=std::max(.025f,radiusZ);
+    const float ox=origin.x/rx,oz=origin.z/rz,dx=direction.x/rx,dz=direction.z/rz;
+    const float a=dx*dx+dz*dz,b=2.0f*(ox*dx+oz*dz),c=ox*ox+oz*oz-1.0f;
+    if(c<=0&&origin.y>=0&&origin.y<=height){distance=0;return true;}if(a<1.0e-8f)return false;
+    const float discriminant=b*b-4.0f*a*c;if(discriminant<0)return false;
+    const float root=std::sqrt(discriminant),roots[2]{(-b-root)/(2.0f*a),(-b+root)/(2.0f*a)};
+    for(float hit:roots)if(hit>=0&&hit<=maximum){const float y=origin.y+direction.y*hit;if(y>=0&&y<=height){distance=hit;return true;}}
+    return false;
+}
+bool TreeBallisticContact(TreeCollider &tree,Vector3 origin,Vector3 direction,float maximum,float &distance,BallisticMaterial &material){
+    if(tree.felled||tree.base.y<g.water-.2f||!TreeCollisionActiveAt(tree,origin))return false;
+    const float c=cosf(tree.yaw),s=sinf(tree.yaw);const Vector3 offset=Sub(origin,tree.base);
+    const Vector3 localOrigin=V(offset.x*c-offset.z*s,offset.y,offset.x*s+offset.z*c);
+    const Vector3 localDirection=V(direction.x*c-direction.z*s,direction.y,direction.x*s+direction.z*c);
+    float nearest=maximum;bool found=false;
+    const float crownScale=1.0f-.31f*Clamp(tree.crownDamage,0,1);
+    float crownDistance{};
+    if(RayEllipsoid(localOrigin,localDirection,V(0,tree.height*.58f,0),
+                    V(tree.crownRadius*tree.spreadX*crownScale,tree.height*.41f*(1.0f-.16f*Clamp(tree.crownDamage,0,1)),tree.crownRadius*tree.spreadZ*crownScale),nearest,crownDistance)){
+        nearest=crownDistance;material=BallisticMaterial::Foliage;found=true;
+    }
+    auto radiusAt=[&](float fraction){
+        if(fraction<.08f)return Lerp(tree.buttressRadius,tree.trunkBaseRadius,Clamp(fraction/.08f,0,1));
+        return Lerp(tree.trunkBaseRadius,tree.trunkTopRadius,Clamp((fraction-.08f)/.92f,0,1));
+    };
+    const float fractions[]{.03f,.12f,.34f,.62f,.88f,.98f};
+    for(float fraction:fractions){
+        const float radius=radiusAt(fraction);float hit{};
+        if(!RayEllipseCylinder(localOrigin,localDirection,radius*tree.spreadX,radius*tree.spreadZ,tree.height,nearest,hit))continue;
+        const float atHeight=Clamp((localOrigin.y+localDirection.y*hit)/std::max(.1f,tree.height),0,1);
+        const float exactRadius=radiusAt(atHeight),lx=localOrigin.x+localDirection.x*hit,lz=localOrigin.z+localDirection.z*hit;
+        if((lx*lx)/(std::max(.025f,exactRadius*tree.spreadX)*std::max(.025f,exactRadius*tree.spreadX))+
+           (lz*lz)/(std::max(.025f,exactRadius*tree.spreadZ)*std::max(.025f,exactRadius*tree.spreadZ))>1.0f)continue;
+        nearest=hit;material=BallisticMaterial::Wood;found=true;
+    }
+    if(found)distance=nearest;return found;
+}
+bool FindStaticBallisticContact(Vector3 origin,Vector3 direction,float maximum,BallisticContact &contact){
+    contact={};contact.distance=maximum;
+    for(const Obstacle &obstacle:g.obstacles){
+        const Vector3 to=Sub(obstacle.p,origin);const float along=Vector3DotProduct(to,direction);
+        if(along<0||along>=contact.distance)continue;
+        const Vector3 point=Add(origin,Mul(direction,along));
+        if(DistXZ(point,obstacle.p)>=obstacle.radius||point.y>=TerrainHeight(obstacle.p.x,obstacle.p.z)+4.5f)continue;
+        contact={point,along,BallisticMaterial::Concrete,nullptr,true};
+    }
+    for(TreeCollider &tree:g.treeColliders){
+        const Vector3 center=V(tree.base.x,tree.base.y+tree.height*.57f,tree.base.z);
+        const float projected=Clamp(Vector3DotProduct(Sub(center,origin),direction),0,contact.distance);
+        const Vector3 closest=Add(origin,Mul(direction,projected));
+        const float broad=std::sqrt(tree.crownRadius*tree.crownRadius*std::max(tree.spreadX*tree.spreadX,tree.spreadZ*tree.spreadZ)+tree.height*tree.height*.18f)+1.0f;
+        if(Vector3LengthSqr(Sub(closest,center))>broad*broad)continue;
+        float hitDistance{};BallisticMaterial material=BallisticMaterial::None;
+        if(!TreeBallisticContact(tree,origin,direction,contact.distance,hitDistance,material))continue;
+        if(hitDistance<contact.distance)contact={Add(origin,Mul(direction,hitDistance)),hitDistance,material,&tree,true};
+    }
+    const int steps=std::max(1,std::min(256,(int)std::ceil(contact.distance/3.5f)));
+    auto groundGap=[&](float t,float &ground,bool &water){
+        const Vector3 p=Add(origin,Mul(direction,t));ground=TerrainHeight(p.x,p.z);water=ground<g.water-.28f;
+        return p.y-(water?g.water:ground);
+    };
+    float previous=0,previousGround{};bool previousWater{};float previousGap=groundGap(0,previousGround,previousWater);
+    if(previousGap<=0){const Vector3 point=origin;contact={point,0,previousWater?BallisticMaterial::Water:BallisticMaterialForSurface(point.x,point.z),nullptr,true};return true;}
+    for(int step=1;step<=steps;++step){
+        const float t=contact.distance*(float)step/(float)steps;float ground{};bool water{};const float gap=groundGap(t,ground,water);
+        if(gap<=0){float low=previous,high=t;
+            for(int refine=0;refine<8;++refine){const float mid=(low+high)*.5f;float midGround{};bool midWater{};if(groundGap(mid,midGround,midWater)<=0)high=mid;else low=mid;}
+            float hitGround{};bool hitWater{};groundGap(high,hitGround,hitWater);const Vector3 point=Add(origin,Mul(direction,high));
+            if(high<contact.distance)contact={point,high,hitWater?BallisticMaterial::Water:BallisticMaterialForSurface(point.x,point.z),nullptr,true};break;
+        }
+        previous=t;previousGap=gap;previousGround=ground;previousWater=water;(void)previousGap;(void)previousGround;(void)previousWater;
+    }
+    return contact.valid;
 }
 PlaneTreeImpact FindPlaneTreeImpact(const Vehicle &before,const Vehicle &after){
     std::array<AircraftProbe,20> probes{};int probeCount=0;
@@ -142,21 +241,32 @@ Vector3 WeaponMuzzle(){
     if(g.vehicle==VehicleKind::Helicopter)return Local(g.heli.p,g.heli.yaw,V(.42f,.83f,1.02f));
     return g.camera.position;
 }
-Enemy *TraceEnemy(Vector3 origin,Vector3 direction,float range,float radius,Vector3 &impact){
-    float nearest=range;Enemy *target=nullptr;Vector3 end=Add(origin,Mul(direction,range));
-    for(const auto &o:g.obstacles){
-        const Vector3 to=Sub(o.p,origin);const float along=Vector3DotProduct(to,direction);
-        if(along<=0||along>=nearest)continue;
-        const Vector3 point=Add(origin,Mul(direction,along));
-        if(DistXZ(point,o.p)<o.radius&&point.y<TerrainHeight(o.p.x,o.p.z)+4.5f){nearest=along;end=point;}
-    }
+Enemy *TraceEnemy(Vector3 origin,Vector3 direction,float range,float radius,Vector3 &impact,BallisticContact *worldContact=nullptr){
+    BallisticContact staticHit{};FindStaticBallisticContact(origin,direction,range,staticHit);
+    float nearest=staticHit.valid?staticHit.distance:range;Enemy *target=nullptr;Vector3 end=staticHit.valid?staticHit.point:Add(origin,Mul(direction,range));
     for(auto &e:g.enemies)if(e.alive){
         const Vector3 center=V(e.p.x,e.p.y+1.02f,e.p.z),to=Sub(center,origin);const float along=Vector3DotProduct(to,direction);
         if(along<0||along>nearest)continue;
         const Vector3 closest=Add(origin,Mul(direction,along));
         if(Vector3Distance(closest,center)<radius){nearest=along;target=&e;end=center;}
     }
-    impact=end;return target;
+    impact=end;if(worldContact)*worldContact=target?BallisticContact{}:staticHit;return target;
+}
+void ApplySurfaceImpact(BallisticContact contact,Vector3 point,float damage,bool playAudio){
+    BallisticMaterial material=contact.material;if(material==BallisticMaterial::None)material=BallisticMaterialForSurface(point.x,point.z);
+    Color debris{135,128,111,210};int count=4;float spread=1.1f;Sound sound=g.gravelImpactSfx;float pitch=.38f,volume=.30f,cutoff=90.0f;
+    switch(material){
+        case BallisticMaterial::Water:debris=Color{142,206,222,205};count=8;spread=2.4f;sound=g.waterImpactSfx;pitch=.34f;volume=.38f;cutoff=115.0f;break;
+        case BallisticMaterial::Wood:debris=Color{156,121,81,225};count=7;spread=1.7f;sound=g.treeImpactSfx;pitch=.42f;volume=.28f;cutoff=95.0f;break;
+        case BallisticMaterial::Foliage:debris=Color{119,149,96,215};count=7;spread=1.9f;sound=g.gravelImpactSfx;pitch=.54f;volume=.20f;cutoff=100.0f;break;
+        case BallisticMaterial::Asphalt:case BallisticMaterial::Concrete:case BallisticMaterial::Rock:debris=Color{150,151,145,220};count=5;spread=1.3f;sound=g.concreteImpactSfx;pitch=.44f;volume=.31f;cutoff=105.0f;break;
+        case BallisticMaterial::Gravel:case BallisticMaterial::Mud:debris=Color{136,121,96,205};count=5;spread=1.4f;sound=g.gravelImpactSfx;pitch=.39f;volume=.28f;cutoff=95.0f;break;
+        case BallisticMaterial::Grass:debris=Color{127,145,91,200};count=4;spread=1.3f;sound=g.gravelImpactSfx;pitch=.48f;volume=.20f;cutoff=95.0f;break;
+        case BallisticMaterial::None:break;
+    }
+    const float scale=Clamp(.65f+damage/90.0f,.65f,1.65f);SpawnParticles(point,debris,count,spread*scale,.045f+damage*.00035f);
+    if(contact.tree&&material==BallisticMaterial::Foliage){contact.tree->crownDamage=Clamp(contact.tree->crownDamage+damage*.00012f,0,.55f);contact.tree->damagePoint=point;contact.tree->hasDamagePoint=true;}
+    if(playAudio)PlaySpatial(sound,point,volume,pitch,cutoff,Sound{},false);
 }
 void ApplyEnemyDamage(Enemy &enemy,float damage,Vector3 point){
     if(!enemy.alive||damage<=0)return;
@@ -164,13 +274,43 @@ void ApplyEnemyDamage(Enemy &enemy,float damage,Vector3 point){
     SpawnParticles(point,Color{177,81,65,225},5,1.7f,.055f);
     if(enemy.health<=0){enemy.alive=false;g.killmarkerTimer=.48f;SpawnParticles(point,Color{76,70,61,230},17,2.4f,.095f);Notify(enemy.leader?"CREW LEADER DOWN":"HOSTILE NEUTRALIZED",1.4f);LogEvent("enemy-down");if(g.qaCombatAim)g.screenshotRequested=true;}
 }
+void ApplyBlastToTrees(Vector3 point,float damage,float radius){
+    for(TreeCollider &tree:g.treeColliders){
+        if(tree.felled||tree.base.y<g.water-.2f)continue;
+        const float stemY=Clamp(point.y-tree.base.y,0,tree.height);
+        const Vector3 nearestStem=V(tree.base.x,tree.base.y+stemY,tree.base.z);
+        const float stemDistance=Vector3Distance(point,nearestStem),stemReach=radius+tree.trunkBaseRadius*.55f;
+        if(stemDistance<stemReach){
+            const float falloff=1.0f-stemDistance/stemReach;
+            const float before=tree.damage;tree.damage=Clamp(tree.damage+damage*falloff/(105.0f+tree.trunkBaseRadius*55.0f),0,1);
+            tree.damagePoint=point;tree.hasDamagePoint=true;
+            if(tree.damage>=1.0f){tree.felled=true;SpawnParticles(nearestStem,Color{142,111,75,235},24,3.1f,.105f);LogEvent(TextFormat("blast-felled-tree,seed=%d,material=wood,blast-damage=%.1f,radius-m=%.1f",tree.seed,damage,radius));}
+            else if(tree.damage-before>.18f)SpawnParticles(nearestStem,Color{150,119,81,220},8,1.8f,.075f);
+        }
+        const Vector3 crownCenter=V(tree.base.x,tree.base.y+tree.height*.58f,tree.base.z);
+        const float crownDistance=Vector3Distance(point,crownCenter),crownReach=radius+tree.crownRadius*std::max(tree.spreadX,tree.spreadZ);
+        if(crownDistance<crownReach){
+            const float falloff=1.0f-crownDistance/crownReach;tree.crownDamage=Clamp(tree.crownDamage+damage*falloff/(radius*430.0f+1.0f),0,1);
+            tree.damagePoint=point;tree.hasDamagePoint=true;if(tree.crownDamage>.86f)tree.crownSheared=true;
+        }
+    }
+}
 void Detonate(Vector3 point,float damage,float radius){
     g.explosions.push_back(Explosion{point,1.15f,1.15f,radius});g.cameraShake=std::max(g.cameraShake,Clamp(radius*.055f,.18f,.8f));
     SpawnParticles(point,Color{255,183,83,245},36,7.5f,.19f);SpawnParticles(point,Color{62,61,56,210},28,3.1f,.32f);
     PlaySpatial(g.explosionSfx,point,.52f,.96f,190.0f,g.muffledExplosionSfx,true);
+    ApplyBlastToTrees(point,damage,radius);
+    if(SampleSurface(point.x,point.z).kind==SurfaceKind::Water){const Vector3 surface=V(point.x,g.water,point.z);SpawnParticles(surface,Color{153,207,220,225},30,5.8f,.17f);PlaySpatial(g.waterImpactSfx,surface,.42f,.31f,120.0f,Sound{},false);}
     for(auto &enemy:g.enemies)if(enemy.alive){
         const Vector3 center=V(enemy.p.x,enemy.p.y+1.0f,enemy.p.z);const float distance=Vector3Distance(center,point);
         if(distance<radius)ApplyEnemyDamage(enemy,damage*Clamp(1.0f-distance/radius,0,1),center);
+    }
+    for(HostileRotorcraft &contact:g.hostileRotorcraft)if(contact.alive){
+        const Vector3 center=Add(contact.vehicle.p,V(0,.68f,0));const float distance=Vector3Distance(center,point);
+        if(distance>=radius)continue;
+        contact.health-=static_cast<int>(std::ceil(damage*Clamp(1.0f-distance/radius,0,1)));
+        if(contact.health<=0){contact.health=0;contact.alive=false;g.hits++;g.killmarkerTimer=.72f;SpawnParticles(center,Color{76,70,61,235},25,4.5f,.14f);Notify("ROTORCRAFT SHOT DOWN",1.8f);LogEvent("f16-aim9-rotorcraft-blast-kill");}
+        else LogEvent("f16-aim9-rotorcraft-blast-hit");
     }
 }
 void FireWeapon(){
@@ -194,16 +334,10 @@ void FireWeapon(){
         Vector3 right=Norm(Vector3CrossProduct(aim,V(0,1,0)));if(Vector3Length(right)<.01f)right=V(1,0,0);
         const Vector3 up=Norm(Vector3CrossProduct(right,aim));
         Vector3 direction=Norm(Add(aim,Add(Mul(right,(Rand01(g.shots,pellet*7+11)-.5f)*spread),Mul(up,(Rand01(g.shots,pellet*11+31)-.5f)*spread))));
-        Vector3 end{};Enemy *hit=TraceEnemy(origin,direction,spec.range,sniper?.56f:.67f,end);
+        Vector3 end{};BallisticContact contact{};Enemy *hit=TraceEnemy(origin,direction,spec.range,sniper?.56f:.67f,end,&contact);
         if(pellet==0)g.tracers.push_back(Tracer{origin,end,sniper?Color{252,229,172,245}:Color{255,199,129,225},.095f});
         if(hit){const float falloff=Lerp(1.0f,.48f,Clamp(Vector3Distance(origin,end)/spec.range,0,1));ApplyEnemyDamage(*hit,spec.damage*falloff,end);anyHit=true;}
-        else if(pellet==0){
-            const float ground=TerrainHeight(end.x,end.z);const bool waterHit=end.y<g.water;
-            const Color impact=waterHit?Color{163,208,216,195}:Color{151,146,127,205};
-            SpawnParticles(V(end.x,std::max(ground,waterHit?g.water:ground)+.08f,end.z),impact,4,1.35f,.06f);
-            const Sound surface=waterHit?g.waterImpactSfx:(ground>4.0f?g.concreteImpactSfx:g.gravelImpactSfx);
-            PlaySpatial(surface,end,.92f,.24f,105.0f,Sound{},false);
-        }
+        else if(pellet==0&&contact.valid)ApplySurfaceImpact(contact,end,spec.damage,true);
     }
     const char *events[]={"fire-pistol","fire-shotgun","fire-assault-rifle","fire-sniper-rifle","fire-rocket-launcher"};LogEvent(events[slot]);
     if(anyHit&&sniper)Notify("CONFIRMED HIT",.7f);
@@ -237,7 +371,7 @@ void FirePlaneGun(){
     if(g.plane.gunAmmo<=0)return;
     g.plane.gunCooldown=.010f;g.plane.gunFlash=.07f;g.plane.gunAmmo--;g.shots++;
     const Vector3 direction=V(-sinf(g.plane.yaw)*cosf(g.plane.pitch),sinf(g.plane.pitch),-cosf(g.plane.yaw)*cosf(g.plane.pitch));
-    const Vector3 origin=Add(g.plane.p,Mul(direction,2.84f));Vector3 end{};Enemy *hit=TraceEnemy(origin,direction,900,.74f,end);
+    const Vector3 origin=Add(g.plane.p,Mul(direction,2.84f));Vector3 end{};BallisticContact surfaceHit{};Enemy *hit=TraceEnemy(origin,direction,900,.74f,end,&surfaceHit);
     float nearest=Vector3Distance(origin,end),closestAirMiss=1.0e6f,closestAirAlong=0.0f;HostileRotorcraft *airHit=nullptr;Vector3 airImpact{};
     for(auto &contact:g.hostileRotorcraft)if(contact.alive){
         const Vector3 center=Add(contact.vehicle.p,V(0,.68f,0)),to=Sub(center,origin);const float along=Vector3DotProduct(to,direction);
@@ -253,6 +387,7 @@ void FirePlaneGun(){
     else if(airHit){airHit->health-=20;g.hits++;g.hitmarkerTimer=.20f;SpawnParticles(end,Color{174,161,128,230},7,2.2f,.06f);LogEvent("f16-m61-airframe-hit");
         if(airHit->health<=0){airHit->alive=false;g.killmarkerTimer=.72f;SpawnParticles(end,Color{76,70,61,235},25,4.5f,.14f);Notify("ROTORCRAFT SHOT DOWN",1.8f);LogEvent("f16-m61-rotorcraft-kill");
             if(g.qaAAGunTest){g.qaAAGunTest=false;g.screenshotRequested=true;g.exitRequested=true;}}}
+    else if(surfaceHit.valid&&g.plane.gunAmmo%12==0)ApplySurfaceImpact(surfaceHit,end,20.0f,false);
     if(g.plane.gunAmmo%12==0)LogEvent("plane-forward-gun-burst");
 }
 Vector3 PlaneForward(){return Norm(V(-sinf(g.plane.yaw)*cosf(g.plane.pitch),sinf(g.plane.pitch),-cosf(g.plane.yaw)*cosf(g.plane.pitch)));}
@@ -332,9 +467,6 @@ void UpdateGuidedMissiles(float dt){
         if(target&&!target->alive)target=nullptr;
         const float speed=Vector3Length(missile.velocity);Vector3 direction=Norm(missile.velocity);
         if(target){const Vector3 aim=Add(target->vehicle.p,V(0,1.0f,0));const Vector3 toTarget=Sub(aim,missile.p);const float range=Vector3Length(toTarget);
-            if(range<12.0f){target->health=0;target->alive=false;g.hits++;g.killmarkerTimer=.8f;g.hitmarkerTimer=.24f;Detonate(aim,190,18);Notify("ROTORCRAFT DESTROYED",2.0f);LogEvent("f16-aim9-target-destroyed");
-                if(g.qaAAMissileTest){g.screenshotRequested=true;g.qaAAMissileTest=false;g.exitRequested=true;}
-                g.guidedMissiles.erase(g.guidedMissiles.begin()+static_cast<std::ptrdiff_t>(i));continue;}
             const Vector3 desired=Mul(toTarget,1.0f/std::max(range,.01f));const float angle=acosf(Clamp(Vector3DotProduct(direction,desired),-1,1));
             const float turn=angle>.001f?Clamp((36.0f*DEG*dt)/angle,0,1):1.0f;direction=Norm(Add(Mul(direction,1.0f-turn),Mul(desired,turn)));
         }else missile.target=-1;
@@ -342,11 +474,25 @@ void UpdateGuidedMissiles(float dt){
         const AtmosphereSample weather=SampleAtmosphere(missile.p,missile.p.y);Vector3 velocity=Mul(direction,nextSpeed);
         const Vector3 relativeWind=Sub(velocity,weather.windVelocity);const float airspeed=Vector3Length(relativeWind);
         const float drag=.5f*weather.airDensity*.00135f*airspeed;velocity=Sub(velocity,Mul(relativeWind,drag*dt));velocity.y-=9.80665f*dt;
-        missile.velocity=velocity;missile.p=Add(missile.p,Mul(velocity,dt));
-        if(missile.age<1.8f){g.tracers.push_back(Tracer{old,missile.p,Color{231,225,202,210},.17f});if(((int)(missile.age*24.0f))!=((int)((missile.age-dt)*24.0f)))SpawnParticles(missile.p,Color{248,182,97,190},2,1.0f,.025f);}
-        else g.tracers.push_back(Tracer{old,missile.p,Color{106,108,98,185},.15f});
-        const float floor=std::max(TerrainHeight(missile.p.x,missile.p.z),g.water);
-        if(missile.life<=0||missile.p.y<=floor+.3f){g.guidedMissiles.erase(g.guidedMissiles.begin()+static_cast<std::ptrdiff_t>(i));continue;}
+        missile.velocity=velocity;const Vector3 next=Add(old,Mul(velocity,dt)),travel=Sub(next,old);const float travelDistance=Vector3Length(travel);
+        BallisticContact worldContact{};if(travelDistance>.001f)FindStaticBallisticContact(old,Mul(travel,1.0f/travelDistance),travelDistance,worldContact);
+        float targetFraction=0;Vector3 targetFusePoint{};bool targetFuse=false;
+        if(target){const Vector3 aim=Add(target->vehicle.p,V(0,.68f,0));targetFusePoint=ClosestPointOnSegment(old,next,aim,targetFraction);targetFuse=Vector3Distance(targetFusePoint,aim)<12.0f;}
+        if(targetFuse&&(!worldContact.valid||targetFraction*travelDistance<=worldContact.distance)){
+            target->health=0;target->alive=false;g.hits++;g.killmarkerTimer=.8f;g.hitmarkerTimer=.24f;Detonate(targetFusePoint,190,18);Notify("ROTORCRAFT DESTROYED",2.0f);LogEvent("f16-aim9-target-destroyed");
+            if(g.qaAAMissileTest){g.screenshotRequested=true;g.qaAAMissileTest=false;g.exitRequested=true;}
+            missile.p=targetFusePoint;g.tracers.push_back(Tracer{old,targetFusePoint,Color{106,108,98,185},.15f});g.guidedMissiles.erase(g.guidedMissiles.begin()+static_cast<std::ptrdiff_t>(i));continue;
+        }
+        if(worldContact.valid){missile.p=worldContact.point;g.tracers.push_back(Tracer{old,worldContact.point,Color{106,108,98,185},.15f});
+            Detonate(worldContact.point,190,18);LogEvent("f16-aim9-world-impact");
+            if(g.qaAAMissileTest){g.qaAAMissileTest=false;g.screenshotRequested=true;g.exitRequested=true;}
+            g.guidedMissiles.erase(g.guidedMissiles.begin()+static_cast<std::ptrdiff_t>(i));continue;
+        }
+        missile.p=next;
+        if(missile.age<1.8f){g.tracers.push_back(Tracer{old,next,Color{231,225,202,210},.17f});if(((int)(missile.age*24.0f))!=((int)((missile.age-dt)*24.0f)))SpawnParticles(next,Color{248,182,97,190},2,1.0f,.025f);}
+        else g.tracers.push_back(Tracer{old,next,Color{106,108,98,185},.15f});
+        const float floor=std::max(TerrainHeight(next.x,next.z),g.water);
+        if(missile.life<=0||next.y<=floor+.3f){if(missile.life<=0)Detonate(next,190,18);g.guidedMissiles.erase(g.guidedMissiles.begin()+static_cast<std::ptrdiff_t>(i));continue;}
         ++i;
     }
 }
@@ -358,14 +504,14 @@ void UpdateProjectiles(float dt){
         // A compact rocket drag model (CdA/m ~= 0.0027 m^2/kg) and gravity; wind acts on the projectile through air-relative speed.
         const float dragScale=.5f*weather.airDensity*.012f/4.5f*airspeed;
         projectile.velocity=Sub(projectile.velocity,Mul(relativeWind,dragScale*dt));projectile.velocity.y-=9.80665f*dt;
-        projectile.p=Add(projectile.p,Mul(projectile.velocity,dt));projectile.life-=dt;
-        g.tracers.push_back(Tracer{old,projectile.p,Color{252,170,78,225},.12f});
-        bool impact=projectile.life<=0;const float floor=std::max(TerrainHeight(projectile.p.x,projectile.p.z),g.water);
-        if(projectile.p.y<=floor+.18f)impact=true;
-        for(const auto &enemy:g.enemies)if(enemy.alive&&Vector3Distance(projectile.p,V(enemy.p.x,enemy.p.y+1,enemy.p.z))<.8f){impact=true;break;}
-        for(const auto &obstacle:g.obstacles)if(DistXZ(projectile.p,obstacle.p)<obstacle.radius&&projectile.p.y<TerrainHeight(obstacle.p.x,obstacle.p.z)+4.5f){impact=true;break;}
-        if(impact){Detonate(projectile.p,projectile.damage,projectile.blastRadius);g.projectiles.erase(g.projectiles.begin()+static_cast<std::ptrdiff_t>(i));}
-        else ++i;
+        const Vector3 next=Add(projectile.p,Mul(projectile.velocity,dt));projectile.life-=dt;
+        const Vector3 travel=Sub(next,old);const float travelDistance=Vector3Length(travel);Vector3 impactPoint=next;BallisticContact worldContact{};
+        Enemy *enemyHit=travelDistance>.001f?TraceEnemy(old,Mul(travel,1.0f/travelDistance),travelDistance,.80f,impactPoint,&worldContact):nullptr;
+        if(enemyHit||worldContact.valid){projectile.p=impactPoint;g.tracers.push_back(Tracer{old,impactPoint,Color{252,170,78,225},.12f});
+            Detonate(impactPoint,projectile.damage,projectile.blastRadius);g.projectiles.erase(g.projectiles.begin()+static_cast<std::ptrdiff_t>(i));}
+        else if(projectile.life<=0){projectile.p=next;g.tracers.push_back(Tracer{old,next,Color{252,170,78,225},.12f});
+            Detonate(next,projectile.damage,projectile.blastRadius);g.projectiles.erase(g.projectiles.begin()+static_cast<std::ptrdiff_t>(i));}
+        else{projectile.p=next;g.tracers.push_back(Tracer{old,next,Color{252,170,78,225},.12f});++i;}
     }
 }
 void UpdateFoot(float dt){
@@ -1072,6 +1218,68 @@ void UpdateEnemies(float dt){
         e.p.y=TerrainHeight(e.p.x,e.p.z)+1;
     }
 }
+}
+bool RunBallisticImpactQA(){
+    g.graphics=GraphicsMode::High;int failures=0,checks=0;
+    auto check=[&](const char *name,bool passed){++checks;if(!passed)++failures;LogEvent(TextFormat("qa-ballistic-check,%s=%s",name,passed?"pass":"fail"));};
+    TreeCollider *target=nullptr;Vector3 treeRadial{};BallisticContact sweptTree{};
+    for(TreeCollider &tree:g.treeColliders){
+        if(tree.felled||tree.base.y<g.water-.2f)continue;
+        const Vector3 radial=V(cosf(tree.yaw),0,-sinf(tree.yaw));const float spread=std::max(tree.spreadX,tree.spreadZ);
+        const float y=tree.base.y+tree.height*.035f;const Vector3 origin=Add(V(tree.base.x,y,tree.base.z),Mul(radial,tree.buttressRadius*spread+3.0f));
+        BallisticContact contact{};if(FindStaticBallisticContact(origin,Mul(radial,-1),18.0f,contact)&&contact.tree==&tree&&contact.material==BallisticMaterial::Wood){target=&tree;treeRadial=radial;sweptTree=contact;break;}
+    }
+    float crownDistance=0,woodDistance=0;BallisticMaterial crownMaterial=BallisticMaterial::None,woodMaterial=BallisticMaterial::None;
+    bool crownHit=false,woodHit=false;
+    if(target){
+        const float spread=std::max(target->spreadX,target->spreadZ);
+        const Vector3 crownCenter=V(target->base.x,target->base.y+target->height*.58f,target->base.z);
+        crownHit=TreeBallisticContact(*target,Add(crownCenter,Mul(treeRadial,target->crownRadius*spread+4.0f)),Mul(treeRadial,-1),40.0f,crownDistance,crownMaterial);
+        const float rootY=target->base.y+target->height*.035f;
+        const Vector3 stemOrigin=Add(V(target->base.x,rootY,target->base.z),Mul(treeRadial,target->buttressRadius*spread+3.0f));
+        woodHit=TreeBallisticContact(*target,stemOrigin,Mul(treeRadial,-1),18.0f,woodDistance,woodMaterial);
+    }
+    check("swept-tree-contact",target&&sweptTree.valid&&sweptTree.tree==target);
+    check("crown-material",crownHit&&crownMaterial==BallisticMaterial::Foliage);
+    check("trunk-material",woodHit&&woodMaterial==BallisticMaterial::Wood);
+    bool terrainHit=false,waterHit=false;
+    for(int x=-425;x<=425&&(!terrainHit||!waterHit);x+=25)for(int z=-425;z<=425&&(!terrainHit||!waterHit);z+=25){
+        const Vector3 origin=V((float)x,TerrainHeight((float)x,(float)z)+20.0f,(float)z);BallisticContact contact{};
+        if(!FindStaticBallisticContact(origin,V(0,-1,0),24.0f,contact))continue;
+        if(contact.material==BallisticMaterial::Water)waterHit=true;
+        else if(contact.material!=BallisticMaterial::Wood&&contact.material!=BallisticMaterial::Foliage)terrainHit=true;
+    }
+    check("terrain-material",terrainHit);check("water-surface",waterHit);
+    bool structureHit=false;
+    for(const Obstacle &obstacle:g.obstacles)if(obstacle.kind==2&&!structureHit){
+        const Vector3 radialOptions[]{V(1,0,0),V(-1,0,0),V(0,0,1),V(0,0,-1)};
+        for(Vector3 radial:radialOptions){const float ground=TerrainHeight(obstacle.p.x,obstacle.p.z);const Vector3 origin=V(obstacle.p.x+radial.x*(obstacle.radius+5.0f),ground+1.2f,obstacle.p.z+radial.z*(obstacle.radius+5.0f));BallisticContact contact{};
+            if(FindStaticBallisticContact(origin,Mul(radial,-1),obstacle.radius+10.0f,contact)&&contact.material==BallisticMaterial::Concrete){structureHit=true;break;}}
+    }
+    check("structure-material",structureHit);
+    bool blastDamage=false,crownResponse=false;
+    if(target){
+        const float beforeTree=target->damage,beforeCrown=target->crownDamage;
+        const Vector3 crownPoint=V(target->base.x,target->base.y+target->height*.58f,target->base.z);
+        ApplySurfaceImpact(BallisticContact{crownPoint,crownDistance,BallisticMaterial::Foliage,target,true},crownPoint,24.0f,false);
+        crownResponse=target->crownDamage>beforeCrown;
+        ApplyBlastToTrees(V(target->base.x,target->base.y+target->height*.035f,target->base.z),145.0f,10.5f);
+        blastDamage=target->damage>beforeTree;
+    }
+    check("foliage-impact-response",crownResponse);check("blast-tree-damage",blastDamage);
+    TreeCollider *rocketTree=nullptr;Vector3 rocketOrigin{};
+    for(TreeCollider &tree:g.treeColliders){
+        if(tree.felled||tree.base.y<g.water-.2f||&tree==target)continue;
+        const Vector3 radial=V(cosf(tree.yaw),0,-sinf(tree.yaw));const float spread=std::max(tree.spreadX,tree.spreadZ);
+        const float impactHeight=tree.height*.12f;const Vector3 origin=Add(V(tree.base.x,tree.base.y+impactHeight,tree.base.z),Mul(radial,tree.buttressRadius*spread+8.0f));
+        BallisticContact contact{};if(FindStaticBallisticContact(origin,Mul(radial,-1),15.0f,contact)&&contact.tree==&tree&&contact.material==BallisticMaterial::Wood){rocketTree=&tree;rocketOrigin=origin;break;}
+    }
+    bool rocketSweepDamage=false;
+    if(rocketTree){const float before=rocketTree->damage;const Vector3 radial=V(cosf(rocketTree->yaw),0,-sinf(rocketTree->yaw));g.projectiles.clear();g.projectiles.push_back(Projectile{rocketOrigin,Mul(radial,-47.0f),4.2f,145.0f,10.5f});
+        UpdateProjectiles(.25f);rocketSweepDamage=g.projectiles.empty()&&(rocketTree->damage>before||rocketTree->felled);}
+    check("rpg-swept-tree-detonation",rocketSweepDamage);
+    LogEvent(TextFormat("qa-ballistics-result,checks=%d,failures=%d,tree-seed=%d,crown=%.2f,trunk=%.2f,rocket-seed=%d",checks,failures,target?target->seed:-1,crownDistance,woodDistance,rocketTree?rocketTree->seed:-1));
+    return failures==0;
 }
 void StartMission(){
     g.player=Player{};g.player.p=V(0,TerrainHeight(0,165)+1,165);g.gateDone={false,false,false};g.taskAnnounced={false,false,false,false};g.water=LOW_WATER;g.waterTarget=LOW_WATER;

@@ -231,6 +231,7 @@ bool IsHardSurface(float x,float z);
 AtmosphereSample SampleAtmosphere(Vector3 position,float altitude);
 SurfaceSample SampleSurface(float x,float z);
 void InitWorld();
+bool RunBallisticImpactQA();
 void ShutdownWorld();
 void DrawWorld();
 void DrawActors();
