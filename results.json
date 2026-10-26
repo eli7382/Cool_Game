@@ -750,7 +750,6 @@
     },
     "car_current_binary_verified": true,
     "helicopter_current_binary_verified": true,
-    "plane_landing_fixture_seconds": 2.59,
     "plane_landing_fixture_note": "Current executable short final approach logged touchdown at 2.59 s within runway bounds (x=-9.1 m, z=106.6 m) and accepted 1.25 s braking. It does not validate a normal flight circuit.",
     "plane_route_retest": {
       "final_binary_sha256": "02FB0DA8376449292B62E6529AE8E6CF6B2476BB7234270A4BE5D70F87F9EC16",
@@ -831,8 +830,6 @@
       }
     },
     "quality_note": "The latest pinned build passes current scripted car entry/driving/exit, helicopter takeoff/translation/landing, and a seeded short airplane touchdown with braking. Three current impact renderer fixtures captured and exited 0. Forest/map captures show denser ridge groves and phototextured ground while preserving an open aircraft approach. Module damage is integrated into handling, but manually played collision response and the normal airplane takeoff-return route remain unverified. Vehicle and environment assets remain stylized below photoreal AAA; manual full mission, natural combat, replay, difficulty balance, controlled FPS and GPU metrics remain unavailable. Current High safehouse renderer views (exterior, ground floor, upstairs) exited 0. The safehouse is a sparse art blockout; the low-opacity panes still read pale/flat, and interactive door/stair traversal remains unverified.",
-    "plane_landing_fixture_run": "20261025_034344",
-    "plane_landing_fixture_process_exit_code": 0,
     "high_preset_performance_note": "Current-build High four-objective tour completed in 61.66 s wall with 77.469 sampled CPU seconds, 1,850,736,640-byte peak working set and 1,753,223,168-byte peak private memory. Low: 60.59 s wall, 65.203 sampled CPU seconds, 1,833,967,616-byte peak working set and 1,735,024,640-byte peak private memory. GUI process exit codes, controlled FPS/frame time, GPU utilization and GPU memory were unavailable.",
     "latest_combat_qa_attempt": {
       "run": "20261026_203854",
@@ -1062,14 +1059,9 @@
     },
     "current_f16_visual_detail_qa": {
       "blender_version": "5.2.3",
-      "blender_process_exit_code": 0,
-      "generated_mesh_count": 111,
-      "raylib_primitive_count": 161,
       "material_count": 30,
       "glb": "assets/f16_netz.glb",
-      "glb_size_bytes": 14884724,
       "source_blend": "assets/f16_netz_source.blend",
-      "source_blend_size_bytes": 17041891,
       "builder": "scripts/build_f16_netz.py",
       "detail_changes": [
         "lower-wing seam paths",
@@ -1089,15 +1081,20 @@
       "game_front_capture_exit_code": 0,
       "game_front_capture": "screenshots/Breakwater_LiveQA_plane-front_1793037368299.png",
       "game_front_capture_inspected": true,
-      "visual_assessment": "Updated rounded tires are visible in current game renders; top/close/gear captures remain stylized, with simplified cockpit and material lighting. User target fidelity is not met.",
       "limitations": [
         "Static image review does not validate normal flight or aircraft handling.",
         "No human-controlled test, frame-time/GPU measurement, or structural aircraft accuracy study was performed in this pass."
       ],
-      "game_gear_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-gear_1793053242111.png",
-      "game_close_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-close_1793053349004.png",
-      "game_top_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-top_1793053358297.png",
-      "latest_blender_process_exit_code": null
+      "glb_size_bytes": 14904856,
+      "source_blend_size_bytes": 17048535,
+      "generated_mesh_count": 111,
+      "raylib_primitive_count": 161,
+      "blender_process_exit_code": 0,
+      "latest_blender_process_exit_code": 0,
+      "visual_assessment": "Added closed swept missile fins and seeker/nozzle detail alongside the rounded tire profile. Updated Blender and actual game renders reviewed; cockpit/lighting remain stylized below target.",
+      "game_gear_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-gear_1793055211080.png",
+      "game_close_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-close_1793055238547.png",
+      "game_top_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-top_1793055225197.png"
     },
     "current_ballistic_impact_qa": {
       "command": "build/bin/Release/game.exe --qa-ballistics",
@@ -1245,12 +1242,10 @@
       "source": "scripts/build_f16_netz.py",
       "blender": "5.2.3 project-local",
       "asset": "assets/f16_netz.glb",
-      "asset_bytes": 14884724,
       "mesh_count": 111,
       "raylib_mesh_count": 161,
       "material_count": 30,
       "wheel_change": "Closed lathed tire profile with rounded shoulders, sidewall and bead transition.",
-      "blender_process_exit_code": null,
       "generated_previews": [
         "screenshots/F16_Netz_Blender_HighDetail.png",
         "screenshots/F16_Netz_Blender_Side.png",
@@ -1258,12 +1253,19 @@
         "screenshots/F16_Netz_Blender_Nose.png",
         "screenshots/F16_Netz_Blender_Intake.png"
       ],
-      "game_rendered_gear_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-gear_1793053242111.png",
-      "game_rendered_gear_capture_bytes": 4454279,
       "game_capture_exit_code": 0,
       "audio_muted_confirmed": true,
       "screenshot_reviewed": true,
-      "assessment": "Tire sidewall profile is present in Blender and game captures. The aircraft, cockpit and world remain stylized and below the requested War Thunder/AAA reference."
+      "asset_bytes": 14904856,
+      "source_blend_bytes": 17048535,
+      "blender_process_exit_code": 0,
+      "blender_log": "logs/blender-f16-missile-detail.log",
+      "missile_detail": "Swept closed three-dimensional cruciform AIM-9 fins, dark seeker dome and recessed aft nozzle collar.",
+      "game_rendered_gear_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-gear_1793055211080.png",
+      "game_rendered_gear_capture_bytes": 4450687,
+      "game_rendered_close_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-close_1793055238547.png",
+      "game_rendered_top_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-top_1793055225197.png",
+      "assessment": "The in-game asset shows the updated tire sidewall and swept missile fins. Cockpit/material presentation remains visibly stylized and below the requested target."
     },
     "current_f16_vehicle_qa": {
       "run_date": "2026-10-27",
@@ -1273,13 +1275,38 @@
         "passed": true,
         "process_exit_code": 0,
         "fixture": "74 m/s, 6 m AGL, -2 m/s initial sink, gear extended, runway centerline",
-        "touchdown_speed_mps": 73.1,
-        "touchdown_sink_mps": -2.57,
         "runway_bounds_passed": true,
         "hard_landing_crash": false,
         "log": "logs/qa_plane_landing.log",
-        "limitation": "Seeded short final approach only; normal takeoff-return-landing remains unverified."
+        "limitation": "Seeded short final approach only; normal takeoff-return-landing remains unverified.",
+        "touchdown_speed_mps": 73.11,
+        "touchdown_sink_mps": "-2.56"
       },
+      "hostile_f16": {
+        "passed": true,
+        "process_exit_code": 0,
+        "cannon_rounds": 6,
+        "player_damage": 78.0,
+        "fighter_downed": false,
+        "audio_muted_confirmed": true,
+        "simulated_seconds": 6.53,
+        "fighter_travel_m": 1243.36
+      },
+      "fixedwing_m61": {
+        "passed": true,
+        "process_exit_code": 0,
+        "target_health_after": 0,
+        "audio_muted_confirmed": true,
+        "shots": 9
+      },
+      "aim9": {
+        "passed": true,
+        "process_exit_code": 0,
+        "target_destroyed": true,
+        "audio_muted_confirmed": true,
+        "confirmation_sim_seconds": 2.12
+      },
+      "limitation": "Deterministic seeded fixtures only; no human-controlled combat/flight route, real-aircraft calibration, or complete mission loop was performed.",
       "tree_impact": {
         "passed": true,
         "process_exit_code": 0,
@@ -1290,45 +1317,26 @@
         "tree_damage": 1.0,
         "tree_felled": false,
         "port_wing_broke_away": true,
-        "fuselage_ground_contact_sim_seconds": 1.18,
-        "wing_fragment_ground_contact_sim_seconds": 2.03,
-        "fragment_distance_from_fuselage_m": 17.7,
-        "confirmation_sim_seconds": 3.14,
-        "screenshot": "screenshots/Breakwater_1793053276937_1.png",
+        "port_fragment_initial_speed_mps": 29.3,
+        "fuselage_ground_contact_sim_seconds": 1.19,
+        "wing_fragment_ground_contact_sim_seconds": 2.02,
+        "fragment_distance_from_fuselage_m": 17.9,
+        "confirmation_sim_seconds": 3.13,
+        "screenshot": "screenshots/Breakwater_1793055177806_1.png",
+        "audio_muted_confirmed": true,
         "limitation": "One deterministic scripted crash route with hand-tuned breakup/contact approximations."
       },
-      "hostile_f16": {
-        "passed": true,
-        "process_exit_code": 0,
-        "simulated_seconds": 7.22,
-        "cannon_rounds": 6,
-        "player_damage": 78.0,
-        "fighter_travel_m": 1379.89,
-        "fighter_downed": false,
-        "audio_muted_confirmed": true
-      },
-      "fixedwing_m61": {
-        "passed": true,
-        "process_exit_code": 0,
-        "shots": 9,
-        "target_health_after": 0,
-        "audio_muted_confirmed": true
-      },
-      "aim9": {
-        "passed": true,
-        "process_exit_code": 0,
-        "target_destroyed": true,
-        "confirmation_sim_seconds": 2.13,
-        "audio_muted_confirmed": true
-      },
       "reviewed_game_captures": [
-        "screenshots/Breakwater_LiveQA_hostile-fixed-wing-gear_1793053242111.png",
-        "screenshots/Breakwater_LiveQA_hostile-fixed-wing-close_1793053349004.png",
-        "screenshots/Breakwater_LiveQA_hostile-fixed-wing-top_1793053358297.png"
-      ],
-      "limitation": "Deterministic seeded fixtures only; no human-controlled combat/flight route, real-aircraft calibration, or complete mission loop was performed."
+        "screenshots/Breakwater_LiveQA_hostile-fixed-wing-gear_1793055211080.png",
+        "screenshots/Breakwater_LiveQA_hostile-fixed-wing-top_1793055225197.png",
+        "screenshots/Breakwater_LiveQA_hostile-fixed-wing-close_1793055238547.png",
+        "screenshots/Breakwater_1793055177806_1.png"
+      ]
     },
-    "windows_package_launch_instruction": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\Launch-Game.ps1"
+    "windows_package_launch_instruction": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\Launch-Game.ps1",
+    "plane_landing_fixture_run": "20261027_005400",
+    "plane_landing_fixture_process_exit_code": 0,
+    "plane_landing_fixture_seconds": 2.0
   },
   "quality_gates": {
     "innovation": "Gaugework changes water state through normal interaction and the scripted mission logs rising/falling water, but its combined traction, route-access, debris and enemy-cover consequences are not validated in a normal playthrough.",
@@ -1472,11 +1480,12 @@
     "configuration": "Windows x64 Release; pinned MSVC 19.44.35229; C++20; raylib 5.5",
     "executable": "build/bin/Release/game.exe",
     "executable_bytes": 1963008,
-    "executable_sha256": "C3E0D274EC74AE5B7D97289678BA9F9D29DFE9F975829DEBC3627766B7290258D",
-    "built_at": "2026-10-27T00:19:46+02:00",
     "warnings_observed": 0,
     "note": "Sandbox SDK registry access failed on the first attempt; the unchanged pinned wrapper completed successfully via approved host execution.",
     "packaged_executable": "dist/Breakwater_Windows_x64.exe",
-    "packaged_executable_bytes": 1963008
+    "packaged_executable_bytes": 1963008,
+    "executable_sha256": "3A3B3C3BA633293E961BE6B88A6DA9B392B2595C570070CD6D3F32F435ADCB6B",
+    "built_at": "2026-10-27T00:52:25+02:00",
+    "packaged_executable_sha256": "3A3B3C3BA633293E961BE6B88A6DA9B392B2595C570070CD6D3F32F435ADCB6B"
   }
 }

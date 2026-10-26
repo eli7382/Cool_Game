@@ -746,15 +746,68 @@ for side,label in ((-1,"Port"),(1,"Starboard")):
             a=j*segments+k;bb=j*segments+(k+1)%segments;c=(j+1)*segments+(k+1)%segments;d=(j+1)*segments+k
             mat_id=2 if (-4.03<stations[j][0]<-3.95 or -2.35<stations[j][0]<-2.27) else (1 if j>=8 else 0)
             mf.append((a,bb,c,d));mm.append(mat_id)
+    def fin_point(axis,sign,x,radial,normal):
+        if axis=="y":return (x,my+sign*radial,mz+normal)
+        return (x,my+normal,mz+sign*radial)
+    def append_swept_fin(axis,sign,center_x,span,chord,thickness):
+        # Closed, swept trapezoid rather than a zero-thickness triangle.  The
+        # root is buried slightly into the missile body to avoid a visible gap.
+        root_radius=.047;tip_radius=root_radius+span
+        root_le=center_x+chord*.48;root_te=center_x-chord*.52
+        tip_le=center_x+chord*.12;tip_te=center_x-chord*.39
+        half=thickness*.5;base=len(mv)
+        for normal in (-half,half):
+            mv.extend((fin_point(axis,sign,root_le,root_radius,normal),
+                       fin_point(axis,sign,root_te,root_radius,normal),
+                       fin_point(axis,sign,tip_te,tip_radius,normal),
+                       fin_point(axis,sign,tip_le,tip_radius,normal)))
+        mf.extend(((base,base+3,base+2,base+1),
+                   (base+7,base+4,base+5,base+6),
+                   (base,base+4,base+7,base+3),
+                   (base+1,base+2,base+6,base+5),
+                   (base,base+1,base+5,base+4),
+                   (base+3,base+7,base+6,base+2)))
+        mm.extend((0,0,1,1,0,0))
     for fore in (False,True):
-        finx=-4.58 if not fore else -2.43;span=.22 if not fore else .15;chord=.34 if not fore else .28
+        finx=-4.58 if not fore else -2.43
+        span=.245 if not fore else .165
+        chord=.39 if not fore else .27
+        thickness=.012 if not fore else .009
         for axis in ("y","z"):
             for sign in (-1,1):
-                if axis=="y":
-                    pts=[(finx-chord*.5,my,mz),(finx+chord*.45,my,mz),(finx+chord*.10,my+sign*span,mz)]
-                else:
-                    pts=[(finx-chord*.5,my,mz),(finx+chord*.45,my,mz),(finx+chord*.10,my,mz+sign*span)]
-                base=len(mv);mv.extend(pts);mf.append((base,base+1,base+2));mm.append(0)
+                append_swept_fin(axis,sign,finx,span,chord,thickness)
+
+    # The seeker is a separate dark optical dome; the aft collar gives the
+    # motor a recessed outlet instead of a pointed, sealed body cap.
+    def append_lens(center,scale,material_id):
+        segments=16;rings=8;base=len(mv)
+        for j in range(rings+1):
+            phi=math.pi*j/rings
+            for k in range(segments):
+                theta=2*math.pi*k/segments
+                mv.append((center[0]+scale[0]*math.cos(phi),
+                           center[1]+scale[1]*math.sin(phi)*math.cos(theta),
+                           center[2]+scale[2]*math.sin(phi)*math.sin(theta)))
+        for j in range(rings):
+            for k in range(segments):
+                a=base+j*segments+k;bb=base+j*segments+(k+1)%segments
+                c=base+(j+1)*segments+(k+1)%segments;d=base+(j+1)*segments+k
+                mf.append((a,bb,c,d));mm.append(material_id)
+    def append_collar(x0,x1,outer_radius,inner_radius):
+        segments=24;base=len(mv)
+        for x,radius in ((x0,outer_radius),(x1,outer_radius),(x0,inner_radius),(x1,inner_radius)):
+            for k in range(segments):
+                theta=2*math.pi*k/segments
+                mv.append((x,my+radius*math.cos(theta),mz+radius*math.sin(theta)))
+        for k in range(segments):
+            n=(k+1)%segments
+            mf.extend(((base+k,base+n,base+segments+n,base+segments+k),
+                       (base+2*segments+n,base+2*segments+k,base+3*segments+k,base+3*segments+n),
+                       (base+k,base+2*segments+k,base+2*segments+n,base+n),
+                       (base+segments+n,base+3*segments+n,base+3*segments+k,base+segments+k)))
+            mm.extend((0,1,0,0))
+    append_lens((-2.075,my,mz),(.050,.032,.032),1)
+    append_collar(-4.985,-4.955,.025,.012)
     keep(obj_from_mesh("AIM-9 | "+label+" wingtip air-to-air missile",mv,mf,mm,[MAT[21],MAT[22],MAT[23]]))
     # Navigation light housings, red port and green starboard.
     b=[[],[],[]]

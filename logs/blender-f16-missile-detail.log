@@ -1,0 +1,247 @@
+C:\AI-Game-Benchmark\runs\luna-max\scripts\build_f16_netz.py:37: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  mat.use_nodes = True
+C:\AI-Game-Benchmark\runs\luna-max\scripts\build_f16_netz.py:1044: DeprecationWarning: 'World.use_nodes' is expected to be removed in Blender 6.0
+  scene.world=world;world.use_nodes=True
+01:37.937  render           | Saved: 'C:\AI-Game-Benchmark\runs\luna-max\screenshots\F16_Netz_Blender_HighDetail.png'
+02:06.031  render           | Saved: 'C:\AI-Game-Benchmark\runs\luna-max\screenshots\F16_Netz_Blender_Top.png'
+02:32.281  render           | Saved: 'C:\AI-Game-Benchmark\runs\luna-max\screenshots\F16_Netz_Blender_Side.png'
+02:57.640  render           | Saved: 'C:\AI-Game-Benchmark\runs\luna-max\screenshots\F16_Netz_Blender_Nose.png'
+03:08.328  render           | Saved: 'C:\AI-Game-Benchmark\runs\luna-max\screenshots\F16_Netz_Blender_Intake.png'
+Info: Saved as "f16_netz_source.blend"
+INFO Draco is available, use library at C:\AI-Game-Benchmark\runs\luna-max\tools\blender-5.2.3-windows-x64\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\AI-Game-Benchmark\runs\luna-max\tools\blender-5.2.3-windows-x64\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+00:51:25 | INFO: Starting glTF 2.0 export
+00:51:25 | INFO: Extracting primitive: Aft | paired ventral fins and spine fairingMesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Aileron | Port elevonMesh
+00:51:25 | INFO: Primitives created: 2
+00:51:25 | INFO: Extracting primitive: Aileron | Starboard elevonMesh
+00:51:25 | INFO: Primitives created: 2
+00:51:25 | INFO: Extracting primitive: AIM-9 | Port wingtip air-to-air missileMesh
+00:51:25 | INFO: Primitives created: 3
+00:51:25 | INFO: Extracting primitive: AIM-9 | Starboard wingtip air-to-air missileMesh
+00:51:25 | INFO: Primitives created: 3
+00:51:25 | INFO: Extracting primitive: Canopy | internal ejection-fracture cordMesh
+00:51:25 | INFO: Primitives created: 2
+00:51:25 | INFO: Extracting primitive: Canopy | one-piece smoked bubble glassMesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Canopy | satin sill, bow and hidden fastenersMesh
+00:51:25 | INFO: Primitives created: 2
+00:51:25 | INFO: Extracting primitive: Centerline store | conformal tank and antennasMesh
+00:51:25 | INFO: Primitives created: 2
+00:51:25 | INFO: Extracting primitive: Centerline tank | 300 gallon streamlined drop tankMesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Cockpit | HUD combinerMesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Cockpit | pilot, ejection seat, MFD bezels and controlsMesh
+00:51:25 | INFO: Primitives created: 10
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 00Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 01Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 02Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 03Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 04Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 05Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 06Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 07Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 08Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 09Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 10Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 11Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 12Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 13Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 14Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust detail | 15Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 00Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 01Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 02Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 03Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 04Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 05Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 06Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 07Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 08Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 09Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 10Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 11Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 12Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 13Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 14Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust petal | 15Mesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Exhaust | concentric hot-section ringsMesh
+00:51:25 | INFO: Primitives created: 2
+00:51:25 | INFO: Extracting primitive: External fuel tank | PortMesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: External fuel tank | StarboardMesh
+00:51:25 | INFO: Primitives created: 1
+00:51:25 | INFO: Extracting primitive: Fuselage detail | fasteners, access panels and cooling slotsMesh
+00:51:25 | INFO: Primitives created: 2
+00:51:25 | INFO: Extracting primitive: Fuselage | 16-station pressure shellMesh
+00:51:25 | INFO: Primitives created: 3
+00:51:26 | INFO: Extracting primitive: Fuselage | intake warningMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Fuselage | intake warningMesh.001
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF fuselage roundel | 1 | blue circumferenceMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF fuselage roundel | 1 | filled blue Star of DavidMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF fuselage roundel | 1 | white fieldMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF fuselage roundel | -1 | blue circumferenceMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF fuselage roundel | -1 | filled blue Star of DavidMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF fuselage roundel | -1 | white fieldMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF upper wing roundel | 1 | blue circumferenceMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF upper wing roundel | 1 | filled blue starMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF upper wing roundel | 1 | white fieldMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF upper wing roundel | -1 | blue circumferenceMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF upper wing roundel | -1 | filled blue starMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: IDF upper wing roundel | -1 | white fieldMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Intake | lower compression rampMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Intake | recessed 24-blade compressor stageMesh
+00:51:26 | INFO: Primitives created: 3
+00:51:26 | INFO: Extracting primitive: Intake | rounded shadowed variable ductMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Intake | rounded variable-area lipMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Landing gear | Nose shock strut and doorsMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Landing gear | Port shock strut and doorsMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Landing gear | Starboard shock strut and doorsMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Landing gear | wheel wells, brake lines and doorsMesh
+00:51:26 | INFO: Primitives created: 3
+00:51:26 | INFO: Extracting primitive: Leading edge flap | PortMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Leading edge flap | StarboardMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: LEX | Port leading-edge strakeMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: LEX | Starboard leading-edge strakeMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Nose | pitot, static ports, lightsMesh
+00:51:26 | INFO: Primitives created: 5
+00:51:26 | INFO: Extracting primitive: Pylon | Port stationMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Pylon | Starboard stationMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Rudder | independent trailing panelMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Speedbrake | exposed hydraulic jacks and hinge pinsMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Speedbrake | Port dorsal petalMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Speedbrake | Starboard dorsal petalMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Stabilator | PortMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Stabilator | StarboardMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Tail | rescue triangleMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Tail | rescue triangleMesh.001
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Tail | serial stencilMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Tail | serial stencilMesh.001
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Underbody | drains, antennas and static wicksMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Vertical tail | Netz finMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wheel hub | Nose ventilated discMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wheel hub | Port ventilated discMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wheel hub | Starboard ventilated discMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wheel | Nose high-pressure tyreMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Wheel | Port high-pressure tyreMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Wheel | Starboard high-pressure tyreMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Wing detail | panel seams, inspection covers and flush fastenersMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Wing | fuel service stencilMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wing | fuel service stencilMesh.001
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wing | no-step stencilMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wing | no-step stencilMesh.001
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wing | Port cranked trapezoidMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Wing | safety stencil 1Mesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wing | safety stencil -1Mesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wing | Starboard cranked trapezoidMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Wing | station stencilMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wing | station stencilMesh.001
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wingtip launcher | PortMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Wingtip launcher | StarboardMesh
+00:51:26 | INFO: Primitives created: 2
+00:51:26 | INFO: Extracting primitive: Wingtip nav lamp | PortMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Extracting primitive: Wingtip nav lamp | StarboardMesh
+00:51:26 | INFO: Primitives created: 1
+00:51:26 | INFO: Finished glTF 2.0 export in 1.3237171173095703 s
+
+F16_GLTF_MESH_COUNT 111
+F16_RAYLIB_PRIMITIVE_COUNT 161
+F16_GLTF_MATERIAL_COUNT 30
+F16_GLTF_IDS {"Canopy": 13, "CanopyMaterial": 9, "GearNose": 91, "GearPort": 93, "GearStarboard": 95, "GlassMaterial": 9, "IntakeMaterial": 24, "NoseWheel": 135, "NoseWheelHub": 132, "PortAileron": 1, "PortLeadingEdgeFlap": 100, "PortMainWheel": 137, "PortMissile": 5, "PortSpeedbrake": 117, "PortStabilator": 121, "PortWheelHub": 133, "Rudder": 115, "StarboardAileron": 3, "StarboardLeadingEdgeFlap": 102, "StarboardMainWheel": 139, "StarboardMissile": 8, "StarboardSpeedbrake": 119, "StarboardStabilator": 123, "StarboardWheelHub": 134}
+F16_GLTF_BYTES 14904856
+F16_BLEND_BYTES 17048535
+F16_PREVIEW C:\AI-Game-Benchmark\runs\luna-max\screenshots\F16_Netz_Blender_Intake.png
+Blender 5.2.3 LTS (hash e13b728c6880 built 2026-10-22 01:37:16)
+
+Blender quit
