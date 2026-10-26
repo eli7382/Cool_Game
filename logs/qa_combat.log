@@ -152,3 +152,12 @@ enemy_down=True
 in_game_captures=2
 input=deterministic in-game QA fire; normal key controls were separately exercised in run 20261025_001556
 
+timestamp=20261026_203854
+fixture=qa-combat-fixture-target-16m
+shots=4
+hits=4
+enemy_fire=true
+enemy_down=True
+in_game_captures=2
+input=deterministic in-game QA fire; normal key controls were separately exercised in run 20261025_001556
+

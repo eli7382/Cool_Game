@@ -1278,7 +1278,18 @@ bool RunBallisticImpactQA(){
     if(rocketTree){const float before=rocketTree->damage;const Vector3 radial=V(cosf(rocketTree->yaw),0,-sinf(rocketTree->yaw));g.projectiles.clear();g.projectiles.push_back(Projectile{rocketOrigin,Mul(radial,-47.0f),4.2f,145.0f,10.5f});
         UpdateProjectiles(.25f);rocketSweepDamage=g.projectiles.empty()&&(rocketTree->damage>before||rocketTree->felled);}
     check("rpg-swept-tree-detonation",rocketSweepDamage);
-    LogEvent(TextFormat("qa-ballistics-result,checks=%d,failures=%d,tree-seed=%d,crown=%.2f,trunk=%.2f,rocket-seed=%d",checks,failures,target?target->seed:-1,crownDistance,woodDistance,rocketTree?rocketTree->seed:-1));
+    TreeCollider *missileTree=nullptr;Vector3 missileOrigin{},missileRadial{};
+    for(TreeCollider &tree:g.treeColliders){
+        if(tree.felled||tree.base.y<g.water-.2f||&tree==target||&tree==rocketTree)continue;
+        const Vector3 radial=V(cosf(tree.yaw),0,-sinf(tree.yaw));const float spread=std::max(tree.spreadX,tree.spreadZ);
+        const float impactHeight=std::max(1.5f,tree.height*.14f);const Vector3 origin=Add(V(tree.base.x,tree.base.y+impactHeight,tree.base.z),Mul(radial,tree.buttressRadius*spread+8.0f));
+        BallisticContact contact{};if(FindStaticBallisticContact(origin,Mul(radial,-1),25.0f,contact)&&contact.tree==&tree&&contact.material==BallisticMaterial::Wood){missileTree=&tree;missileOrigin=origin;missileRadial=radial;break;}
+    }
+    bool missileSweep=false;
+    if(missileTree){const std::size_t explosionsBefore=g.explosions.size();g.guidedMissiles.clear();g.guidedMissiles.push_back(GuidedIRMissile{missileOrigin,Mul(missileRadial,-180.0f),0,7.0f,-1,0});
+        UpdateGuidedMissiles(.10f);missileSweep=g.guidedMissiles.empty()&&g.explosions.size()>explosionsBefore;}
+    check("aim9-swept-tree-detonation",missileSweep);
+    LogEvent(TextFormat("qa-ballistics-result,checks=%d,failures=%d,tree-seed=%d,crown=%.2f,trunk=%.2f,rocket-seed=%d,missile-seed=%d",checks,failures,target?target->seed:-1,crownDistance,woodDistance,rocketTree?rocketTree->seed:-1,missileTree?missileTree->seed:-1));
     return failures==0;
 }
 void StartMission(){
