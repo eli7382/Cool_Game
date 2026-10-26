@@ -546,3 +546,19 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - [ ] Calibrate vehicle handling, collision and weapon behavior against appropriate measured data.
 - [ ] Verify natural encounters and the complete mission loop through interactive play.
 - [ ] Reach the requested photoreal vehicle and world quality; current captures remain stylized.
+
+## Hostile turret render-origin refinement - 2026-10-26
+
+- The static pickup capture exposed a floating roof gun. The detailed GLB body was translated from a ground-corrected render origin, while the add-on turret used the physics origin directly.
+- The turret and beacon now use the same transform selection as the pickup body: ground-corrected for the detailed hero mesh, vehicle origin for the distant legacy LOD. This keeps the turret seated as the renderer changes detail levels.
+- Rebuilt with the pinned Windows wrapper; exit code 0 and no compiler warnings were shown. Re-ran the seeded hostile-vehicle fixture on the rebuilt executable: 5.03 simulated seconds, 12 enemy shots, 20.90 damage, four of four player rifle hits, target health 230 to 142, and 12.06 m enemy travel. The fixture passed again.
+- Reviewed screenshots/Breakwater_LiveQA_hostile-road-vehicle_1793046253101.png and screenshots/Breakwater_1793046295843_1.png. The static view shows the turret attached to the roof. The gameplay screenshot verifies the actual game renderer and encounter state, but the enemy model and setting remain stylized.
+- Current executable is 1,939,968 bytes, SHA-256 18D64908E5FEFCDC5A8619B573CDBF98D682407EDCD99A9D7A0156E0BF6AE359. No ImageGen calls, controlled performance measurements or GPU readings were collected in this pass.
+
+### Turret alignment gates
+
+- [x] Use the detailed mesh's corrected render origin for the turret and warning beacon.
+- [x] Verify the enemy-vehicle combat fixture again after the render correction.
+- [x] Review a static in-game render and a gameplay capture.
+- [ ] Replace the reused rescue pickup with a purpose-built, higher-fidelity hostile vehicle model.
+- [ ] Improve the scene and vehicle materials to the requested photoreal level.

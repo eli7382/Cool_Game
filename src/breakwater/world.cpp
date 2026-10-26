@@ -3792,20 +3792,30 @@ void DrawActorModels(){
     for(const HostileRoadVehicle &hostile:g.hostileRoadVehicles)if(hostile.alive||hostile.wrecked){
         if(hostile.wrecked&&hostile.vehicle.wreckAge>120.0f)continue;
         const Vehicle &vehicle=hostile.vehicle;DrawCar(vehicle);
-        const Vector3 turretBase=Local(vehicle.p,vehicle.yaw,V(0,1.72f+vehicle.suspension,-.08f));
+        // The detailed pickup mesh is rendered relative to the corrected ground
+        // origin used by DrawCar. The legacy local mesh uses vehicle.p directly.
+        // Reuse that exact choice for the turret so it stays bolted to the roof
+        // as the renderer switches between the high-detail and distant models.
+        const float drawDistance=DistXZ(vehicle.p,g.camera.position);
+        const float heroRange=g.graphics==GraphicsMode::High?180.0f:(g.vehicle==VehicleKind::Car?112.0f:26.0f);
+        const bool heroModel=drawDistance<heroRange&&IsModelValid(g.carHero);
+        const float groundOffset=vehicle.p.y-TerrainHeight(vehicle.p.x,vehicle.p.z)-.075f-vehicle.suspension;
+        const Vector3 renderOrigin=heroModel?V(vehicle.p.x,vehicle.p.y-groundOffset,vehicle.p.z):vehicle.p;
+        const float suspensionOffset=heroModel?0.0f:vehicle.suspension;
+        const Vector3 turretBase=Local(renderOrigin,vehicle.yaw,V(0,1.72f+suspensionOffset,-.08f));
         DrawCylinder(turretBase,.33f,.33f,.13f,18,Color{52,57,52,255});
         DrawCylinder(Add(turretBase,V(0,.10f,0)),.25f,.25f,.08f,16,Color{83,86,75,255});
-        const Vector3 turretRoot=Local(vehicle.p,hostile.turretYaw,V(0,1.96f+vehicle.suspension,-.12f));
-        Box(Local(vehicle.p,hostile.turretYaw,V(0,2.02f+vehicle.suspension,-.12f)),V(.32f,.20f,.42f),Color{67,71,63,255},hostile.turretYaw);
-        Box(Local(vehicle.p,hostile.turretYaw,V(0,2.15f+vehicle.suspension,-.19f)),V(.28f,.10f,.22f),Color{43,48,45,255},hostile.turretYaw);
-        Between(turretRoot,Local(vehicle.p,hostile.turretYaw,V(0,2.04f+vehicle.suspension,1.05f)),.047f,Color{73,79,73,255},10);
-        Between(Local(vehicle.p,hostile.turretYaw,V(-.11f,1.96f+vehicle.suspension,-.30f)),Local(vehicle.p,hostile.turretYaw,V(.11f,1.96f+vehicle.suspension,-.30f)),.035f,Color{93,94,81,255},8);
-        for(int link=0;link<6;++link)Box(Local(vehicle.p,hostile.turretYaw,V(.20f,1.89f+vehicle.suspension,-.35f+link*.105f)),V(.035f,.035f,.063f),Color{152,136,96,245},hostile.turretYaw);
+        const Vector3 turretRoot=Local(renderOrigin,hostile.turretYaw,V(0,1.96f+suspensionOffset,-.12f));
+        Box(Local(renderOrigin,hostile.turretYaw,V(0,2.02f+suspensionOffset,-.12f)),V(.32f,.20f,.42f),Color{67,71,63,255},hostile.turretYaw);
+        Box(Local(renderOrigin,hostile.turretYaw,V(0,2.15f+suspensionOffset,-.19f)),V(.28f,.10f,.22f),Color{43,48,45,255},hostile.turretYaw);
+        Between(turretRoot,Local(renderOrigin,hostile.turretYaw,V(0,2.04f+suspensionOffset,1.05f)),.047f,Color{73,79,73,255},10);
+        Between(Local(renderOrigin,hostile.turretYaw,V(-.11f,1.96f+suspensionOffset,-.30f)),Local(renderOrigin,hostile.turretYaw,V(.11f,1.96f+suspensionOffset,-.30f)),.035f,Color{93,94,81,255},8);
+        for(int link=0;link<6;++link)Box(Local(renderOrigin,hostile.turretYaw,V(.20f,1.89f+suspensionOffset,-.35f+link*.105f)),V(.035f,.035f,.063f),Color{152,136,96,245},hostile.turretYaw);
         if(hostile.alive&&((int)(g.clock*3.4f)&1)==0){
-            const Vector3 beacon=Local(vehicle.p,vehicle.yaw,V(-.48f,1.78f+vehicle.suspension,-1.38f));DrawSphere(beacon,.095f,Color{215,71,54,235});
+            const Vector3 beacon=Local(renderOrigin,vehicle.yaw,V(-.48f,1.78f+suspensionOffset,-1.38f));DrawSphere(beacon,.095f,Color{215,71,54,235});
         }
         if(hostile.wrecked){DrawCylinder(V(vehicle.p.x,TerrainHeight(vehicle.p.x,vehicle.p.z)+.03f,vehicle.p.z),1.45f,1.45f,.025f,20,Color{47,43,37,116});
-            if(((int)(g.clock*2.6f)&1)==0)DrawSphere(Add(vehicle.p,V(0,1.72f,0)),.16f,Color{72,70,62,125});}
+            if(((int)(g.clock*2.6f)&1)==0)DrawSphere(Add(renderOrigin,V(0,1.72f,0)),.16f,Color{72,70,62,125});}
     }
     for(const auto &e:g.enemies)if(e.alive){
         Vector3 to=Sub((g.vehicle==VehicleKind::Foot?g.player.p:(g.vehicle==VehicleKind::Car?g.car.p:(g.vehicle==VehicleKind::Plane?g.plane.p:g.heli.p))),e.p);
