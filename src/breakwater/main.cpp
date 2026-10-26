@@ -376,7 +376,7 @@ void ShutdownAudioSystem(){
 
 int main(int argc,char **argv) {
     using namespace bw;
-    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
+    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
     for(int i=1;i<argc;++i){
         const std::string_view arg(argv[i]);
         constexpr std::string_view prefix="--qa-capture=";
@@ -390,6 +390,7 @@ int main(int argc,char **argv) {
         if(arg=="--qa-plane-landing")qaPlaneLanding=true;
         if(arg=="--qa-plane-tree-impact")qaPlaneTreeImpact=true;
         if(arg=="--qa-car-tree-impact")qaCarTreeImpactRun=true;
+        if(arg=="--qa-car-tire-thermal")qaCarTireThermal=true;
         if(arg=="--qa-aircombat")qaAirCombat=true;
         if(arg=="--qa-airgun")qaAirGun=true;
         if(arg=="--qa-combat")qaCombat=true;
@@ -540,6 +541,14 @@ int main(int argc,char **argv) {
             LogEvent(TextFormat("qa-car-tree-impact-fixture,seed=%d,x=%.1f,z=%.1f,clearance-score-m=%.1f,stem-radius-m=%.2f",target->seed,target->base.x,target->base.z,bestClearance,target->trunkBaseRadius));
         }else LogEvent("qa-car-tree-impact-fixture-unavailable");
     }
+    if(qaCarTireThermal&&qaCapture.empty()){
+        StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Car;
+        g.car.p=V(0,TerrainHeight(0,165)+.72f,165);g.car.yaw=0;g.car.speed=16.0f;g.car.velocity=V(8,0,16);
+        g.car.yawRate=0;g.car.steer=0;g.car.lateralSpeed=0;g.car.engineRpm=.45f;g.car.damage=0;
+        g.car.powerplantHealth=1;g.car.steeringHealth=1;g.car.tireHealth.fill(1);g.car.tireTemperatureC.fill(20);g.car.tireWear.fill(0);
+        g.cameraDistance=8.5f;g.cameraActualDistance=8.5f;g.cameraInitialized=false;
+        LogEvent("qa-car-tire-thermal-fixture-start,initial-temp-c=20.0,initial-wear=0.0,initial-slip-speed-mps=8.0");
+    }
     if((qaAirCombat||qaAirGun)&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding){
         StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Plane;g.graphics=GraphicsMode::High;
         g.plane.p=V(-7,TerrainHeight(-7,43)+190.0f,43);g.plane.yaw=PI;g.plane.pitch=.18f;g.plane.roll=0;g.plane.speed=220;g.plane.engineRpm=.88f;
@@ -583,6 +592,12 @@ int main(int argc,char **argv) {
         if(qaCarTreeImpactRun&&!g.exitRequested&&g.qaCarTreeImpact){LogEvent("qa-car-tree-impact-confirmed");g.qaCarTreeImpactActive=false;g.screenshotRequested=true;g.exitRequested=true;}
         if(qaCarTreeImpactRun&&!g.exitRequested&&!qaCarNearLogged&&DistXZ(g.car.p,qaCarTreeTarget)<7.0f){LogEvent(TextFormat("qa-car-tree-proximity,seed=%d,tree-x=%.1f,tree-z=%.1f,car-x=%.1f,car-z=%.1f,speed-ms=%.1f,heading=%.2f",qaCarTreeTargetSeed,qaCarTreeTarget.x,qaCarTreeTarget.z,g.car.p.x,g.car.p.z,g.car.speed,g.car.yaw));qaCarNearLogged=true;}
         if(qaCarTreeImpactRun&&!g.exitRequested&&g.elapsed>=4.0f&&!g.qaCarTreeImpact){LogEvent(TextFormat("qa-car-tree-impact-missed,seed=%d,tree-x=%.1f,tree-z=%.1f,car-x=%.1f,car-z=%.1f,speed-ms=%.1f,heading=%.2f",qaCarTreeTargetSeed,qaCarTreeTarget.x,qaCarTreeTarget.z,g.car.p.x,g.car.p.z,g.car.speed,g.car.yaw));g.qaCarTreeImpactActive=false;g.screenshotRequested=true;g.exitRequested=true;}
+        if(qaCarTireThermal&&!g.exitRequested&&g.elapsed>=1.5f){
+            float maxTemperature=0.0f,totalWear=0.0f;for(std::size_t wheel=0;wheel<4;++wheel){maxTemperature=std::max(maxTemperature,g.car.tireTemperatureC[wheel]);totalWear+=g.car.tireWear[wheel];}
+            const bool passed=maxTemperature>20.5f&&totalWear>0.0f;
+            LogEvent(TextFormat("qa-car-tire-thermal-result,pass=%d,max-temp-c=%.2f,total-wear=%.8f,peak-speed-mps=%.2f",passed?1:0,maxTemperature,totalWear,g.maxCar));
+            g.exitRequested=true;
+        }
         UpdateAudio(dt);
         if(qaTaskTour&&qaTaskStage<4&&g.taskAnnounced[(std::size_t)qaTaskStage]){
             if(qaTaskCaptureStage!=qaTaskStage){g.screenshotRequested=true;qaTaskCaptureStage=qaTaskStage;}
@@ -633,8 +648,8 @@ int main(int argc,char **argv) {
         const float accuracy=g.shots>0?(float)g.hits/(float)g.shots:0;
         const float planeAlt=g.plane.p.y-std::max(TerrainHeight(g.plane.p.x,g.plane.p.z),g.water),heliAlt=g.heli.p.y-TerrainHeight(g.heli.p.x,g.heli.p.z);
     int footprintMarks=0,tireTrackSegments=0;for(const Mark &mark:g.tracks){if(mark.kind==MarkKind::Footprint)++footprintMarks;else if(mark.kind==MarkKind::TireTrack)++tireTrackSegments;}
-    std::fprintf(f,"summary,elapsed=%.2f,shots=%d,hits=%d,accuracy=%.3f,gates=%d,vehicles=%d,car_mps=%.2f,car_x=%.1f,car_z=%.1f,car_damage=%.2f,plane_mps=%.2f,plane_x=%.1f,plane_z=%.1f,plane_alt_m=%.1f,plane_vspeed=%.1f,plane_pitch_deg=%.1f,plane_yaw_deg=%.1f,plane_roll_deg=%.1f,heli_mps=%.2f,heli_x=%.1f,heli_z=%.1f,heli_alt_m=%.1f,heli_vspeed=%.1f,peak_altitude_m=%.2f,footprint_marks=%d,tire_track_segments=%d\n",
-        g.elapsed,g.shots,g.hits,accuracy,g.gatesOperated,g.vehiclesEntered,g.maxCar,g.car.p.x,g.car.p.z,g.car.damage,g.maxPlane,g.plane.p.x,g.plane.p.z,planeAlt,g.plane.verticalSpeed,g.plane.pitch/DEG,g.plane.yaw/DEG,g.plane.roll/DEG,g.maxHeli,g.heli.p.x,g.heli.p.z,heliAlt,g.heli.verticalSpeed,g.maxAltitude,footprintMarks,tireTrackSegments);
+    std::fprintf(f,"summary,elapsed=%.2f,shots=%d,hits=%d,accuracy=%.3f,gates=%d,vehicles=%d,car_mps=%.2f,car_x=%.1f,car_z=%.1f,car_damage=%.2f,plane_mps=%.2f,plane_x=%.1f,plane_z=%.1f,plane_alt_m=%.1f,plane_vspeed=%.1f,plane_pitch_deg=%.1f,plane_yaw_deg=%.1f,plane_roll_deg=%.1f,heli_mps=%.2f,heli_x=%.1f,heli_z=%.1f,heli_alt_m=%.1f,heli_vspeed=%.1f,peak_altitude_m=%.2f,footprint_marks=%d,tire_track_segments=%d,tire_temp_c_rl=%.1f,tire_temp_c_rr=%.1f,tire_temp_c_fl=%.1f,tire_temp_c_fr=%.1f,tire_wear_rl=%.4f,tire_wear_rr=%.4f,tire_wear_fl=%.4f,tire_wear_fr=%.4f\n",
+        g.elapsed,g.shots,g.hits,accuracy,g.gatesOperated,g.vehiclesEntered,g.maxCar,g.car.p.x,g.car.p.z,g.car.damage,g.maxPlane,g.plane.p.x,g.plane.p.z,planeAlt,g.plane.verticalSpeed,g.plane.pitch/DEG,g.plane.yaw/DEG,g.plane.roll/DEG,g.maxHeli,g.heli.p.x,g.heli.p.z,heliAlt,g.heli.verticalSpeed,g.maxAltitude,footprintMarks,tireTrackSegments,g.car.tireTemperatureC[0],g.car.tireTemperatureC[1],g.car.tireTemperatureC[2],g.car.tireTemperatureC[3],g.car.tireWear[0],g.car.tireWear[1],g.car.tireWear[2],g.car.tireWear[3]);
         std::fclose(f);
     }
     ShutdownAudioSystem();ShutdownWorld();CloseWindow();return qaBallistics&&!qaBallisticsPassed?2:0;

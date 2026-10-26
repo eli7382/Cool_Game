@@ -489,3 +489,25 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - [x] Confirm the updated model loads in the game and the seeded breakup still runs.
 - [ ] Match the approved photoreal orthographic mockup in the actual game renderer; this pass remains a modest surface-detail improvement, not a fidelity pass.
 - [ ] Validate the full flight/weapon/landing loop and broader physical damage with interactive play and measured evidence.
+
+## Per-wheel tire contact and thermal pass — 2026-10-26
+
+- The car now samples friction, rolling resistance and wetness at each of its four wheel contact points. Tread condition combines tire damage, temperature and wear; surface abrasion differs for asphalt/concrete, gravel, rock, mud, grass and water.
+- Fixed a units error in the axle friction-circle calculation: longitudinal acceleration is converted to axle force in newtons before capacity checks, and longitudinal force is clamped against each axle's contact capacity before lateral force is calculated. This makes low-friction surfaces and combined braking/cornering constrain the car.
+- Added four tire temperatures with ambient/airflow/wet-surface cooling, slip-work heating and wear. The broad 55 C grip optimum and wear rates are game approximations, not calibrated to an identified production tire. The game summary now records per-wheel temperatures and wear so later QA can measure them.
+- Added the QA mode --qa-car-tire-thermal. The current binary exited 0 and the fixture passed after 1.51 simulated seconds: maximum temperature 20.51 C and total tread wear 0.00008114 from a seeded high-slip route.
+- Current-binary input QA run 20261026_212256 logged mission start, car entry and exit, 11.16 m/s peak speed, 20 tire-track segments, 8 footprints and 0.02 car damage. All tires cooled to 19.5 C during that short low-slip route; no measurable wear occurred there. The five frames are now captured through the game renderer. The earlier 20261026_211750 screen-copy images showed Codex/browser content and are explicitly excluded.
+- Current-binary --qa-car-tree-impact exited 0. Tree seed 1030 was struck at 41.8 m/s, reached damage 1.00 and fell; confirmation logged at 0.15 simulated seconds.
+- Reworked qa_vehicle_detail.ps1 to use the six built-in game camera fixtures. The current run 20261026_212856 created and visually inspected car, car-cockpit, helicopter, helicopter-cockpit, plane and plane-cockpit frames from the internal renderer. These are static model views, not vehicle-operation tests. A prior interactive script run had no enter-plane event; its plane-labelled shots are excluded.
+- Added sources S552-S553 on temperature and wear extensions to tire-force models. The publisher pages were blocked to direct fetch (HTTP 403 and 429), so these rows are search-result excerpts only; they are not full-paper reviews.
+- Current executable after this pass: 1,913,344 bytes, SHA-256 D80AEE8114AFC2FB7D64EE0170CB545C623FF888A82DD58AE9D3568F678592B5. No ImageGen call or new performance/GPU measurement was made. The renderer remains OpenGL 3.3 and the captured vehicle/environment art remains stylized below the requested Forza/War Thunder target.
+
+### Car/vehicle gates
+
+- [x] Sample four tire contact surfaces independently and apply material-dependent grip/rolling/wear effects.
+- [x] Keep longitudinal and lateral tire-force capacity in consistent units.
+- [x] Exercise high-slip heating/wear, current-binary car input, and car/tree collision fixtures.
+- [x] Capture and inspect current-build exterior and cockpit views for all three vehicle types.
+- [ ] Calibrate thermal, wear, pressure and force curves against measured tire data.
+- [ ] Reach the requested photoreal vehicle, cockpit and environment fidelity.
+- [ ] Verify full normal player-controlled airplane takeoff, combat, return and landing on the final binary.

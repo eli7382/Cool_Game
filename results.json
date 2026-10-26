@@ -85,13 +85,13 @@
   "build_command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\build.ps1",
   "standard_build_wrapper": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\build.ps1",
   "standard_output_path_latest_source_verified": true,
-  "build_note": "Latest pinned Windows x64 build exited 0 without compiler warnings. Blender regenerated the F-16 GLB and mesh-ID header; the rebuilt executable passed the seeded front-view and tree-breakup fixtures.",
+  "build_note": "Latest pinned Windows x64 build contains the per-wheel tire friction, temperature and wear changes plus deterministic QA. The current binary passed high-slip tire, car input and car/tree impact fixtures; the renderer remains stylized and full aircraft route verification remains incomplete.",
   "build_warning_count_full_clean": null,
   "final_incremental_build_warning_count": 0,
   "executable_location": "C:\\AI-Game-Benchmark\\runs\\luna-max\\build\\bin\\Release\\game.exe",
   "executable_architecture": "Windows x64 PE (0x8664)",
-  "executable_size_bytes": 1907712,
-  "executable_sha256": "3DBBF977689E105AD8789AEF6A3A27DAA1FA90A92D868473D3DA96D37C54D295",
+  "executable_size_bytes": 1913344,
+  "executable_sha256": "D80AEE8114AFC2FB7D64EE0170CB545C623FF888A82DD58AE9D3568F678592B5",
   "source_location": "C:\\AI-Game-Benchmark\\runs\\luna-max\\src\\breakwater",
   "source_files": [
     "main.cpp",
@@ -99,7 +99,9 @@
     "gameplay.cpp",
     "world.cpp",
     "ui.cpp",
-    "scripts/qa_f16_breakup.ps1"
+    "scripts/qa_f16_breakup.ps1",
+    "scripts/qa_interactive.ps1",
+    "scripts/qa_vehicle_detail.ps1"
   ],
   "asset_directory": "C:\\AI-Game-Benchmark\\runs\\luna-max\\assets",
   "screenshots": [
@@ -399,7 +401,18 @@
     "screenshots/Breakwater_1793039960172_1.png",
     "screenshots/Breakwater_1793039966348_1.png",
     "screenshots/Breakwater_1793039968009_2.png",
-    "screenshots/Breakwater_1793040774430_1.png"
+    "screenshots/Breakwater_1793040774430_1.png",
+    "screenshots/Breakwater_Detail_20261026_212856_CarChase.png",
+    "screenshots/Breakwater_Detail_20261026_212856_CarCockpit.png",
+    "screenshots/Breakwater_Detail_20261026_212856_HeliChase.png",
+    "screenshots/Breakwater_Detail_20261026_212856_HeliCockpit.png",
+    "screenshots/Breakwater_Detail_20261026_212856_PlaneChase.png",
+    "screenshots/Breakwater_Detail_20261026_212856_PlaneCockpit.png",
+    "screenshots/Breakwater_Live_20261026_212256_Foot.png",
+    "screenshots/Breakwater_Live_20261026_212256_Car.png",
+    "screenshots/Breakwater_Live_20261026_212256_CarCockpit.png",
+    "screenshots/Breakwater_Live_20261026_212256_CarDriving.png",
+    "screenshots/Breakwater_Live_20261026_212256_AfterCar.png"
   ],
   "qa": {
     "final_binary_launch_and_menu_smoke": true,
@@ -420,9 +433,11 @@
       "acceleration and steering inputs issued; position changed during the route",
       "session peak speed 8.77 m/s",
       "braking input issued; individual stopping distance not measured",
-      "chase/cockpit camera toggle input issued; renderer appearance evidence is separate"
+      "chase/cockpit camera toggle input issued; renderer appearance evidence is separate",
+      "Current binary 20261026_212256: mission start, car entry/exit, movement, steering, braking and camera inputs; summary peak 11.16 m/s, 20 tire-track segments, 8 footprints and 0.02 damage.",
+      "Current pinned build tire thermal fixture: pass; maximum tire temperature 20.51 C, total wear 0.00008114, peak speed 16.00 m/s. This is a short seeded fixture, not real-tire calibration."
     ],
-    "car_max_speed_mps": 8.77,
+    "car_max_speed_mps": 11.16,
     "plane_verified": [
       "takeoff and controllable flight/turning recorded in route QA",
       "latest normal return-route harness ended in water ditch before reaching runway",
@@ -489,8 +504,8 @@
     ],
     "audio_device_acoustic_quality_verified": false,
     "audio_full_task_cue_coverage_verified": true,
-    "vehicle_visual_capture_count": 48,
-    "vehicle_visual_capture_note": "The newest F-16 front-view and tree-breakup captures are from the actual current executable and were inspected. Underside panel/access-cover/fastener geometry was added to the authored model. The model and game world remain stylized below the approved photoreal mockup.",
+    "vehicle_visual_capture_count": 59,
+    "vehicle_visual_capture_note": "Current executable static internal-renderer views 20261026_212856 cover car, car cockpit, helicopter, helicopter cockpit, plane and plane cockpit. All were inspected; all remain stylized below the requested Forza/War Thunder visual target. Current car input screenshots 20261026_212256 came from in-game F12 capture. External CopyFromScreen captures from 20261026_210126 and 20261026_211750 were browser content and are excluded.",
     "vehicle_model_refinement": "Vehicle module condition feeds acceleration, steering, tire grip, aircraft thrust/authority/lift, and helicopter main/tail rotor behavior. Impacts retain localized surface marks; damaged engines can smoke; crash/landing states let propellers and rotors wind down. The latest pass aligned marks to imported hero transforms, made the fixed-wing cowling scorch and helicopter skin scrape larger, and seeded camera-facing QA impacts. Vehicle art remains visibly stylized and below the requested photoreal AAA target.",
     "audio_task_tour_evidence": {
       "log": "logs/qa_task_narration.log",
@@ -509,7 +524,7 @@
     },
     "recent_interactive_qa_revalidated": true,
     "recent_interactive_qa_limit": "Current-executable car and helicopter input sequences logged movement and landing operations. The airplane passed only a seeded short runway touchdown; the last full-route harness ditched before the runway. Input scripts are automated, not human play; stopping distance, realistic flight circuit and manual full mission remain unverified.",
-    "vehicle_qa_evidence_note": "Same-binary current executable car QA 20261025_034217 logged entry, driving and exit, reached 8.74 m/s, and retained 24 tire-track segments and 7 footprints. Helicopter run 20261025_034248 logged takeoff at 17.19 s and landing at 23.91 s, reached 8.42 m/s and 5.54 m peak altitude. Plane fixture 20261025_034344 logged runway touchdown at 2.59 s within bounds (x=-9.1 m, z=106.6 m) and accepted 1.25 s braking. Current impact-view captures for all three vehicles exited 0. Normal airplane flight route and manually played collision damage remain unverified.",
+    "vehicle_qa_evidence_note": "Same-binary current executable car QA 20261025_034217 logged entry, driving and exit, reached 8.74 m/s, and retained 24 tire-track segments and 7 footprints. Helicopter run 20261025_034248 logged takeoff at 17.19 s and landing at 23.91 s, reached 8.42 m/s and 5.54 m peak altitude. Plane fixture 20261025_034344 logged runway touchdown at 2.59 s within bounds (x=-9.1 m, z=106.6 m) and accepted 1.25 s braking. Current impact-view captures for all three vehicles exited 0. Normal airplane flight route and manually played collision damage remain unverified. Current final-binary car route 20261026_212256 reached 11.16 m/s and recorded per-wheel temperatures/wear. The new seeded high-slip tire fixture heated to 20.51 C and accumulated 0.00008114 total wear. The current-binary car/tree fixture felled tree seed 1030 at 41.8 m/s. These tests are scripted/input harness evidence, not real-world calibration.",
     "low_preset_lod": {
       "pickup_full_detail_until_m": 72,
       "plane_simplified_beyond_m": 82,
@@ -1111,6 +1126,17 @@
       "actual_map_breakup_fixture": "seed 910 nose/crown strike",
       "actual_map_fixture_exit_code": 0,
       "screenshot": "screenshots/Breakwater_1793040774430_1.png"
+    },
+    "current_car_tire_thermal_qa": {
+      "command": "build/bin/Release/game.exe --qa-car-tire-thermal",
+      "process_exit_code": 0,
+      "executable_sha256": "D80AEE8114AFC2FB7D64EE0170CB545C623FF888A82DD58AE9D3568F678592B5",
+      "fixture": "seeded short high-slip car run",
+      "passed": true,
+      "max_tire_temperature_c": 20.51,
+      "total_tire_wear": 8.114E-05,
+      "peak_speed_mps": 16.0,
+      "scope": "Deterministic fixture only. Tire temperature and wear coefficients were not calibrated against real tire data; this does not validate a full range of load, speed, surface, weather, or long-duration cases."
     }
   },
   "quality_gates": {
@@ -1138,9 +1164,11 @@
     "AIM-9 and M61 functionality passed scripted target fixtures only. Real weapon aerodynamics, seeker performance, dispersal, fuzes, damage envelopes and natural combat remain approximated or unverified.",
     "The new terrain/water/tree/structure contacts use terrain sampling, ellipsoid/trunk approximations and existing obstacle proxies, not full rendered-mesh collision or physically calibrated material fracture.",
     "AIM-9 swept contact was verified against one deterministic tree blocker; other terrain, structure, canopy, speed, fuse and damage cases remain approximations or unverified.",
-    "Tree collision uses 896 deterministic approximate profiles with a 20-probe, 0.35 m subdivided F-16 attitude sweep. The isolated rotating-wing/trunk case and one actual-map F-16 nose/crown strike passed; other airframe/tree contacts, rendered-mesh accuracy, wind/weather envelopes, structural calibration and natural player crash routes remain unverified."
+    "Tree collision uses 896 deterministic approximate profiles with a 20-probe, 0.35 m subdivided F-16 attitude sweep. The isolated rotating-wing/trunk case and one actual-map F-16 nose/crown strike passed; other airframe/tree contacts, rendered-mesh accuracy, wind/weather envelopes, structural calibration and natural player crash routes remain unverified.",
+    "Car tire temperature, wear and force curves remain lightweight approximations and are not calibrated to measured tire data or pressure.",
+    "The car tire temperature and wear model is an engineering approximation and has not been calibrated against measured tire data or a broad load, speed, surface, weather, or endurance test matrix."
   ],
-  "notes": "Latest pinned Windows x64 build succeeded without incremental warnings. Current forest/map refinement adds two deterministic foothill groves while preserving the original 15-grove tree placement sequence, expands textured coastal leaf litter and understory, and retains a clear runway approach. High and Low full-forest, close-forest and tree-detail renderer captures exited 0. Current Low/High four-objective tours completed and sampled process CPU/memory only. Vehicles remain partially verified: normal airplane takeoff-return, manual damage response, full mission, natural combat, replay and difficulty balance remain open. Models and scenery remain stylized and below AAA. Research has 536 source IDs/URLs (443 direct-page excerpts, 93 search excerpts), not 512 full-document reviews. ImageGen record: 57 invocations, 50 generated outputs, 47 listed project-local paths; token/cost usage unavailable.\nF-16 mockup/model approval gate is active: no aircraft mesh has been started. Three generated mockups are listed under research/f16-netz-mockups.\nThe safehouse visual pass is a renderer-only capture; its interactive walk-through remains unverified.\nF-16 approval and modeling update (2026-10-26): the user approved the orthographic standard-Netz direction; Blender 5.2.3 produced a 108-mesh / 154-raylib-primitive model with five Blender inspection renders, and the pinned Windows build succeeded. The model remains stylized below the reference. The seeded in-game plane capture produced no new frame; do not treat Blender renders as game screenshots. Research register has 551 distinct URLs/source IDs (450 direct page excerpts, 101 search-only excerpts), not 512 complete document reviews. Cumulative ImageGen invocations are 64 including failed attempts; total output count was not reconciled and is null.2026-10-26 refinement: current-build scripted target car/tree and F-16/tree impacts passed; AIM-9 destroyed its seeded target and M61 recorded five hits plus a rotorcraft kill. Five actual in-game captures were reviewed. The F-16 and environment remain visibly stylized; crash breakup and realistic full-envelope weapon physics are not implemented or verified. No ImageGen calls were made in this pass; total remains 64. Model/token/cost usage remains unavailable. F-16 cockpit continuation: current-binary front/cockpit captures show the corrected transparent canopy and authored cockpit with MFD/HUD overlays; the AAA fidelity gate remains failed. No ImageGen calls were made in this pass; cumulative count remains 64, including failures. F-16 tree-breakup continuation (2026-10-26): the current-build seed 910 nose-to-crown strike at 61.3 m/s detached the port wing; fuselage and fragment contacted terrain at 1.19 s and 2.04 s, with 18.1 m separation. The tree was damaged but not felled. This is a single scripted approximation, not validated aircraft physics or human gameplay. Screenshot reviewed: screenshots/Breakwater_1793035862128_1.png. No ImageGen calls; cumulative count remains 64, including failures. Model/token/cost metrics remain unavailable. F-16 wing-detail continuation (2026-10-26): added underside wing seams, access covers and flush fasteners; Blender 5.2.3 exported a 14,779,700-byte GLB with 112 mesh nodes and 156 runtime primitives. The generator now preserves converted stencil mesh names for runtime ID mapping. Pinned build and current front-view/tree-breakup fixtures exited 0. The captures were reviewed and remain visibly stylized; the photoreal gate still fails. No ImageGen calls this pass; cumulative count remains 64. FPS/GPU/resource measurements were not collected.\n2026-10-26 ballistic refinement: shared swept contacts now stop small-arms/cannon traces and RPG/AIM-9 segments at terrain, water, 896-profile trees, and structure proxies; impacts select material feedback, and blast damage persists in tree trunk/crown state. Pinned build exit 0 with zero warnings. Deterministic collision fixture passed 9/9; current combat repeat passed 4/4 with enemy fire, takedown, and two captures; M61 passed 5 hits/kill and AIM-9 passed one launch/kill at 2.29 simulated seconds. The first combat repeat timed out only on its second-capture condition; its log already recorded the takedown, and the repeat passed fully. Actual combat screenshots remain visibly stylized; no real-world calibration, all-collider sweep, controlled FPS, or manual route/playthrough was verified. No ImageGen calls; cumulative 64. Research register remains 551 source IDs/URLs, of which 101 are search-result excerpts. Token/cost usage remains unavailable.\nCurrent-build weapon screenshot review: M61 target-kill view and AIM-9 launch/kill frames are recorded under screenshots/Breakwater_1793039063749_1.png and screenshots/Breakwater_1793039071731_1.png / screenshots/Breakwater_1793039073557_2.png; the character, aircraft materials and environment remain visibly stylized. Final combat repeat captures are screenshots/Breakwater_1793039164207_1.png and screenshots/Breakwater_1793039164925_2.png.\n2026-10-26 final ballistic build refresh: exact Windows executable SHA-256 43BC37232549860636323AF70F2E00A0885460D9041E5ABFE334A52BAA77B3D9 (1905152 bytes); pinned build and deterministic impact fixture passed 10/10, including AIM-9 swept tree detonation. Final combat fixture run 20261026_203854 passed 4/4 hits with enemy fire, takedown and two captures. M61 fixture passed 5 hits/rotorcraft kill; AIM-9 fixture destroyed its target after 2.27 simulated seconds and its tree-blocker case passed. Five latest-build gameplay captures are listed in the screenshot manifest. These remain seeded/scripted validations; broad physics calibration, manual gameplay, full flight route, natural aiming and controlled GPU/frame-time performance remain unverified. Visuals remain stylized below the requested photoreal target. No ImageGen calls this pass; cumulative total remains 64, including failed calls. Usage metrics remain unavailable.\n2026-10-26 F-16 rotational tree-collision refinement: swept aircraft probes now sample translation plus yaw/pitch/roll arcs at no more than about 0.35 m travel per subdivision (20 probes, capped at 256 steps). The pinned build passed 11/11 impact checks, including a deterministic wing/trunk collision where both endpoint poses are clear. The actual-map seed-910 F-16 tree-strike breakup and ground-contact script passed with exit 0; its screenshot is screenshots/Breakwater_1793040774430_1.png. The refinement reduces missed rotational contacts but uses approximate tree profiles and is not mesh-accurate or structural calibration. Visuals remain stylized and below photoreal AAA. No ImageGen calls; cumulative invocations remain 64. Usage metrics remain unavailable.",
+  "notes": "Latest pinned Windows x64 build succeeded without incremental warnings. Current forest/map refinement adds two deterministic foothill groves while preserving the original 15-grove tree placement sequence, expands textured coastal leaf litter and understory, and retains a clear runway approach. High and Low full-forest, close-forest and tree-detail renderer captures exited 0. Current Low/High four-objective tours completed and sampled process CPU/memory only. Vehicles remain partially verified: normal airplane takeoff-return, manual damage response, full mission, natural combat, replay and difficulty balance remain open. Models and scenery remain stylized and below AAA. Research has 536 source IDs/URLs (443 direct-page excerpts, 93 search excerpts), not 512 full-document reviews. ImageGen record: 57 invocations, 50 generated outputs, 47 listed project-local paths; token/cost usage unavailable.\nF-16 mockup/model approval gate is active: no aircraft mesh has been started. Three generated mockups are listed under research/f16-netz-mockups.\nThe safehouse visual pass is a renderer-only capture; its interactive walk-through remains unverified.\nF-16 approval and modeling update (2026-10-26): the user approved the orthographic standard-Netz direction; Blender 5.2.3 produced a 108-mesh / 154-raylib-primitive model with five Blender inspection renders, and the pinned Windows build succeeded. The model remains stylized below the reference. The seeded in-game plane capture produced no new frame; do not treat Blender renders as game screenshots. Research register has 551 distinct URLs/source IDs (450 direct page excerpts, 101 search-only excerpts), not 512 complete document reviews. Cumulative ImageGen invocations are 64 including failed attempts; total output count was not reconciled and is null.2026-10-26 refinement: current-build scripted target car/tree and F-16/tree impacts passed; AIM-9 destroyed its seeded target and M61 recorded five hits plus a rotorcraft kill. Five actual in-game captures were reviewed. The F-16 and environment remain visibly stylized; crash breakup and realistic full-envelope weapon physics are not implemented or verified. No ImageGen calls were made in this pass; total remains 64. Model/token/cost usage remains unavailable. F-16 cockpit continuation: current-binary front/cockpit captures show the corrected transparent canopy and authored cockpit with MFD/HUD overlays; the AAA fidelity gate remains failed. No ImageGen calls were made in this pass; cumulative count remains 64, including failures. F-16 tree-breakup continuation (2026-10-26): the current-build seed 910 nose-to-crown strike at 61.3 m/s detached the port wing; fuselage and fragment contacted terrain at 1.19 s and 2.04 s, with 18.1 m separation. The tree was damaged but not felled. This is a single scripted approximation, not validated aircraft physics or human gameplay. Screenshot reviewed: screenshots/Breakwater_1793035862128_1.png. No ImageGen calls; cumulative count remains 64, including failures. Model/token/cost metrics remain unavailable. F-16 wing-detail continuation (2026-10-26): added underside wing seams, access covers and flush fasteners; Blender 5.2.3 exported a 14,779,700-byte GLB with 112 mesh nodes and 156 runtime primitives. The generator now preserves converted stencil mesh names for runtime ID mapping. Pinned build and current front-view/tree-breakup fixtures exited 0. The captures were reviewed and remain visibly stylized; the photoreal gate still fails. No ImageGen calls this pass; cumulative count remains 64. FPS/GPU/resource measurements were not collected.\n2026-10-26 ballistic refinement: shared swept contacts now stop small-arms/cannon traces and RPG/AIM-9 segments at terrain, water, 896-profile trees, and structure proxies; impacts select material feedback, and blast damage persists in tree trunk/crown state. Pinned build exit 0 with zero warnings. Deterministic collision fixture passed 9/9; current combat repeat passed 4/4 with enemy fire, takedown, and two captures; M61 passed 5 hits/kill and AIM-9 passed one launch/kill at 2.29 simulated seconds. The first combat repeat timed out only on its second-capture condition; its log already recorded the takedown, and the repeat passed fully. Actual combat screenshots remain visibly stylized; no real-world calibration, all-collider sweep, controlled FPS, or manual route/playthrough was verified. No ImageGen calls; cumulative 64. Research register remains 551 source IDs/URLs, of which 101 are search-result excerpts. Token/cost usage remains unavailable.\nCurrent-build weapon screenshot review: M61 target-kill view and AIM-9 launch/kill frames are recorded under screenshots/Breakwater_1793039063749_1.png and screenshots/Breakwater_1793039071731_1.png / screenshots/Breakwater_1793039073557_2.png; the character, aircraft materials and environment remain visibly stylized. Final combat repeat captures are screenshots/Breakwater_1793039164207_1.png and screenshots/Breakwater_1793039164925_2.png.\n2026-10-26 final ballistic build refresh: exact Windows executable SHA-256 43BC37232549860636323AF70F2E00A0885460D9041E5ABFE334A52BAA77B3D9 (1905152 bytes); pinned build and deterministic impact fixture passed 10/10, including AIM-9 swept tree detonation. Final combat fixture run 20261026_203854 passed 4/4 hits with enemy fire, takedown and two captures. M61 fixture passed 5 hits/rotorcraft kill; AIM-9 fixture destroyed its target after 2.27 simulated seconds and its tree-blocker case passed. Five latest-build gameplay captures are listed in the screenshot manifest. These remain seeded/scripted validations; broad physics calibration, manual gameplay, full flight route, natural aiming and controlled GPU/frame-time performance remain unverified. Visuals remain stylized below the requested photoreal target. No ImageGen calls this pass; cumulative total remains 64, including failed calls. Usage metrics remain unavailable.\n2026-10-26 F-16 rotational tree-collision refinement: swept aircraft probes now sample translation plus yaw/pitch/roll arcs at no more than about 0.35 m travel per subdivision (20 probes, capped at 256 steps). The pinned build passed 11/11 impact checks, including a deterministic wing/trunk collision where both endpoint poses are clear. The actual-map seed-910 F-16 tree-strike breakup and ground-contact script passed with exit 0; its screenshot is screenshots/Breakwater_1793040774430_1.png. The refinement reduces missed rotational contacts but uses approximate tree profiles and is not mesh-accurate or structural calibration. Visuals remain stylized and below photoreal AAA. No ImageGen calls; cumulative invocations remain 64. Usage metrics remain unavailable.\n2026-10-26 car tire refinement: four-wheel contact sampling now feeds grip from surface friction, wetness, temperature, wear and damage; slip work heats each tire, while ambient/airflow/water cool it and surface abrasiveness drives wear. The pinned Windows build exited 0 (SHA-256 D80AEE8114AFC2FB7D64EE0170CB545C623FF888A82DD58AE9D3568F678592B5). Seeded thermal fixture passed with 20.51 C maximum, 0.00008114 total wear and 16.00 m/s peak speed; tire response remains uncalibrated against real test data.",
   "resource_usage": {
     "cpu_time_seconds": 65.203,
     "peak_working_set_bytes": 1833967616,
@@ -1208,14 +1236,14 @@
   },
   "research": {
     "source_register": "research/sources.csv",
-    "unique_sources": 551,
-    "unique_source_ids": 551,
-    "unique_exact_urls": 551,
-    "unique_canonical_pages": 550,
+    "unique_sources": 553,
+    "unique_source_ids": 553,
+    "unique_exact_urls": 553,
+    "unique_canonical_pages": 552,
     "direct_page_text_excerpts": 450,
-    "search_excerpt_only": 101,
-    "deduplication": "551 exact source URLs/source IDs; 550 after common tracking/display parameters are removed while content parameters are preserved.",
-    "review_scope": "450 direct page reads returned excerpts, not full-document reviews; 101 rows contain search-result excerpts only."
+    "search_excerpt_only": 103,
+    "deduplication": "553 exact source URLs/source IDs; 552 after common tracking/display parameters are removed while content parameters are preserved.",
+    "review_scope": "450 direct page reads returned excerpts, not full-document reviews; 103 rows contain search-result excerpts only. Tire sources S552-S553 are search-result excerpts because direct publisher fetches returned 403 and 429."
   },
   "low_preset_refinement": "Current-build High and Low renderer processes exited 0 for full forest, close forest and tree-detail views. The map has 17 ground-cover centers, with the original 15-grove tree sequence preserved and 168 High / 56 Low supplemental tree candidates on two foothill ridges. High main candidates are 1,080 trees, 800 shrubs, 1,350 grass tufts and 1,750 ferns; Low uses 360, 280, 450 and 620. Low four-objective tour resource_20261025_104346 completed in 60.59 wall seconds with 65.203 sampled CPU seconds, 1,833,967,616-byte peak working set and 1,735,024,640-byte peak private memory. High tour resource_20261025_104525 completed in 61.66 wall seconds with 77.469 sampled CPU seconds, 1,850,736,640-byte peak working set and 1,753,223,168-byte peak private memory. These are process samples, not FPS measurements; GPU metrics and process exit codes were unavailable.",
   "difficulty": {

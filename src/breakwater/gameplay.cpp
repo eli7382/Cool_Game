@@ -192,7 +192,8 @@ PlaneTreeImpact FindPlaneTreeImpact(const Vehicle &before,const Vehicle &after){
 void RestoreVehicleCondition(Vehicle &vehicle){
     vehicle.powerplantHealth=1.0f;vehicle.steeringHealth=1.0f;vehicle.flightControlsHealth=1.0f;vehicle.airframeHealth=1.0f;
     vehicle.mainRotorHealth=1.0f;vehicle.tailRotorHealth=1.0f;vehicle.damageSmokeTimer=0;vehicle.impactSeverity=0;vehicle.hasImpactMark=false;
-    vehicle.tireHealth.fill(1.0f);vehicle.longitudinalG=vehicle.lateralG=0;vehicle.normalG=1.0f;
+    vehicle.tireHealth.fill(1.0f);vehicle.tireTemperatureC.fill(20.0f);vehicle.tireWear.fill(0.0f);
+    vehicle.longitudinalG=vehicle.lateralG=0;vehicle.normalG=1.0f;
 }
 void SetCarAtBase(){g.car.p=V(7,TerrainHeight(7,165)+.72f,165);g.car.yaw=0;g.car.speed=0;g.car.velocity=V(0,0,0);g.car.yawRate=0;g.car.lateralSpeed=0;g.car.engineRpm=.18f;g.car.suspension=0;g.car.suspensionVelocity=0;g.car.wheelTravel.fill(0);g.car.wheelTravelVelocity.fill(0);g.car.pitch=0;g.car.roll=0;g.car.damage=0;RestoreVehicleCondition(g.car);g.car.gunFlash=0;g.car.crashed=false;}
 void SetPlaneAtRunway(){g.plane.p=V(-7,TerrainHeight(-7,43)+1.35f,43);g.plane.yaw=PI;g.plane.speed=0;g.plane.wheelAngle=0;g.plane.wheelSpinRate=0;g.plane.gearExtension=1;g.plane.speedBrakeExtension=0;g.plane.velocity=V(0,0,0);g.plane.pitch=0;g.plane.roll=0;g.plane.pitchRate=0;g.plane.rollRate=0;g.plane.yawRate=0;g.plane.lateralSpeed=0;g.plane.controlAileron=0;g.plane.controlElevator=0;g.plane.controlRudder=0;g.plane.engineRpm=.16f;g.plane.verticalSpeed=0;g.plane.airborne=false;g.plane.crashed=false;g.plane.landingGearDown=true;g.plane.afterburner=false;g.plane.speedBrake=false;g.plane.damage=0;g.plane.wreckAge=0;g.plane.brokenWingSide=0;g.plane.wreckOnGround=false;g.f16Breakaway={};RestoreVehicleCondition(g.plane);g.plane.gunAmmo=500;g.plane.missileAmmo=2;g.plane.missilePresent={true,true};g.plane.gunCooldown=0;g.plane.gunAudioCooldown=0;g.plane.gunAccumulator=0;g.plane.gunFlash=0;g.planeMissileSelected=false;g.lockedAirContact=-1;g.missileLockQuality=0;g.guidedMissiles.clear();}
@@ -641,10 +642,22 @@ void UpdateCar(float dt){
     const float centerGround=TerrainHeight(g.car.p.x,g.car.p.z);
     const SurfaceSample contactSurface=SampleSurface(g.car.p.x,g.car.p.z);
     const AtmosphereSample weather=SampleAtmosphere(g.car.p,g.car.p.y);
-    const float frontTireHealth=(g.car.tireHealth[2]+g.car.tireHealth[3])*.5f;
-    const float rearTireHealth=(g.car.tireHealth[0]+g.car.tireHealth[1])*.5f;
-    const float meanTireHealth=(frontTireHealth+rearTireHealth)*.5f;
-    const float grip=contactSurface.friction*Lerp(.30f,1.0f,meanTireHealth);
+    const std::array<Vector2,4> wheelOffset{{Vector2{-.86f,-1.38f},Vector2{.86f,-1.38f},Vector2{-.86f,1.38f},Vector2{.86f,1.38f}}};
+    std::array<SurfaceSample,4> wheelSurfaces{};
+    std::array<float,4> wheelTireGrip{};
+    float grip=0.0f,meanRollingResistance=0.0f;
+    for(std::size_t wheel=0;wheel<wheelOffset.size();++wheel){
+        const Vector3 point=Local(g.car.p,g.car.yaw,V(wheelOffset[wheel].x,0,wheelOffset[wheel].y));
+        wheelSurfaces[wheel]=SampleSurface(point.x,point.z);
+        const float temperatureDelta=(g.car.tireTemperatureC[wheel]-55.0f)/70.0f;
+        const float thermalGrip=Clamp(1.0f-.12f*temperatureDelta*temperatureDelta,.84f,1.0f);
+        const float wearGrip=Clamp(1.0f-.22f*g.car.tireWear[wheel],.75f,1.0f);
+        wheelTireGrip[wheel]=Lerp(.30f,1.0f,g.car.tireHealth[wheel])*thermalGrip*wearGrip;
+        grip+=wheelSurfaces[wheel].friction*wheelTireGrip[wheel]*.25f;
+        meanRollingResistance+=wheelSurfaces[wheel].rollingResistance*.25f;
+    }
+    const float frontSurfaceGrip=wheelSurfaces[2].friction*wheelTireGrip[2]+wheelSurfaces[3].friction*wheelTireGrip[3];
+    const float rearSurfaceGrip=wheelSurfaces[0].friction*wheelTireGrip[0]+wheelSurfaces[1].friction*wheelTireGrip[1];
     const Vector3 f=Forward(g.car.yaw),r=Right(g.car.yaw);
     const float oldForward=Vector3DotProduct(g.car.velocity,Forward(g.car.yaw));
     float drive=throttle,brake=IsKeyDown(KEY_SPACE)?1.0f:0.0f;
@@ -657,27 +670,53 @@ void UpdateCar(float dt){
     const float gradeX=(TerrainHeight(g.car.p.x+1,g.car.p.z)-TerrainHeight(g.car.p.x-1,g.car.p.z))*.5f;
     const float gradeZ=(TerrainHeight(g.car.p.x,g.car.p.z+1)-TerrainHeight(g.car.p.x,g.car.p.z-1))*.5f;
     const float gravityAlong=-9.80665f*(gradeX*f.x+gradeZ*f.z);
-    const float rollingDeceleration=contactSurface.rollingResistance*9.80665f;
+    const float rollingDeceleration=meanRollingResistance*9.80665f;
     const float forwardSign=fabsf(oldForward)>.18f?copysignf(1.0f,oldForward):0.0f;
     const float brakeDeceleration=std::min(8.6f*brake,grip*9.80665f);
-    const float longitudinal=drive*5.2f*Lerp(.08f,1.0f,g.car.powerplantHealth)-brakeDeceleration*forwardSign-rollingDeceleration*forwardSign+
-        Vector3DotProduct(aerodynamicAcceleration,f)+gravityAlong;
+    const float tireLongitudinalDemand=drive*5.2f*Lerp(.08f,1.0f,g.car.powerplantHealth)-
+        brakeDeceleration*forwardSign-rollingDeceleration*forwardSign;
+    const float externalLongitudinal=Vector3DotProduct(aerodynamicAcceleration,f)+gravityAlong;
+    const float estimatedLongitudinal=tireLongitudinalDemand+externalLongitudinal;
     g.car.steer=Lerp(g.car.steer,steerInput,Clamp(dt*Lerp(2.0f,7.5f,g.car.steeringHealth),0,1));
     const float forwardSpeed=Vector3DotProduct(g.car.velocity,f),lateral=Vector3DotProduct(g.car.velocity,r);
     const float steerAngle=g.car.steer*.57f*Lerp(.24f,1.0f,g.car.steeringHealth)*(forwardSpeed>=0?1.0f:-1.0f);
     const float frontSlip=atan2f(lateral+g.car.yawRate*1.34f,std::max(1.0f,fabsf(forwardSpeed)))-steerAngle;
     const float rearSlip=atan2f(lateral-g.car.yawRate*1.42f,std::max(1.0f,fabsf(forwardSpeed)));
     // Transfer vertical tire load with longitudinal acceleration and enforce a friction circle per axle.
-    const float frontLoadFraction=Clamp(.56f-longitudinal*.55f/(2.76f*9.80665f),.36f,.74f);
-    const float frontLongitudinal=longitudinal*frontLoadFraction,rearLongitudinal=longitudinal*(1.0f-frontLoadFraction);
-    const float frontCapacity=grip*1900.0f*9.80665f*frontLoadFraction*frontTireHealth;
-    const float rearCapacity=grip*1900.0f*9.80665f*(1.0f-frontLoadFraction)*rearTireHealth;
-    const float frontLateralLimit=sqrtf(std::max(0.0f,frontCapacity*frontCapacity-frontLongitudinal*frontLongitudinal));
-    const float rearLateralLimit=sqrtf(std::max(0.0f,rearCapacity*rearCapacity-rearLongitudinal*rearLongitudinal));
+    constexpr float vehicleMassKg=1900.0f;
+    const float frontLoadFraction=Clamp(.56f-estimatedLongitudinal*.55f/(2.76f*9.80665f),.36f,.74f);
+    const float frontCapacity=.5f*frontSurfaceGrip*vehicleMassKg*9.80665f*frontLoadFraction;
+    const float rearCapacity=.5f*rearSurfaceGrip*vehicleMassKg*9.80665f*(1.0f-frontLoadFraction);
+    // Convert acceleration demand to axle force before applying the friction circle (N).
+    const float frontLongitudinalForce=Clamp(tireLongitudinalDemand*vehicleMassKg*frontLoadFraction,-frontCapacity,frontCapacity);
+    const float rearLongitudinalForce=Clamp(tireLongitudinalDemand*vehicleMassKg*(1.0f-frontLoadFraction),-rearCapacity,rearCapacity);
+    const float longitudinal=(frontLongitudinalForce+rearLongitudinalForce)/vehicleMassKg+externalLongitudinal;
+    const float frontLateralLimit=sqrtf(std::max(0.0f,frontCapacity*frontCapacity-frontLongitudinalForce*frontLongitudinalForce));
+    const float rearLateralLimit=sqrtf(std::max(0.0f,rearCapacity*rearCapacity-rearLongitudinalForce*rearLongitudinalForce));
     const float frontForce=Clamp(-frontSlip*36500.0f,-frontLateralLimit,frontLateralLimit);
     const float rearForce=Clamp(-rearSlip*31500.0f,-rearLateralLimit,rearLateralLimit);
+    const float frontSlipSpeed=fabsf(forwardSpeed*tanf(frontSlip));
+    const float rearSlipSpeed=fabsf(forwardSpeed*tanf(rearSlip));
+    const float ambientC=weather.temperatureKelvin-273.15f;
+    for(std::size_t wheel=0;wheel<4;++wheel){
+        const bool front=wheel>=2;
+        const float axleShearPower=.5f*fabsf(front?frontForce:rearForce)*(front?frontSlipSpeed:rearSlipSpeed);
+        const float temperature=g.car.tireTemperatureC[wheel];
+        const float heatGain=axleShearPower*.72f/26000.0f;
+        const SurfaceSample &tireSurface=wheelSurfaces[wheel];
+        const float coolingRate=(.010f+airspeed*.00032f)*(1.0f+tireSurface.wetness*.8f)*
+            (tireSurface.kind==SurfaceKind::Water?2.4f:1.0f);
+        float abrasion=1.0f;
+        if(tireSurface.kind==SurfaceKind::Gravel)abrasion=1.55f;
+        else if(tireSurface.kind==SurfaceKind::Rock)abrasion=1.8f;
+        else if(tireSurface.kind==SurfaceKind::Mud)abrasion=.78f;
+        else if(tireSurface.kind==SurfaceKind::Grass)abrasion=.64f;
+        else if(tireSurface.kind==SurfaceKind::Water)abrasion=.08f;
+        g.car.tireTemperatureC[wheel]=Clamp(temperature+(heatGain+(ambientC-temperature)*coolingRate)*dt,-60.0f,160.0f);
+        g.car.tireWear[wheel]=Clamp(g.car.tireWear[wheel]+axleShearPower*dt*9.0e-10f*abrasion,0.0f,1.0f);
+    }
     const float gravityLateral=-9.80665f*(gradeX*r.x+gradeZ*r.z);
-    const float lateralAcceleration=(frontForce+rearForce)/1900.0f+Vector3DotProduct(aerodynamicAcceleration,r)+gravityLateral;
+    const float lateralAcceleration=(frontForce+rearForce)/vehicleMassKg+Vector3DotProduct(aerodynamicAcceleration,r)+gravityLateral;
     const float yawAcceleration=(frontForce*1.34f-rearForce*1.42f)/4300.0f;
     g.car.velocity.x+=(f.x*longitudinal+r.x*lateralAcceleration)*dt;
     g.car.velocity.z+=(f.z*longitudinal+r.z*lateralAcceleration)*dt;
@@ -690,7 +729,6 @@ void UpdateCar(float dt){
     g.car.engineRpm=Lerp(g.car.engineRpm,rpmTarget,Clamp(dt*2.8f,0,1));
     g.car.p.x+=g.car.velocity.x*dt;g.car.p.z+=g.car.velocity.z*dt;
     g.car.wheelAngle+=g.car.speed*dt/.48f;
-    const std::array<Vector2,4> wheelOffset{{Vector2{-.86f,-1.38f},Vector2{.86f,-1.38f},Vector2{-.86f,1.38f},Vector2{.86f,1.38f}}};
     std::array<float,4> wheelGround{};float frontGround=0,rearGround=0,leftGround=0,rightGround=0,meanGround=0;
     for(std::size_t i=0;i<wheelOffset.size();++i){
         const Vector3 wheel=Local(g.car.p,g.car.yaw,V(wheelOffset[i].x,0,wheelOffset[i].y));const float wh=TerrainHeight(wheel.x,wheel.z);wheelGround[i]=wh;meanGround+=wh*.25f;

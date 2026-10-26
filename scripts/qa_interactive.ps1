@@ -28,7 +28,23 @@ public static class BwQa {
   public static void Tap(IntPtr h, int vk, int ms) { Down(h,vk); Thread.Sleep(ms); Up(h,vk); Thread.Sleep(100); }
   public static void Hold(IntPtr h, int vk, int ms) { Down(h,vk); Thread.Sleep(ms); Up(h,vk); Thread.Sleep(150); }
   public static void ClickClient(IntPtr h,int x,int y) { POINT p=new POINT();p.X=x;p.Y=y;if(!ClientToScreen(h,ref p))throw new Exception("ClientToScreen failed");if(!SetCursorPos(p.X,p.Y))throw new Exception("SetCursorPos failed");Thread.Sleep(80);mouse_event(2,0,0,0,UIntPtr.Zero);Thread.Sleep(100);mouse_event(4,0,0,0,UIntPtr.Zero);Thread.Sleep(180); }
-  public static void Capture(IntPtr h, string path) { RECT r; if(!GetWindowRect(h,out r)) throw new Exception("GetWindowRect failed"); int w=r.Right-r.Left, ht=r.Bottom-r.Top; using(Bitmap b=new Bitmap(w,ht)) { using(Graphics g=Graphics.FromImage(b)) { g.CopyFromScreen(r.Left,r.Top,0,0,new Size(w,ht)); } b.Save(path,ImageFormat.Png); } }
+  public static void Capture(IntPtr h, string path) {
+    string dir=System.IO.Path.GetDirectoryName(path);
+    var before=new System.Collections.Generic.HashSet<string>(System.IO.Directory.GetFiles(dir,"Breakwater_*.png"));
+    Tap(h,0x7B,160);
+    DateTime deadline=DateTime.UtcNow.AddSeconds(4);
+    while(DateTime.UtcNow<deadline) {
+      foreach(string candidate in System.IO.Directory.GetFiles(dir,"Breakwater_*.png")) {
+        if(before.Contains(candidate)) continue;
+        try {
+          var info=new System.IO.FileInfo(candidate);
+          if(info.Length>1024) { System.IO.File.Move(candidate,path); return; }
+        } catch(System.IO.IOException) { }
+      }
+      Thread.Sleep(80);
+    }
+    throw new Exception("The game did not produce an internal renderer screenshot.");
+  }
 }
 "@
 $p = Start-Process -FilePath $exe -WorkingDirectory $root -PassThru
@@ -75,7 +91,7 @@ try {
   $runText = $allLog.Substring($priorLog)
   if ($runText -notmatch 'mission-start') { throw 'This QA run did not log mission-start; its screenshots are not vehicle evidence.' }
   if ($runText -notmatch 'enter-car') { throw 'This QA run did not log enter-car; its screenshots are not vehicle evidence.' }
-  "timestamp=$stamp`r`nprocess_id=$($p.Id)`r`ncar_controls=attempted`r`noutput_screenshots=Title,Foot,Car,CarCockpit,CarDriving,AfterCar`r`n" | Add-Content -LiteralPath $qaLog
+  "timestamp=$stamp`r`nprocess_id=$($p.Id)`r`ncar_controls=attempted`r`ncapture_source=game_internal_renderer`r`noutput_screenshots=Title,Foot,Car,CarCockpit,CarDriving,AfterCar`r`n" | Add-Content -LiteralPath $qaLog
   Write-Output "QA screenshots written with stamp $stamp"
 } finally {
   if ($p -and !$p.HasExited) {

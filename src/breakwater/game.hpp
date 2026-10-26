@@ -103,6 +103,8 @@ struct Vehicle {
     bool hasImpactMark{};
     std::array<float,4> wheelTravel{},wheelTravelVelocity{};
     std::array<float,4> tireHealth{{1.0f,1.0f,1.0f,1.0f}};
+    std::array<float,4> tireTemperatureC{{20.0f,20.0f,20.0f,20.0f}};
+    std::array<float,4> tireWear{};
     float tailRotorAngle{},gearExtension{1.0f},speedBrakeExtension{};
     float wreckAge{};
     float controlAileron{},controlElevator{},controlRudder{};

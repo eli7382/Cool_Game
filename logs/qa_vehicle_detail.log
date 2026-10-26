@@ -1,0 +1,47 @@
+timestamp=20261023_171252
+executable=BreakwaterDetail.exe
+views=car-chase,cockpit,heli-chase,cockpit,plane-chase,cockpit
+
+timestamp=20261023_235056
+executable=game.exe
+views=car-chase,cockpit,heli-chase,cockpit,plane-chase,cockpit
+
+timestamp=20261024_103753
+executable=game.exe
+views=car-chase,cockpit,heli-chase,cockpit,plane-chase,cockpit
+
+timestamp=2026-10-24
+status=excluded_invalid
+capture_mode=desktop-window-copy
+reason=foreground Codex/Settings window occluded the game capture region; images were retained but not used as visual evidence
+replacement_evidence=screenshots/Breakwater_LiveQA_* from internal renderer framebuffer capture; nine processes exited 0
+timestamp=20261026_210126
+executable=game.exe
+views=car-chase,cockpit,heli-chase,cockpit,plane-chase,cockpit
+
+timestamp=20261026_212705
+executable=game.exe
+views=car-chase,cockpit,heli-chase,cockpit,plane-chase,cockpit
+
+timestamp=20261026_212856
+executable=build/bin/Release/game.exe
+capture_source=game_internal_renderer
+controls=static in-game QA camera presets; no vehicle-operation claim
+views=car-chase,car-cockpit,heli-chase,heli-cockpit,plane-chase,plane-cockpit
+CarChase=C:\AI-Game-Benchmark\runs\luna-max\screenshots\Breakwater_Detail_20261026_212856_CarChase.png (2837053 bytes)
+CarCockpit=C:\AI-Game-Benchmark\runs\luna-max\screenshots\Breakwater_Detail_20261026_212856_CarCockpit.png (2686808 bytes)
+HeliChase=C:\AI-Game-Benchmark\runs\luna-max\screenshots\Breakwater_Detail_20261026_212856_HeliChase.png (5706076 bytes)
+HeliCockpit=C:\AI-Game-Benchmark\runs\luna-max\screenshots\Breakwater_Detail_20261026_212856_HeliCockpit.png (3390184 bytes)
+PlaneChase=C:\AI-Game-Benchmark\runs\luna-max\screenshots\Breakwater_Detail_20261026_212856_PlaneChase.png (4865880 bytes)
+PlaneCockpit=C:\AI-Game-Benchmark\runs\luna-max\screenshots\Breakwater_Detail_20261026_212856_PlaneCockpit.png (3999071 bytes)
+CAPTURE_AUDIT
+run=20261026_210126
+capture_valid=false
+reason=external CopyFromScreen captured Codex browser content; excluded
+run=20261026_212705
+capture_source=game-internal F12
+limitation=car and helicopter entry logged; no enter-plane event was logged, so plane-labelled images are excluded
+run=20261026_212856
+capture_source=game-internal QA camera modes
+views=car,car-cockpit,heli,heli-cockpit,plane,plane-cockpit
+scope=valid static renderer evidence; does not prove vehicle operation or photoreal quality
