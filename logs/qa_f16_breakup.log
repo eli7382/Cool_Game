@@ -37,3 +37,14 @@ screenshot=C:\AI-Game-Benchmark\runs\luna-max\screenshots\Breakwater_17930373815
 2.03,f16-wing-fragment-ground-contact,side=port,surface=terrain,x=164.7,y=1.3,z=179.4,airframe-distance-m=17.7
 3.14,qa-plane-tree-impact-confirmed,wreck-age-s=2.82,fuselage-grounded=1,wing-fragments=1
 summary,elapsed=3.14,shots=0,hits=0,accuracy=0.000,gates=0,vehicles=0,car_mps=0.00,car_x=7.0,car_z=165.0,car_damage=0.00,plane_mps=61.19,plane_x=173.9,plane_z=176.1,plane_alt_m=1.4,plane_vspeed=0.0,plane_pitch_deg=15.9,plane_yaw_deg=180.0,plane_roll_deg=44.6,heli_mps=0.00,heli_x=25.0,heli_z=174.0,heli_alt_m=1.2,heli_vspeed=0.0,peak_altitude_m=8.99,footprint_marks=0,tire_track_segments=0
+timestamp=2026-10-26T20:52:45+02:00
+result=tree-strike-breakup-and-ground-contact
+executable_exit_code=0
+screenshot=C:\AI-Game-Benchmark\runs\luna-max\screenshots\Breakwater_1793040774430_1.png
+0.00,qa-plane-tree-impact-fixture,seed=910,x=173.0,z=157.2,height=14.7,clearance-m=51.9
+0.33,f16-wing-breakaway,side=port,fragment-speed-ms=29.3,airframe-speed-ms=13.5
+0.33,plane-tree-impact,tree-seed=910,part=NOSE,material=wood,crown=1,speed-ms=61.3,stem-radius-m=0.69,break-speed-ms=43.1,tree-damage=1.00,tree-felled=0
+1.20,f16-fuselage-ground-contact,surface=terrain,height-m=1.35
+2.04,f16-wing-fragment-ground-contact,side=port,surface=terrain,x=164.7,y=1.2,z=179.9,airframe-distance-m=17.9
+3.14,qa-plane-tree-impact-confirmed,wreck-age-s=2.82,fuselage-grounded=1,wing-fragments=1
+summary,elapsed=3.14,shots=0,hits=0,accuracy=0.000,gates=0,vehicles=0,car_mps=0.00,car_x=7.0,car_z=165.0,car_damage=0.00,plane_mps=61.19,plane_x=173.9,plane_z=176.5,plane_alt_m=1.4,plane_vspeed=0.0,plane_pitch_deg=16.0,plane_yaw_deg=180.0,plane_roll_deg=44.9,heli_mps=0.00,heli_x=25.0,heli_z=174.0,heli_alt_m=1.2,heli_vspeed=0.0,peak_altitude_m=8.99,footprint_marks=0,tire_track_segments=0

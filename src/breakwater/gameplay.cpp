@@ -141,6 +141,20 @@ PlaneTreeImpact FindPlaneTreeImpact(const Vehicle &before,const Vehicle &after){
     std::array<AircraftProbe,20> probes{};int probeCount=0;
     for(int i=0;i<9;++i){const float station=-6.8f+i*1.7f;probes[(size_t)probeCount++]={station,0,0,.62f,station>3.0f?"NOSE":"FUSELAGE"};}
     for(int i=-5;i<=5;++i)probes[(size_t)probeCount++]={.42f,(float)i,0,.52f,"WING"};
+    const auto angularDelta=[](float a,float b){return std::remainder(b-a,2.0f*PI);};
+    const float yawDelta=angularDelta(before.yaw,after.yaw),pitchDelta=angularDelta(before.pitch,after.pitch),rollDelta=angularDelta(before.roll,after.roll);
+    // A straight chord between each probe's frame endpoints misses the arc swept
+    // by a wingtip during a fast bank or yaw. Subdivide translation and attitude
+    // together so every collision segment stays below roughly 0.35 m of travel.
+    const float sweepDistance=Vector3Distance(before.p,after.p)+9.5f*(fabsf(yawDelta)+fabsf(pitchDelta)+fabsf(rollDelta));
+    const int sweepSteps=std::max(1,std::min(256,(int)std::ceil(sweepDistance/.35f)));
+    const auto poseAt=[&](float t){
+        Vehicle pose=before;pose.p=Add(before.p,Mul(Sub(after.p,before.p),t));
+        pose.yaw=before.yaw+yawDelta*t;pose.pitch=before.pitch+pitchDelta*t;pose.roll=before.roll+rollDelta*t;return pose;
+    };
+    std::array<std::array<Vector3,257>,20> probePath{};
+    for(int i=0;i<probeCount;++i)for(int step=0;step<=sweepSteps;++step)
+        probePath[(size_t)i][(size_t)step]=PlaneProbeWorld(poseAt((float)step/(float)sweepSteps),probes[(size_t)i]);
     PlaneTreeImpact best{};float earliest=2.0f;
     const Vector3 motionMid=Mul(Add(before.p,after.p),.5f);const float aircraftMotion=Vector3Distance(before.p,after.p);
     for(TreeCollider &tree:g.treeColliders){
@@ -148,26 +162,29 @@ PlaneTreeImpact FindPlaneTreeImpact(const Vehicle &before,const Vehicle &after){
         const float broad=aircraftMotion*.5f+tree.crownRadius+8.0f;
         if(DistXZ(motionMid,tree.base)>broad)continue;
         for(int i=0;i<probeCount;++i){
-            const AircraftProbe &probe=probes[(size_t)i];const Vector3 a=PlaneProbeWorld(before,probe),b=PlaneProbeWorld(after,probe);
-            float along{};const Vector3 point=ClosestPointOnSegment(a,b,tree.base,along);
-            const float vertical=point.y-tree.base.y;if(vertical<-.15f||vertical>tree.height+.25f)continue;
-            const float dx=point.x-tree.base.x,dz=point.z-tree.base.z,c=cosf(tree.yaw),s=sinf(tree.yaw);
-            const float lx=dx*c-dz*s,lz=dx*s+dz*c;
-            const float shapeScale=std::max(tree.spreadX,tree.spreadZ);
-            const float rootT=vertical/std::max(.1f,tree.height);
-            const float trunkRadius=Lerp(tree.trunkBaseRadius,tree.trunkTopRadius,Clamp(rootT,0,1));
-            const float rx=std::max(.025f,trunkRadius*tree.spreadX+probe.radius),rz=std::max(.025f,trunkRadius*tree.spreadZ+probe.radius);
-            const float trunkNorm=(lx*lx)/(rx*rx)+(lz*lz)/(rz*rz);
-            const float rootRadius=tree.buttressRadius*shapeScale+probe.radius;
-            const float rootNorm=(lx*lx+lz*lz)/(rootRadius*rootRadius);
-            const float crownRadius=tree.crownRadius*shapeScale+probe.radius;
-            const bool buttress=vertical<tree.height*.10f&&rootNorm<1.0f;
-            const bool trunk=trunkNorm<1.0f;
-            const bool canopy=vertical>tree.height*.10f&&vertical<tree.height*.98f&&lx*lx+lz*lz<crownRadius*crownRadius;
-            if(!buttress&&!trunk&&!canopy)continue;
-            const float frameFraction=along;
-            if(frameFraction>=earliest)continue;
-            earliest=frameFraction;best.tree=&tree;best.point=point;best.part=probe.part;best.canopy=canopy&&!buttress&&!trunk;
+            const AircraftProbe &probe=probes[(size_t)i];
+            for(int step=0;step<sweepSteps;++step){
+                const Vector3 a=probePath[(size_t)i][(size_t)step],b=probePath[(size_t)i][(size_t)step+1];float along{};
+                const Vector3 point=ClosestPointOnSegment(a,b,tree.base,along);
+                const float vertical=point.y-tree.base.y;if(vertical<-.15f||vertical>tree.height+.25f)continue;
+                const float dx=point.x-tree.base.x,dz=point.z-tree.base.z,c=cosf(tree.yaw),s=sinf(tree.yaw);
+                const float lx=dx*c-dz*s,lz=dx*s+dz*c;
+                const float shapeScale=std::max(tree.spreadX,tree.spreadZ);
+                const float rootT=vertical/std::max(.1f,tree.height);
+                const float trunkRadius=Lerp(tree.trunkBaseRadius,tree.trunkTopRadius,Clamp(rootT,0,1));
+                const float rx=std::max(.025f,trunkRadius*tree.spreadX+probe.radius),rz=std::max(.025f,trunkRadius*tree.spreadZ+probe.radius);
+                const float trunkNorm=(lx*lx)/(rx*rx)+(lz*lz)/(rz*rz);
+                const float rootRadius=tree.buttressRadius*shapeScale+probe.radius;
+                const float rootNorm=(lx*lx+lz*lz)/(rootRadius*rootRadius);
+                const float crownRadius=tree.crownRadius*shapeScale+probe.radius;
+                const bool buttress=vertical<tree.height*.10f&&rootNorm<1.0f;
+                const bool trunk=trunkNorm<1.0f;
+                const bool canopy=vertical>tree.height*.10f&&vertical<tree.height*.98f&&lx*lx+lz*lz<crownRadius*crownRadius;
+                if(!buttress&&!trunk&&!canopy)continue;
+                const float frameFraction=((float)step+along)/(float)sweepSteps;
+                if(frameFraction>=earliest)continue;
+                earliest=frameFraction;best.tree=&tree;best.point=point;best.part=probe.part;best.canopy=canopy&&!buttress&&!trunk;
+            }
         }
     }
     return best;
@@ -1257,6 +1274,28 @@ bool RunBallisticImpactQA(){
             if(FindStaticBallisticContact(origin,Mul(radial,-1),obstacle.radius+10.0f,contact)&&contact.material==BallisticMaterial::Concrete){structureHit=true;break;}}
     }
     check("structure-material",structureHit);
+    bool f16RotationalSweep=false,f16SweepEndpointsClear=false;
+    if(target){
+        // Isolate the sweep fixture from the map's dense forest, then restore the
+        // live collider vector without changing any authored world-tree state.
+        std::vector<TreeCollider> liveTrees;liveTrees.swap(g.treeColliders);
+        TreeCollider isolated=*target;isolated.base=V(0,0,0);isolated.height=10.0f;isolated.trunkBaseRadius=.20f;
+        isolated.trunkTopRadius=.12f;isolated.buttressRadius=.24f;isolated.crownRadius=1.0f;isolated.spreadX=isolated.spreadZ=1.0f;
+        isolated.yaw=0;isolated.felled=false;isolated.lowPresetVisible=true;isolated.damage=isolated.crownDamage=0;
+        g.treeColliders.push_back(isolated);TreeCollider *sweepTarget=&g.treeColliders.back();
+        Vehicle before{},after{};
+        before.p=V(-5.0f,.55f,.42f);before.yaw=-1.04719755f;
+        after=before;after.yaw=1.04719755f;
+        const PlaneTreeImpact startContact=FindPlaneTreeImpact(before,before),endContact=FindPlaneTreeImpact(after,after);
+        const PlaneTreeImpact sweptContact=FindPlaneTreeImpact(before,after);
+        f16SweepEndpointsClear=!startContact.tree&&!endContact.tree;
+        f16RotationalSweep=f16SweepEndpointsClear&&sweptContact.tree==sweepTarget&&!sweptContact.canopy;
+        LogEvent(TextFormat("qa-f16-rotation,endpoints-clear=%d,start-seed=%d,end-seed=%d,swept-seed=%d,expected-seed=%d,part=%s,canopy=%d",
+                            f16SweepEndpointsClear?1:0,startContact.tree?startContact.tree->seed:-1,endContact.tree?endContact.tree->seed:-1,
+                            sweptContact.tree?sweptContact.tree->seed:-1,sweepTarget->seed,sweptContact.part,sweptContact.canopy?1:0));
+        g.treeColliders.clear();g.treeColliders.swap(liveTrees);
+    }
+    check("f16-rotational-wing-sweep",f16RotationalSweep);
     bool blastDamage=false,crownResponse=false;
     if(target){
         const float beforeTree=target->damage,beforeCrown=target->crownDamage;
