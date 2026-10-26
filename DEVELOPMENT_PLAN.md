@@ -474,3 +474,18 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - [ ] Expand damage response across impact location, angle, speed, mass, stores, structures and terrain; calibrate thresholds against reliable aircraft evidence.
 - [ ] Verify ordinary player-controlled flight, weapons, landing and impact routes; this fixture is scripted and does not establish natural gameplay.
 - [ ] Continue shape- and material-specific collision work across trees, buildings, terrain, water, vehicles and debris.
+
+## F-16 wing-surface detail continuation — 2026-10-26
+
+- Extended the authored wing-detail mesh across the lower skin with the same five fine seam paths, three framed access covers per side, and two rows of flush fasteners. The details use aircraft-scale dimensions and stay in the existing combined detail mesh, so the model remains at 112 glTF mesh nodes and 156 runtime primitives rather than adding placeholder objects.
+- Fixed the Blender text-to-mesh export naming so service stencils keep their authored mesh-data names and the generated runtime index ranges validate. The first export correctly stopped at that validation after saving its preview; the corrected export completed with exit code 0.
+- Blender 5.2.3 regenerated the editable scene (16,998,788 bytes), GLB (14,779,700 bytes), mesh map and generated header. Five Blender inspection views rendered successfully. High-detail and underside/intake views were reviewed; the new geometry does not close the photoreal fidelity gap.
+- The pinned Windows build exited 0 without compiler warnings. The rebuilt game rendered an F-16 front-view fixture (exit 0), then reran the tree-breakup fixture (exit 0). The latest seed 910 capture records the port wing fragment contacting terrain at 2.03 simulated seconds, 17.7 m from the fuselage; the fuselage contacts at 1.18 s. The airframe remains stylized in the actual game render.
+- Current executable: 1,890,304 bytes, SHA-256 594C5460A55426040F9DFB5A7686C70576D377F67386D529582A3A576D6C6D1B. No ImageGen call was made; cumulative ImageGen count remains 64. FPS/GPU/resource measurements were not collected for this pass.
+
+### Current visual and runtime gates
+
+- [x] Regenerate and render the detailed F-16 scene; rebuild the pinned Windows executable.
+- [x] Confirm the updated model loads in the game and the seeded breakup still runs.
+- [ ] Match the approved photoreal orthographic mockup in the actual game renderer; this pass remains a modest surface-detail improvement, not a fidelity pass.
+- [ ] Validate the full flight/weapon/landing loop and broader physical damage with interactive play and measured evidence.

@@ -738,6 +738,10 @@ def wing_top_z(y, t):
     xle,chord,zc=interp_station(wing_stations,abs(y))
     return zc+0.012*chord*math.sin(math.pi*t)+profile_thickness(t,chord)+.008
 
+def wing_bottom_z(y, t):
+    xle,chord,zc=interp_station(wing_stations,abs(y))
+    return zc+0.012*chord*math.sin(math.pi*t)-profile_thickness(t,chord)-.008
+
 b=[[],[],[]]
 for side in (-1,1):
     # Leading/trailing edges, flap and aileron outlines, access panels.
@@ -769,6 +773,34 @@ for side in (-1,1):
         xle,chord,zc=interp_station(wing_stations,y)
         x=xle-chord*.69;z=wing_top_z(side*y,.69)+.006
         add_cylinder(b,(x,side*(y-.055),z),(x,side*(y+.055),z),.012,8,10)
+    # The lower skin gets its own panel boundaries, fastener lines and flush
+    # access covers; it should hold detail when the aircraft banks or is parked.
+    for t in (.035,.115,.66,.69,.965):
+        last=None
+        for yi in range(12,47):
+            y=side*yi*.1
+            if abs(y)>4.62:continue
+            xle,chord,zc=interp_station(wing_stations,abs(y))
+            p=(xle-chord*t,y,wing_bottom_z(y,t))
+            if last:add_cylinder(b,last,p,.0020,24,5)
+            last=p
+    for y0,y1,t0,t1 in ((1.94,2.42,.24,.45),(2.88,3.34,.29,.47),(3.58,3.98,.34,.52)):
+        corners=[]
+        for y,t in ((y0,t0),(y1,t0),(y1,t1),(y0,t1),(y0,t0)):
+            xle,chord,zc=interp_station(wing_stations,y)
+            corners.append((xle-chord*t,side*y,wing_bottom_z(side*y,t)))
+        for a,p in zip(corners,corners[1:]):add_cylinder(b,a,p,.0022,24,6)
+        for y,t in ((y0,t0),(y1,t0),(y1,t1),(y0,t1)):
+            xle,chord,zc=interp_station(wing_stations,y)
+            add_ellipsoid(b,(xle-chord*t,side*y,wing_bottom_z(side*y,t)-.002),(.009,.009,.0025),8,6,8)
+    # Fine rows of flush screws follow the service-panel and control-surface
+    # boundaries rather than appearing as repeated ornament across the skin.
+    for yi in range(18,45,2):
+        y=side*yi*.1
+        for t in (.115,.69):
+            xle,chord,zc=interp_station(wing_stations,abs(y))
+            add_ellipsoid(b,(xle-chord*t,y,wing_top_z(y,t)+.003),(.009,.008,.0025),8,6,8)
+            add_ellipsoid(b,(xle-chord*t,y,wing_bottom_z(y,t)-.003),(.009,.008,.0025),8,6,8)
 keep(simple_mesh("Wing detail | panel seams, inspection covers and flush fasteners",b,[MAT[24],MAT[8]]))
 
 # Fuselage skin joints and service panels follow the actual curved airframe skin.
@@ -879,7 +911,7 @@ def add_text(name, body, loc, size, rotation, mat):
     ob.data.materials.append(mat)
     ob.data.align_x="CENTER";ob.data.align_y="CENTER"
     bpy.ops.object.convert(target="MESH")
-    ob=bpy.context.object;ob.name=name
+    ob=bpy.context.object;ob.name=name;ob.data.name=name+"Mesh"
     aircraft.append(ob)
     return ob
 
