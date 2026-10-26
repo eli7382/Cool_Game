@@ -376,7 +376,7 @@ void ShutdownAudioSystem(){
 
 int main(int argc,char **argv) {
     using namespace bw;
-    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarLoadTransferPassed=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
+    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarLoadTransferPassed=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaHostileRoadVehicle=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
     for(int i=1;i<argc;++i){
         const std::string_view arg(argv[i]);
         constexpr std::string_view prefix="--qa-capture=";
@@ -394,6 +394,7 @@ int main(int argc,char **argv) {
         if(arg=="--qa-aircombat")qaAirCombat=true;
         if(arg=="--qa-airgun")qaAirGun=true;
         if(arg=="--qa-combat")qaCombat=true;
+        if(arg=="--qa-hostile-road-vehicle")qaHostileRoadVehicle=true;
         if(arg=="--qa-ballistics")qaBallistics=true;
         if(arg=="--qa-safehouse")qaSafehouse=true;
         if(arg=="--qa-safehouse-descent")qaSafehouseDescent=true;
@@ -406,6 +407,13 @@ int main(int argc,char **argv) {
     if(!qaCapture.empty()){
         StartMission();g.screen=Screen::Playing;g.clock=5.4f;g.graphics=qaCaptureLow?GraphicsMode::Low:GraphicsMode::High;
         if(qaMidTide&&qaCapture=="coastal-water"){g.water=-.6f;g.waterTarget=-.6f;}
+        if(qaCapture=="hostile-road-vehicle"){
+            HostileRoadVehicle &target=g.hostileRoadVehicles[0];const Vector3 observer=Add(target.vehicle.p,Mul(Right(target.vehicle.yaw),7.8f));
+            g.player.p=V(observer.x,TerrainHeight(observer.x,observer.z)+1.0f,observer.z);g.player.firstPerson=true;
+            const Vector3 cameraEye=Add(g.player.p,V(0,.55f,0)),aim=Sub(Add(target.vehicle.p,V(0,1.05f,0)),cameraEye);
+            g.cameraYaw=atan2f(aim.x,aim.z);g.cameraPitch=atan2f(aim.y,sqrtf(aim.x*aim.x+aim.z*aim.z));g.cameraDistance=5.4f;g.cameraActualDistance=5.4f;g.cameraInitialized=false;
+            LogEvent("qa-capture-hostile-road-vehicle");
+        }
         if(qaCapture=="car"||qaCapture=="car-cockpit"||qaCapture=="car-front"||qaCapture=="car-suspension"||qaCapture=="car-wheel"||qaCapture=="car-impact"){
             g.vehicle=VehicleKind::Car;g.car.speed=0.0f;g.car.yaw=.52f;g.cameraDistance=(qaCapture=="car"||qaCapture=="car-front"||qaCapture=="car-suspension"||qaCapture=="car-wheel"||qaCapture=="car-impact")?5.2f:1.55f;
             if(qaCapture=="car-impact"){
@@ -438,6 +446,8 @@ int main(int argc,char **argv) {
                 // Keep the seeded damage on the camera-facing cabin panel.
                 g.heli.lastImpactLocal=V(2.10f,1.12f,.66f);g.heli.impactSeverity=.80f;g.heli.hasImpactMark=true;
             }
+        }else if(qaCapture=="hostile-road-vehicle"){
+            g.vehicle=VehicleKind::Foot;g.player.firstPerson=true;
         }else if(qaCapture=="character"){
             g.vehicle=VehicleKind::Foot;g.player.firstPerson=false;g.player.p=V(0,TerrainHeight(0,165)+1,165);
             g.player.yaw=0;g.cameraYaw=0;g.cameraPitch=-.08f;g.cameraDistance=4.2f;
@@ -587,6 +597,26 @@ int main(int argc,char **argv) {
         g.camera.position=Add(Add(Add(g.player.p,V(0,1.62f,0)),Mul(back,4.4f)),Mul(Right(g.cameraYaw),.78f));g.camera.target=Add(g.camera.position,Mul(aimDirection,120.0f));g.camera.up=V(0,1,0);g.cameraInitialized=true;
         g.screenshotRequested=true;LogEvent("qa-combat-fixture-target-16m");
     }
+    if(qaHostileRoadVehicle&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding){
+        StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Foot;g.graphics=GraphicsMode::High;
+        for(Enemy &enemy:g.enemies)enemy.alive=false;
+        g.player.p=V(0,TerrainHeight(0,165)+1.0f,165);g.player.firstPerson=false;g.player.selectedWeapon=static_cast<std::size_t>(WeaponKind::AssaultRifle);
+        HostileRoadVehicle &target=g.hostileRoadVehicles[0];target.alive=true;target.wrecked=false;target.health=230;target.shotsFired=0;target.distanceDriven=0;target.fireCooldown=0;target.audioCooldown=0;target.announced=true;
+        target.vehicle=Vehicle{};target.vehicle.p=V(g.player.p.x+30.0f,TerrainHeight(g.player.p.x+30.0f,g.player.p.z+18.0f)+.72f,g.player.p.z+18.0f);
+        target.vehicle.yaw=PI;target.vehicle.engineRpm=.25f;target.patrolCenter=target.vehicle.p;target.turretYaw=PI;target.tireTracksInitialized=false;
+        g.cameraDistance=4.4f;g.cameraActualDistance=4.4f;g.cameraYaw=0.0f;g.cameraPitch=0.0f;
+        const Vector3 aimPoint=Add(target.vehicle.p,V(0,.88f,0));
+        for(int pass=0;pass<4;++pass){
+            const float cp=cosf(g.cameraPitch);const Vector3 back=V(-sinf(g.cameraYaw)*cp,-sinf(g.cameraPitch),-cosf(g.cameraYaw)*cp);
+            const Vector3 eye=Add(Add(Add(g.player.p,V(0,1.62f,0)),Mul(back,4.4f)),Mul(Right(g.cameraYaw),.78f));
+            const Vector3 aim=Sub(aimPoint,eye);g.cameraYaw=atan2f(aim.x,aim.z);g.cameraPitch=atan2f(aim.y,sqrtf(aim.x*aim.x+aim.z*aim.z));
+        }
+        const float cp=cosf(g.cameraPitch);const Vector3 back=V(-sinf(g.cameraYaw)*cp,-sinf(g.cameraPitch),-cosf(g.cameraYaw)*cp);
+        g.camera.position=Add(Add(Add(g.player.p,V(0,1.62f,0)),Mul(back,4.4f)),Mul(Right(g.cameraYaw),.78f));
+        const Vector3 direction=V(sinf(g.cameraYaw)*cp,sinf(g.cameraPitch),cosf(g.cameraYaw)*cp);
+        g.camera.target=Add(g.camera.position,Mul(direction,120.0f));g.camera.up=V(0,1,0);g.cameraInitialized=true;
+        g.qaCombatAutoFirePending=true;g.qaHostileRoadVehicleTest=true;LogEvent("qa-hostile-road-vehicle-fixture-start");
+    }
     EnableCursor();
     while(!WindowShouldClose()&&!g.exitRequested){
         const float dt=std::min(GetFrameTime(),0.05f);
@@ -611,6 +641,13 @@ int main(int argc,char **argv) {
             const bool passed=maxTemperature>20.5f&&totalWear>0.0f&&qaCarLoadTransferPassed;
             LogEvent(TextFormat("qa-car-tire-thermal-result,pass=%d,load-transfer-pass=%d,max-temp-c=%.2f,total-wear=%.8f,peak-speed-mps=%.2f",passed?1:0,qaCarLoadTransferPassed?1:0,maxTemperature,totalWear,g.maxCar));
             g.exitRequested=true;
+        }
+        if(qaHostileRoadVehicle&&!g.exitRequested&&g.elapsed>=5.0f){
+            const HostileRoadVehicle &target=g.hostileRoadVehicles[0];
+            const bool passed=target.shotsFired>=4&&target.distanceDriven>.25f&&target.health<230&&g.shots>=4&&g.damageTaken>0.0f;
+            LogEvent(TextFormat("qa-hostile-road-vehicle-result,pass=%d,enemy-shots=%d,enemy-hits-damage=%.2f,player-rounds=%d,vehicle-health=%d,vehicle-distance-m=%.2f",
+                                passed?1:0,target.shotsFired,g.damageTaken,g.shots,target.health,target.distanceDriven));
+            g.screenshotRequested=true;g.exitRequested=true;
         }
         UpdateAudio(dt);
         if(qaTaskTour&&qaTaskStage<4&&g.taskAnnounced[(std::size_t)qaTaskStage]){

@@ -136,6 +136,15 @@ struct HostileRotorcraft {
     int health{100};
     bool alive{},announced{};
 };
+struct HostileRoadVehicle {
+    Vehicle vehicle{};
+    Vector3 patrolCenter{};
+    float patrolPhase{},fireCooldown{},audioCooldown{},trackCooldown{},turretYaw{},distanceDriven{};
+    int health{230},shotsFired{};
+    std::array<Vector3,4> lastTireContact{};
+    bool tireTracksInitialized{};
+    bool alive{true},wrecked{},announced{};
+};
 struct GuidedIRMissile {
     Vector3 p{},velocity{};
     float age{},life{7.0f};
@@ -160,6 +169,7 @@ struct Game {
     std::array<bool,4> taskAnnounced{};
     std::vector<Enemy> enemies;
     std::array<HostileRotorcraft,2> hostileRotorcraft{};
+    std::array<HostileRoadVehicle,2> hostileRoadVehicles{};
     std::vector<GuidedIRMissile> guidedMissiles;
     std::vector<Particle> particles;
     std::vector<Tracer> tracers;
@@ -192,7 +202,7 @@ struct Game {
     std::array<Sound,static_cast<size_t>(NarrationCue::Count)> narrator{};
     std::deque<NarrationCue> narratorQueue;
     ProceduralAudio coastAudio{},scoreAudio{},carAudio{},planeAudio{},heliAudio{};
-    bool audioReady{},muted{},subtitles{true},spatialAudio{true},nightMix{},fullscreen{},showMap{true},missionStarted{},missionComplete{},settingsReturnPause{},exitRequested{},screenshotRequested{},cameraInitialized{},qaCaptureActive{},qaCaptureFront{},qaCaptureWheelView{},qaCaptureWorldVehicles{},qaCombatAim{},qaSafehouse{},qaCombatAutoFirePending{},qaCombatProjectionLogged{},qaTaskInteractPending{},qaAAMissileTest{},qaAAMissileLaunchPending{},qaAAGunTest{},qaPlaneTreeImpact{},qaCarTreeImpact{},qaCarTreeImpactActive{};
+    bool audioReady{},muted{},subtitles{true},spatialAudio{true},nightMix{},fullscreen{},showMap{true},missionStarted{},missionComplete{},settingsReturnPause{},exitRequested{},screenshotRequested{},cameraInitialized{},qaCaptureActive{},qaCaptureFront{},qaCaptureWheelView{},qaCaptureWorldVehicles{},qaCombatAim{},qaSafehouse{},qaCombatAutoFirePending{},qaCombatProjectionLogged{},qaTaskInteractPending{},qaAAMissileTest{},qaAAMissileLaunchPending{},qaAAGunTest{},qaPlaneTreeImpact{},qaCarTreeImpact{},qaCarTreeImpactActive{},qaHostileRoadVehicleTest{};
     Vector3 qaCarTreeImpactTarget{};int qaCarTreeImpactTargetSeed{-1},qaCarTreeProbeFrames{};
     int qaCaptureHouseView{};
     float masterVolume{0.82f},effectsVolume{0.82f},ambienceVolume{0.7f},musicVolume{0.28f},voiceVolume{0.95f};

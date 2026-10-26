@@ -259,16 +259,34 @@ Vector3 WeaponMuzzle(){
     if(g.vehicle==VehicleKind::Helicopter)return Local(g.heli.p,g.heli.yaw,V(.42f,.83f,1.02f));
     return g.camera.position;
 }
-Enemy *TraceEnemy(Vector3 origin,Vector3 direction,float range,float radius,Vector3 &impact,BallisticContact *worldContact=nullptr){
+bool RayHostileCar(Vector3 origin,Vector3 direction,float maximum,const Vehicle &vehicle,float &distance){
+    const Vector3 center=Add(vehicle.p,V(0,.94f,0));
+    const Vector3 offset=Sub(origin,center),right=Right(vehicle.yaw),forward=Forward(vehicle.yaw);
+    const float originLocal[3]{Vector3DotProduct(offset,right),offset.y,Vector3DotProduct(offset,forward)};
+    const float directionLocal[3]{Vector3DotProduct(direction,right),direction.y,Vector3DotProduct(direction,forward)};
+    constexpr float halfExtent[3]{1.20f,.74f,2.42f};float nearDistance=0.0f,farDistance=maximum;
+    for(int axis=0;axis<3;++axis){
+        if(fabsf(directionLocal[axis])<1.0e-6f){if(fabsf(originLocal[axis])>halfExtent[axis])return false;continue;}
+        const float inverse=1.0f/directionLocal[axis];float a=(-halfExtent[axis]-originLocal[axis])*inverse,b=(halfExtent[axis]-originLocal[axis])*inverse;
+        if(a>b)std::swap(a,b);nearDistance=std::max(nearDistance,a);farDistance=std::min(farDistance,b);
+        if(nearDistance>farDistance)return false;
+    }
+    distance=nearDistance>=0.0f?nearDistance:farDistance;return distance>=0.0f&&distance<=maximum;
+}
+Enemy *TraceEnemy(Vector3 origin,Vector3 direction,float range,float radius,Vector3 &impact,BallisticContact *worldContact=nullptr,HostileRoadVehicle **roadTarget=nullptr){
     BallisticContact staticHit{};FindStaticBallisticContact(origin,direction,range,staticHit);
-    float nearest=staticHit.valid?staticHit.distance:range;Enemy *target=nullptr;Vector3 end=staticHit.valid?staticHit.point:Add(origin,Mul(direction,range));
+    float nearest=staticHit.valid?staticHit.distance:range;Enemy *target=nullptr;HostileRoadVehicle *roadVehicle=nullptr;Vector3 end=staticHit.valid?staticHit.point:Add(origin,Mul(direction,range));
     for(auto &e:g.enemies)if(e.alive){
         const Vector3 center=V(e.p.x,e.p.y+1.02f,e.p.z),to=Sub(center,origin);const float along=Vector3DotProduct(to,direction);
         if(along<0||along>nearest)continue;
         const Vector3 closest=Add(origin,Mul(direction,along));
         if(Vector3Distance(closest,center)<radius){nearest=along;target=&e;end=center;}
     }
-    impact=end;if(worldContact)*worldContact=target?BallisticContact{}:staticHit;return target;
+    for(HostileRoadVehicle &candidate:g.hostileRoadVehicles)if(candidate.alive){
+        float along=0.0f;if(!RayHostileCar(origin,direction,nearest,candidate.vehicle,along)||along>=nearest)continue;
+        nearest=along;target=nullptr;roadVehicle=&candidate;end=Add(origin,Mul(direction,along));
+    }
+    impact=end;if(worldContact)*worldContact=(target||roadVehicle)?BallisticContact{}:staticHit;if(roadTarget)*roadTarget=roadVehicle;return target;
 }
 void ApplySurfaceImpact(BallisticContact contact,Vector3 point,float damage,bool playAudio){
     BallisticMaterial material=contact.material;if(material==BallisticMaterial::None)material=BallisticMaterialForSurface(point.x,point.z);
@@ -291,6 +309,26 @@ void ApplyEnemyDamage(Enemy &enemy,float damage,Vector3 point){
     enemy.health-=damage;enemy.alert=1;enemy.suppression=std::max(enemy.suppression,.8f);g.hits++;g.hitmarkerTimer=.20f;
     SpawnParticles(point,Color{177,81,65,225},5,1.7f,.055f);
     if(enemy.health<=0){enemy.alive=false;g.killmarkerTimer=.48f;SpawnParticles(point,Color{76,70,61,230},17,2.4f,.095f);Notify(enemy.leader?"CREW LEADER DOWN":"HOSTILE NEUTRALIZED",1.4f);LogEvent("enemy-down");if(g.qaCombatAim)g.screenshotRequested=true;}
+}
+void ApplyHostileRoadVehicleDamage(HostileRoadVehicle &target,float damage,Vector3 point){
+    if(!target.alive||damage<=0.0f)return;
+    Vehicle &vehicle=target.vehicle;const Vector3 local=Sub(point,vehicle.p);
+    const float front=Vector3DotProduct(local,Forward(vehicle.yaw)),side=Vector3DotProduct(local,Right(vehicle.yaw));
+    target.health-=std::max(1,(int)std::ceil(damage));vehicle.damage=Clamp(vehicle.damage+damage/1250.0f,0.0f,1.0f);
+    const float moduleLoss=Clamp(damage/460.0f,0.0f,.22f);
+    if(front>.55f){vehicle.powerplantHealth=Clamp(vehicle.powerplantHealth-moduleLoss,0.0f,1.0f);}
+    else if(fabsf(side)>.62f){vehicle.steeringHealth=Clamp(vehicle.steeringHealth-moduleLoss*.7f,0.0f,1.0f);}
+    if(fabsf(side)>.72f&&fabsf(front)>1.05f){
+        const std::size_t wheel=(front>0?2u:0u)+(side<0?0u:1u);vehicle.tireHealth[wheel]=Clamp(vehicle.tireHealth[wheel]-moduleLoss*.6f,0.0f,1.0f);
+    }
+    g.hits++;g.hitmarkerTimer=.20f;SpawnParticles(point,Color{147,133,105,225},5,1.6f,.055f);
+    LogEvent(TextFormat("enemy-road-vehicle-damage,remaining=%d,part=%s,damage=%.1f",std::max(0,target.health),front>.55f?"powerplant":(fabsf(side)>.62f?"side":"body"),damage));
+    if(target.health<=0){
+        target.health=0;target.alive=false;target.wrecked=true;vehicle.crashed=true;vehicle.wreckAge=0;vehicle.speed=0;vehicle.damage=1;
+        vehicle.powerplantHealth=0;vehicle.velocity=Mul(vehicle.velocity,.42f);g.killmarkerTimer=.62f;
+        SpawnParticles(Add(vehicle.p,V(0,1.05f,0)),Color{84,81,72,220},20,2.6f,.12f);
+        Notify("HOSTILE PICKUP DISABLED",1.8f);LogEvent("enemy-road-vehicle-disabled");
+    }
 }
 void ApplyBlastToTrees(Vector3 point,float damage,float radius){
     for(TreeCollider &tree:g.treeColliders){
@@ -330,6 +368,10 @@ void Detonate(Vector3 point,float damage,float radius){
         if(contact.health<=0){contact.health=0;contact.alive=false;g.hits++;g.killmarkerTimer=.72f;SpawnParticles(center,Color{76,70,61,235},25,4.5f,.14f);Notify("ROTORCRAFT SHOT DOWN",1.8f);LogEvent("f16-aim9-rotorcraft-blast-kill");}
         else LogEvent("f16-aim9-rotorcraft-blast-hit");
     }
+    for(HostileRoadVehicle &target:g.hostileRoadVehicles)if(target.alive){
+        const Vector3 center=Add(target.vehicle.p,V(0,.90f,0));const float distance=Vector3Distance(center,point);
+        if(distance<radius)ApplyHostileRoadVehicleDamage(target,damage*Clamp(1.0f-distance/radius,0,1),center);
+    }
 }
 void FireWeapon(){
     const std::size_t slot=std::min(g.player.selectedWeapon,WEAPON_COUNT-1);const WeaponSpec &spec=WEAPON_SPECS[slot];
@@ -352,9 +394,14 @@ void FireWeapon(){
         Vector3 right=Norm(Vector3CrossProduct(aim,V(0,1,0)));if(Vector3Length(right)<.01f)right=V(1,0,0);
         const Vector3 up=Norm(Vector3CrossProduct(right,aim));
         Vector3 direction=Norm(Add(aim,Add(Mul(right,(Rand01(g.shots,pellet*7+11)-.5f)*spread),Mul(up,(Rand01(g.shots,pellet*11+31)-.5f)*spread))));
-        Vector3 end{};BallisticContact contact{};Enemy *hit=TraceEnemy(origin,direction,spec.range,sniper?.56f:.67f,end,&contact);
+        Vector3 end{};BallisticContact contact{};HostileRoadVehicle *roadHit=nullptr;Enemy *hit=TraceEnemy(origin,direction,spec.range,sniper?.56f:.67f,end,&contact,&roadHit);
+        if(g.qaHostileRoadVehicleTest&&pellet==0){
+            LogEvent(TextFormat("qa-hostile-road-weapon-ray,vehicle-hit=%d,enemy-hit=%d,world-block=%d,material=%d,range-m=%.1f,hit-distance-m=%.1f",
+                                roadHit?1:0,hit?1:0,contact.valid?1:0,(int)contact.material,Vector3Distance(origin,end),contact.distance));
+        }
         if(pellet==0)g.tracers.push_back(Tracer{origin,end,sniper?Color{252,229,172,245}:Color{255,199,129,225},.095f});
         if(hit){const float falloff=Lerp(1.0f,.48f,Clamp(Vector3Distance(origin,end)/spec.range,0,1));ApplyEnemyDamage(*hit,spec.damage*falloff,end);anyHit=true;}
+        else if(roadHit){const float falloff=Lerp(1.0f,.58f,Clamp(Vector3Distance(origin,end)/spec.range,0,1));ApplyHostileRoadVehicleDamage(*roadHit,spec.damage*falloff,end);anyHit=true;}
         else if(pellet==0&&contact.valid)ApplySurfaceImpact(contact,end,spec.damage,true);
     }
     const char *events[]={"fire-pistol","fire-shotgun","fire-assault-rifle","fire-sniper-rifle","fire-rocket-launcher"};LogEvent(events[slot]);
@@ -389,7 +436,7 @@ void FirePlaneGun(){
     if(g.plane.gunAmmo<=0)return;
     g.plane.gunCooldown=.010f;g.plane.gunFlash=.07f;g.plane.gunAmmo--;g.shots++;
     const Vector3 direction=V(-sinf(g.plane.yaw)*cosf(g.plane.pitch),sinf(g.plane.pitch),-cosf(g.plane.yaw)*cosf(g.plane.pitch));
-    const Vector3 origin=Add(g.plane.p,Mul(direction,2.84f));Vector3 end{};BallisticContact surfaceHit{};Enemy *hit=TraceEnemy(origin,direction,900,.74f,end,&surfaceHit);
+    const Vector3 origin=Add(g.plane.p,Mul(direction,2.84f));Vector3 end{};BallisticContact surfaceHit{};HostileRoadVehicle *roadHit=nullptr;Enemy *hit=TraceEnemy(origin,direction,900,.74f,end,&surfaceHit,&roadHit);
     float nearest=Vector3Distance(origin,end),closestAirMiss=1.0e6f,closestAirAlong=0.0f;HostileRotorcraft *airHit=nullptr;Vector3 airImpact{};
     for(auto &contact:g.hostileRotorcraft)if(contact.alive){
         const Vector3 center=Add(contact.vehicle.p,V(0,.68f,0)),to=Sub(center,origin);const float along=Vector3DotProduct(to,direction);
@@ -402,6 +449,7 @@ void FirePlaneGun(){
     if(g.plane.gunAmmo%3==0)g.tracers.push_back(Tracer{origin,end,Color{255,220,154,235},.085f});
     if(g.plane.gunAudioCooldown<=0){PlaySpatial(g.planeCannonSfx,origin,1.0f,.73f,170.0f,g.muffledPlaneCannonSfx,true);g.plane.gunAudioCooldown=.10f;}
     if(hit&&(!airHit||Vector3Distance(origin,end)<Vector3Distance(origin,airImpact)))ApplyEnemyDamage(*hit,20,end);
+    else if(roadHit&&(!airHit||Vector3Distance(origin,end)<Vector3Distance(origin,airImpact)))ApplyHostileRoadVehicleDamage(*roadHit,20,end);
     else if(airHit){airHit->health-=20;g.hits++;g.hitmarkerTimer=.20f;SpawnParticles(end,Color{174,161,128,230},7,2.2f,.06f);LogEvent("f16-m61-airframe-hit");
         if(airHit->health<=0){airHit->alive=false;g.killmarkerTimer=.72f;SpawnParticles(end,Color{76,70,61,235},25,4.5f,.14f);Notify("ROTORCRAFT SHOT DOWN",1.8f);LogEvent("f16-m61-rotorcraft-kill");
             if(g.qaAAGunTest){g.qaAAGunTest=false;g.screenshotRequested=true;g.exitRequested=true;}}}
@@ -435,6 +483,154 @@ void UpdateHostileRotorcraft(float dt){
         v.velocity=V((v.p.x-oldX)/std::max(dt,.001f),0,(v.p.z-oldZ)/std::max(dt,.001f));v.yaw=-contact.orbitPhase;v.pitch=.018f;v.roll=.22f*sinf(contact.orbitPhase*2.0f);
         v.speed=Vector3Length(v.velocity);v.rotorAngle+=dt*(v.rotorRpm*78.0f);v.tailRotorAngle+=dt*(v.rotorRpm*78.0f*2.2f);
         if(g.vehicle==VehicleKind::Plane&&!contact.announced&&Vector3Distance(g.plane.p,v.p)<950.0f){contact.announced=true;Notify("AIR CONTACT — ROTORCRAFT / AIM FOR A STABLE REAR QUARTER",3.0f);LogEvent("hostile-air-contact");}
+    }
+}
+void InitializeHostileRoadVehicles(){
+    g.hostileRoadVehicles={};
+    const std::array<Vector3,2> centers{{Add(g.gates[0],V(19,0,23)),Add(g.gates[1],V(-20,0,24))}};
+    for(std::size_t i=0;i<g.hostileRoadVehicles.size();++i){
+        HostileRoadVehicle &target=g.hostileRoadVehicles[i];target={};target.alive=true;target.health=230;target.patrolCenter=centers[i];
+        target.patrolPhase=i==0?.85f:3.72f;target.vehicle=Vehicle{};
+        target.vehicle.p=V(target.patrolCenter.x+cosf(target.patrolPhase)*4.4f,0,target.patrolCenter.z+sinf(target.patrolPhase)*4.4f);
+        target.vehicle.p.y=TerrainHeight(target.vehicle.p.x,target.vehicle.p.z)+.72f;
+        target.vehicle.yaw=target.patrolPhase+PI*.5f;target.turretYaw=target.vehicle.yaw;
+        target.vehicle.powerplantHealth=1.0f;target.vehicle.steeringHealth=1.0f;target.vehicle.tireHealth.fill(1.0f);
+    }
+}
+bool HostileRoadCarBlocked(Vector3 position,TreeCollider **treeHit=nullptr){
+    for(const Obstacle &obstacle:g.obstacles){
+        const float clearance=obstacle.radius+1.42f;
+        if(DistXZ(position,obstacle.p)<clearance)return true;
+    }
+    for(TreeCollider &tree:g.treeColliders){
+        if(tree.felled||tree.height<2.0f||tree.base.y<g.water-.2f||DistXZ(position,tree.base)>4.0f)continue;
+        const float trunkRadius=std::max(tree.trunkBaseRadius,tree.buttressRadius)*std::max(tree.spreadX,tree.spreadZ);
+        if(DistXZ(position,tree.base)<trunkRadius+1.28f){if(treeHit)*treeHit=&tree;return true;}
+    }
+    return false;
+}
+void DamagePlayerVehicleFromGun(float amount){
+    if(g.vehicle==VehicleKind::Foot){DamagePlayer(amount);return;}
+    Vehicle *playerVehicle=g.vehicle==VehicleKind::Car?&g.car:(g.vehicle==VehicleKind::Plane?&g.plane:&g.heli);
+    playerVehicle->damage=Clamp(playerVehicle->damage+amount*.0018f,0.0f,1.0f);
+    playerVehicle->airframeHealth=Clamp(playerVehicle->airframeHealth-amount*.0015f,0.05f,1.0f);
+    if(g.vehicle==VehicleKind::Car)playerVehicle->powerplantHealth=Clamp(playerVehicle->powerplantHealth-amount*.0012f,0.12f,1.0f);
+    else playerVehicle->flightControlsHealth=Clamp(playerVehicle->flightControlsHealth-amount*.0008f,0.10f,1.0f);
+    g.damageTaken+=amount;g.damageTimer=1.2f;
+}
+void UpdateHostileRoadVehicles(float dt){
+    const Vector3 player=Position();
+    for(std::size_t i=0;i<g.hostileRoadVehicles.size();++i){
+        HostileRoadVehicle &target=g.hostileRoadVehicles[i];Vehicle &vehicle=target.vehicle;
+        target.audioCooldown=std::max(0.0f,target.audioCooldown-dt);target.fireCooldown=std::max(0.0f,target.fireCooldown-dt);
+        if(target.wrecked){
+            vehicle.wreckAge+=dt;const SurfaceSample surface=SampleSurface(vehicle.p.x,vehicle.p.z);
+            const float speed=Vector3Length(V(vehicle.velocity.x,0,vehicle.velocity.z));
+            if(speed>.02f){const float nextSpeed=std::max(0.0f,speed-(surface.friction*9.80665f*.48f+surface.rollingResistance*9.80665f)*dt);
+                vehicle.velocity.x*=nextSpeed/speed;vehicle.velocity.z*=nextSpeed/speed;vehicle.p.x+=vehicle.velocity.x*dt;vehicle.p.z+=vehicle.velocity.z*dt;}
+            vehicle.p.y=TerrainHeight(vehicle.p.x,vehicle.p.z)+.72f;vehicle.yaw+=vehicle.yawRate*dt;vehicle.yawRate*=expf(-dt*2.5f);
+            if(vehicle.damageSmokeTimer<=0&&vehicle.wreckAge<18.0f){SpawnParticles(Add(vehicle.p,V(0,1.05f,0)),Color{73,73,68,150},3,1.0f,.11f);vehicle.damageSmokeTimer=.42f;}
+            vehicle.damageSmokeTimer=std::max(0.0f,vehicle.damageSmokeTimer-dt);continue;
+        }
+        if(!target.alive)continue;
+        const Vector3 toPlayer=Sub(player,vehicle.p);const float playerDistance=DistXZ(player,vehicle.p);
+        const float alertRange=g.difficulty==Difficulty::Relaxed?84.0f:(g.difficulty==Difficulty::Veteran?122.0f:102.0f);
+        const bool engaging=playerDistance<alertRange;
+        if(engaging&&!target.announced){target.announced=true;Notify("HOSTILE GUN TRUCK — BREAK LINE OF SIGHT OR DISABLE IT",3.0f);LogEvent("hostile-road-vehicle-contact");}
+        Vector3 waypoint{};float desiredSpeed=0.0f;float desiredTurretYaw=vehicle.yaw;
+        if(engaging){
+            const Vector3 horizontalToPlayer=Norm(V(toPlayer.x,0,toPlayer.z));
+            desiredTurretYaw=atan2f(toPlayer.x,toPlayer.z);
+            if(playerDistance>25.0f){waypoint=Sub(player,Mul(horizontalToPlayer,24.0f));desiredSpeed=Clamp((playerDistance-24.0f)*.72f,0.0f,7.5f);}
+            else waypoint=vehicle.p;
+        }else{
+            target.patrolPhase+=dt*.16f;waypoint=Add(target.patrolCenter,V(cosf(target.patrolPhase)*4.4f,0,sinf(target.patrolPhase)*4.4f));
+            const Vector3 patrolDelta=Sub(waypoint,vehicle.p);desiredSpeed=Clamp(Vector3Length(patrolDelta)*.8f,0.0f,2.8f);
+            if(Vector3Length(patrolDelta)>.3f)desiredTurretYaw=atan2f(patrolDelta.x,patrolDelta.z);
+        }
+        const Vector3 routeDelta=Sub(waypoint,vehicle.p);
+        if(Vector3Length(V(routeDelta.x,0,routeDelta.z))>.18f){
+            const float desiredYaw=atan2f(routeDelta.x,routeDelta.z);
+            const float headingError=std::remainder(desiredYaw-vehicle.yaw,2.0f*PI);
+            vehicle.steer=Lerp(vehicle.steer,Clamp(headingError*1.42f,-.56f,.56f),Clamp(dt*2.2f,0,1));
+        }else vehicle.steer=Lerp(vehicle.steer,0.0f,Clamp(dt*2.0f,0,1));
+        const float previousSpeed=vehicle.speed;
+        const SurfaceSample contact=SampleSurface(vehicle.p.x,vehicle.p.z);const AtmosphereSample weather=SampleAtmosphere(vehicle.p,vehicle.p.y);
+        const float immersion=std::max(0.0f,g.water-TerrainHeight(vehicle.p.x,vehicle.p.z));
+        if(immersion>.75f)desiredSpeed*=Clamp(1.0f-(immersion-.75f)*.38f,0.0f,1.0f);
+        const Vector3 airRelative=Sub(vehicle.velocity,V(weather.windVelocity.x,0,weather.windVelocity.z));
+        const float drag=.5f*weather.airDensity*.95f/1900.0f*Vector3Length(V(airRelative.x,0,airRelative.z));
+        const float rolling=contact.rollingResistance*9.80665f;
+        const float driveDemand=Clamp((desiredSpeed-vehicle.speed)*1.45f,-7.0f,3.45f)-rolling*(fabsf(vehicle.speed)>.12f?copysignf(1.0f,vehicle.speed):0.0f)-drag*vehicle.speed;
+        const float tireLimit=contact.friction*(1.0f-contact.wetness*.22f)*9.80665f;
+        const float longitudinal=Clamp(driveDemand,-tireLimit,tireLimit);
+        vehicle.speed=Clamp(vehicle.speed+longitudinal*dt,-2.2f,8.5f);
+        const float speedFactor=Clamp(fabsf(vehicle.speed)/2.5f,.10f,1.0f);
+        vehicle.yawRate=Clamp(vehicle.speed/2.82f*tanf(vehicle.steer)*speedFactor,-1.05f,1.05f);
+        vehicle.yaw+=vehicle.yawRate*dt;
+        vehicle.velocity=Add(Mul(Forward(vehicle.yaw),vehicle.speed),V(weather.windVelocity.x*.018f,0,weather.windVelocity.z*.018f));
+        const Vector3 previous=vehicle.p;Vector3 proposed=Add(vehicle.p,Mul(vehicle.velocity,dt));TreeCollider *treeHit=nullptr;
+        if(HostileRoadCarBlocked(proposed,&treeHit)){
+            const float impactSpeed=fabsf(vehicle.speed);vehicle.p=previous;vehicle.speed*= -.12f;vehicle.velocity=Mul(vehicle.velocity,-.12f);
+            if(impactSpeed>1.1f){vehicle.damage=Clamp(vehicle.damage+impactSpeed*impactSpeed*.00008f,0.0f,1.0f);
+                if(treeHit){const float structural=Clamp(19.0f+treeHit->trunkBaseRadius*40.0f,24.0f,48.0f);treeHit->damage=Clamp(treeHit->damage+impactSpeed*impactSpeed/(structural*structural),0.0f,1.0f);
+                    if(treeHit->damage>=1.0f)treeHit->felled=true;treeHit->damagePoint=vehicle.p;treeHit->hasDamagePoint=true;
+                    SpawnParticles(Add(treeHit->base,V(0,treeHit->height*.25f,0)),Color{146,116,80,215},7,1.7f,.075f);
+                    LogEvent(TextFormat("enemy-road-vehicle-impact,material=wood,speed-ms=%.1f,tree-seed=%d,tree-damage=%.2f",impactSpeed,treeHit->seed,treeHit->damage));}
+            }
+        }else vehicle.p=proposed;
+        target.distanceDriven+=DistXZ(previous,vehicle.p);vehicle.p.y=TerrainHeight(vehicle.p.x,vehicle.p.z)+.72f;
+        const float acceleration=(vehicle.speed-previousSpeed)/std::max(dt,.001f);
+        vehicle.longitudinalG=acceleration/9.80665f;vehicle.lateralG=vehicle.speed*vehicle.yawRate/9.80665f;
+        vehicle.pitch=Lerp(vehicle.pitch,Clamp(-acceleration*.009f,-.08f,.10f),Clamp(dt*4.5f,0,1));
+        vehicle.roll=Lerp(vehicle.roll,Clamp(vehicle.lateralG*.065f,-.12f,.12f),Clamp(dt*5.5f,0,1));
+        vehicle.suspension=Lerp(vehicle.suspension,Clamp((TerrainHeight(vehicle.p.x,vehicle.p.z)-TerrainHeight(previous.x,previous.z))*.42f,-.14f,.14f),Clamp(dt*8.0f,0,1));
+        vehicle.wheelAngle+=vehicle.speed*dt/.48f;vehicle.wheelSpinRate=vehicle.speed/.48f;
+        vehicle.engineRpm=Lerp(vehicle.engineRpm,Clamp(.24f+fabsf(vehicle.speed)*.075f+fabsf(longitudinal)*.06f,.24f,.92f),Clamp(dt*2.3f,0,1));
+        vehicle.normalG=Clamp(1.0f+fabsf(vehicle.lateralG)*.16f,.35f,1.65f);
+        const float turretError=std::remainder(desiredTurretYaw-target.turretYaw,2.0f*PI);
+        target.turretYaw+=Clamp(turretError,-1.75f*dt,1.75f*dt);
+        target.trackCooldown=std::max(0.0f,target.trackCooldown-dt);
+        if(fabsf(vehicle.speed)>1.4f&&target.trackCooldown<=0.0f){
+            for(std::size_t wheel=0;wheel<4;++wheel){
+                const float side=(wheel%2==0)?-.86f:.86f,axle=wheel<2?-1.38f:1.38f;
+                const Vector3 contactPoint=Local(vehicle.p,vehicle.yaw,V(side,.025f,axle));const float y=SurfaceMarkHeight(contactPoint.x,contactPoint.z);
+                const SurfaceSample markSurface=SampleSurface(contactPoint.x,contactPoint.z);const Color mark=(markSurface.kind==SurfaceKind::Asphalt||markSurface.kind==SurfaceKind::Concrete)?Color{18,20,20,126}:Color{55,49,39,(unsigned char)(112+markSurface.wetness*55)};
+                const Vector3 center=V(contactPoint.x,y,contactPoint.z),previousContact=target.lastTireContact[wheel];
+                const float span=Vector3Distance(center,previousContact);
+                if(target.tireTracksInitialized&&span>.035f&&span<2.2f){const Vector3 along=Mul(Sub(center,previousContact),1.0f/span);const Vector3 across=Mul(Norm(Vector3CrossProduct(along,V(0,1,0))),.061f);
+                    Vector3 old=previousContact;old.y=SurfaceMarkHeight(old.x,old.z);g.tracks.push_back(Mark{Sub(old,across),Add(old,across),mark,42,Add(center,across),Sub(center,across),true,MarkKind::TireTrack});}
+                target.lastTireContact[wheel]=center;
+            }
+            target.tireTracksInitialized=true;target.trackCooldown=.11f;
+        }
+        if(engaging&&Vector3Distance(V(player.x,player.y+.75f,player.z),Add(vehicle.p,V(0,1.05f,0)))<112.0f&&target.fireCooldown<=0.0f){
+            const Vector3 muzzle=Local(vehicle.p,vehicle.yaw,V(0,1.72f,-.12f));const Vector3 aimPoint=Add(player,V(0,g.vehicle==VehicleKind::Foot?.72f:1.0f,0));
+            const Vector3 toAim=Sub(aimPoint,muzzle);const float range=Vector3Length(toAim);
+            if(range>2.0f){const Vector3 aim=Mul(toAim,1.0f/range);BallisticContact obstruction{};FindStaticBallisticContact(muzzle,aim,range-.6f,obstruction);
+                if(!obstruction.valid){
+                    const float spread=.0085f+range*.000075f;const float lateral=(Rand01((int)(g.elapsed*47)+int(i)*71,target.shotsFired*5+3)-.5f)*spread;
+                    const float vertical=(Rand01((int)(g.elapsed*53)+int(i)*43,target.shotsFired*7+11)-.5f)*spread;
+                    Vector3 shotDirection=Norm(Add(aim,Add(Mul(Right(target.turretYaw),lateral),V(0,vertical,0))));
+                    const bool hit=Rand01((int)(g.elapsed*31)+int(i)*19,target.shotsFired*13+7)>1.0f-EnemyAccuracy()*Clamp(1.0f-range/210.0f,.25f,1.0f);
+                    const Vector3 tracerEnd=Add(muzzle,Mul(shotDirection,range));g.tracers.push_back(Tracer{muzzle,tracerEnd,Color{222,127,91,206},.10f});
+                    ++target.shotsFired;target.fireCooldown=.43f*EnemyFireIntervalScale();LogEvent(TextFormat("enemy-road-vehicle-shot,unit=%d,range-m=%.1f,hit=%d",(int)i,range,hit?1:0));
+                    if(target.audioCooldown<=0.0f){PlaySpatial(g.weaponSfx[static_cast<std::size_t>(WeaponKind::AssaultRifle)],muzzle,.88f,.66f,135.0f,g.muffledWeaponSfx[static_cast<std::size_t>(WeaponKind::AssaultRifle)],true);target.audioCooldown=.27f;}
+                    SpawnParticles(muzzle,Color{255,199,123,210},2,1.0f,.04f);
+                    if(hit)DamagePlayerVehicleFromGun((4.6f+EnemyAccuracy()*1.2f)*EnemyDamageScale());
+                }
+            }
+        }
+        if(g.vehicle==VehicleKind::Car){
+            const Vector3 separation=Sub(g.car.p,vehicle.p);const float distance=DistXZ(g.car.p,vehicle.p),minimum=3.45f;
+            if(distance<minimum&&distance>.01f){const Vector3 normal=V(separation.x/distance,0,separation.z/distance);const float closing=-Vector3DotProduct(Sub(g.car.velocity,vehicle.velocity),normal);
+                g.car.p.x+=normal.x*(minimum-distance)*.52f;g.car.p.z+=normal.z*(minimum-distance)*.52f;vehicle.p.x-=normal.x*(minimum-distance)*.48f;vehicle.p.z-=normal.z*(minimum-distance)*.48f;
+                if(closing>0.0f){const float impulse=-(1.0f+.12f)*(-closing)/(1.0f/1900.0f+1.0f/1900.0f);g.car.velocity=Add(g.car.velocity,Mul(normal,impulse/1900.0f));vehicle.velocity=Sub(vehicle.velocity,Mul(normal,impulse/1900.0f));
+                    const float impact=Clamp(closing,0.0f,35.0f);g.car.damage=Clamp(g.car.damage+impact*impact*.00010f,0.0f,1.0f);ApplyHostileRoadVehicleDamage(target,impact*4.2f,Add(vehicle.p,V(0,.8f,0)));
+                    SpawnParticles(Add(vehicle.p,V(0,.5f,0)),Color{174,145,107,205},7,1.9f,.075f);PlaySpatial(g.impactSfx,vehicle.p,.78f,.45f,82.0f);LogEvent(TextFormat("player-car-hostile-car-impact,speed-ms=%.1f",impact));}
+                g.car.speed=Vector3DotProduct(g.car.velocity,Forward(g.car.yaw));vehicle.speed=Vector3DotProduct(vehicle.velocity,Forward(vehicle.yaw));
+            }
+        }
     }
 }
 void LaunchIRMissile(){
@@ -524,8 +720,8 @@ void UpdateProjectiles(float dt){
         projectile.velocity=Sub(projectile.velocity,Mul(relativeWind,dragScale*dt));projectile.velocity.y-=9.80665f*dt;
         const Vector3 next=Add(projectile.p,Mul(projectile.velocity,dt));projectile.life-=dt;
         const Vector3 travel=Sub(next,old);const float travelDistance=Vector3Length(travel);Vector3 impactPoint=next;BallisticContact worldContact{};
-        Enemy *enemyHit=travelDistance>.001f?TraceEnemy(old,Mul(travel,1.0f/travelDistance),travelDistance,.80f,impactPoint,&worldContact):nullptr;
-        if(enemyHit||worldContact.valid){projectile.p=impactPoint;g.tracers.push_back(Tracer{old,impactPoint,Color{252,170,78,225},.12f});
+        HostileRoadVehicle *roadHit=nullptr;Enemy *enemyHit=travelDistance>.001f?TraceEnemy(old,Mul(travel,1.0f/travelDistance),travelDistance,.80f,impactPoint,&worldContact,&roadHit):nullptr;
+        if(enemyHit||roadHit||worldContact.valid){projectile.p=impactPoint;g.tracers.push_back(Tracer{old,impactPoint,Color{252,170,78,225},.12f});
             Detonate(impactPoint,projectile.damage,projectile.blastRadius);g.projectiles.erase(g.projectiles.begin()+static_cast<std::ptrdiff_t>(i));}
         else if(projectile.life<=0){projectile.p=next;g.tracers.push_back(Tracer{old,next,Color{252,170,78,225},.12f});
             Detonate(next,projectile.damage,projectile.blastRadius);g.projectiles.erase(g.projectiles.begin()+static_cast<std::ptrdiff_t>(i));}
@@ -1418,7 +1614,7 @@ void StartMission(){
     g.player=Player{};g.player.p=V(0,TerrainHeight(0,165)+1,165);g.gateDone={false,false,false};g.taskAnnounced={false,false,false,false};g.water=LOW_WATER;g.waterTarget=LOW_WATER;
     g.safehouse.doorOpen=false;g.safehouse.doorAngle=0;
     g.vehicle=VehicleKind::Foot;SetCarAtBase();SetPlaneAtRunway();SetHeliAtPad();
-    InitializeHostileRotorcraft();
+    InitializeHostileRotorcraft();InitializeHostileRoadVehicles();
     for(auto &e:g.enemies){e.alive=true;e.health=(e.leader?145.0f:90.0f)*EnemyHealthScale();e.alert=0;e.cooldown=0;e.suppression=0;e.p=V(e.home.x,TerrainHeight(e.home.x,e.home.z)+1,e.home.z);}
     g.missionStarted=true;g.missionComplete=false;g.elapsed=0;g.hits=0;g.shots=0;g.gatesOperated=0;g.vehiclesEntered=0;g.maxCar=g.maxPlane=g.maxHeli=g.maxAltitude=0;
     g.tracks.clear();g.particles.clear();g.tracers.clear();g.projectiles.clear();g.explosions.clear();g.audioEchoes.clear();Notify("WEST GAUGE: CLEAR THE SALVAGE CREW",5);Announce(NarrationCue::Briefing);LogEvent("mission-start");
@@ -1432,7 +1628,7 @@ void SpawnParticles(Vector3 p,Color color,int count,float speed,float size){
 void UpdateGameplay(float dt){
     g.clock+=dt;g.elapsed+=dt;g.water=Lerp(g.water,g.waterTarget,Clamp(dt*.30f,0,1));g.tidePulse=std::max(0.0f,g.tidePulse-dt*.13f);
     const float doorTarget=g.safehouse.doorOpen?PI*.5f:0.0f;g.safehouse.doorAngle+=Clamp(doorTarget-g.safehouse.doorAngle,-2.8f*dt,2.8f*dt);
-    g.cameraShake=std::max(0.0f,g.cameraShake-dt*1.6f);g.car.gunFlash=std::max(0.0f,g.car.gunFlash-dt);g.heli.gunFlash=std::max(0.0f,g.heli.gunFlash-dt);UpdateWeaponState(dt);UpdateHostileRotorcraft(dt);UpdateGuidedMissiles(dt);UpdateProjectiles(dt);
+    g.cameraShake=std::max(0.0f,g.cameraShake-dt*1.6f);g.car.gunFlash=std::max(0.0f,g.car.gunFlash-dt);g.heli.gunFlash=std::max(0.0f,g.heli.gunFlash-dt);UpdateWeaponState(dt);UpdateHostileRotorcraft(dt);UpdateHostileRoadVehicles(dt);UpdateGuidedMissiles(dt);UpdateProjectiles(dt);
     for(auto &e:g.explosions)e.life=std::max(0.0f,e.life-dt);g.explosions.erase(std::remove_if(g.explosions.begin(),g.explosions.end(),[](const Explosion &e){return e.life<=0;}),g.explosions.end());
     if(g.noticeTime>0)g.noticeTime=std::max(0.0f,g.noticeTime-dt);if(g.damageTimer>0)g.damageTimer=std::max(0.0f,g.damageTimer-dt);
     for(auto &p:g.particles){

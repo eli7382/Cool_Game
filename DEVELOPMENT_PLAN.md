@@ -527,3 +527,22 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - [x] Re-run the high-slip tire fixture and a current-binary interactive car input route.
 - [ ] Measure and tune vehicle center of gravity, suspension, tire curves, temperature response and wear against suitable real vehicle/tire data.
 - [ ] Test split-friction surfaces, combined braking/steering, high-speed transient handling, and repeated impacts across a broad material/weather matrix.
+
+## Hostile road vehicle continuation - 2026-10-26
+
+- Added two hostile road vehicles to normal mission startup. They patrol near the west/east gauge areas, can pursue, steer around sampled obstacles, respond to sampled ground friction and wetness, leave surface-dependent tire tracks, track with a roof gun and attack at a difficulty-scaled rate.
+- Integrated hostile vehicles into player rifle, RPG blast and aircraft-cannon targeting. Damage is location-aware at a coarse level, can affect tires and steering, and creates a persistent smoking wreck. Player-car collisions apply a basic impulse and damage response.
+- Current pinned Windows x64 binary exited 0 in the seeded 5.03 s enemy-vehicle fixture. The hostile truck drove 12.08 m and fired 11 shots, dealing 26.12 damage. Four player rifle rounds hit, reducing its health from 230 to 142. The first run had 0/4 player hits because of camera parallax; after the fixture aim was corrected, the repeat passed. Both results remain in the session log.
+- Reviewed the real in-game renderer screenshots at screenshots/Breakwater_1793045361745_1.png and screenshots/Breakwater_LiveQA_hostile-road-vehicle_1793045722553.png. They show the enemy vehicle in combat and a side view of the pickup/world. The latter camera is a seeded capture and is not gameplay evidence.
+- Current executable: 1,939,968 bytes, SHA-256 40E6562CF592DBA13592EBC721C3A2A33DFD230AF47895958CF54F0DF9249A90. The last pinned build showed no incremental warnings. No ImageGen calls were made; cumulative invocations remain 64. No current-pass FPS or GPU measurement was collected.
+- This extends the mission encounter set, but does not close the quality gates. The vehicle model reuses the stylized rescue pickup with added turret geometry; its visual realism remains far below the requested target. Enemy steering, chassis contacts, probabilistic hitscan fire and damage are gameplay approximations. Natural AI encounter balance, full mission progression and manual play remain open.
+
+### Hostile vehicle gates
+
+- [x] Spawn hostile road vehicles in ordinary mission startup.
+- [x] Add patrol/pursuit, steering, surface response, weapon fire, target hitboxes and localized coarse damage.
+- [x] Validate a current-build player/enemy vehicle combat fixture and preserve the initial failed alignment result.
+- [ ] Develop a dedicated, high-detail hostile vehicle model with an integrated, reviewed turret mount.
+- [ ] Calibrate vehicle handling, collision and weapon behavior against appropriate measured data.
+- [ ] Verify natural encounters and the complete mission loop through interactive play.
+- [ ] Reach the requested photoreal vehicle and world quality; current captures remain stylized.
