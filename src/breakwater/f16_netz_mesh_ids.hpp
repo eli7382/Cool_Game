@@ -18,9 +18,9 @@ inline constexpr int GearStarboard = 90;
 inline constexpr int NoseWheelHub = 127;
 inline constexpr int PortWheelHub = 128;
 inline constexpr int StarboardWheelHub = 129;
-inline constexpr int CanopyMaterial = 6;
-inline constexpr int GlassMaterial = 6;
-inline constexpr int IntakeMaterial = 22;
+inline constexpr int CanopyMaterial = 7;
+inline constexpr int GlassMaterial = 7;
+inline constexpr int IntakeMaterial = 23;
 inline constexpr int PortSpeedbrake = 112;
 inline constexpr int StarboardSpeedbrake = 114;
 inline constexpr int PortMissile = 5;
@@ -67,5 +67,12 @@ inline constexpr int PortMissileStart = 5;
 inline constexpr int PortMissileCount = 3;
 inline constexpr int StarboardMissileStart = 8;
 inline constexpr int StarboardMissileCount = 3;
+inline constexpr int CanopyFrameStart = 12;
+inline constexpr int CanopyFrameCount = 2;
+inline constexpr int CockpitHudStart = 17;
+inline constexpr int CockpitHudCount = 1;
+inline constexpr int CockpitInteriorStart = 18;
+inline constexpr int CockpitInteriorCount = 10;
 inline constexpr int MeshCount = 156;
 }
+

@@ -1034,11 +1034,14 @@ ids={"Canopy":find_mesh("Canopy | one-piece"),"NoseWheel":find_mesh("Wheel | Nos
      "Rudder":find_mesh("Rudder | independent"),"GearNose":find_mesh("Landing gear | Nose"),
      "GearPort":find_mesh("Landing gear | Port"),"GearStarboard":find_mesh("Landing gear | Starboard"),
      "NoseWheelHub":find_mesh("Wheel hub | Nose"),"PortWheelHub":find_mesh("Wheel hub | Port"),
-     "StarboardWheelHub":find_mesh("Wheel hub | Starboard"),"CanopyMaterial":find_mat("Canopy | warm olive bronze"),
-     "GlassMaterial":find_mat("Canopy | warm olive bronze"),"IntakeMaterial":find_mat("Intake | deep carbon"),
+     "StarboardWheelHub":find_mesh("Wheel hub | Starboard"),"CanopyMaterial":find_mat("Canopy | warm olive bronze")+1,
+     "GlassMaterial":find_mat("Canopy | warm olive bronze")+1,"IntakeMaterial":find_mat("Intake | deep carbon")+1,
      "PortSpeedbrake":find_mesh("Speedbrake | Port"),"StarboardSpeedbrake":find_mesh("Speedbrake | Starboard"),
      "PortMissile":find_mesh("AIM-9 | Port"),"StarboardMissile":find_mesh("AIM-9 | Starboard")}
 dynamic_ranges={
+    "CanopyFrame":find_mesh_range("Canopy | satin sill, bow and hidden fasteners"),
+    "CockpitHud":find_mesh_range("Cockpit | HUD combiner"),
+    "CockpitInterior":find_mesh_range("Cockpit | pilot, ejection seat, MFD bezels and controls"),
     "PortAileron":find_mesh_range("Aileron | Port"),"StarboardAileron":find_mesh_range("Aileron | Starboard"),
     "PortLeadingEdgeFlap":find_mesh_range("Leading edge flap | Port"),"StarboardLeadingEdgeFlap":find_mesh_range("Leading edge flap | Starboard"),
     "PortStabilator":find_mesh_range("Stabilator | Port"),"StarboardStabilator":find_mesh_range("Stabilator | Starboard"),
@@ -1069,3 +1072,4 @@ print("F16_GLTF_IDS",json.dumps(ids,sort_keys=True))
 print("F16_GLTF_BYTES",os.path.getsize(glb))
 print("F16_BLEND_BYTES",os.path.getsize(os.path.join(ASSETS,"f16_netz_source.blend")))
 print("F16_PREVIEW",scene.render.filepath)
+

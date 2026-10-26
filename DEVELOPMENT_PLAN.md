@@ -445,8 +445,17 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - The tree collision changes use 896 seeded tree profiles and trunk/crown probes, but only selected tree collisions were tested. Other materials, obstacle shapes, weather effects, G-force response, repeated damage, and all vehicle/world crash combinations remain open. No human-play test was performed during this pass.
 - No ImageGen call was made in this pass. Existing cumulative count remains 64 including failed attempts; token/cost usage is unavailable.
 
+## F-16 canopy material mapping and cockpit render pass — 2026-10-26
+
+- Rebuilt the approved-model header generator so authored GLTF material IDs account for raylib's additional runtime material slot. A startup log now confirms the canopy and HUD resolve to runtime material 7 (the old header expected 6); this was the cause of the opaque canopy in game. The translucent pass explicitly enables alpha blending.
+- Replaced the generic aircraft dashboard in the normal F-16 cockpit view with the integrated GLB canopy frame, seat, pilot, HUD and instrument meshes. The pilot eye and camera basis now follow the aircraft's model-space position, pitch and roll. Added three flight-state readout overlays aligned to the modeled MFDs, plus an F-16 HUD cue.
+- The pinned wrapper `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1` succeeded after the sandboxed SDK registry lookup was denied. Final incremental compilation showed no warnings. Current executable: `build/bin/Release/game.exe`, 1,878,016 bytes, SHA-256 `AD1CF0EC7825CBB00C746F231544DAFC78E2536D5C3D30EE2F4FFA69FB20CA21`.
+- Current-binary `--qa-capture=plane-cockpit` and `--qa-capture=plane-front` processes both exited 0 and created `screenshots/Breakwater_LiveQA_plane-cockpit_1793033911435.png` and `screenshots/Breakwater_LiveQA_plane-front_1793033991765.png`. Both were inspected. The canopy now reveals the world and pilot in the rendered cockpit/chase views; the MFD faces and model-space dashboard are visible. The cabin and airframe still look stylized, the instrument area remains sparse, and the approved mockup/War Thunder fidelity gate fails.
+- These are scripted camera fixtures, not evidence of a human-controlled flight, working displays under live input, or aircraft-system accuracy. Aircraft physics, weapon behavior, damage breakup, and interactive route validation remain open. No ImageGen call was made; cumulative count remains 64 including failed attempts. Token and cost usage remain unavailable.
+
 ## Safehouse glazing review — 2026-10-26
 
 - The imported house GLB has separate clear-glazing meshes. Added a low-opacity render pass for the identified material (4 meshes, 424 vertices) and rebuilt with the pinned wrapper; the current build exits 0 with no incremental compiler warnings shown.
 - Recaptured exterior, ground-floor and upstairs views with the current executable. All three capture processes exited 0. Visual inspection still shows pale, flat-looking panes rather than convincing transparent glass, so this pass is recorded as an implementation attempt, not a quality gate pass. Room dressing remains sparse and interactive traversal remains unverified.
 - Current executable: `build/bin/Release/game.exe`, 1,839,616 bytes, SHA-256 `'+$hash+'`.
+

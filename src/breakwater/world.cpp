@@ -868,7 +868,7 @@ void main(){
     float wetSun=pow(max(dot(reflect(-l,n),v),0.0),24.0)*terrainWetness*.16;
     color=color*mix(1.0,.79,terrainWetness*.40)+vec3(.51,.61,.63)*wetSun+env*terrainWetness*.025;
     // Cabin surfaces receive sky and panel bounce, rather than the exterior sun vector alone.
-    color+=base*clamp(cockpitFill,0.0,1.0);
+    color+=base*clamp(cockpitFill,0.0,1.0)*1.8;
     float wrapLight=clamp((nl+0.42)/1.42,0.0,1.0),leafBackscatter=pow(max(dot(-n,l),0.0),2.0);
     vec3 foliageColor=base*(0.53+0.64*wrapLight+0.23*leafBackscatter+0.18*diffuseEnvironment)+spec*0.13+env*F*0.045;
     color=mix(color,foliageColor,clamp(foliageSurface,0.0,1.0));
@@ -1662,7 +1662,7 @@ void DrawHeroVehicle(Model &model,Vector3 position,const Vehicle &vehicle,int ve
           }
       }
       if(pass==1){
-          rlDrawRenderBatchActive();
+          rlDrawRenderBatchActive();BeginBlendMode(BLEND_ALPHA);
           rlDisableDepthMask();
           if(g.locHeroGlassOpacity>=0){
                const float glassOpacity=cockpitView?(vehicleKind==1?.075f:.09f):(vehicleKind==0?.23f:(vehicleKind==1?.14f:.17f));
@@ -1672,9 +1672,14 @@ void DrawHeroVehicle(Model &model,Vector3 position,const Vehicle &vehicle,int ve
       for(int mesh=0;mesh<model.meshCount;++mesh){
         if(!model.meshMaterial)continue;const int material=model.meshMaterial[mesh];
         if(cockpitSubset){
-            // The SUV's authored floor, center console and instrument panel can
-            // sit behind the live rescue dashboard without drawing its full shell.
-            const bool cabinMesh=mesh==54||mesh==55||mesh==135;
+            // Keep the exact authored cabin parts around the first-person camera.
+            // The F-16 uses its own bubble canopy, bow, HUD, seat, pilot and panel;
+            // the SUV's floor and console remain behind its live rescue dashboard.
+            const bool cabinMesh=vehicleKind==0?(mesh==54||mesh==55||mesh==135)
+                :(isF16&&(mesh==F16NetzMesh::Canopy
+                    ||inRange(mesh,F16NetzMesh::CanopyFrameStart,F16NetzMesh::CanopyFrameCount)
+                    ||inRange(mesh,F16NetzMesh::CockpitHudStart,F16NetzMesh::CockpitHudCount)
+                    ||inRange(mesh,F16NetzMesh::CockpitInteriorStart,F16NetzMesh::CockpitInteriorCount)));
             if(!cabinMesh)continue;
         }
         const bool authoredGlass=isF16?(material==F16NetzMesh::GlassMaterial):(vehicleKind==1?mesh==7:(vehicleKind==2&&mesh>=19&&mesh<=24));
@@ -1831,7 +1836,7 @@ void DrawHeroVehicle(Model &model,Vector3 position,const Vehicle &vehicle,int ve
         }
         DrawHeroMesh(model,mesh);
       }
-      if(pass==1){rlDrawRenderBatchActive();rlEnableDepthMask();}
+      if(pass==1){rlDrawRenderBatchActive();rlEnableDepthMask();EndBlendMode();}
     }
     rlDrawRenderBatchActive();rlEnableBackfaceCulling();
     if(g.locHeroGlassAlpha>=0){rlDrawRenderBatchActive();const float defaultMaterialAlpha=0.0f;SetShaderValue(g.worldShader,g.locHeroGlassAlpha,&defaultMaterialAlpha,SHADER_UNIFORM_FLOAT);}
@@ -3484,7 +3489,69 @@ void DrawCarCockpit(const Vehicle &v){
     Box(Local(origin,q,V(0,1.61f,.43f)),V(.27f,.10f,.035f),Color{39,45,44,255},q);
     SetCockpitFill(0.0f);
 }
+Vector3 F16ModelVector(const Vehicle &v,Vector3 local){
+    // Match DrawHeroVehicle's model transform order: roll, pitch, then heading.
+    const float cr=cosf(v.roll),sr=sinf(v.roll);
+    const float rolledY=cr*local.y-sr*local.z,rolledZ=sr*local.y+cr*local.z;
+    const float cp=cosf(v.pitch),sp=sinf(v.pitch);
+    const float pitchedX=cp*local.x-sp*rolledY,pitchedY=sp*local.x+cp*rolledY;
+    const float heading=v.yaw+PI*.5f,ch=cosf(heading),sh=sinf(heading);
+    return V(ch*pitchedX+sh*rolledZ,pitchedY,-sh*pitchedX+ch*rolledZ);
+}
+Vector3 F16ModelPoint(const Vehicle &v,Vector3 local){
+    local.y-=1.35f;return Add(v.p,F16ModelVector(v,local));
+}
+void DrawF16CockpitReadouts(const Vehicle &v){
+    UsePaintBlend(0.0f);
+    rlPushMatrix();rlTranslatef(v.p.x,v.p.y-1.35f,v.p.z);
+    rlRotatef((v.yaw+PI*.5f)/DEG,0,1,0);rlRotatef(v.pitch/DEG,0,0,1);rlRotatef(v.roll/DEG,1,0,0);
+    const Color screen{9,20,18,255},phosphor{86,198,145,255},dim{44,111,87,255},amber{216,155,69,255};
+    const float centers[3]{-.25f,0.0f,.25f};
+    for(int display=0;display<3;++display){
+        const float z=centers[display],face=2.960f;
+        Box(V(face,1.88f,z),V(.008f,.058f,.14f),screen,0);
+        if(display==0){
+            const float attitude=Clamp(v.pitch*.085f,-.038f,.038f);
+            Between(V(face-.006f,1.881f+attitude-.006f,z-.051f),V(face-.006f,1.881f+attitude+.006f,z+.051f),.0027f,phosphor,5);
+            Between(V(face-.006f,1.881f-attitude,z-.055f),V(face-.006f,1.881f+attitude,z+.055f),.0024f,dim,5);
+            for(int tick=0;tick<4;++tick){const float t=(tick-1.5f)*.014f;
+                Between(V(face-.006f,1.858f+t,z-.055f),V(face-.006f,1.858f+t,z-.043f),.0018f,phosphor,5);}
+            Between(V(face-.006f,1.903f,z-.032f),V(face-.006f,1.903f,z+.032f),.002f,amber,5);
+        }else if(display==1){
+            const float speed=Clamp(v.speed/80.0f,0.0f,1.0f),altitude=Clamp(v.p.y/140.0f,0.0f,1.0f);
+            for(int bar=0;bar<5;++bar){
+                const float y=1.859f+bar*.010f;
+                const bool lit=(bar<static_cast<int>(speed*5.0f))||(bar==4&&altitude>.82f);
+                Between(V(face-.006f,y,z-.050f),V(face-.006f,y,z+.050f),.0022f,lit?phosphor:dim,5);
+            }
+            Between(V(face-.006f,1.859f,z-.048f),V(face-.006f,1.901f,z-.048f),.0020f,amber,5);
+            Between(V(face-.006f,1.859f,z+.048f),V(face-.006f,1.901f,z+.048f),.0020f,phosphor,5);
+        }else{
+            for(int gate=0;gate<3;++gate){const float zz=z-.050f+gate*.046f;
+                const Color state=g.gateDone[gate]?phosphor:dim;
+                Between(V(face-.006f,1.898f,zz),V(face-.006f,1.898f,zz+.026f),.0025f,state,5);
+            }
+            const float bearing=Clamp(v.controlRudder,-1.0f,1.0f)*.010f;
+            Between(V(face-.006f,1.878f,z-.050f+bearing),V(face-.006f,1.878f,z+.050f+bearing),.0023f,phosphor,5);
+            Between(V(face-.006f,1.860f,z),V(face-.006f,1.900f,z),.0020f,amber,5);
+        }
+    }
+    // The combiner uses the authored HUD plate and a restrained green flight cue.
+    const float hudX=2.824f,hudY=2.025f;
+    Between(V(hudX,hudY-.018f,-.038f),V(hudX,hudY-.018f,-.018f),.0026f,phosphor,6);
+    Between(V(hudX,hudY-.018f,.018f),V(hudX,hudY-.018f,.038f),.0026f,phosphor,6);
+    Between(V(hudX,hudY+.018f,-.038f),V(hudX,hudY+.018f,-.018f),.0026f,phosphor,6);
+    Between(V(hudX,hudY+.018f,.018f),V(hudX,hudY+.018f,.038f),.0026f,phosphor,6);
+    Between(V(hudX,hudY-.008f,-.010f),V(hudX,hudY-.008f,.010f),.002f,amber,6);
+    Between(V(hudX,hudY-.030f,0),V(hudX,hudY-.020f,0),.002f,phosphor,6);
+    rlPopMatrix();UsePaintBlend(0.0f);
+}
 void DrawPlaneCockpit(const Vehicle &v){
+    if(IsModelValid(g.planeHero)&&g.planeHero.meshCount==F16NetzMesh::MeshCount){
+        SetCockpitFill(.82f);
+        DrawHeroVehicle(g.planeHero,v.p,v,1,v.yaw+PI*.5f,v.pitch,v.roll,1.35f,1.0f,g.planeNormalTex,g.planeRoughnessTex,true);
+        SetCockpitFill(0.0f);DrawF16CockpitReadouts(v);return;
+    }
     SetCockpitFill(.52f);
     const float q=v.yaw;const Vector3 origin=Add(v.p,V(0,-1.35f,0));const Color frame{57,70,69,255},panel{84,94,90,255};
     DrawCockpitGlass(Local(origin,q,V(0,.96f,-1.35f)),q,-48.0f,V(1.28f,1.36f,.012f),V(.12f,.22f,.24f));
@@ -3761,6 +3828,11 @@ void InitWorld(){
     ConfigureHeroVehicle(g.carHero,0);ConfigureHeroVehicle(g.planeHero,1);ConfigureHeroVehicle(g.heliHero,2);
     LogEvent(IsModelValid(g.carHero)&&IsModelValid(g.planeHero)&&IsModelValid(g.heliHero)?"cc0-vehicle-models-ready":"cc0-vehicle-model-load-failed");
     LogEvent(TextFormat("f16-netz-glb-meshes=%d,materials=%d,expected-primitives=%d",g.planeHero.meshCount,g.planeHero.materialCount,F16NetzMesh::MeshCount));
+    if(g.planeHero.meshMaterial&&g.planeHero.meshCount>F16NetzMesh::CockpitInteriorStart+F16NetzMesh::CockpitInteriorCount){
+        LogEvent(TextFormat("f16-authored-material-map,canopy=%d,HUD=%d,cockpit=%d,expected-glass=%d",
+            g.planeHero.meshMaterial[F16NetzMesh::Canopy],g.planeHero.meshMaterial[F16NetzMesh::CockpitHudStart],
+            g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart],F16NetzMesh::GlassMaterial));
+    }
     g.safehouse.p=V(56,TerrainHeight(56,146),146);g.safehouse.yaw=0;g.safehouse.doorAngle=0;g.safehouse.doorOpen=false;
     g.safehouseHero=LoadModel("assets/detached-two-storey-house_cc0.glb");
     g.safehouseSofa=LoadModel("assets/polyhaven-victorian-sofa_cc0.glb");
@@ -3838,6 +3910,7 @@ void UpdateCamera(){
     const Vector3 previousPosition=g.camera.position,previousTarget=g.camera.target;const bool smoothCamera=g.cameraInitialized;
     g.cameraActualDistance=Lerp(g.cameraActualDistance,g.cameraDistance,Clamp(GetFrameTime()*7.5f,0,1));
     const float cameraDistance=g.cameraActualDistance;
+    Vector3 cameraUp=V(0,1,0);
     Vector3 p=g.vehicle==VehicleKind::Foot?g.player.p:(g.vehicle==VehicleKind::Car?g.car.p:(g.vehicle==VehicleKind::Plane?g.plane.p:g.heli.p));
     Vector3 target=V(p.x,p.y+1.2f,p.z);float yaw=g.cameraYaw;
     if(g.vehicle==VehicleKind::Car){
@@ -3853,11 +3926,11 @@ void UpdateCamera(){
     }else if(g.vehicle==VehicleKind::Plane){
         Vector3 f=V(-sinf(g.plane.yaw)*cosf(g.plane.pitch),sinf(g.plane.pitch),-cosf(g.plane.yaw)*cosf(g.plane.pitch));
         if(cameraDistance<=3.5f){
-            // Keep the pilot eye below the canopy crown and close to the authored
-            // seat height. The former elevated chase-style offset looked over the
-            // windscreen and made the instrument panel sit below the field of view.
-            g.camera.position=Add(Add(Add(p,Mul(f,-.58f)),Mul(Right(g.plane.yaw),-.40f)),V(0,-.05f,0));
-            target=Add(Add(Add(p,V(0,-.10f,0)),Mul(f,3.15f)),Mul(Right(g.plane.yaw),-.40f));
+            // Place the eye just ahead of the authored pilot visor, inside the
+            // F-16 canopy. Model-space camera basis follows pitch and bank.
+            g.camera.position=F16ModelPoint(g.plane,V(2.25f,2.285f,0.0f));
+            target=F16ModelPoint(g.plane,V(6.10f,2.285f,0.0f));
+            cameraUp=Norm(F16ModelVector(g.plane,V(0,1,0)));
         }
         else{g.camera.position=cameraDistance>4?Add(Add(p,Mul(f,-cameraDistance)),V(0,5.4f,0)):Add(Add(Add(p,Mul(f,-.58f)),Mul(Right(g.plane.yaw),-.40f)),V(0,1.32f,0));target=cameraDistance>4?Add(p,V(0,.25f,0)):Add(Add(Add(p,V(0,.02f,0)),Mul(f,3.15f)),Mul(Right(g.plane.yaw),-.40f));}
     }else if(g.vehicle==VehicleKind::Helicopter){
@@ -3902,7 +3975,7 @@ void UpdateCamera(){
         g.camera.position=SafehouseWorld(cameraLocal);target=SafehouseWorld(targetLocal);
     }
     if(smoothCamera){const float blend=1.0f-expf(-GetFrameTime()*10.0f);g.camera.position=Vector3Lerp(previousPosition,g.camera.position,blend);target=Vector3Lerp(previousTarget,target,blend);}
-    g.camera.target=target;g.camera.up=V(0,1,0);g.camera.fovy=(g.vehicle==VehicleKind::Foot&&!g.player.firstPerson&&(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)||g.qaCombatAim))?58.0f:(cameraDistance<=3.5f?(g.vehicle==VehicleKind::Car?72.0f:70.0f):60.0f);g.camera.projection=CAMERA_PERSPECTIVE;g.cameraInitialized=true;
+    g.camera.target=target;g.camera.up=cameraUp;g.camera.fovy=(g.vehicle==VehicleKind::Foot&&!g.player.firstPerson&&(IsMouseButtonDown(MOUSE_BUTTON_RIGHT)||g.qaCombatAim))?58.0f:(cameraDistance<=3.5f?(g.vehicle==VehicleKind::Car?72.0f:70.0f):60.0f);g.camera.projection=CAMERA_PERSPECTIVE;g.cameraInitialized=true;
     if(g.qaCombatAim&&!g.qaCombatProjectionLogged&&!g.enemies.empty()){const Enemy &e=g.enemies.front();const Vector2 screenPoint=GetWorldToScreen(V(e.p.x,e.p.y+1.02f,e.p.z),g.camera);LogEvent(TextFormat("qa-combat-projection,x=%.1f,y=%.1f,cx=%d,cy=%d,yaw=%.3f,pitch=%.3f",screenPoint.x,screenPoint.y,GetScreenWidth()/2,GetScreenHeight()/2,g.cameraYaw,g.cameraPitch));g.qaCombatProjectionLogged=true;}
     if(IsShaderValid(g.worldShader)){
         const Vector3 light=Norm(V(-.42f,-.88f,.28f));const float fog[4]{.46f,.57f,.59f,1.0f};
@@ -3978,4 +4051,5 @@ void DrawWorld(){
 }
 
 } // namespace bw
+
 
