@@ -330,6 +330,29 @@ void ApplyHostileRoadVehicleDamage(HostileRoadVehicle &target,float damage,Vecto
         Notify("HOSTILE PICKUP DISABLED",1.8f);LogEvent("enemy-road-vehicle-disabled");
     }
 }
+void DamageHostileFixedWing(HostileFixedWing &target,float damage,Vector3 point){
+    if(!target.alive||target.downed||damage<=0.0f)return;
+    Vehicle &vehicle=target.vehicle;
+    const Vector3 local=Sub(point,vehicle.p);
+    const Vector3 forward=V(-sinf(vehicle.yaw)*cosf(vehicle.pitch),sinf(vehicle.pitch),-cosf(vehicle.yaw)*cosf(vehicle.pitch));
+    const float front=Vector3DotProduct(local,forward);
+    const float moduleLoss=Clamp(damage/520.0f,0.0f,.28f);
+    target.health-=std::max(1,(int)std::ceil(damage));
+    vehicle.damage=Clamp(vehicle.damage+damage/720.0f,0.0f,1.0f);
+    vehicle.airframeHealth=Clamp(vehicle.airframeHealth-moduleLoss*.72f,0.0f,1.0f);
+    if(front>.0f)vehicle.powerplantHealth=Clamp(vehicle.powerplantHealth-moduleLoss,0.0f,1.0f);
+    else vehicle.flightControlsHealth=Clamp(vehicle.flightControlsHealth-moduleLoss*.85f,0.0f,1.0f);
+    g.hits++;g.hitmarkerTimer=.20f;
+    SpawnParticles(point,Color{174,161,128,230},7,2.2f,.06f);
+    LogEvent(TextFormat("hostile-f16-damage,remaining=%d,part=%s,damage=%.1f",std::max(0,target.health),front>.0f?"engine":"airframe",damage));
+    if(target.health<=0){
+        target.health=0;target.alive=false;target.downed=true;vehicle.crashed=true;vehicle.wreckAge=0;
+        vehicle.powerplantHealth=0;vehicle.flightControlsHealth=.12f;vehicle.damage=1;vehicle.gunFlash=0;
+        vehicle.pitchRate-=.24f;vehicle.rollRate+=(front>=0?1.0f:-1.0f)*.48f;
+        g.killmarkerTimer=.72f;SpawnParticles(point,Color{76,70,61,235},18,3.0f,.12f);
+        Notify("HOSTILE F-16 DAMAGED — AIRFRAME LOSING CONTROL",2.0f);LogEvent("hostile-f16-downing-start");
+    }
+}
 void ApplyBlastToTrees(Vector3 point,float damage,float radius){
     for(TreeCollider &tree:g.treeColliders){
         if(tree.felled||tree.base.y<g.water-.2f)continue;
@@ -367,6 +390,10 @@ void Detonate(Vector3 point,float damage,float radius){
         contact.health-=static_cast<int>(std::ceil(damage*Clamp(1.0f-distance/radius,0,1)));
         if(contact.health<=0){contact.health=0;contact.alive=false;g.hits++;g.killmarkerTimer=.72f;SpawnParticles(center,Color{76,70,61,235},25,4.5f,.14f);Notify("ROTORCRAFT SHOT DOWN",1.8f);LogEvent("f16-aim9-rotorcraft-blast-kill");}
         else LogEvent("f16-aim9-rotorcraft-blast-hit");
+    }
+    for(HostileFixedWing &target:g.hostileFixedWings)if(target.alive&&!target.downed){
+        const Vector3 center=Add(target.vehicle.p,V(0,.45f,0));const float distance=Vector3Distance(center,point);
+        if(distance<radius)DamageHostileFixedWing(target,damage*Clamp(1.0f-distance/radius,0,1),center);
     }
     for(HostileRoadVehicle &target:g.hostileRoadVehicles)if(target.alive){
         const Vector3 center=Add(target.vehicle.p,V(0,.90f,0));const float distance=Vector3Distance(center,point);
@@ -432,31 +459,64 @@ void UpdateWeaponControls(bool mounted){
     const bool keyboardFire=spec.automatic?IsKeyDown(KEY_F):IsKeyPressed(KEY_F);
     if(mouseFire||keyboardFire)FireWeapon();
 }
+int AirContactCount();
+Vehicle *AirContactVehicle(int index);
+bool AirContactAlive(int index);
+void DamageAirContact(int index,float damage,Vector3 point);
 void FirePlaneGun(){
     if(g.plane.gunAmmo<=0)return;
     g.plane.gunCooldown=.010f;g.plane.gunFlash=.07f;g.plane.gunAmmo--;g.shots++;
     const Vector3 direction=V(-sinf(g.plane.yaw)*cosf(g.plane.pitch),sinf(g.plane.pitch),-cosf(g.plane.yaw)*cosf(g.plane.pitch));
     const Vector3 origin=Add(g.plane.p,Mul(direction,2.84f));Vector3 end{};BallisticContact surfaceHit{};HostileRoadVehicle *roadHit=nullptr;Enemy *hit=TraceEnemy(origin,direction,900,.74f,end,&surfaceHit,&roadHit);
-    float nearest=Vector3Distance(origin,end),closestAirMiss=1.0e6f,closestAirAlong=0.0f;HostileRotorcraft *airHit=nullptr;Vector3 airImpact{};
-    for(auto &contact:g.hostileRotorcraft)if(contact.alive){
+    float nearest=Vector3Distance(origin,end),closestAirMiss=1.0e6f,closestAirAlong=0.0f;int airTarget=-1;Vector3 airImpact{};
+    for(std::size_t i=0;i<g.hostileRotorcraft.size();++i){HostileRotorcraft &contact=g.hostileRotorcraft[i];if(!contact.alive)continue;
         const Vector3 center=Add(contact.vehicle.p,V(0,.68f,0)),to=Sub(center,origin);const float along=Vector3DotProduct(to,direction);
         if(along<0)continue;const Vector3 closest=Add(origin,Mul(direction,along));const float miss=Vector3Distance(closest,center);
         if(miss<closestAirMiss){closestAirMiss=miss;closestAirAlong=along;}
-        if(along<nearest&&miss<2.15f){nearest=along;airHit=&contact;airImpact=center;}
+        if(along<nearest&&miss<2.15f){nearest=along;airTarget=(int)i;airImpact=center;}
     }
-    if(g.qaAAGunTest&&g.plane.gunAmmo==499)LogEvent(TextFormat("qa-m61-sample,z=%.1f,pitch=%.3f,target-z=%.1f,target-y=%.1f,along=%.1f,miss=%.2f,block=%.1f",g.plane.p.z,g.plane.pitch,g.hostileRotorcraft[0].vehicle.p.z,g.hostileRotorcraft[0].vehicle.p.y+.68f,closestAirAlong,closestAirMiss,nearest));
-    if(airHit)end=airImpact;
+    for(std::size_t i=0;i<g.hostileFixedWings.size();++i){HostileFixedWing &contact=g.hostileFixedWings[i];if(!contact.alive)continue;
+        const Vector3 center=Add(contact.vehicle.p,V(0,.42f,0)),to=Sub(center,origin);const float along=Vector3DotProduct(to,direction);
+        if(along<0)continue;const Vector3 closest=Add(origin,Mul(direction,along));const float miss=Vector3Distance(closest,center);
+        if(miss<closestAirMiss){closestAirMiss=miss;closestAirAlong=along;}
+        if(along<nearest&&miss<2.75f){nearest=along;airTarget=(int)g.hostileRotorcraft.size()+(int)i;airImpact=center;}
+    }
+    if((g.qaAAGunTest||g.qaFixedWingGunTest)&&g.plane.gunAmmo==499){Vehicle *sampleTarget=AirContactVehicle(airTarget);LogEvent(TextFormat("qa-m61-sample,z=%.1f,pitch=%.3f,target-z=%.1f,target-y=%.1f,along=%.1f,miss=%.2f,block=%.1f",g.plane.p.z,g.plane.pitch,sampleTarget?sampleTarget->p.z:-1.0f,sampleTarget?sampleTarget->p.y+1.0f:-1.0f,closestAirAlong,closestAirMiss,nearest));}
+    if(airTarget>=0)end=airImpact;
     if(g.plane.gunAmmo%3==0)g.tracers.push_back(Tracer{origin,end,Color{255,220,154,235},.085f});
     if(g.plane.gunAudioCooldown<=0){PlaySpatial(g.planeCannonSfx,origin,1.0f,.73f,170.0f,g.muffledPlaneCannonSfx,true);g.plane.gunAudioCooldown=.10f;}
-    if(hit&&(!airHit||Vector3Distance(origin,end)<Vector3Distance(origin,airImpact)))ApplyEnemyDamage(*hit,20,end);
-    else if(roadHit&&(!airHit||Vector3Distance(origin,end)<Vector3Distance(origin,airImpact)))ApplyHostileRoadVehicleDamage(*roadHit,20,end);
-    else if(airHit){airHit->health-=20;g.hits++;g.hitmarkerTimer=.20f;SpawnParticles(end,Color{174,161,128,230},7,2.2f,.06f);LogEvent("f16-m61-airframe-hit");
-        if(airHit->health<=0){airHit->alive=false;g.killmarkerTimer=.72f;SpawnParticles(end,Color{76,70,61,235},25,4.5f,.14f);Notify("ROTORCRAFT SHOT DOWN",1.8f);LogEvent("f16-m61-rotorcraft-kill");
-            if(g.qaAAGunTest){g.qaAAGunTest=false;g.screenshotRequested=true;g.exitRequested=true;}}}
+    if(hit&&airTarget<0)ApplyEnemyDamage(*hit,20,end);
+    else if(roadHit&&airTarget<0)ApplyHostileRoadVehicleDamage(*roadHit,20,end);
+    else if(airTarget>=0){DamageAirContact(airTarget,20.0f,end);if((g.qaAAGunTest||g.qaFixedWingGunTest)&&!AirContactAlive(airTarget)){
+            if(g.qaFixedWingGunTest){const HostileFixedWing &fixed=g.hostileFixedWings[(std::size_t)(airTarget-(int)g.hostileRotorcraft.size())];LogEvent(TextFormat("qa-f16-fixedwing-gun-result,pass=1,shots=%d,target-health=%d",500-g.plane.gunAmmo,fixed.health));g.qaFixedWingGunTest=false;}
+            g.qaAAGunTest=false;g.screenshotRequested=true;g.exitRequested=true;
+        }}
     else if(surfaceHit.valid&&g.plane.gunAmmo%12==0)ApplySurfaceImpact(surfaceHit,end,20.0f,false);
     if(g.plane.gunAmmo%12==0)LogEvent("plane-forward-gun-burst");
 }
 Vector3 PlaneForward(){return Norm(V(-sinf(g.plane.yaw)*cosf(g.plane.pitch),sinf(g.plane.pitch),-cosf(g.plane.yaw)*cosf(g.plane.pitch)));}
+int AirContactCount(){return (int)g.hostileRotorcraft.size()+(int)g.hostileFixedWings.size();}
+Vehicle *AirContactVehicle(int index){
+    if(index>=0&&index<(int)g.hostileRotorcraft.size())return &g.hostileRotorcraft[(std::size_t)index].vehicle;
+    index-=(int)g.hostileRotorcraft.size();
+    return index>=0&&index<(int)g.hostileFixedWings.size()?&g.hostileFixedWings[(std::size_t)index].vehicle:nullptr;
+}
+bool AirContactAlive(int index){
+    if(index>=0&&index<(int)g.hostileRotorcraft.size())return g.hostileRotorcraft[(std::size_t)index].alive;
+    index-=(int)g.hostileRotorcraft.size();
+    return index>=0&&index<(int)g.hostileFixedWings.size()&&g.hostileFixedWings[(std::size_t)index].alive;
+}
+void DamageAirContact(int index,float damage,Vector3 point){
+    if(index>=0&&index<(int)g.hostileRotorcraft.size()){
+        HostileRotorcraft &contact=g.hostileRotorcraft[(std::size_t)index];if(!contact.alive||damage<=0)return;
+        contact.health-=std::max(1,(int)std::ceil(damage));g.hits++;g.hitmarkerTimer=.20f;SpawnParticles(point,Color{174,161,128,230},7,2.2f,.06f);
+        LogEvent("f16-m61-rotorcraft-airframe-hit");
+        if(contact.health<=0){contact.health=0;contact.alive=false;g.killmarkerTimer=.72f;SpawnParticles(point,Color{76,70,61,235},25,4.5f,.14f);Notify("ROTORCRAFT SHOT DOWN",1.8f);LogEvent("f16-m61-rotorcraft-kill");}
+        return;
+    }
+    index-=(int)g.hostileRotorcraft.size();
+    if(index>=0&&index<(int)g.hostileFixedWings.size())DamageHostileFixedWing(g.hostileFixedWings[(std::size_t)index],damage,point);
+}
 bool IRLineOfSight(Vector3 from,Vector3 to){
     for(int step=1;step<18;++step){const float t=step/18.0f;const Vector3 p=V(Lerp(from.x,to.x,t),Lerp(from.y,to.y,t),Lerp(from.z,to.z,t));
         if(p.y<std::max(TerrainHeight(p.x,p.z)+2.0f,g.water+.4f))return false;}
@@ -483,6 +543,153 @@ void UpdateHostileRotorcraft(float dt){
         v.velocity=V((v.p.x-oldX)/std::max(dt,.001f),0,(v.p.z-oldZ)/std::max(dt,.001f));v.yaw=-contact.orbitPhase;v.pitch=.018f;v.roll=.22f*sinf(contact.orbitPhase*2.0f);
         v.speed=Vector3Length(v.velocity);v.rotorAngle+=dt*(v.rotorRpm*78.0f);v.tailRotorAngle+=dt*(v.rotorRpm*78.0f*2.2f);
         if(g.vehicle==VehicleKind::Plane&&!contact.announced&&Vector3Distance(g.plane.p,v.p)<950.0f){contact.announced=true;Notify("AIR CONTACT — ROTORCRAFT / AIM FOR A STABLE REAR QUARTER",3.0f);LogEvent("hostile-air-contact");}
+    }
+}
+void InitializeHostileFixedWings(){
+    g.hostileFixedWings={};
+    for(std::size_t i=0;i<g.hostileFixedWings.size();++i){
+        HostileFixedWing &target=g.hostileFixedWings[i];target={};target.alive=true;target.health=180;
+        target.patrolCenter=V(g.player.p.x,g.player.p.y,g.player.p.z);
+        target.patrolPhase=PI;
+        target.vehicle=Vehicle{};target.vehicle.airborne=true;target.vehicle.landingGearDown=false;target.vehicle.gearExtension=0;
+        target.vehicle.engineRpm=.72f;target.vehicle.powerplantHealth=1.0f;target.vehicle.flightControlsHealth=1.0f;
+        target.vehicle.airframeHealth=1.0f;target.vehicle.speed=172.0f;target.vehicle.gunAmmo=500;
+        target.vehicle.p=V(g.player.p.x,g.player.p.y+58.0f,g.player.p.z-390.0f);
+        const Vector3 toPlayer=Sub(g.player.p,target.vehicle.p);
+        target.vehicle.yaw=atan2f(-toPlayer.x,-toPlayer.z);target.vehicle.pitch=-.025f;
+        target.vehicle.velocity=Mul(V(-sinf(target.vehicle.yaw)*cosf(target.vehicle.pitch),sinf(target.vehicle.pitch),-cosf(target.vehicle.yaw)*cosf(target.vehicle.pitch)),target.vehicle.speed);
+        target.vehicle.velocity.y=0;target.vehicle.roll=0;
+    }
+}
+Vector3 CurrentPlayerVelocity(){
+    if(g.vehicle==VehicleKind::Car)return g.car.velocity;
+    if(g.vehicle==VehicleKind::Plane)return g.plane.velocity;
+    if(g.vehicle==VehicleKind::Helicopter)return g.heli.velocity;
+    return g.player.velocity;
+}
+Vector3 CurrentPlayerAimPoint(){
+    Vector3 point=Position();
+    if(g.vehicle==VehicleKind::Foot)point.y+=1.05f;
+    else if(g.vehicle==VehicleKind::Car)point.y+=.86f;
+    else if(g.vehicle==VehicleKind::Helicopter)point.y+=.72f;
+    return point;
+}
+void UpdateHostileFixedWings(float dt){
+    constexpr float massKg=9650.0f,wingArea=27.87f,gravity=9.80665f;
+    for(HostileFixedWing &target:g.hostileFixedWings){
+        Vehicle &v=target.vehicle;const Vehicle frameStart=v;target.audioCooldown=std::max(0.0f,target.audioCooldown-dt);target.telemetryTimer=std::max(0.0f,target.telemetryTimer-dt);
+        target.fireCooldown=std::max(0.0f,target.fireCooldown-dt);target.burstTimer=std::max(0.0f,target.burstTimer-dt);
+        if(g.qaFixedWingTargetHold)continue;
+        if(target.downed){
+            if(!v.wreckOnGround){
+                const AtmosphereSample weather=SampleAtmosphere(v.p,v.p.y);const Vector3 relative=Sub(v.velocity,weather.windVelocity);
+                const float airspeed=Vector3Length(relative);v.velocity=Sub(v.velocity,Mul(relative,.00022f*airspeed*dt));v.velocity.y-=gravity*dt;
+                v.p=Add(v.p,Mul(v.velocity,dt));v.pitch=Clamp(v.pitch-v.wreckAge*.0016f*dt,-.9f,.25f);
+                v.roll+=v.rollRate*dt;v.rollRate*=std::exp(-dt*.24f);v.wreckAge+=dt;
+                const float ground=std::max(TerrainHeight(v.p.x,v.p.z),g.water);
+                if(v.p.y<=ground+1.35f){v.p.y=ground+1.35f;v.wreckOnGround=true;v.velocity=Mul(v.velocity,.22f);v.speed=Vector3Length(v.velocity);v.wreckAge=0;
+                    SpawnParticles(v.p,Color{138,118,86,210},20,3.0f,.10f);LogEvent("hostile-f16-ground-impact");}
+            }else{
+                const SurfaceSample surface=SampleSurface(v.p.x,v.p.z);const float speed=Vector3Length(V(v.velocity.x,0,v.velocity.z));
+                if(speed>.02f){const float next=std::max(0.0f,speed-(1.0f+surface.friction*9.80665f*.35f)*dt);v.velocity.x*=next/speed;v.velocity.z*=next/speed;v.p.x+=v.velocity.x*dt;v.p.z+=v.velocity.z*dt;}
+                v.p.y=std::max(TerrainHeight(v.p.x,v.p.z),g.water)+1.35f;v.wreckAge+=dt;
+                if(v.wreckAge<9.0f&&((int)(v.wreckAge*4.0f)!=(int)((v.wreckAge-dt)*4.0f)))SpawnParticles(Add(v.p,V(0,.5f,0)),Color{71,72,67,155},5,1.1f,.12f);
+            }
+            continue;
+        }
+        if(!target.alive)continue;
+        const Vector3 playerPosition=Position(),playerAim=CurrentPlayerAimPoint(),playerVelocity=CurrentPlayerVelocity();
+        const Vector3 toPlayer=Sub(playerPosition,v.p);const float range=Vector3Length(toPlayer);
+        if(!target.announced&&range<1250.0f){target.announced=true;Notify("RADAR WARNING — HOSTILE F-16 / BREAK THE GUN TRACK",3.0f);LogEvent("hostile-f16-radar-contact");}
+        const float desiredAltitude=playerPosition.y+(g.vehicle==VehicleKind::Plane?88.0f:48.0f);
+        const float horizontalRange=std::max(1.0f,DistXZ(playerPosition,v.p));
+        const float interceptTime=Clamp(horizontalRange/std::max(110.0f,v.speed),0.0f,2.1f);
+        const Vector3 leadPoint=Add(playerPosition,Mul(playerVelocity,interceptTime));
+        const Vector3 towardLead=Sub(leadPoint,v.p);
+        const float desiredYaw=atan2f(-towardLead.x,-towardLead.z);
+        const float headingError=std::remainder(desiredYaw-v.yaw,2.0f*PI);
+        const float desiredRoll=Clamp(headingError*1.5f,-1.05f,1.05f);
+        v.rollRate+=(desiredRoll-v.roll)*2.4f*dt-v.rollRate*1.75f*dt;
+        v.roll=Clamp(v.roll+v.rollRate*dt,-1.10f,1.10f);
+        const float cruiseAirspeed=Clamp(188.0f+(range>600.0f?35.0f:0.0f),175.0f,235.0f);
+        const float throttle=Clamp((cruiseAirspeed-v.speed)*.016f+.68f,.32f,1.0f);
+        v.engineRpm=Lerp(v.engineRpm,throttle,Clamp(dt*.72f,0,1));
+        const AtmosphereSample weather=SampleAtmosphere(v.p,v.p.y);
+        const Vector3 bodyForward=V(-sinf(v.yaw)*cosf(v.pitch),sinf(v.pitch),-cosf(v.yaw)*cosf(v.pitch));
+        const Vector3 right=V(cosf(v.yaw),0,-sinf(v.yaw));
+        const Vector3 airVelocity=Sub(v.velocity,weather.windVelocity);const float airspeed=std::max(1.0f,Vector3Length(airVelocity));
+        const float flightPath=atan2f(v.verticalSpeed,airspeed),alpha=v.pitch-flightPath;
+        const float stall=Smooth(.20f,.34f,alpha);
+        const float liftCoefficient=Clamp(.20f+4.9f*alpha,-.24f,1.60f)*(1.0f-.62f*stall);
+        const float q=.5f*weather.airDensity*airspeed*airspeed;
+        const float lift=q*wingArea*liftCoefficient/massKg*Lerp(.48f,1.0f,v.airframeHealth);
+        const float dragCoefficient=.021f+.124f*liftCoefficient*liftCoefficient;
+        const float dragAcceleration=q*wingArea*dragCoefficient/massKg;
+        const Vector3 aeroAcceleration=Mul(Norm(airVelocity),-dragAcceleration);
+        const float engineThrust=Lerp(18000.0f,80000.0f,v.engineRpm);
+        const float thrustAcceleration=engineThrust/massKg*Clamp(sqrtf(weather.airDensity/1.225f),.45f,1.0f);
+        const float longitudinal=thrustAcceleration+Vector3DotProduct(aeroAcceleration,bodyForward)-gravity*sinf(flightPath);
+        v.speed=Clamp(v.speed+longitudinal*dt,72.0f,390.0f);
+        const float altitudeError=desiredAltitude-v.p.y;
+        const float desiredPitch=Clamp(altitudeError*.0028f-v.verticalSpeed*.008f,-.24f,.24f);
+        v.pitchRate+=(desiredPitch-v.pitch)*1.8f*dt-v.pitchRate*1.65f*dt;
+        v.pitch=Clamp(v.pitch+v.pitchRate*dt,-.58f,.55f);
+        const float coordinatedTurn=gravity*tanf(Clamp(v.roll,-1.1f,1.1f))/std::max(55.0f,airspeed);
+        v.yawRate=Lerp(v.yawRate,coordinatedTurn,Clamp(dt*2.6f,0,1));v.yaw+=v.yawRate*dt;
+        v.verticalSpeed=Clamp(v.verticalSpeed+(lift*cosf(v.roll)-gravity+aeroAcceleration.y)*dt,-55.0f,55.0f);
+        const Vector3 forward=V(-sinf(v.yaw)*cosf(v.pitch),0,-cosf(v.yaw)*cosf(v.pitch));
+        const Vector3 windCorrected=Add(Mul(forward,v.speed),V(weather.windVelocity.x,0,weather.windVelocity.z));
+        v.velocity=windCorrected;v.velocity.y=v.verticalSpeed+weather.windVelocity.y;
+        const Vector3 oldPosition=v.p;v.p.x+=v.velocity.x*dt;v.p.z+=v.velocity.z*dt;v.p.y+=v.verticalSpeed*dt;
+        v.gearExtension=Lerp(v.gearExtension,0.0f,Clamp(dt*1.4f,0,1));v.propAngle+=dt*v.speed/.245f;v.gunFlash=std::max(0.0f,v.gunFlash-dt);
+        v.normalG=Clamp(lift*cosf(v.roll)/gravity,0.0f,9.0f);v.longitudinalG=longitudinal/gravity;
+        PlaneTreeImpact treeImpact{};
+        if(v.p.y-TerrainHeight(v.p.x,v.p.z)<44.0f)treeImpact=FindPlaneTreeImpact(frameStart,v);
+        if(treeImpact.tree){
+            TreeCollider &tree=*treeImpact.tree;tree.damage=Clamp(tree.damage+(treeImpact.canopy?.10f:.36f),0,1);tree.damagePoint=treeImpact.point;tree.hasDamagePoint=true;
+            if(treeImpact.canopy){tree.crownDamage=Clamp(tree.crownDamage+.26f,0,1);if(tree.crownDamage>.86f)tree.crownSheared=true;}
+            else if(tree.damage>=1.0f)tree.felled=true;
+            target.alive=false;target.downed=true;v.crashed=true;v.damage=Clamp(v.damage+.35f,0,1);v.wreckAge=0;v.pitchRate-=.38f;v.rollRate+=(Rand01(tree.seed,(int)g.elapsed)>0.5f?1.0f:-1.0f)*.42f;
+            SpawnParticles(treeImpact.point,treeImpact.canopy?Color{112,143,89,215}:Color{151,117,77,225},treeImpact.canopy?13:20,3.0f,.09f);
+            LogEvent(TextFormat("hostile-f16-tree-impact,part=%s,material=wood,tree-seed=%d,canopy=%d,speed-mps=%.1f",treeImpact.part,tree.seed,treeImpact.canopy?1:0,v.speed));continue;
+        }
+        const float terrain=std::max(TerrainHeight(v.p.x,v.p.z),g.water);
+        if(v.p.y<terrain+12.0f&&desiredAltitude>terrain+55.0f){v.pitchRate+=.35f*dt;}
+        if(v.p.y<=terrain+1.35f){v.p.y=terrain+1.35f;target.downed=true;target.alive=false;v.crashed=true;v.wreckAge=0;v.velocity=Mul(v.velocity,.55f);SpawnParticles(Add(v.p,V(0,.8f,0)),Color{140,112,76,210},18,2.6f,.11f);LogEvent("hostile-f16-uncontrolled-ground-impact");continue;}
+        // Player-fired cannon rounds are swept through detailed static world collision in UpdateProjectiles.
+        const Vector3 aimOrigin=Add(v.p,Mul(bodyForward,3.6f));
+        const Vector3 targetDelta=Sub(playerAim,aimOrigin);const float targetRange=Vector3Length(targetDelta);
+        const Vector3 lineOfSight=Norm(targetDelta);
+        const float closureSpeed=1030.0f+Vector3DotProduct(Sub(v.velocity,playerVelocity),lineOfSight);
+        const float bulletFlightTime=Clamp(targetRange/std::max(250.0f,closureSpeed),0.0f,1.5f);
+        Vector3 ballisticAim=Sub(Add(playerAim,Mul(playerVelocity,bulletFlightTime)),Mul(v.velocity,bulletFlightTime));
+        ballisticAim.y+=4.903325f*bulletFlightTime*bulletFlightTime;
+        const Vector3 aimDelta=Sub(ballisticAim,aimOrigin);
+        const float aimRange=Vector3Length(aimDelta);const Vector3 aimDirection=Mul(aimDelta,1.0f/std::max(.01f,aimRange));
+        const float boresight=Vector3DotProduct(bodyForward,aimDirection);
+        BallisticContact blocker{};if(aimRange>15.0f)FindStaticBallisticContact(Add(v.p,Mul(bodyForward,3.6f)),aimDirection,aimRange,blocker);
+        const bool clearShot=!blocker.valid||blocker.distance>=aimRange-3.0f;
+        const bool firingSolution=range>75.0f&&range<760.0f&&boresight>.965f&&clearShot;
+        if(g.qaHostileF16Test&&target.telemetryTimer<=0.0f){
+            LogEvent(TextFormat("qa-hostile-f16-track,range=%.1f,alt-agl=%.1f,speed=%.1f,yaw=%.2f,pitch=%.2f,roll=%.2f,error=%.2f,boresight=%.3f,block=%d,block-range=%.1f,solution=%d,burst=%d",
+                                range,v.p.y-TerrainHeight(v.p.x,v.p.z),v.speed,v.yaw,v.pitch,v.roll,headingError,boresight,blocker.valid?1:0,blocker.distance,firingSolution?1:0,target.burstRounds));
+            target.telemetryTimer=1.0f;
+        }
+        if(firingSolution&&target.burstRounds<=0&&target.fireCooldown<=0.0f){
+            target.burstRounds=g.difficulty==Difficulty::Relaxed?4:(g.difficulty==Difficulty::Veteran?8:6);
+            target.fireCooldown=g.difficulty==Difficulty::Relaxed?2.65f:(g.difficulty==Difficulty::Veteran?1.25f:1.65f);
+        }
+        if(target.burstRounds>0&&target.burstTimer<=0.0f&&v.gunAmmo>0&&firingSolution){
+            const Vector3 muzzle=Add(v.p,Mul(bodyForward,3.6f));
+            const Vector3 muzzleVelocity=Add(Mul(aimDirection,1030.0f),v.velocity);
+            const float roundDamage=g.difficulty==Difficulty::Relaxed?8.0f:(g.difficulty==Difficulty::Veteran?15.0f:13.0f);
+            g.projectiles.push_back(Projectile{muzzle,muzzleVelocity,1.6f,roundDamage,0.0f,true});
+            if(g.projectiles.size()>480)g.projectiles.erase(g.projectiles.begin(),g.projectiles.begin()+80);
+            g.tracers.push_back(Tracer{muzzle,Add(muzzle,Mul(aimDirection,90.0f)),Color{255,226,167,225},.085f});
+            --v.gunAmmo;++target.shotsFired;--target.burstRounds;target.burstTimer=.055f;v.gunFlash=.055f;
+            if(target.audioCooldown<=0.0f){PlaySpatial(g.planeCannonSfx,muzzle,.80f,.50f,210.0f,g.muffledPlaneCannonSfx,true);target.audioCooldown=.13f;}
+        }else if(!firingSolution)target.burstRounds=0;
+        if(Vector3Distance(oldPosition,v.p)>30.0f){v.p=oldPosition;v.velocity=V(0,0,0);target.downed=true;target.alive=false;LogEvent("hostile-f16-flight-step-safety-stop");}
     }
 }
 void InitializeHostileRoadVehicles(){
@@ -637,8 +844,8 @@ void LaunchIRMissile(){
     if(g.plane.missileAmmo<=0){Notify("IR MISSILES EXPENDED",1.4f);return;}
     if(!g.plane.airborne||g.plane.speed<77.0f){Notify("AIM-9 SAFE — AIRBORNE ABOVE 277 KM/H",1.6f);return;}
     if(g.lockedAirContact<0||g.missileLockQuality<.96f){Notify("NO VALID IR LOCK — HOLD THE TARGET IN THE SEEKER",1.5f);return;}
-    const int target=g.lockedAirContact;const HostileRotorcraft &contact=g.hostileRotorcraft[(std::size_t)target];
-    if(!contact.alive||!IRLineOfSight(g.plane.p,contact.vehicle.p)){Notify("SEEKER TRACK LOST",1.2f);return;}
+    const int target=g.lockedAirContact;Vehicle *contact=AirContactVehicle(target);
+    if(!contact||!AirContactAlive(target)||!IRLineOfSight(g.plane.p,contact->p)){Notify("SEEKER TRACK LOST",1.2f);return;}
     const int station=g.plane.missilePresent[0]?0:1;const float side=station==0?-1.0f:1.0f;
     const Vector3 forward=PlaneForward(),right=V(cosf(g.plane.yaw),0,-sinf(g.plane.yaw));
     const Vector3 muzzle=Add(Add(g.plane.p,Mul(right,side*4.45f)),V(0,-.62f,0));
@@ -652,7 +859,7 @@ void LaunchIRMissile(){
 void UpdatePlaneWeapons(float dt){
     if(IsKeyPressed(KEY_V)){g.planeMissileSelected=!g.planeMissileSelected;g.lockedAirContact=-1;g.missileLockQuality=0;Notify(g.planeMissileSelected?"AIM-9 IR SEEKER SELECTED":"M61A1 CANNON SELECTED",1.3f);LogEvent(g.planeMissileSelected?"f16-weapon-aim9-selected":"f16-weapon-m61-selected");}
     if(!g.planeMissileSelected){
-        g.lockedAirContact=-1;g.missileLockQuality=0;const bool firing=g.qaAAGunTest||IsMouseButtonDown(MOUSE_BUTTON_LEFT)||IsKeyDown(KEY_F);
+        g.lockedAirContact=-1;g.missileLockQuality=0;const bool firing=g.qaAAGunTest||g.qaFixedWingGunTest||IsMouseButtonDown(MOUSE_BUTTON_LEFT)||IsKeyDown(KEY_F);
         if(!firing){g.plane.gunAccumulator=std::min(g.plane.gunAccumulator,.01f);return;}
         g.plane.gunAccumulator+=dt;int rounds=0;while(g.plane.gunAccumulator>=.01f&&g.plane.gunAmmo>0&&rounds<8){FirePlaneGun();g.plane.gunAccumulator-=.01f;++rounds;}
         return;
@@ -660,10 +867,11 @@ void UpdatePlaneWeapons(float dt){
     g.plane.gunAccumulator=std::min(g.plane.gunAccumulator,.01f);
     int candidate=-1;float bestScore=-1.0e9f;const Vector3 forward=PlaneForward();
     if(g.plane.airborne&&g.plane.speed>=77.0f){
-        for(std::size_t i=0;i<g.hostileRotorcraft.size();++i){const HostileRotorcraft &contact=g.hostileRotorcraft[i];if(!contact.alive)continue;
-            const Vector3 delta=Sub(Add(contact.vehicle.p,V(0,1.0f,0)),g.plane.p);const float range=Vector3Length(delta);if(range<150.0f||range>2800.0f)continue;
-            const Vector3 sight=Mul(delta,1.0f/range);const float boresight=Vector3DotProduct(forward,sight);if(boresight<.91f||!IRLineOfSight(g.plane.p,contact.vehicle.p))continue;
-            const Vector3 targetToPlayer=Norm(Sub(g.plane.p,contact.vehicle.p));const Vector3 targetForward=Forward(contact.vehicle.yaw);
+        for(int i=0;i<AirContactCount();++i){Vehicle *contact=AirContactVehicle(i);if(!contact||!AirContactAlive(i))continue;
+            const Vector3 delta=Sub(Add(contact->p,V(0,1.0f,0)),g.plane.p);const float range=Vector3Length(delta);if(range<150.0f||range>2800.0f)continue;
+            const Vector3 sight=Mul(delta,1.0f/range);const float boresight=Vector3DotProduct(forward,sight);if(boresight<.91f||!IRLineOfSight(g.plane.p,contact->p))continue;
+            const Vector3 targetToPlayer=Norm(Sub(g.plane.p,contact->p));
+            const Vector3 targetForward=i<(int)g.hostileRotorcraft.size()?Forward(contact->yaw):Norm(V(-sinf(contact->yaw)*cosf(contact->pitch),sinf(contact->pitch),-cosf(contact->yaw)*cosf(contact->pitch)));
             const float aspect=Vector3DotProduct(targetForward,targetToPlayer);if(aspect>.92f)continue;
             const float aspectFactor=aspect<-.15f?1.0f:(aspect<.45f?.60f:.26f);
             const float score=boresight*2.0f+aspectFactor-range*.00015f;if(score>bestScore){candidate=(int)i;bestScore=score;}
@@ -677,10 +885,9 @@ void UpdatePlaneWeapons(float dt){
 }
 void UpdateGuidedMissiles(float dt){
     for(std::size_t i=0;i<g.guidedMissiles.size();){GuidedIRMissile &missile=g.guidedMissiles[i];const Vector3 old=missile.p;missile.age+=dt;missile.life-=dt;
-        HostileRotorcraft *target=missile.target>=0&&missile.target<(int)g.hostileRotorcraft.size()?&g.hostileRotorcraft[(std::size_t)missile.target]:nullptr;
-        if(target&&!target->alive)target=nullptr;
+        Vehicle *target=AirContactVehicle(missile.target);if(!target||!AirContactAlive(missile.target))target=nullptr;
         const float speed=Vector3Length(missile.velocity);Vector3 direction=Norm(missile.velocity);
-        if(target){const Vector3 aim=Add(target->vehicle.p,V(0,1.0f,0));const Vector3 toTarget=Sub(aim,missile.p);const float range=Vector3Length(toTarget);
+        if(target){const Vector3 aim=Add(target->p,V(0,1.0f,0));const Vector3 toTarget=Sub(aim,missile.p);const float range=Vector3Length(toTarget);
             const Vector3 desired=Mul(toTarget,1.0f/std::max(range,.01f));const float angle=acosf(Clamp(Vector3DotProduct(direction,desired),-1,1));
             const float turn=angle>.001f?Clamp((36.0f*DEG*dt)/angle,0,1):1.0f;direction=Norm(Add(Mul(direction,1.0f-turn),Mul(desired,turn)));
         }else missile.target=-1;
@@ -691,9 +898,10 @@ void UpdateGuidedMissiles(float dt){
         missile.velocity=velocity;const Vector3 next=Add(old,Mul(velocity,dt)),travel=Sub(next,old);const float travelDistance=Vector3Length(travel);
         BallisticContact worldContact{};if(travelDistance>.001f)FindStaticBallisticContact(old,Mul(travel,1.0f/travelDistance),travelDistance,worldContact);
         float targetFraction=0;Vector3 targetFusePoint{};bool targetFuse=false;
-        if(target){const Vector3 aim=Add(target->vehicle.p,V(0,.68f,0));targetFusePoint=ClosestPointOnSegment(old,next,aim,targetFraction);targetFuse=Vector3Distance(targetFusePoint,aim)<12.0f;}
+        if(target){const Vector3 aim=Add(target->p,V(0,.50f,0));targetFusePoint=ClosestPointOnSegment(old,next,aim,targetFraction);targetFuse=Vector3Distance(targetFusePoint,aim)<12.0f;}
         if(targetFuse&&(!worldContact.valid||targetFraction*travelDistance<=worldContact.distance)){
-            target->health=0;target->alive=false;g.hits++;g.killmarkerTimer=.8f;g.hitmarkerTimer=.24f;Detonate(targetFusePoint,190,18);Notify("ROTORCRAFT DESTROYED",2.0f);LogEvent("f16-aim9-target-destroyed");
+            DamageAirContact(missile.target,1000.0f,targetFusePoint);g.killmarkerTimer=.8f;g.hitmarkerTimer=.24f;Detonate(targetFusePoint,190,18);Notify("AIR CONTACT DESTROYED",2.0f);LogEvent("f16-aim9-target-destroyed");
+            if(g.qaAAMissileTest&&missile.target>=(int)g.hostileRotorcraft.size())LogEvent("qa-f16-fixedwing-aim9-result,pass=1");
             if(g.qaAAMissileTest){g.screenshotRequested=true;g.qaAAMissileTest=false;g.exitRequested=true;}
             missile.p=targetFusePoint;g.tracers.push_back(Tracer{old,targetFusePoint,Color{106,108,98,185},.15f});g.guidedMissiles.erase(g.guidedMissiles.begin()+static_cast<std::ptrdiff_t>(i));continue;
         }
@@ -715,6 +923,29 @@ void UpdateProjectiles(float dt){
         Projectile &projectile=g.projectiles[i];const Vector3 old=projectile.p;
         const AtmosphereSample weather=SampleAtmosphere(projectile.p,projectile.p.y);
         const Vector3 relativeWind=Sub(projectile.velocity,weather.windVelocity);const float airspeed=Vector3Length(relativeWind);
+        if(projectile.hostileAircraftRound){
+            // Swept 20 mm cannon round: the projectile inherits aircraft velocity,
+            // loses speed to air-relative drag, and is stopped by terrain/trees.
+            const float dragScale=.5f*weather.airDensity*.00038f*airspeed;
+            projectile.velocity=Sub(projectile.velocity,Mul(relativeWind,dragScale*dt));projectile.velocity.y-=9.80665f*dt;
+            const Vector3 next=Add(old,Mul(projectile.velocity,dt)),travel=Sub(next,old);const float distance=Vector3Length(travel);projectile.life-=dt;
+            BallisticContact worldContact{};if(distance>.001f)FindStaticBallisticContact(old,Mul(travel,1.0f/distance),distance,worldContact);
+            const Vector3 aim=CurrentPlayerAimPoint();float fraction=0.0f;const Vector3 closest=ClosestPointOnSegment(old,next,aim,fraction);
+            const float radius=g.vehicle==VehicleKind::Plane?4.2f:(g.vehicle==VehicleKind::Helicopter?2.7f:(g.vehicle==VehicleKind::Car?2.4f:.88f));
+            const bool playerHit=Vector3Distance(closest,aim)<radius;
+            if(playerHit&&(!worldContact.valid||fraction*distance<=worldContact.distance)){
+                projectile.p=closest;g.tracers.push_back(Tracer{old,closest,Color{255,205,132,220},.10f});
+                DamagePlayerVehicleFromGun(projectile.damage);SpawnParticles(closest,Color{188,155,108,220},4,1.4f,.045f);LogEvent("hostile-f16-cannon-hit-player");
+                g.projectiles.erase(g.projectiles.begin()+static_cast<std::ptrdiff_t>(i));continue;
+            }
+            if(worldContact.valid){
+                projectile.p=worldContact.point;g.tracers.push_back(Tracer{old,worldContact.point,Color{255,205,132,220},.10f});
+                if(projectile.damage>0.0f)ApplySurfaceImpact(worldContact,worldContact.point,projectile.damage,false);
+                g.projectiles.erase(g.projectiles.begin()+static_cast<std::ptrdiff_t>(i));continue;
+            }
+            if(projectile.life<=0.0f){g.projectiles.erase(g.projectiles.begin()+static_cast<std::ptrdiff_t>(i));continue;}
+            projectile.p=next;g.tracers.push_back(Tracer{old,next,Color{255,205,132,220},.10f});++i;continue;
+        }
         // A compact rocket drag model (CdA/m ~= 0.0027 m^2/kg) and gravity; wind acts on the projectile through air-relative speed.
         const float dragScale=.5f*weather.airDensity*.012f/4.5f*airspeed;
         projectile.velocity=Sub(projectile.velocity,Mul(relativeWind,dragScale*dt));projectile.velocity.y-=9.80665f*dt;
@@ -1303,6 +1534,7 @@ void UpdatePlane(float dt){
     const Vehicle planeBefore=g.plane;
     g.plane.gunCooldown=std::max(0.0f,g.plane.gunCooldown-dt);g.plane.gunAudioCooldown=std::max(0.0f,g.plane.gunAudioCooldown-dt);g.plane.gunFlash=std::max(0.0f,g.plane.gunFlash-dt);
     UpdatePlaneWeapons(dt);
+    if(g.qaFixedWingTargetHold)return;
     constexpr float aircraftMass=9650.0f,wingArea=27.87f,gravity=9.80665f;
     const AtmosphereSample weather=SampleAtmosphere(g.plane.p,g.plane.p.y);
     const bool throttleUp=IsKeyDown(KEY_W),throttleIdle=IsKeyDown(KEY_S);
@@ -1614,7 +1846,7 @@ void StartMission(){
     g.player=Player{};g.player.p=V(0,TerrainHeight(0,165)+1,165);g.gateDone={false,false,false};g.taskAnnounced={false,false,false,false};g.water=LOW_WATER;g.waterTarget=LOW_WATER;
     g.safehouse.doorOpen=false;g.safehouse.doorAngle=0;
     g.vehicle=VehicleKind::Foot;SetCarAtBase();SetPlaneAtRunway();SetHeliAtPad();
-    InitializeHostileRotorcraft();InitializeHostileRoadVehicles();
+    InitializeHostileRotorcraft();InitializeHostileFixedWings();InitializeHostileRoadVehicles();
     for(auto &e:g.enemies){e.alive=true;e.health=(e.leader?145.0f:90.0f)*EnemyHealthScale();e.alert=0;e.cooldown=0;e.suppression=0;e.p=V(e.home.x,TerrainHeight(e.home.x,e.home.z)+1,e.home.z);}
     g.missionStarted=true;g.missionComplete=false;g.elapsed=0;g.hits=0;g.shots=0;g.gatesOperated=0;g.vehiclesEntered=0;g.maxCar=g.maxPlane=g.maxHeli=g.maxAltitude=0;
     g.tracks.clear();g.particles.clear();g.tracers.clear();g.projectiles.clear();g.explosions.clear();g.audioEchoes.clear();Notify("WEST GAUGE: CLEAR THE SALVAGE CREW",5);Announce(NarrationCue::Briefing);LogEvent("mission-start");
@@ -1628,7 +1860,7 @@ void SpawnParticles(Vector3 p,Color color,int count,float speed,float size){
 void UpdateGameplay(float dt){
     g.clock+=dt;g.elapsed+=dt;g.water=Lerp(g.water,g.waterTarget,Clamp(dt*.30f,0,1));g.tidePulse=std::max(0.0f,g.tidePulse-dt*.13f);
     const float doorTarget=g.safehouse.doorOpen?PI*.5f:0.0f;g.safehouse.doorAngle+=Clamp(doorTarget-g.safehouse.doorAngle,-2.8f*dt,2.8f*dt);
-    g.cameraShake=std::max(0.0f,g.cameraShake-dt*1.6f);g.car.gunFlash=std::max(0.0f,g.car.gunFlash-dt);g.heli.gunFlash=std::max(0.0f,g.heli.gunFlash-dt);UpdateWeaponState(dt);UpdateHostileRotorcraft(dt);UpdateHostileRoadVehicles(dt);UpdateGuidedMissiles(dt);UpdateProjectiles(dt);
+    g.cameraShake=std::max(0.0f,g.cameraShake-dt*1.6f);g.car.gunFlash=std::max(0.0f,g.car.gunFlash-dt);g.heli.gunFlash=std::max(0.0f,g.heli.gunFlash-dt);UpdateWeaponState(dt);UpdateHostileRotorcraft(dt);UpdateHostileFixedWings(dt);UpdateHostileRoadVehicles(dt);UpdateGuidedMissiles(dt);UpdateProjectiles(dt);
     for(auto &e:g.explosions)e.life=std::max(0.0f,e.life-dt);g.explosions.erase(std::remove_if(g.explosions.begin(),g.explosions.end(),[](const Explosion &e){return e.life<=0;}),g.explosions.end());
     if(g.noticeTime>0)g.noticeTime=std::max(0.0f,g.noticeTime-dt);if(g.damageTimer>0)g.damageTimer=std::max(0.0f,g.damageTimer-dt);
     for(auto &p:g.particles){

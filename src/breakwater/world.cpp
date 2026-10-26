@@ -2839,12 +2839,23 @@ void DrawVehicles(){
         if(g.vehicle==VehicleKind::Car){if(g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else{DrawGroundShadow(g.car.p,1.65f,2.55f,28.0f,g.car.yaw);DrawCar(g.car);}DrawVehicleImpactOverlay(g.car,0);}
         else if(g.vehicle==VehicleKind::Plane){if(g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else{const float h=Clamp(g.plane.p.y-TerrainHeight(g.plane.p.x,g.plane.p.z),0,80);DrawGroundShadow(g.plane.p,2.0f+h*.10f,3.0f+h*.08f,28.0f,g.plane.yaw);DrawPlane(g.plane);}DrawVehicleImpactOverlay(g.plane,1);DrawF16BreakawayParts();}
         else if(g.vehicle==VehicleKind::Helicopter){if(g.cameraActualDistance<=3.5f)DrawHeliCockpit(g.heli);else{const float h=Clamp(g.heli.p.y-TerrainHeight(g.heli.p.x,g.heli.p.z),0,80);DrawGroundShadow(g.heli.p,1.45f,2.0f,28.0f,g.heli.yaw);if(h>1.5f&&h<42.0f)DrawGroundShadow(g.heli.p,4.65f+h*.07f,4.65f+h*.07f,12.0f,g.heli.yaw);DrawHeli(g.heli);}DrawVehicleImpactOverlay(g.heli,2);}
+        for(const HostileFixedWing &contact:g.hostileFixedWings)if(contact.alive||contact.downed){
+            const float h=Clamp(contact.vehicle.p.y-TerrainHeight(contact.vehicle.p.x,contact.vehicle.p.z),0,80);
+            if(h<55.0f)DrawGroundShadow(contact.vehicle.p,2.0f+h*.10f,3.0f+h*.08f,26.0f,contact.vehicle.yaw);
+            DrawPlane(contact.vehicle);DrawVehicleImpactOverlay(contact.vehicle,1);
+        }
         return;
     }
     DrawVehicleShadows();
     if(g.vehicle==VehicleKind::Car&&g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else DrawCar(g.car);DrawVehicleImpactOverlay(g.car,0);
     if(g.vehicle==VehicleKind::Plane&&g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else DrawPlane(g.plane);DrawVehicleImpactOverlay(g.plane,1);DrawF16BreakawayParts();
     if(g.vehicle==VehicleKind::Helicopter&&g.cameraActualDistance<=3.5f)DrawHeliCockpit(g.heli);else DrawHeli(g.heli);DrawVehicleImpactOverlay(g.heli,2);
+    for(const HostileFixedWing &contact:g.hostileFixedWings)if(contact.alive||contact.downed){
+        const float h=Clamp(contact.vehicle.p.y-TerrainHeight(contact.vehicle.p.x,contact.vehicle.p.z),0,80);
+        if(h<55.0f)DrawGroundShadow(contact.vehicle.p,2.0f+h*.10f,3.0f+h*.08f,26.0f,contact.vehicle.yaw);
+        DrawPlane(contact.vehicle);DrawVehicleImpactOverlay(contact.vehicle,1);
+        if(contact.alive&&((int)(g.clock*3.2f)&1)==0)DrawSphere(Add(contact.vehicle.p,V(0,2.2f,0)),.12f,Color{223,79,57,235});
+    }
     for(const HostileRotorcraft &contact:g.hostileRotorcraft)if(contact.alive){
         DrawHeli(contact.vehicle);
         const Vector3 beacon=Add(contact.vehicle.p,V(0,1.98f,0));

@@ -376,7 +376,7 @@ void ShutdownAudioSystem(){
 
 int main(int argc,char **argv) {
     using namespace bw;
-    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarLoadTransferPassed=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaCombat=false,qaHostileRoadVehicle=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{};int qaCarTreeTargetSeed=-1;
+    std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0,qaHostileF16Deadline=0.0;bool qaTaskTour=false,qaPlaneLanding=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarLoadTransferPassed=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaF16Gun=false,qaF16Missile=false,qaHostileF16=false,qaCombat=false,qaHostileRoadVehicle=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{},qaHostileF16Start{};int qaCarTreeTargetSeed=-1;
     for(int i=1;i<argc;++i){
         const std::string_view arg(argv[i]);
         constexpr std::string_view prefix="--qa-capture=";
@@ -393,6 +393,9 @@ int main(int argc,char **argv) {
         if(arg=="--qa-car-tire-thermal")qaCarTireThermal=true;
         if(arg=="--qa-aircombat")qaAirCombat=true;
         if(arg=="--qa-airgun")qaAirGun=true;
+        if(arg=="--qa-f16-fixedwing-gun")qaF16Gun=true;
+        if(arg=="--qa-f16-fixedwing-missile")qaF16Missile=true;
+        if(arg=="--qa-hostile-f16")qaHostileF16=true;
         if(arg=="--qa-combat")qaCombat=true;
         if(arg=="--qa-hostile-road-vehicle")qaHostileRoadVehicle=true;
         if(arg=="--qa-ballistics")qaBallistics=true;
@@ -448,6 +451,12 @@ int main(int argc,char **argv) {
             }
         }else if(qaCapture=="hostile-road-vehicle"){
             g.vehicle=VehicleKind::Foot;g.player.firstPerson=true;
+        }else if(qaCapture=="hostile-fixed-wing"){
+            g.vehicle=VehicleKind::Foot;g.player.firstPerson=true;g.graphics=GraphicsMode::High;g.qaCaptureWorldVehicles=true;
+            HostileFixedWing &contact=g.hostileFixedWings[0];contact.alive=true;contact.downed=false;contact.health=180;contact.vehicle=Vehicle{};
+            contact.vehicle.p=V(-7,TerrainHeight(-7,93)+40.0f,93);contact.vehicle.yaw=PI;contact.vehicle.pitch=.025f;contact.vehicle.roll=.035f;
+            contact.vehicle.airborne=true;contact.vehicle.landingGearDown=false;contact.vehicle.gearExtension=0;contact.vehicle.speed=190;contact.vehicle.engineRpm=.75f;
+            g.player.p=Add(contact.vehicle.p,V(0,0,10.0f));g.cameraYaw=PI;g.cameraPitch=-.045f;g.cameraDistance=8.0f;g.cameraActualDistance=8.0f;g.cameraInitialized=false;
         }else if(qaCapture=="character"){
             g.vehicle=VehicleKind::Foot;g.player.firstPerson=false;g.player.p=V(0,TerrainHeight(0,165)+1,165);
             g.player.yaw=0;g.cameraYaw=0;g.cameraPitch=-.08f;g.cameraDistance=4.2f;
@@ -582,6 +591,25 @@ int main(int argc,char **argv) {
         g.hostileRotorcraft[1].alive=false;g.planeMissileSelected=qaAirCombat;g.qaAAMissileTest=qaAirCombat;g.qaAAMissileLaunchPending=qaAirCombat;g.qaAAGunTest=qaAirGun;
         LogEvent(qaAirCombat?"qa-f16-aim9-lock-launch-impact-fixture":"qa-f16-m61-airframe-hit-fixture");
     }
+    if((qaF16Gun||qaF16Missile)&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding){
+        StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Plane;g.graphics=GraphicsMode::High;
+        g.plane.p=V(-7,TerrainHeight(-7,43)+190.0f,43);g.plane.yaw=PI;g.plane.pitch=.18f;g.plane.roll=0;g.plane.speed=220;g.plane.engineRpm=.88f;
+        g.plane.velocity=V(0,0,220);g.plane.verticalSpeed=0;g.plane.airborne=true;g.plane.landingGearDown=false;g.plane.gearExtension=0;
+        g.cameraDistance=13.0f;g.cameraActualDistance=13.0f;g.cameraInitialized=false;g.qaFixedWingTargetHold=true;
+        for(HostileRotorcraft &contact:g.hostileRotorcraft)contact.alive=false;
+        HostileFixedWing &target=g.hostileFixedWings[0];target.alive=true;target.downed=false;target.health=180;target.shotsFired=0;target.vehicle=Vehicle{};
+        const Vector3 forward=V(-sinf(g.plane.yaw)*cosf(g.plane.pitch),sinf(g.plane.pitch),-cosf(g.plane.yaw)*cosf(g.plane.pitch));
+        target.vehicle.p=Sub(Add(g.plane.p,Mul(forward,420.0f)),V(0,.42f,0));target.vehicle.yaw=PI;target.vehicle.speed=0;target.vehicle.airborne=true;target.vehicle.landingGearDown=false;target.vehicle.gearExtension=0;
+        if(qaF16Missile){g.planeMissileSelected=true;g.qaAAMissileTest=true;g.qaAAMissileLaunchPending=true;LogEvent("qa-f16-fixedwing-aim9-fixture-start");}
+        else{g.qaFixedWingGunTest=true;LogEvent("qa-f16-fixedwing-m61-fixture-start");}
+    }
+    if(qaHostileF16&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding){
+        StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.graphics=GraphicsMode::High;g.vehicle=VehicleKind::Foot;g.player.health=1000;
+        g.qaHostileF16Test=true;
+        for(HostileRotorcraft &contact:g.hostileRotorcraft)contact.alive=false;
+        g.cameraYaw=PI;g.cameraPitch=.08f;g.cameraDistance=12.0f;g.cameraActualDistance=12.0f;g.cameraInitialized=false;
+        qaHostileF16Start=g.hostileFixedWings[0].vehicle.p;qaHostileF16Deadline=GetTime()+8.0;LogEvent("qa-hostile-f16-intercept-fixture-start");
+    }
     if(qaCombat&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding){
         StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Foot;g.graphics=GraphicsMode::High;
         g.player.p=V(0,TerrainHeight(0,165)+1,165);g.player.firstPerson=false;g.player.selectedWeapon=static_cast<std::size_t>(WeaponKind::AssaultRifle);g.qaCombatAim=true;g.qaCombatAutoFirePending=true;
@@ -649,6 +677,13 @@ int main(int argc,char **argv) {
                                 passed?1:0,target.shotsFired,g.damageTaken,g.shots,target.health,target.distanceDriven));
             g.screenshotRequested=true;g.exitRequested=true;
         }
+        if(qaHostileF16&&!g.exitRequested&&GetTime()>=qaHostileF16Deadline){
+            const HostileFixedWing &target=g.hostileFixedWings[0];const float moved=Vector3Distance(qaHostileF16Start,target.vehicle.p);
+            const bool passed=target.shotsFired>=3&&g.damageTaken>0.0f;
+            LogEvent(TextFormat("qa-hostile-f16-result,pass=%d,gun-rounds=%d,player-damage=%.2f,remaining-health=%.1f,travel-m=%.2f,downed=%d",
+                                passed?1:0,target.shotsFired,g.damageTaken,g.player.health,moved,target.downed?1:0));
+            g.screenshotRequested=true;g.exitRequested=true;
+        }
         UpdateAudio(dt);
         if(qaTaskTour&&qaTaskStage<4&&g.taskAnnounced[(std::size_t)qaTaskStage]){
             if(qaTaskCaptureStage!=qaTaskStage){g.screenshotRequested=true;qaTaskCaptureStage=qaTaskStage;}
@@ -660,7 +695,13 @@ int main(int argc,char **argv) {
                 else g.qaTaskInteractPending=true;
             }
         }
-        if((qaAirCombat||qaAirGun)&&g.elapsed>=4.0f&&(g.qaAAMissileTest||g.qaAAGunTest)){LogEvent(TextFormat("qa-f16-weapon-timeout,z=%.1f,ammo=%d,target=%d",g.plane.p.z,g.plane.gunAmmo,g.hostileRotorcraft[0].health));g.screenshotRequested=true;g.qaAAMissileTest=false;g.qaAAGunTest=false;g.exitRequested=true;}
+        if((qaAirCombat||qaAirGun||qaF16Gun||qaF16Missile)&&g.elapsed>=4.0f&&(g.qaAAMissileTest||g.qaAAGunTest||g.qaFixedWingGunTest)){
+            const int targetHealth=qaF16Gun||qaF16Missile?g.hostileFixedWings[0].health:g.hostileRotorcraft[0].health;
+            LogEvent(TextFormat("qa-f16-weapon-timeout,z=%.1f,ammo=%d,target=%d,fixed-wing=%d",g.plane.p.z,g.plane.gunAmmo,targetHealth,(qaF16Gun||qaF16Missile)?1:0));
+            if(qaF16Gun)LogEvent(TextFormat("qa-f16-fixedwing-gun-result,pass=0,shots=%d,target-health=%d",500-g.plane.gunAmmo,targetHealth));
+            if(qaF16Missile)LogEvent(TextFormat("qa-f16-fixedwing-aim9-result,pass=0,target-health=%d",targetHealth));
+            g.screenshotRequested=true;g.qaAAMissileTest=false;g.qaAAGunTest=false;g.qaFixedWingGunTest=false;g.exitRequested=true;
+        }
         BeginDrawing();ClearBackground(Color{94,123,132,255});DrawWorld();if(qaCapture.empty())DrawUI();
         if(!qaCapture.empty()&&GetTime()>=qaCaptureDeadline){LogEvent("qa-capture-window-close");g.exitRequested=true;}
         if(!qaCapture.empty()&&!g.screenshotRequested&&GetTime()>=qaCaptureDeadline-1.5)g.screenshotRequested=true;

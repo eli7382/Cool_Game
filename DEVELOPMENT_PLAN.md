@@ -562,3 +562,21 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - [x] Review a static in-game render and a gameplay capture.
 - [ ] Replace the reused rescue pickup with a purpose-built, higher-fidelity hostile vehicle model.
 - [ ] Improve the scene and vehicle materials to the requested photoreal level.
+
+## Hostile fixed-wing combat continuation - 2026-10-26
+
+- Added one hostile F-16 interceptor to normal mission startup. It patrols, pursues a player-controlled vehicle or foot target, uses a predicted gun solution, and fires difficulty-scaled 20 mm bursts.
+- Its compact flight model applies thrust, lift, gravity, air-relative drag, wind, turn authority and bank response. Cannon rounds inherit aircraft motion, receive gravity and air-relative drag, and use swept terrain/tree/player collision. Player M61 and AIM-9 targeting now include the hostile fixed-wing aircraft.
+- The latest pinned Windows x64 build exited 0 with no warnings shown. --qa-hostile-f16 passed after 7.51 simulated seconds: six cannon rounds, 78 damage, player health 1000 to 922, and 1,439.63 m fighter travel; the aircraft remained airborne. Seeded player M61 and AIM-9 fixed-wing target fixtures passed (9 shots to destroy; missile target destroyed in 2.13 simulated seconds).
+- Inspected the actual game-renderer capture at screenshots/Breakwater_LiveQA_hostile-fixed-wing_1793048274243.png. It shows the project F-16 model and stormfield scene, which remain visibly stylized below the requested War Thunder/AAA target.
+- Current executable: 1,959,936 bytes, SHA-256 25F5E0668174DB31A792EB4C782F3C0472392BC35BEE08D4B67BF9BDB13936E. No ImageGen calls this pass; cumulative invocation count remains 64. No controlled FPS, GPU, or usage measurement was collected.
+
+### Hostile fixed-wing gates
+
+- [x] Spawn the hostile fixed-wing aircraft in ordinary mission startup.
+- [x] Add pursuit, target lead, cannon fire, projectile motion, and swept world/player contact.
+- [x] Integrate player M61 and AIM-9 targeting against a fixed-wing target.
+- [x] Pass the current-build seeded intercept and fixed-wing weapon fixtures.
+- [ ] Validate natural encounters, human-controlled air combat, and the complete mission loop.
+- [ ] Calibrate the aerodynamic, cannon, seeker, damage, and structural models against measured F-16/weapon data.
+- [ ] Bring the in-game F-16, cockpit, and environment to the approved reference fidelity.

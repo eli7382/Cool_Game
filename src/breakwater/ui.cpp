@@ -49,9 +49,13 @@ void MissionHud(){
     if(g.vehicle==VehicleKind::Plane&&g.planeMissileSelected){
         const char *lockText=g.lockedAirContact<0?"SEEKING IR SOURCE":(g.missileLockQuality>=.96f?"TRACK  /  WEAPON FREE":"ACQUIRING TARGET");
         Panel(Rectangle{sw/2.0f-132,82,264,48},Color{10,23,25,206},g.lockedAirContact>=0&&g.missileLockQuality>=.96f?Color{210,153,82,190}:Color{119,151,145,135});
-        DrawText(TextFormat("AIM-9  %s",lockText),sw/2-117,90,14,g.lockedAirContact>=0&&g.missileLockQuality>=.96f?Color{249,203,128,255}:Color{190,210,201,255});
+        const bool fighterContact=g.lockedAirContact>=(int)g.hostileRotorcraft.size();
+        DrawText(TextFormat("AIM-9 %s  %s",fighterContact?"F-16":"ROTORCRAFT",lockText),sw/2-117,90,14,g.lockedAirContact>=0&&g.missileLockQuality>=.96f?Color{249,203,128,255}:Color{190,210,201,255});
         DrawRectangle(sw/2-116,114,232,5,Color{36,51,50,245});DrawRectangle(sw/2-116,114,(int)(232*g.missileLockQuality),5,g.missileLockQuality>=.96f?Color{236,174,97,255}:Color{104,178,160,245});
-        if(g.lockedAirContact>=0){const HostileRotorcraft &contact=g.hostileRotorcraft[(std::size_t)g.lockedAirContact];const Vector2 target=GetWorldToScreen(Add(contact.vehicle.p,V(0,1.1f,0)),g.camera);
+        if(g.lockedAirContact>=0){Vector3 contactPosition{};const int index=g.lockedAirContact;
+            if(index<(int)g.hostileRotorcraft.size())contactPosition=g.hostileRotorcraft[(std::size_t)index].vehicle.p;
+            else if(index-(int)g.hostileRotorcraft.size()<(int)g.hostileFixedWings.size())contactPosition=g.hostileFixedWings[(std::size_t)(index-(int)g.hostileRotorcraft.size())].vehicle.p;
+            const Vector2 target=GetWorldToScreen(Add(contactPosition,V(0,1.1f,0)),g.camera);
             if(target.x>10&&target.x<sw-10&&target.y>10&&target.y<sh-36){const Color color=g.missileLockQuality>=.96f?Color{248,174,86,245}:Color{143,205,183,220};DrawCircleLines((int)target.x,(int)target.y,18,color);DrawLine((int)target.x-25,(int)target.y,(int)target.x-13,(int)target.y,color);DrawLine((int)target.x+13,(int)target.y,(int)target.x+25,(int)target.y,color);DrawLine((int)target.x,(int)target.y-25,(int)target.x,(int)target.y-13,color);DrawLine((int)target.x,(int)target.y+13,(int)target.x,(int)target.y+25,color);}
         }
     }
