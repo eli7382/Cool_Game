@@ -66,6 +66,12 @@ struct Mark { Vector3 a{},b{}; Color color{}; float life{}; Vector3 c{},d{}; boo
 struct Particle { Vector3 p{},v{}; Color c{}; float life{},maxLife{},size{}; };
 struct Tracer { Vector3 a{},b{}; Color c{}; float life{}; };
 struct Debris { Vector3 p{}; float yaw{},phase{}; bool grounded{}; Vector3 velocity{}; };
+struct F16Breakaway {
+    Vector3 pivot{},velocity{},pivotLocal{};
+    float heading{},pitch{},roll{},headingRate{},pitchRate{},rollRate{};
+    int side{};
+    bool active{},grounded{};
+};
 struct Obstacle { Vector3 p{}; float radius{}; int kind{}; };
 // Follows the rendered scale and transform. The trunk and buttress radii are
 // distinct from the broad branch/foliage crown proxy.
@@ -74,8 +80,9 @@ struct TreeCollider {
     float height{},yaw{},spreadX{1.0f},spreadZ{1.0f};
     float trunkBaseRadius{},trunkTopRadius{},buttressRadius{},crownRadius{};
     int species{},seed{};
-    float damage{};
-    bool lowPresetVisible{},felled{};
+    float damage{},crownDamage{};
+    Vector3 damagePoint{};
+    bool lowPresetVisible{},felled{},hasDamagePoint{},crownSheared{};
 };
 struct Projectile { Vector3 p{},velocity{}; float life{},damage{},blastRadius{}; };
 struct Explosion { Vector3 p{}; float life{},duration{},radius{}; };
@@ -97,11 +104,13 @@ struct Vehicle {
     std::array<float,4> wheelTravel{},wheelTravelVelocity{};
     std::array<float,4> tireHealth{{1.0f,1.0f,1.0f,1.0f}};
     float tailRotorAngle{},gearExtension{1.0f},speedBrakeExtension{};
+    float wreckAge{};
     float controlAileron{},controlElevator{},controlRudder{};
     int gunAmmo{500};
     int missileAmmo{2};
     std::array<bool,2> missilePresent{{true,true}};
-    bool airborne{},crashed{},landingGearDown{true},afterburner{},speedBrake{};
+    int brokenWingSide{};
+    bool airborne{},crashed{},landingGearDown{true},afterburner{},speedBrake{},wreckOnGround{};
 };
 struct Player {
     Vector3 p{},velocity{};
@@ -156,6 +165,7 @@ struct Game {
     std::array<Vector3,4> lastTireContact{};
     bool tireTracksInitialized{};
     std::vector<Debris> debris;
+    std::array<F16Breakaway,2> f16Breakaway{};
     std::vector<TreeCollider> treeColliders;
     std::vector<Obstacle> obstacles;
     std::vector<Projectile> projectiles;

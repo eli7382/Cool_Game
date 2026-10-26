@@ -79,7 +79,7 @@ void RestoreVehicleCondition(Vehicle &vehicle){
     vehicle.tireHealth.fill(1.0f);vehicle.longitudinalG=vehicle.lateralG=0;vehicle.normalG=1.0f;
 }
 void SetCarAtBase(){g.car.p=V(7,TerrainHeight(7,165)+.72f,165);g.car.yaw=0;g.car.speed=0;g.car.velocity=V(0,0,0);g.car.yawRate=0;g.car.lateralSpeed=0;g.car.engineRpm=.18f;g.car.suspension=0;g.car.suspensionVelocity=0;g.car.wheelTravel.fill(0);g.car.wheelTravelVelocity.fill(0);g.car.pitch=0;g.car.roll=0;g.car.damage=0;RestoreVehicleCondition(g.car);g.car.gunFlash=0;g.car.crashed=false;}
-void SetPlaneAtRunway(){g.plane.p=V(-7,TerrainHeight(-7,43)+1.35f,43);g.plane.yaw=PI;g.plane.speed=0;g.plane.wheelAngle=0;g.plane.wheelSpinRate=0;g.plane.gearExtension=1;g.plane.speedBrakeExtension=0;g.plane.velocity=V(0,0,0);g.plane.pitch=0;g.plane.roll=0;g.plane.pitchRate=0;g.plane.rollRate=0;g.plane.yawRate=0;g.plane.lateralSpeed=0;g.plane.controlAileron=0;g.plane.controlElevator=0;g.plane.controlRudder=0;g.plane.engineRpm=.16f;g.plane.verticalSpeed=0;g.plane.airborne=false;g.plane.crashed=false;g.plane.landingGearDown=true;g.plane.afterburner=false;g.plane.speedBrake=false;g.plane.damage=0;RestoreVehicleCondition(g.plane);g.plane.gunAmmo=500;g.plane.missileAmmo=2;g.plane.missilePresent={true,true};g.plane.gunCooldown=0;g.plane.gunAudioCooldown=0;g.plane.gunAccumulator=0;g.plane.gunFlash=0;g.planeMissileSelected=false;g.lockedAirContact=-1;g.missileLockQuality=0;g.guidedMissiles.clear();}
+void SetPlaneAtRunway(){g.plane.p=V(-7,TerrainHeight(-7,43)+1.35f,43);g.plane.yaw=PI;g.plane.speed=0;g.plane.wheelAngle=0;g.plane.wheelSpinRate=0;g.plane.gearExtension=1;g.plane.speedBrakeExtension=0;g.plane.velocity=V(0,0,0);g.plane.pitch=0;g.plane.roll=0;g.plane.pitchRate=0;g.plane.rollRate=0;g.plane.yawRate=0;g.plane.lateralSpeed=0;g.plane.controlAileron=0;g.plane.controlElevator=0;g.plane.controlRudder=0;g.plane.engineRpm=.16f;g.plane.verticalSpeed=0;g.plane.airborne=false;g.plane.crashed=false;g.plane.landingGearDown=true;g.plane.afterburner=false;g.plane.speedBrake=false;g.plane.damage=0;g.plane.wreckAge=0;g.plane.brokenWingSide=0;g.plane.wreckOnGround=false;g.f16Breakaway={};RestoreVehicleCondition(g.plane);g.plane.gunAmmo=500;g.plane.missileAmmo=2;g.plane.missilePresent={true,true};g.plane.gunCooldown=0;g.plane.gunAudioCooldown=0;g.plane.gunAccumulator=0;g.plane.gunFlash=0;g.planeMissileSelected=false;g.lockedAirContact=-1;g.missileLockQuality=0;g.guidedMissiles.clear();}
 void SetHeliAtPad(){g.heli.p=V(25,TerrainHeight(25,174)+1.25f,174);g.heli.yaw=0;g.heli.speed=0;g.heli.velocity=V(0,0,0);g.heli.pitch=0;g.heli.roll=0;g.heli.pitchRate=0;g.heli.rollRate=0;g.heli.yawRate=0;g.heli.verticalSpeed=0;g.heli.collective=0;g.heli.engineRpm=0;g.heli.rotorRpm=0;g.heli.rotorAngle=0;g.heli.tailRotorAngle=0;g.heli.airborne=false;g.heli.crashed=false;g.heli.damage=0;RestoreVehicleCondition(g.heli);g.heli.gunFlash=0;}
 void ResetVehicle(VehicleKind k){if(k==VehicleKind::Car)SetCarAtBase();else if(k==VehicleKind::Plane)SetPlaneAtRunway();else if(k==VehicleKind::Helicopter)SetHeliAtPad();}
 void CycleWater(){
@@ -686,13 +686,28 @@ void UpdateCar(float dt){
 void CrashPlane(const char *msg,const char *event="plane-hard-landing"){
     g.plane.crashed=true;g.plane.damage=1;g.plane.powerplantHealth=0;g.plane.flightControlsHealth=.12f;g.plane.airframeHealth=.18f;
     g.plane.lastImpactLocal=V(2.78f,.93f,0);g.plane.impactSeverity=1;g.plane.hasImpactMark=true;
-    g.plane.speed=0;g.plane.verticalSpeed=0;g.plane.velocity=V(0,0,0);SpawnParticles(g.plane.p,Color{177,130,79,220},28,3.3f,.12f);Notify(msg,3);LogEvent(event);
+    g.plane.speed=0;g.plane.verticalSpeed=0;g.plane.velocity=V(0,0,0);g.plane.wreckAge=0;g.plane.wreckOnGround=false;
+    SpawnParticles(g.plane.p,Color{177,130,79,220},28,3.3f,.12f);Notify(msg,3);LogEvent(event);
 }
+Vector3 PlaneModelVector(const Vehicle &plane,Vector3 local){
+    const float cr=cosf(plane.roll),sr=sinf(plane.roll);
+    const float rolledY=cr*local.y-sr*local.z,rolledZ=sr*local.y+cr*local.z;
+    const float cp=cosf(plane.pitch),sp=sinf(plane.pitch);
+    const float pitchedX=cp*local.x-sp*rolledY,pitchedY=sp*local.x+cp*rolledY;
+    const float heading=plane.yaw+PI*.5f,ch=cosf(heading),sh=sinf(heading);
+    return V(ch*pitchedX+sh*rolledZ,pitchedY,-sh*pitchedX+ch*rolledZ);
+}
+Vector3 PlaneModelPoint(const Vehicle &plane,Vector3 local){local.y-=1.35f;return Add(plane.p,PlaneModelVector(plane,local));}
 void CrashPlaneIntoTree(const PlaneTreeImpact &impact){
     if(!impact.tree)return;const float impactSpeed=std::max(0.0f,g.plane.speed);
     const float trunkFailureSpeed=Clamp(21.0f+impact.tree->trunkBaseRadius*32.0f,30.0f,48.0f);
     const float treeDamageScale=impact.canopy?3600.0f:1900.0f;
     impact.tree->damage=Clamp(impact.tree->damage+impactSpeed*impactSpeed/treeDamageScale,0,1);
+    if(impact.canopy){
+        impact.tree->crownDamage=Clamp(impact.tree->crownDamage+impactSpeed*impactSpeed/3600.0f,0,1);
+        impact.tree->damagePoint=impact.point;impact.tree->hasDamagePoint=true;
+        if(impactSpeed>34.0f)impact.tree->crownSheared=true;
+    }
     // Foliage and small branches can be stripped without the rooted stem
     // failing. A trunk strike can fell the tree only when the hit speed also
     // clears a size-dependent bending threshold.
@@ -712,11 +727,35 @@ void CrashPlaneIntoTree(const PlaneTreeImpact &impact){
                               Clamp(Vector3DotProduct(relative,wing),-5.2f,5.2f));
     g.plane.impactSeverity=severity;g.plane.hasImpactMark=true;
     if(catastrophic){
+        const Vector3 impactVelocity=g.plane.velocity;
         CrashPlane("TREE STRIKE — AIRFRAME LOST — R TO RESET AT AIRFIELD","plane-tree-strike");
         g.plane.lastImpactLocal=V(Clamp(Vector3DotProduct(relative,forward),-6.8f,6.8f),
                                   Clamp(Vector3DotProduct(relative,up),0,2.0f),
                                   Clamp(Vector3DotProduct(relative,wing),-5.2f,5.2f));
         g.plane.impactSeverity=severity;g.plane.hasImpactMark=true;
+        // A trunk/crown strike destroys lift immediately, but the fuselage and
+        // separated wing keep their own momentum. The low-speed crash state
+        // below then carries that energy through the fall and ground slide.
+        g.plane.brokenWingSide=std::fabs(g.plane.lastImpactLocal.z)>.32f
+            ?(g.plane.lastImpactLocal.z>0?1:-1):(impact.tree->seed%2==0?1:-1);
+        const int fragmentIndex=g.plane.brokenWingSide>0?0:1;
+        F16Breakaway &wingFragment=g.f16Breakaway[(std::size_t)fragmentIndex];wingFragment={};
+        wingFragment.active=true;wingFragment.side=g.plane.brokenWingSide;
+        wingFragment.pivotLocal=V(-1.25f,1.35f,(float)wingFragment.side*.70f);
+        wingFragment.heading=g.plane.yaw+PI*.5f;wingFragment.pitch=g.plane.pitch;wingFragment.roll=g.plane.roll;
+        wingFragment.pivot=PlaneModelPoint(g.plane,wingFragment.pivotLocal);
+        const Vector3 lateral=PlaneModelVector(g.plane,V(0,0,(float)wingFragment.side));
+        wingFragment.velocity=Add(Mul(impactVelocity,.46f),Add(Mul(lateral,8.0f),V(0,2.4f,0)));
+        wingFragment.headingRate=(float)wingFragment.side*1.15f;
+        wingFragment.pitchRate=(float)wingFragment.side*.65f;
+        wingFragment.rollRate=(float)wingFragment.side*3.2f;
+        g.plane.velocity=Mul(impactVelocity,.22f);g.plane.velocity.y=std::min(impactVelocity.y-3.2f,-3.2f);
+        g.plane.speed=std::sqrt(g.plane.velocity.x*g.plane.velocity.x+g.plane.velocity.z*g.plane.velocity.z);
+        g.plane.verticalSpeed=g.plane.velocity.y;g.plane.airborne=true;g.plane.wreckOnGround=false;
+        g.plane.pitchRate+=.24f;g.plane.rollRate+=(float)g.plane.brokenWingSide*1.25f;
+        g.cameraDistance=std::max(g.cameraDistance,26.0f);
+        LogEvent(TextFormat("f16-wing-breakaway,side=%s,fragment-speed-ms=%.1f,airframe-speed-ms=%.1f",
+                            g.plane.brokenWingSide>0?"port":"starboard",Vector3Length(wingFragment.velocity),g.plane.speed));
     }else{
         const float speedLoss=Clamp(impactSpeed/45.0f,0,.65f)*.42f;
         g.plane.velocity=Mul(g.plane.velocity,1.0f-speedLoss);g.plane.speed*=1.0f-speedLoss;
@@ -733,13 +772,92 @@ void CrashPlaneIntoTree(const PlaneTreeImpact &impact){
     LogEvent(TextFormat("plane-tree-impact,tree-seed=%d,part=%s,material=wood,crown=%d,speed-ms=%.1f,stem-radius-m=%.2f,break-speed-ms=%.1f,tree-damage=%.2f,tree-felled=%d",
                         impact.tree->seed,impact.part,impact.canopy?1:0,impactSpeed,impact.tree->trunkBaseRadius,trunkFailureSpeed,impact.tree->damage,impact.tree->felled?1:0));
 }
-void UpdatePlane(float dt){
-    if(g.vehicle!=VehicleKind::Plane)return;if(g.plane.crashed){
-        g.plane.engineRpm=std::max(0.0f,g.plane.engineRpm-dt*.58f);g.plane.afterburner=false;g.plane.speedBrake=false;
-        g.plane.damageSmokeTimer=std::max(0.0f,g.plane.damageSmokeTimer-dt);
-        if(g.plane.damageSmokeTimer<=0){SpawnParticles(Add(g.plane.p,V(0,.88f,0)),Color{81,82,75,156},4,1.0f,.18f);g.plane.damageSmokeTimer=.18f;}
-        if(IsKeyPressed(KEY_R))SetPlaneAtRunway();if(IsKeyPressed(KEY_E))Interact();return;
+void UpdatePlaneWreckage(float dt){
+    Vehicle &plane=g.plane;plane.wreckAge+=dt;
+    plane.engineRpm=std::max(0.0f,plane.engineRpm-dt*.58f);plane.afterburner=false;plane.speedBrake=false;
+    plane.speedBrakeExtension=Lerp(plane.speedBrakeExtension,0.0f,Clamp(dt*3.0f,0,1));
+    plane.controlAileron=plane.controlElevator=plane.controlRudder=0;
+    const AtmosphereSample weather=SampleAtmosphere(plane.p,plane.p.y);
+    plane.velocity.x+=(weather.windVelocity.x-plane.velocity.x)*dt*.035f;
+    plane.velocity.z+=(weather.windVelocity.z-plane.velocity.z)*dt*.035f;
+    const float airSpeed=Vector3Length(plane.velocity);
+    if(airSpeed>0.01f){const float drag=std::min(.24f,airSpeed*.0045f)*dt;plane.velocity=Sub(plane.velocity,Mul(plane.velocity,drag));}
+    plane.velocity.y-=9.80665f*dt;
+    plane.p=Add(plane.p,Mul(plane.velocity,dt));
+    plane.pitch=Clamp(plane.pitch+plane.pitchRate*dt,-1.35f,1.35f);
+    plane.roll=Clamp(plane.roll+plane.rollRate*dt,-PI,PI);
+    plane.yaw+=plane.yawRate*dt;
+    plane.pitchRate*=std::exp(-dt*1.05f);plane.rollRate*=std::exp(-dt*1.25f);plane.yawRate*=std::exp(-dt*1.4f);
+    const float terrain=TerrainHeight(plane.p.x,plane.p.z);
+    const bool waterContact=g.water>terrain+.15f;
+    const float ground=waterContact?g.water:terrain;
+    const float restingHeight=ground+1.35f;
+    if(plane.p.y<=restingHeight){
+        plane.p.y=restingHeight;
+        if(!plane.wreckOnGround){
+            plane.wreckOnGround=true;plane.airborne=false;plane.velocity.y=0;plane.pitchRate*=.28f;plane.rollRate*=.34f;plane.yawRate*=.40f;
+            if(waterContact)SpawnParticles(plane.p,Color{94,151,165,200},20,2.4f,.13f);
+            else SpawnParticles(V(plane.p.x,ground+.18f,plane.p.z),Color{124,111,89,210},18,2.7f,.11f);
+            LogEvent(TextFormat("f16-fuselage-ground-contact,surface=%s,height-m=%.2f",waterContact?"water":"terrain",plane.p.y-ground));
+        }else{
+            plane.velocity.y=0;
+            const SurfaceSample surface=SampleSurface(plane.p.x,plane.p.z);
+            const float deceleration=waterContact?3.8f:(1.4f+surface.friction*9.80665f*.55f);
+            const float speed=std::sqrt(plane.velocity.x*plane.velocity.x+plane.velocity.z*plane.velocity.z);
+            if(speed>.02f){const float next=std::max(0.0f,speed-deceleration*dt);plane.velocity.x*=next/speed;plane.velocity.z*=next/speed;}
+            plane.pitchRate*=std::exp(-dt*2.6f);plane.rollRate*=std::exp(-dt*3.1f);plane.yawRate*=std::exp(-dt*2.0f);
+            plane.pitch=Lerp(plane.pitch,0,Clamp(dt*1.1f,0,1));plane.roll=Lerp(plane.roll,0,Clamp(dt*1.4f,0,1));
+        }
     }
+    if(plane.wreckOnGround){plane.p.y=restingHeight;plane.velocity.y=0;plane.airborne=false;}
+    plane.verticalSpeed=plane.velocity.y;plane.speed=std::sqrt(plane.velocity.x*plane.velocity.x+plane.velocity.z*plane.velocity.z);
+    plane.propAngle+=dt*(plane.engineRpm*152.0f);plane.wheelSpinRate*=std::exp(-dt*1.8f);plane.wheelAngle+=plane.wheelSpinRate*dt;
+    plane.damageSmokeTimer=std::max(0.0f,plane.damageSmokeTimer-dt);
+    if(plane.damageSmokeTimer<=0){
+        const Vector3 engine=PlaneModelPoint(plane,V(-5.65f,1.38f,0));
+        SpawnParticles(engine,Color{67,69,64,178},6,1.05f,.24f);
+        if(!waterContact&&plane.wreckAge>1.2f)SpawnParticles(PlaneModelPoint(plane,V(-4.65f,1.28f,.18f)),Color{210,104,42,215},5,1.45f,.14f);
+        plane.damageSmokeTimer=plane.wreckOnGround?.14f:.18f;
+    }
+    if(g.vehicle==VehicleKind::Plane){if(IsKeyPressed(KEY_R))SetPlaneAtRunway();if(IsKeyPressed(KEY_E))Interact();}
+}
+void UpdateF16Breakaway(float dt){
+    for(F16Breakaway &part:g.f16Breakaway){
+        if(!part.active)continue;
+        const AtmosphereSample weather=SampleAtmosphere(part.pivot,part.pivot.y);
+        if(!part.grounded){
+            part.velocity.y-=9.80665f*dt;
+            const Vector3 relative=Sub(part.velocity,weather.windVelocity);
+            const float speed=Vector3Length(relative);
+            if(speed>.01f)part.velocity=Sub(part.velocity,Mul(relative,.013f*speed*dt));
+            part.pivot=Add(part.pivot,Mul(part.velocity,dt));
+            part.heading+=part.headingRate*dt;part.pitch+=part.pitchRate*dt;part.roll+=part.rollRate*dt;
+            part.headingRate*=std::exp(-dt*.62f);part.pitchRate*=std::exp(-dt*.72f);part.rollRate*=std::exp(-dt*.48f);
+            const float terrain=TerrainHeight(part.pivot.x,part.pivot.z);const bool wet=g.water>terrain+.15f;
+            const float restingHeight=wet?g.water-.16f:terrain+.28f;
+            if(part.pivot.y<=restingHeight){
+                part.pivot.y=restingHeight;part.grounded=true;part.velocity.y=0;
+                if(wet)SpawnParticles(part.pivot,Color{99,160,171,190},12,1.4f,.10f);
+                else SpawnParticles(part.pivot,Color{123,109,87,195},10,1.2f,.08f);
+                LogEvent(TextFormat("f16-wing-fragment-ground-contact,side=%s,surface=%s,x=%.1f,y=%.1f,z=%.1f,airframe-distance-m=%.1f",
+                                    part.side>0?"port":"starboard",wet?"water":"terrain",part.pivot.x,part.pivot.y,part.pivot.z,DistXZ(part.pivot,g.plane.p)));
+            }
+        }else{
+            const float terrain=TerrainHeight(part.pivot.x,part.pivot.z);const bool wet=g.water>terrain+.15f;
+            part.pivot.y=wet?g.water-.16f:terrain+.28f;
+            const SurfaceSample surface=SampleSurface(part.pivot.x,part.pivot.z);
+            const float deceleration=wet?2.4f:(1.0f+surface.friction*9.80665f*.48f);
+            const float speed=std::sqrt(part.velocity.x*part.velocity.x+part.velocity.z*part.velocity.z);
+            if(speed>.02f){const float next=std::max(0.0f,speed-deceleration*dt);part.velocity.x*=next/speed;part.velocity.z*=next/speed;}
+            part.headingRate*=std::exp(-dt*2.6f);part.pitchRate*=std::exp(-dt*2.8f);part.rollRate*=std::exp(-dt*3.0f);
+            part.heading+=part.headingRate*dt;part.pitch+=part.pitchRate*dt;part.roll+=part.rollRate*dt;
+            part.velocity.x+=(weather.windVelocity.x-part.velocity.x)*dt*.05f;
+            part.velocity.z+=(weather.windVelocity.z-part.velocity.z)*dt*.05f;
+        }
+    }
+}
+void UpdatePlane(float dt){
+    if(g.vehicle!=VehicleKind::Plane)return;if(g.plane.crashed){UpdatePlaneWreckage(dt);return;}
     const Vehicle planeBefore=g.plane;
     g.plane.gunCooldown=std::max(0.0f,g.plane.gunCooldown-dt);g.plane.gunAudioCooldown=std::max(0.0f,g.plane.gunAudioCooldown-dt);g.plane.gunFlash=std::max(0.0f,g.plane.gunFlash-dt);
     UpdatePlaneWeapons(dt);
@@ -1008,6 +1126,8 @@ void UpdateGameplay(float dt){
         }
     }
     if(g.vehicle==VehicleKind::Foot)UpdateFoot(dt);else if(g.vehicle==VehicleKind::Car)UpdateCar(dt);else if(g.vehicle==VehicleKind::Plane)UpdatePlane(dt);else UpdateHeli(dt);
+    if(g.vehicle!=VehicleKind::Plane&&g.plane.crashed)UpdatePlaneWreckage(dt);
+    UpdateF16Breakaway(dt);
     UpdateEnemies(dt);
     const float fps=(float)GetFPS();if(fps>0){g.avgFps=(g.avgFps*g.fpsSamples+fps)/(g.fpsSamples+1);g.fpsSamples++;}
 }

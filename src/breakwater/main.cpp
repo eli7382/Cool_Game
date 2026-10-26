@@ -494,15 +494,24 @@ int main(int argc,char **argv) {
     }
     if(qaPlaneTreeImpact&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding){
         StartMission();g.screen=Screen::Playing;g.narratorQueue.clear();g.vehicle=VehicleKind::Plane;g.graphics=GraphicsMode::High;
-        const TreeCollider *target=nullptr;
-        for(const TreeCollider &tree:g.treeColliders)if(DistXZ(tree.base,V(0,0,0))<245.0f&&tree.height>9.0f){target=&tree;break;}
+        TreeCollider *target=nullptr;float bestClearance=-1.0f;
+        for(TreeCollider &tree:g.treeColliders){
+            if(DistXZ(tree.base,V(0,0,0))>=245.0f||tree.height<=9.0f)continue;
+            float nearest=1000.0f;
+            for(const TreeCollider &other:g.treeColliders){
+                if(&other==&tree||DistXZ(tree.base,other.base)<.02f)continue;
+                nearest=std::min(nearest,DistXZ(tree.base,other.base));
+            }
+            const float score=nearest+tree.height*.22f-DistXZ(tree.base,V(0,0,0))*.018f;
+            if(score>bestClearance){target=&tree;bestClearance=score;}
+        }
         if(!target&&!g.treeColliders.empty())target=&g.treeColliders.front();
         if(target){
             g.plane.p=V(target->base.x,target->base.y+target->height*.70f,target->base.z-34.0f);
             g.plane.yaw=PI;g.plane.pitch=0;g.plane.roll=0;g.plane.speed=60.0f;g.plane.engineRpm=.72f;
             g.plane.verticalSpeed=0;g.plane.airborne=true;g.plane.crashed=false;g.plane.landingGearDown=false;g.plane.gearExtension=0;
             g.plane.velocity=V(0,0,60);g.cameraDistance=13.0f;g.cameraActualDistance=13.0f;g.cameraInitialized=false;g.qaPlaneTreeImpact=true;
-            LogEvent(TextFormat("qa-plane-tree-impact-fixture,seed=%d,x=%.1f,z=%.1f,height=%.1f",target->seed,target->base.x,target->base.z,target->height));
+            LogEvent(TextFormat("qa-plane-tree-impact-fixture,seed=%d,x=%.1f,z=%.1f,height=%.1f,clearance-m=%.1f",target->seed,target->base.x,target->base.z,target->height,bestClearance));
         }else LogEvent("qa-plane-tree-impact-fixture-unavailable");
     }
     if(qaCarTreeImpactRun&&qaCapture.empty()&&!qaTaskTour&&!qaPlaneLanding&&!qaPlaneTreeImpact){
@@ -563,8 +572,12 @@ int main(int argc,char **argv) {
             else if(qaCapture.empty())UpdateGameplay(dt);
             else{g.clock+=dt;g.car.wheelAngle+=g.car.speed*dt/.48f;g.plane.propAngle+=dt*(24.0f+g.plane.engineRpm*152.0f);g.heli.rotorAngle+=dt*(g.heli.rotorRpm*78.0f);}
         }else UpdateUI(dt);
-        if(qaPlaneTreeImpact&&!g.exitRequested&&g.plane.crashed){LogEvent("qa-plane-tree-impact-confirmed");g.screenshotRequested=true;g.exitRequested=true;}
-        if(qaPlaneTreeImpact&&!g.exitRequested&&g.elapsed>=4.0f&&!g.plane.crashed){LogEvent("qa-plane-tree-impact-missed");g.screenshotRequested=true;g.exitRequested=true;}
+        if(qaPlaneTreeImpact&&!g.exitRequested&&g.plane.crashed&&g.plane.wreckAge>=2.8f){
+            LogEvent(TextFormat("qa-plane-tree-impact-confirmed,wreck-age-s=%.2f,fuselage-grounded=%d,wing-fragments=%d",
+                                g.plane.wreckAge,g.plane.wreckOnGround?1:0,(int)g.f16Breakaway[0].active+(int)g.f16Breakaway[1].active));
+            g.screenshotRequested=true;g.exitRequested=true;
+        }
+        if(qaPlaneTreeImpact&&!g.exitRequested&&g.elapsed>=9.0f){LogEvent(g.plane.crashed?"qa-plane-wreckage-settle-timeout":"qa-plane-tree-impact-missed");g.screenshotRequested=true;g.exitRequested=true;}
         if(qaCarTreeImpactRun&&!g.exitRequested&&g.qaCarTreeImpact){LogEvent("qa-car-tree-impact-confirmed");g.qaCarTreeImpactActive=false;g.screenshotRequested=true;g.exitRequested=true;}
         if(qaCarTreeImpactRun&&!g.exitRequested&&!qaCarNearLogged&&DistXZ(g.car.p,qaCarTreeTarget)<7.0f){LogEvent(TextFormat("qa-car-tree-proximity,seed=%d,tree-x=%.1f,tree-z=%.1f,car-x=%.1f,car-z=%.1f,speed-ms=%.1f,heading=%.2f",qaCarTreeTargetSeed,qaCarTreeTarget.x,qaCarTreeTarget.z,g.car.p.x,g.car.p.z,g.car.speed,g.car.yaw));qaCarNearLogged=true;}
         if(qaCarTreeImpactRun&&!g.exitRequested&&g.elapsed>=4.0f&&!g.qaCarTreeImpact){LogEvent(TextFormat("qa-car-tree-impact-missed,seed=%d,tree-x=%.1f,tree-z=%.1f,car-x=%.1f,car-z=%.1f,speed-ms=%.1f,heading=%.2f",qaCarTreeTargetSeed,qaCarTreeTarget.x,qaCarTreeTarget.z,g.car.p.x,g.car.p.z,g.car.speed,g.car.yaw));g.qaCarTreeImpactActive=false;g.screenshotRequested=true;g.exitRequested=true;}

@@ -1596,6 +1596,84 @@ void DrawHeroVehicleServiceDetail(int vehicleKind,const Vehicle &vehicle,bool co
         }
     }
 }
+bool F16WingMeshDetached(int mesh,int side){
+    const auto inRange=[](int value,int first,int count){return value>=first&&value<first+count;};
+    if(inRange(mesh,F16NetzMesh::WingDetailStart,F16NetzMesh::WingDetailCount)
+       ||inRange(mesh,F16NetzMesh::WingFuelStencilStart,F16NetzMesh::WingFuelStencilCount)
+       ||inRange(mesh,F16NetzMesh::WingNoStepStencilStart,F16NetzMesh::WingNoStepStencilCount)
+       ||inRange(mesh,F16NetzMesh::WingStationStencilStart,F16NetzMesh::WingStationStencilCount))return true;
+    if(side>0){
+        return inRange(mesh,F16NetzMesh::PortWingStart,F16NetzMesh::PortWingCount)
+            ||inRange(mesh,F16NetzMesh::PortAileronStart,F16NetzMesh::PortAileronCount)
+            ||inRange(mesh,F16NetzMesh::PortLeadingEdgeFlapStart,F16NetzMesh::PortLeadingEdgeFlapCount)
+            ||inRange(mesh,F16NetzMesh::PortLEXStart,F16NetzMesh::PortLEXCount)
+            ||inRange(mesh,F16NetzMesh::PortPylonStart,F16NetzMesh::PortPylonCount)
+            ||inRange(mesh,F16NetzMesh::PortMissileStart,F16NetzMesh::PortMissileCount)
+            ||inRange(mesh,F16NetzMesh::PortWingtipLauncherStart,F16NetzMesh::PortWingtipLauncherCount)
+            ||inRange(mesh,F16NetzMesh::PortWingtipLightStart,F16NetzMesh::PortWingtipLightCount)
+            ||inRange(mesh,F16NetzMesh::PortRoundelStart,F16NetzMesh::PortRoundelCount)
+            ||inRange(mesh,F16NetzMesh::PortSafetyStencilStart,F16NetzMesh::PortSafetyStencilCount);
+    }
+    return inRange(mesh,F16NetzMesh::StarboardWingStart,F16NetzMesh::StarboardWingCount)
+        ||inRange(mesh,F16NetzMesh::StarboardAileronStart,F16NetzMesh::StarboardAileronCount)
+        ||inRange(mesh,F16NetzMesh::StarboardLeadingEdgeFlapStart,F16NetzMesh::StarboardLeadingEdgeFlapCount)
+        ||inRange(mesh,F16NetzMesh::StarboardLEXStart,F16NetzMesh::StarboardLEXCount)
+        ||inRange(mesh,F16NetzMesh::StarboardPylonStart,F16NetzMesh::StarboardPylonCount)
+        ||inRange(mesh,F16NetzMesh::StarboardMissileStart,F16NetzMesh::StarboardMissileCount)
+        ||inRange(mesh,F16NetzMesh::StarboardWingtipLauncherStart,F16NetzMesh::StarboardWingtipLauncherCount)
+        ||inRange(mesh,F16NetzMesh::StarboardWingtipLightStart,F16NetzMesh::StarboardWingtipLightCount)
+        ||inRange(mesh,F16NetzMesh::StarboardRoundelStart,F16NetzMesh::StarboardRoundelCount)
+        ||inRange(mesh,F16NetzMesh::StarboardSafetyStencilStart,F16NetzMesh::StarboardSafetyStencilCount);
+}
+void DrawF16TornWingRoot(int side){
+    if(side==0)return;
+    const float s=side>0?1.0f:-1.0f;const Color shadow{28,33,31,255},spar{103,105,96,255},fracture{178,154,117,255};
+    Box(V(-1.18f,1.34f,s*.73f),V(3.85f,.24f,.19f),shadow);
+    Box(V(-1.18f,1.37f,s*.785f),V(3.54f,.105f,.095f),spar);
+    for(int rib=0;rib<8;++rib){
+        const float x=-2.78f+rib*.46f,lean=(rib%2==0?.07f:-.055f);
+        Between(V(x,1.24f,s*.68f),V(x+lean,1.46f,s*.91f),.028f,rib%3==0?fracture:spar,7);
+        if((rib&1)==0)Between(V(x,1.43f,s*.75f),V(x+.13f,1.26f,s*.90f),.014f,Color{47,50,47,255},6);
+    }
+    Between(V(.63f,1.31f,s*.76f),V(-.48f,1.43f,s*.86f),.044f,fracture,8);
+    Between(V(-2.82f,1.40f,s*.86f),V(-3.30f,1.23f,s*.77f),.036f,fracture,8);
+}
+void DrawF16BreakawayParts(){
+    if(!IsModelValid(g.planeHero)||g.planeHero.meshCount!=F16NetzMesh::MeshCount)return;
+    const auto drawRange=[](Model &model,int first,int count){for(int mesh=first;mesh<first+count;++mesh)DrawHeroMesh(model,mesh);};
+    for(const F16Breakaway &part:g.f16Breakaway){
+        if(!part.active)continue;
+        rlDrawRenderBatchActive();rlDisableBackfaceCulling();UsePaintBlend(1.0f);
+        rlPushMatrix();rlTranslatef(part.pivot.x,part.pivot.y,part.pivot.z);
+        rlRotatef(part.heading/DEG,0,1,0);rlRotatef(part.pitch/DEG,0,0,1);rlRotatef(part.roll/DEG,1,0,0);
+        rlTranslatef(-part.pivotLocal.x,-part.pivotLocal.y,-part.pivotLocal.z);
+        if(part.side>0){
+            drawRange(g.planeHero,F16NetzMesh::PortWingStart,F16NetzMesh::PortWingCount);
+            drawRange(g.planeHero,F16NetzMesh::PortAileronStart,F16NetzMesh::PortAileronCount);
+            drawRange(g.planeHero,F16NetzMesh::PortLeadingEdgeFlapStart,F16NetzMesh::PortLeadingEdgeFlapCount);
+            drawRange(g.planeHero,F16NetzMesh::PortLEXStart,F16NetzMesh::PortLEXCount);
+            drawRange(g.planeHero,F16NetzMesh::PortPylonStart,F16NetzMesh::PortPylonCount);
+            drawRange(g.planeHero,F16NetzMesh::PortMissileStart,F16NetzMesh::PortMissileCount);
+            drawRange(g.planeHero,F16NetzMesh::PortWingtipLauncherStart,F16NetzMesh::PortWingtipLauncherCount);
+            drawRange(g.planeHero,F16NetzMesh::PortWingtipLightStart,F16NetzMesh::PortWingtipLightCount);
+            drawRange(g.planeHero,F16NetzMesh::PortRoundelStart,F16NetzMesh::PortRoundelCount);
+            drawRange(g.planeHero,F16NetzMesh::PortSafetyStencilStart,F16NetzMesh::PortSafetyStencilCount);
+        }else{
+            drawRange(g.planeHero,F16NetzMesh::StarboardWingStart,F16NetzMesh::StarboardWingCount);
+            drawRange(g.planeHero,F16NetzMesh::StarboardAileronStart,F16NetzMesh::StarboardAileronCount);
+            drawRange(g.planeHero,F16NetzMesh::StarboardLeadingEdgeFlapStart,F16NetzMesh::StarboardLeadingEdgeFlapCount);
+            drawRange(g.planeHero,F16NetzMesh::StarboardLEXStart,F16NetzMesh::StarboardLEXCount);
+            drawRange(g.planeHero,F16NetzMesh::StarboardPylonStart,F16NetzMesh::StarboardPylonCount);
+            drawRange(g.planeHero,F16NetzMesh::StarboardMissileStart,F16NetzMesh::StarboardMissileCount);
+            drawRange(g.planeHero,F16NetzMesh::StarboardWingtipLauncherStart,F16NetzMesh::StarboardWingtipLauncherCount);
+            drawRange(g.planeHero,F16NetzMesh::StarboardWingtipLightStart,F16NetzMesh::StarboardWingtipLightCount);
+            drawRange(g.planeHero,F16NetzMesh::StarboardRoundelStart,F16NetzMesh::StarboardRoundelCount);
+            drawRange(g.planeHero,F16NetzMesh::StarboardSafetyStencilStart,F16NetzMesh::StarboardSafetyStencilCount);
+        }
+        rlPopMatrix();rlDrawRenderBatchActive();rlEnableBackfaceCulling();
+    }
+    UsePaintBlend(0.0f);
+}
 void DrawHeroVehicle(Model &model,Vector3 position,const Vehicle &vehicle,int vehicleKind,float yaw,float pitch,float roll,float groundOffset,float surfaceKind,Texture2D normal,Texture2D roughness,bool cockpitSubset=false){
     if(!IsModelValid(model))return;
     if(IsTextureValid(normal)&&IsShaderValid(g.worldShader)&&g.locVehicleNormal>=0&&g.activeVehicleNormal!=(int)normal.id){
@@ -1695,6 +1773,7 @@ void DrawHeroVehicle(Model &model,Vector3 position,const Vehicle &vehicle,int ve
         if(cockpitView&&vehicleKind==1&&(mesh==88||mesh==89))continue;
         if(isF16&&((inRange(mesh,F16NetzMesh::PortMissileStart,F16NetzMesh::PortMissileCount)&&!vehicle.missilePresent[0])
             ||(inRange(mesh,F16NetzMesh::StarboardMissileStart,F16NetzMesh::StarboardMissileCount)&&!vehicle.missilePresent[1])))continue;
+        if(isF16&&vehicle.brokenWingSide!=0&&F16WingMeshDetached(mesh,vehicle.brokenWingSide))continue;
         if(vehicleKind==0&&(mesh<=53||(mesh>=285&&mesh<=288))){
             const int slot=mesh<=53?mesh%4:(mesh-285)%4;
             const bool front=slot<2;const float side=(slot%2)==0?1.0f:-1.0f;
@@ -1938,6 +2017,7 @@ void DrawHeroVehicle(Model &model,Vector3 position,const Vehicle &vehicle,int ve
         rlPopMatrix();
         rlDrawRenderBatchActive();rlEnableBackfaceCulling();rlEnableDepthMask();
     }
+    if(isF16&&vehicle.brokenWingSide!=0){UsePaintBlend(0.0f);DrawF16TornWingRoot(vehicle.brokenWingSide);}
     rlPopMatrix();UsePaintBlend(0.0f);
     const float pbrDisabled=0.0f;if(g.locHeroPbr>=0&&g.activeHeroPbr!=pbrDisabled){rlDrawRenderBatchActive();SetShaderValue(g.worldShader,g.locHeroPbr,&pbrDisabled,SHADER_UNIFORM_FLOAT);g.activeHeroPbr=pbrDisabled;}
 }
@@ -2250,6 +2330,7 @@ void Tree(Vector3 p,float h,Vector2 wind,int species,int seed,TreeCollider *coll
     const float yaw=Rand01(seed+31,119)*360.0f,shade=.82f+.18f*Rand01(seed+53,271);
     const Color foliage{(unsigned char)(255*shade),(unsigned char)(255*shade),(unsigned char)(255*shade),255};
     const Color bark{(unsigned char)(255*shade),(unsigned char)(246*shade),(unsigned char)(232*shade),255};
+    const float crownDamage=collisionState?Clamp(collisionState->crownDamage,0,1):0.0f;
     const Model &wood=pine?g.pineTrunks[variant]:g.broadleafTrunks[variant];
     const Model &crown=pine?g.pineNeedles[variant]:g.broadleafCrowns[variant];
     const float spreadX=Lerp(pine?.88f:.80f,pine?1.16f:1.25f,Rand01(seed+79,313));
@@ -2294,8 +2375,26 @@ void Tree(Vector3 p,float h,Vector2 wind,int species,int seed,TreeCollider *coll
     DrawModel(wood,V(0,0,0),1,bark);
     // Per-vertex bending tapers to zero at the bough roots, so gusts move the outer canopy rather than rotating it like a rigid umbrella.
     const Vector2 bend{wind.x*.14f+std::sin(g.clock*.53f+seed*.071f)*.0025f,wind.y*.14f+std::cos(g.clock*.47f+seed*.097f)*.0025f};
-    SetFoliagePass(1.0f,bend);DrawModel(crown,V(0,0,0),1,foliage);SetFoliagePass(0.0f,Vector2{0,0});
+    if(crownDamage>.01f){
+        const float width=1.0f-.31f*crownDamage,height=1.0f-.16f*crownDamage;
+        rlPushMatrix();rlTranslatef(0,-.075f*crownDamage,0);rlScalef(width,height,width);
+        SetFoliagePass(1.0f,bend);DrawModel(crown,V(0,0,0),1,foliage);SetFoliagePass(0.0f,Vector2{0,0});rlPopMatrix();
+    }else{SetFoliagePass(1.0f,bend);DrawModel(crown,V(0,0,0),1,foliage);SetFoliagePass(0.0f,Vector2{0,0});}
     rlPopMatrix();
+    if(collisionState&&collisionState->crownSheared){
+        Vector3 hit=collisionState->hasDamagePoint?V(collisionState->damagePoint.x-p.x,0,collisionState->damagePoint.z-p.z):V(sinf(yaw/DEG),0,cosf(yaw/DEG));
+        if(Vector3Length(hit)<.05f)hit=V(sinf(yaw/DEG),0,cosf(yaw/DEG));hit=Norm(hit);
+        const Vector3 flank=V(-hit.z,0,hit.x),anchor=Add(p,V(0,h*.59f,0));
+        for(int branch=0;branch<4;++branch){
+            const float lateral=(branch-1.5f)*.20f,reach=.16f+.035f*(branch%2);
+            const Vector3 direction=Norm(Add(Mul(hit,.72f),Mul(flank,lateral)));
+            const Vector3 start=Add(anchor,V(direction.x*h*.10f,h*(.02f*branch),direction.z*h*.10f));
+            const Vector3 end=Add(start,V(direction.x*h*reach,-h*(.025f+.012f*branch),direction.z*h*reach));
+            const float radius=std::max(.025f,h*.0045f);
+            DrawCylinderEx(start,end,radius,radius*.50f,8,bark);
+            DrawCylinderEx(end,Add(end,Mul(direction,.035f)),radius*.49f,radius*.49f,8,Color{194,170,128,255});
+        }
+    }
 }
 void InitializeTreeColliders(){
     g.treeColliders.clear();g.treeColliders.reserve(1266);
@@ -2738,13 +2837,13 @@ void DrawVehicles(){
     if(g.qaCaptureActive&&g.vehicle!=VehicleKind::Foot){
         // Isolate the selected asset during renderer QA so the vehicle occupies the frame without nearby props hiding its geometry.
         if(g.vehicle==VehicleKind::Car){if(g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else{DrawGroundShadow(g.car.p,1.65f,2.55f,28.0f,g.car.yaw);DrawCar(g.car);}DrawVehicleImpactOverlay(g.car,0);}
-        else if(g.vehicle==VehicleKind::Plane){if(g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else{const float h=Clamp(g.plane.p.y-TerrainHeight(g.plane.p.x,g.plane.p.z),0,80);DrawGroundShadow(g.plane.p,2.0f+h*.10f,3.0f+h*.08f,28.0f,g.plane.yaw);DrawPlane(g.plane);}DrawVehicleImpactOverlay(g.plane,1);}
+        else if(g.vehicle==VehicleKind::Plane){if(g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else{const float h=Clamp(g.plane.p.y-TerrainHeight(g.plane.p.x,g.plane.p.z),0,80);DrawGroundShadow(g.plane.p,2.0f+h*.10f,3.0f+h*.08f,28.0f,g.plane.yaw);DrawPlane(g.plane);}DrawVehicleImpactOverlay(g.plane,1);DrawF16BreakawayParts();}
         else if(g.vehicle==VehicleKind::Helicopter){if(g.cameraActualDistance<=3.5f)DrawHeliCockpit(g.heli);else{const float h=Clamp(g.heli.p.y-TerrainHeight(g.heli.p.x,g.heli.p.z),0,80);DrawGroundShadow(g.heli.p,1.45f,2.0f,28.0f,g.heli.yaw);if(h>1.5f&&h<42.0f)DrawGroundShadow(g.heli.p,4.65f+h*.07f,4.65f+h*.07f,12.0f,g.heli.yaw);DrawHeli(g.heli);}DrawVehicleImpactOverlay(g.heli,2);}
         return;
     }
     DrawVehicleShadows();
     if(g.vehicle==VehicleKind::Car&&g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else DrawCar(g.car);DrawVehicleImpactOverlay(g.car,0);
-    if(g.vehicle==VehicleKind::Plane&&g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else DrawPlane(g.plane);DrawVehicleImpactOverlay(g.plane,1);
+    if(g.vehicle==VehicleKind::Plane&&g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else DrawPlane(g.plane);DrawVehicleImpactOverlay(g.plane,1);DrawF16BreakawayParts();
     if(g.vehicle==VehicleKind::Helicopter&&g.cameraActualDistance<=3.5f)DrawHeliCockpit(g.heli);else DrawHeli(g.heli);DrawVehicleImpactOverlay(g.heli,2);
     for(const HostileRotorcraft &contact:g.hostileRotorcraft)if(contact.alive){
         DrawHeli(contact.vehicle);
@@ -3932,7 +4031,14 @@ void UpdateCamera(){
             target=F16ModelPoint(g.plane,V(6.10f,2.285f,0.0f));
             cameraUp=Norm(F16ModelVector(g.plane,V(0,1,0)));
         }
-        else{g.camera.position=cameraDistance>4?Add(Add(p,Mul(f,-cameraDistance)),V(0,5.4f,0)):Add(Add(Add(p,Mul(f,-.58f)),Mul(Right(g.plane.yaw),-.40f)),V(0,1.32f,0));target=cameraDistance>4?Add(p,V(0,.25f,0)):Add(Add(Add(p,V(0,.02f,0)),Mul(f,3.15f)),Mul(Right(g.plane.yaw),-.40f));}
+        else if(cameraDistance>4&&g.plane.crashed&&g.plane.brokenWingSide!=0){
+            const int partIndex=g.plane.brokenWingSide>0?0:1;const F16Breakaway &fragment=g.f16Breakaway[(std::size_t)partIndex];
+            const Vector3 focus=fragment.active?Mul(Add(p,fragment.pivot),.5f):p;
+            if(g.qaPlaneTreeImpact&&g.plane.wreckAge>2.0f){
+                const Vector3 cameraSide=Mul(Right(g.plane.yaw),(float)g.plane.brokenWingSide);
+                g.camera.position=Add(Add(focus,Mul(cameraSide,cameraDistance)),V(0,cameraDistance*.70f,0));target=Add(focus,V(0,.35f,0));
+            }else{g.camera.position=Add(Add(focus,Mul(f,-cameraDistance)),V(0,7.4f,0));target=Add(focus,V(0,.45f,0));}
+        }else{g.camera.position=cameraDistance>4?Add(Add(p,Mul(f,-cameraDistance)),V(0,5.4f,0)):Add(Add(Add(p,Mul(f,-.58f)),Mul(Right(g.plane.yaw),-.40f)),V(0,1.32f,0));target=cameraDistance>4?Add(p,V(0,.25f,0)):Add(Add(Add(p,V(0,.02f,0)),Mul(f,3.15f)),Mul(Right(g.plane.yaw),-.40f));}
     }else if(g.vehicle==VehicleKind::Helicopter){
         Vector3 f=Forward(g.heli.yaw);
         if(cameraDistance<=3.5f){
@@ -4051,5 +4157,4 @@ void DrawWorld(){
 }
 
 } // namespace bw
-
 

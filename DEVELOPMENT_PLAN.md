@@ -457,5 +457,20 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 
 - The imported house GLB has separate clear-glazing meshes. Added a low-opacity render pass for the identified material (4 meshes, 424 vertices) and rebuilt with the pinned wrapper; the current build exits 0 with no incremental compiler warnings shown.
 - Recaptured exterior, ground-floor and upstairs views with the current executable. All three capture processes exited 0. Visual inspection still shows pale, flat-looking panes rather than convincing transparent glass, so this pass is recorded as an implementation attempt, not a quality gate pass. Room dressing remains sparse and interactive traversal remains unverified.
-- Current executable: `build/bin/Release/game.exe`, 1,839,616 bytes, SHA-256 `'+$hash+'`.
+- At that safehouse checkpoint, the executable was 1,839,616 bytes, SHA-256 `DE5918A16C06A9A513159B346F01F14F3DD07E6BD031A917D5A9551EAFE3A32A`. The later F-16 breakup build and hash are recorded below.
 
+## F-16 tree-breakup continuation — 2026-10-26
+
+- Added a persistent, side-specific breakaway wing assembly to the approved F-16 mesh path. The damaged aircraft continues with residual momentum, falls under gravity and drag, and settles against terrain; the detached authored wing keeps its own initial momentum, rotation, drag and ground slide. The detached assembly retains the visible wing, control surfaces, LEX, pylon, launcher, missile, marking and navigation light. A broken spar/rib treatment appears at the wing root. Tree crown damage leaves shortened branches and snapped stubs.
+- The seeded current-build fixture struck the crown of tree seed 910 with the F-16 nose at 61.3 m/s. The port wing separated at 29.3 m/s fragment speed while the fuselage retained 13.5 m/s. The fuselage contacted terrain at 1.19 simulated seconds; the wing fragment contacted at 2.04 seconds and stopped 18.1 m from the fuselage. The tree took 1.00 damage and was not felled.
+- scripts/qa_f16_breakup.ps1 launched the actual Windows game window, required the tree impact, breakaway, both ground contacts and fixture confirmation in the runtime log, then recorded the fresh in-game screenshot. Process exit code was 0. I reviewed screenshots/Breakwater_1793035862128_1.png; it shows the wreck and detached port wing from a high, pulled-back camera. The image remains visibly stylized and does not approach the approved mockup or War Thunder target.
+- The pinned wrapper build exited 0 without incremental warnings shown. build/bin/Release/game.exe is 1,890,304 bytes, SHA-256 8AECEBE7A82784198E4F7D382765FDE84AA9F8321CAF6CEE562870CC6EF38C81.
+- This verifies one deterministic nose-to-tree-crown case and visible breakup integration. It does not validate realistic structural limits, general wing/stores separation, all tree contacts, weather-dependent aerodynamics, other material impacts, or a human-controlled crash. The breakup values are hand-tuned gameplay approximations.
+
+### Current F-16 and impact gates
+
+- [x] Capture an actual current-build tree strike, breakup, fuselage contact and wing-fragment contact; review the screenshot.
+- [ ] Raise the F-16 model and in-game materials toward the approved mockup; the current silhouette, cockpit, surface treatment and scene remain stylized.
+- [ ] Expand damage response across impact location, angle, speed, mass, stores, structures and terrain; calibrate thresholds against reliable aircraft evidence.
+- [ ] Verify ordinary player-controlled flight, weapons, landing and impact routes; this fixture is scripted and does not establish natural gameplay.
+- [ ] Continue shape- and material-specific collision work across trees, buildings, terrain, water, vehicles and debris.
