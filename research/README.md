@@ -4,10 +4,10 @@ Research was collected for the game systems and production decisions in this run
 
 ## Count and access
 
-- **550 distinct canonical source pages** are listed in `sources.csv`, exceeding the requested minimum of 512.
+- **552 distinct canonical source pages** are listed in `sources.csv`, exceeding the requested minimum of 512.
 - **450 pages returned direct page text excerpts** through the web reader.
-- **101 entries have search-result excerpts only** because direct text was unavailable or the page did not return within the bounded reads.
-- The register currently contains 551 unique source IDs and exact URLs; common tracking/display parameters reduce these to 550 canonical pages. Direct reads were excerpts, not full-document reviews. The register records access level per row and does not claim that 550 complete documents were read cover to cover.
+- **103 entries have search-result excerpts only** because direct text was unavailable or the page did not return within the bounded reads.
+- The register contains 553 unique source IDs and exact URLs; common tracking/display parameters reduce these to 552 canonical pages. Direct reads were excerpts, not full-document reviews. The register records access level per row and does not claim that 552 complete documents were read cover to cover.
 
 ## Deduplication
 

@@ -2,6 +2,7 @@
 
 namespace bw {
 namespace {
+Vector3 PlaneModelPoint(const Vehicle &plane,Vector3 local);
 float Rand01(int a,int b){uint32_t n=(uint32_t)a*374761393u+(uint32_t)b*668265263u+1442695041u;n=(n^(n>>13u))*1274126177u;n^=n>>16u;return(float)(n&0x00ffffffu)/16777215.0f;}
 Vector3 Position(){return g.vehicle==VehicleKind::Foot?g.player.p:(g.vehicle==VehicleKind::Car?g.car.p:(g.vehicle==VehicleKind::Plane?g.plane.p:g.heli.p));}
 int FirstGate(){for(int i=0;i<3;++i)if(!g.gateDone[i])return i;return 3;}
@@ -847,8 +848,10 @@ void LaunchIRMissile(){
     const int target=g.lockedAirContact;Vehicle *contact=AirContactVehicle(target);
     if(!contact||!AirContactAlive(target)||!IRLineOfSight(g.plane.p,contact->p)){Notify("SEEKER TRACK LOST",1.2f);return;}
     const int station=g.plane.missilePresent[0]?0:1;const float side=station==0?-1.0f:1.0f;
-    const Vector3 forward=PlaneForward(),right=V(cosf(g.plane.yaw),0,-sinf(g.plane.yaw));
-    const Vector3 muzzle=Add(Add(g.plane.p,Mul(right,side*4.45f)),V(0,-.62f,0));
+    const Vector3 forward=PlaneForward();
+    // Match the generated AIM-9 body's measured center on the wingtip rail.
+    // PlaneModelPoint applies the F-16 model pivot and the same attitude as its renderer.
+    const Vector3 muzzle=PlaneModelPoint(g.plane,V(-3.53f,1.43f,side*4.66f));
     const float launchSpeed=std::max(80.0f,g.plane.speed)+75.0f;
     g.guidedMissiles.push_back(GuidedIRMissile{muzzle,Mul(forward,launchSpeed),0,7.0f,target,station});
     g.plane.missilePresent[(std::size_t)station]=false;g.plane.missileAmmo--;g.shots++;g.plane.gunFlash=.10f;

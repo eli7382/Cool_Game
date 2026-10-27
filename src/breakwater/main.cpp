@@ -735,8 +735,13 @@ int main(int argc,char **argv) {
         if(g.screenshotRequested){
             rlDrawRenderBatchActive();
             const auto stamp=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-            const std::string leaf=qaCapture.empty()?"Breakwater_"+std::to_string(stamp)+"_"+std::to_string(++g.screenshotCount)+".png":("Breakwater_LiveQA_"+qaCapture+"_"+std::to_string(stamp)+".png");
-            const std::string file=(std::filesystem::path("screenshots")/leaf).string();
+            std::error_code ec;std::string leaf,file;unsigned int captureIndex=0;
+            const std::string stem=qaCapture.empty()?"Breakwater_"+std::to_string(stamp):("Breakwater_LiveQA_"+qaCapture+"_"+std::to_string(stamp));
+            do{
+                const unsigned int suffix=qaCapture.empty()?++g.screenshotCount:++captureIndex;
+                leaf=stem+"_"+std::to_string(suffix)+".png";file=(std::filesystem::path("screenshots")/leaf).string();ec.clear();
+            }while(std::filesystem::exists(file,ec)&&!ec);
+            ec.clear();
             Image frame=LoadImageFromScreen();const int renderWidth=GetRenderWidth(),renderHeight=GetRenderHeight();bool exported=false;
             if(frame.data&&renderWidth>0&&renderHeight>0&&frame.width>=renderWidth&&frame.height>=renderHeight){
                 if(frame.width!=renderWidth||frame.height!=renderHeight){
@@ -751,7 +756,6 @@ int main(int argc,char **argv) {
                 TakeScreenshot(file.c_str());
             }
             g.screenshotRequested=false;
-            std::error_code ec;
             if(!std::filesystem::exists(file,ec)&&std::filesystem::exists(leaf,ec))std::filesystem::rename(leaf,file,ec);
             if(exported&&std::filesystem::exists(file,ec)){Notify("SCREENSHOT SAVED",1.2f);LogEvent("screenshot-taken");}
             else if(std::filesystem::exists(file,ec)){Notify("SCREENSHOT SAVED",1.2f);LogEvent("screenshot-taken");}
