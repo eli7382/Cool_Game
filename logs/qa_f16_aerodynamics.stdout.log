@@ -1,0 +1,9 @@
+f16-aero,mach=0.60,wave-drag-coefficient=0.00000
+f16-aero,mach=0.80,wave-drag-coefficient=0.00031
+f16-aero,mach=1.00,wave-drag-coefficient=0.01985
+f16-aero,mach=1.20,wave-drag-coefficient=0.02878
+f16-aero,mach=1.40,wave-drag-coefficient=0.02318
+f16-aero,mach=1.60,wave-drag-coefficient=0.01214
+f16-aero,mach=2.00,wave-drag-coefficient=0.01200
+f16-aero-envelope,sea-level-limit-mps=431.94,tropopause-limit-mps=604.89,peak-transonic-cd=0.02878,supersonic-cd=0.01214,pass=1
+qa-audio-output-muted,device=not-initialized

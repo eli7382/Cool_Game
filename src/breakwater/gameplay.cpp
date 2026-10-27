@@ -1,6 +1,24 @@
 #include "game.hpp"
 
 namespace bw {
+// Gameplay proxy for the transonic drag rise and the supersonic wave-drag floor.
+// It is deliberately labeled an approximation: no measured Netz Cd(M) polar is available.
+float F16WaveDragCoefficient(float mach){
+    const float transonicRise=Smooth(.78f,1.08f,mach)*(1.0f-Smooth(1.18f,1.62f,mach));
+    const float supersonicWave=Smooth(.98f,1.48f,mach);
+    return .024f*transonicRise+.012f*supersonicWave;
+}
+float F16MaximumTrueAirspeed(float airDensity,float temperatureKelvin){
+    // Combine a published Netz Mach ceiling with an indicated/equivalent-speed limit.
+    // This bounds the game model; it does not represent stores-specific flight-test data.
+    constexpr float gamma=1.4f,airGasConstant=287.05f,seaLevelDensity=1.225f;
+    constexpr float machLimit=2.05f,equivalentAirspeedLimit=1555.0f/3.6f;
+    const float density=std::max(.05f,airDensity),temperature=Clamp(temperatureKelvin,180.0f,330.0f);
+    const float speedOfSound=std::sqrt(gamma*airGasConstant*temperature);
+    const float machLimitSpeed=machLimit*speedOfSound;
+    const float equivalentSpeedLimit=equivalentAirspeedLimit*std::sqrt(seaLevelDensity/density);
+    return std::min(machLimitSpeed,equivalentSpeedLimit);
+}
 namespace {
 Vector3 PlaneModelPoint(const Vehicle &plane,Vector3 local);
 float Rand01(int a,int b){uint32_t n=(uint32_t)a*374761393u+(uint32_t)b*668265263u+1442695041u;n=(n^(n>>13u))*1274126177u;n^=n>>16u;return(float)(n&0x00ffffffu)/16777215.0f;}
@@ -1606,7 +1624,9 @@ void UpdatePlane(float dt){
     const float gearDrag=.045f*g.plane.gearExtension;
     const float brakeDrag=.105f*g.plane.speedBrakeExtension;
     const float approachFlapDrag=g.plane.airborne&&currentAirspeed<105.0f?.018f:0.0f;
-    const float dragCoefficient=.021f+.124f*liftCoefficient*liftCoefficient+gearDrag+brakeDrag+approachFlapDrag;
+    const float speedOfSound=std::sqrt(1.4f*287.05f*Clamp(weather.temperatureKelvin,180.0f,330.0f));
+    const float mach=currentAirspeed/std::max(1.0f,speedOfSound);
+    const float dragCoefficient=.021f+.124f*liftCoefficient*liftCoefficient+F16WaveDragCoefficient(mach)+gearDrag+brakeDrag+approachFlapDrag;
     const float dragAcceleration=q*wingArea*dragCoefficient/aircraftMass*(1.0f+.50f*(1.0f-g.plane.airframeHealth));
     const Vector3 aerodynamicAcceleration=Mul(Norm(airRelativeVelocity),-dragAcceleration);
     const float thrustLapse=Clamp(sqrtf(weather.airDensity/1.225f),.48f,1.0f)*(1.0f+.00012f*currentAirspeed);
@@ -1624,12 +1644,12 @@ void UpdatePlane(float dt){
         const float brake=IsKeyDown(KEY_LEFT_SHIFT)?std::min(9.0f,runway.friction*gravity*.82f):0.0f;
         const float wheelDrag=runway.rollingResistance*gravity+brake;
         g.plane.speed=std::max(0.0f,g.plane.speed-wheelDrag*dt);
-        g.plane.speed=Clamp(g.plane.speed+longitudinalAcceleration*dt,0,520.0f);
+        g.plane.speed=Clamp(g.plane.speed+longitudinalAcceleration*dt,0,F16MaximumTrueAirspeed(weather.airDensity,weather.temperatureKelvin));
         g.plane.p.x+=(f.x*g.plane.speed+right.x*g.plane.lateralSpeed)*dt;g.plane.p.z+=(f.z*g.plane.speed+right.z*g.plane.lateralSpeed)*dt;g.plane.p.y=TerrainHeight(g.plane.p.x,g.plane.p.z)+1.35f;
         g.plane.normalG=1.0f;
         if(g.plane.speed>65.0f&&g.plane.pitch>.13f&&g.plane.landingGearDown){g.plane.airborne=true;g.plane.verticalSpeed=std::max(2.4f,g.plane.speed*sinf(g.plane.pitch)*.35f);Notify("AIRBORNE — RETRACT GEAR WITH G; TRIM THE PITCH",2.5f);LogEvent("plane-takeoff");}
     }else{
-        g.plane.speed=Clamp(g.plane.speed+longitudinalAcceleration*dt,0,520.0f);
+        g.plane.speed=Clamp(g.plane.speed+longitudinalAcceleration*dt,0,F16MaximumTrueAirspeed(weather.airDensity,weather.temperatureKelvin));
         g.plane.normalG=Clamp(lift/gravity,0,10.0f);
         g.plane.verticalSpeed=Clamp(g.plane.verticalSpeed+(lift*cosf(g.plane.roll)-gravity+aerodynamicAcceleration.y)*dt,-80,80);
         if(stall>.6f)g.plane.pitchRate-=.72f*stall*dt;

@@ -627,3 +627,20 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - Captured and reviewed fresh in-game F-16 exterior and cockpit views with `--qa-silent`; the game log confirms muted output. Evidence: `screenshots/Breakwater_LiveQA_plane_1793121104275_1.png` and `screenshots/Breakwater_LiveQA_plane-cockpit_1793121114220_1.png`.
 - Material response is more differentiated, but visible model, cockpit, terrain and lighting still fall below the requested War Thunder/Forza/AAA realism target. The captures validate the render path only; no flight operation or performance profile was run.
 - No ImageGen calls this pass; cumulative calls remain 64. FPS/GPU measurements remain unavailable.
+
+## F-16 compressibility and airspeed-envelope refinement - 2026-10-27
+
+- Added local speed-of-sound calculation from air temperature, a transonic wave-drag rise with a supersonic drag floor, and an atmosphere-dependent true-airspeed cap bounded by Mach 2.05 and a 1,555 km/h equivalent-airspeed limit. The curve is explicitly documented in source as a gameplay approximation, not a measured Netz drag polar. NASA Glenn references S554-S555 cover drag/compressibility and the Mach/speed-of-sound relationship.
+- Rebuilt through the pinned Windows x64 Release wrapper. The sandbox attempt failed at the existing Windows SDK registry restriction; the unchanged wrapper succeeded through the approved host path with no compiler warning lines. `build/bin/Release/game.exe` and `dist/Breakwater_Windows_x64.exe` match byte-for-byte: 1,973,760 bytes, SHA-256 `EB343A9461933CDE281A9F86B50A50D3E09C75279025BDBC4A53A32AEF9AD9BB`.
+- With audio muted, `--qa-f16-aerodynamics` exited 0 and validated a transonic peak coefficient of 0.02878, a sea-level speed bound of 431.94 m/s, and a tropopause bound of 604.89 m/s. The seeded landing fixture passed at 73.77 m/s and −3.48 m/s pre-contact sink, with gear down and runway contact. The tree-impact fixture passed at 61.3 m/s: foliage crown shear, port-wing separation, fuselage contact and fragment contact were logged. Both fixtures exited 0 on the final build.
+- Captured and reviewed the F-16 exterior, runway touchdown and tree-impact renders. They confirm the current renderer and effects, but the aircraft, terrain, lighting and scene remain stylized below the requested War Thunder/AAA fidelity target.
+- Two muted interactive input-harness attempts did not enter the parked F-16, so normal takeoff, circuit and landing remain unverified. The seeded landing case is a short-final fixture, not a substitute for that route. No FPS/GPU measurement was collected; no new ImageGen calls were made (64 cumulative).
+
+### F-16 flight-model gates
+
+- [x] Use local temperature and density in the Mach/EAS speed envelope.
+- [x] Add and deterministically validate the transonic wave-drag proxy.
+- [x] Rebuild, package, and rerun muted landing and tree-impact fixtures on the final binary.
+- [ ] Replace hand-shaped coefficients with measured, stores-specific Netz aerodynamic and structural data.
+- [ ] Validate a normal player-controlled takeoff, flight circuit and runway landing.
+- [ ] Reach the requested photoreal F-16 and world quality; the reviewed captures remain stylized.
