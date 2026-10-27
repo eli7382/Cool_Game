@@ -20,6 +20,7 @@ if ($MidTide) {
     if ($Mode -ne 'coastal-water') { throw '-MidTide is valid only with -Mode coastal-water.' }
     $arguments += '--qa-mid-tide'
 }
+$arguments += '--qa-silent'
 $process = Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $workspace -PassThru
 $exited = $process.WaitForExit(20000)
 $process.Refresh()

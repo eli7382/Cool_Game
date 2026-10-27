@@ -6,7 +6,7 @@ $captures = [System.Collections.Generic.List[object]]::new()
 
 foreach ($mode in $modes) {
     $started = Get-Date
-    $process = Start-Process -FilePath $exe -ArgumentList ("--qa-capture={0}" -f $mode) -WorkingDirectory $workspace -PassThru
+    $process = Start-Process -FilePath $exe -ArgumentList ("--qa-capture={0} --qa-silent" -f $mode) -WorkingDirectory $workspace -PassThru
     $exited = $process.WaitForExit(20000)
     $process.Refresh()
     $shot = Get-ChildItem -LiteralPath (Join-Path $workspace 'screenshots') -Filter ("Breakwater_LiveQA_{0}_*.png" -f $mode) |

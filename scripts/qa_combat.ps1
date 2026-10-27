@@ -27,7 +27,7 @@ public static class BwCombatQa {
  public static void Capture(IntPtr h,string path){RECT r;if(!GetWindowRect(h,out r))throw new Exception("window rect failed");using(Bitmap b=new Bitmap(r.Right-r.Left,r.Bottom-r.Top)){using(Graphics g=Graphics.FromImage(b)){g.CopyFromScreen(r.Left,r.Top,0,0,new Size(b.Width,b.Height));}b.Save(path,ImageFormat.Png);}}
 }
 "@
-$p = Start-Process -FilePath $exe -ArgumentList '--qa-combat' -WorkingDirectory $root -PassThru
+$p = Start-Process -FilePath $exe -ArgumentList @('--qa-combat','--qa-silent') -WorkingDirectory $root -PassThru
 try {
  $null=$p.WaitForInputIdle(10000)
  $deadline=(Get-Date).AddSeconds(12);$fixtureComplete=$false

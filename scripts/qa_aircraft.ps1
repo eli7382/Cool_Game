@@ -28,7 +28,7 @@ public static class BwAirQa {
   public static void Capture(IntPtr h, string path) { RECT r; if(!GetWindowRect(h,out r)) throw new Exception("GetWindowRect failed"); int w=r.Right-r.Left, ht=r.Bottom-r.Top; using(Bitmap b=new Bitmap(w,ht)) { using(Graphics g=Graphics.FromImage(b)) { g.CopyFromScreen(r.Left,r.Top,0,0,new Size(w,ht)); } b.Save(path,ImageFormat.Png); } }
 }
 "@
-$p = Start-Process -FilePath $exe -WorkingDirectory $root -PassThru
+$p = Start-Process -FilePath $exe -ArgumentList @('--qa-silent') -WorkingDirectory $root -PassThru
 try {
   $null = $p.WaitForInputIdle(10000); Start-Sleep -Milliseconds 2400; $p.Refresh()
   if (!$p.MainWindowHandle) { throw 'Game window did not appear.' }
@@ -42,10 +42,19 @@ try {
   }
   if (-not $missionStarted) { throw 'Game did not receive the title-screen Enter input; no gameplay QA was performed.' }
   Start-Sleep -Milliseconds 350
-  # Walk to the runway-head parking position with a measured on-foot route.
-  [BwAirQa]::Hold($h,0x53,19400)
-  [BwAirQa]::Hold($h,0x44,1100)
+  # Start at z=165, zero the small initial camera heading, then sprint south
+  # to the F-16 at (-7,43) and make a short lateral correction.
+  [BwAirQa]::Tap($h,0x25,80)
+  [BwAirQa]::Chord($h,@(0x10,0x53),17600)
+  [BwAirQa]::Hold($h,0x41,980)
   [BwAirQa]::Tap($h,0x45,150); Start-Sleep -Milliseconds 300
+  $afterEntry=[System.IO.File]::ReadAllText($sessionLog)
+  $runAfterEntry=if($afterEntry.Length -gt $priorLog){$afterEntry.Substring($priorLog)}else{''}
+  if($runAfterEntry -notmatch ',enter-plane$'){
+    $failureShot=Join-Path $root ("screenshots\Breakwater_AircraftApproachFailure_{0}.png" -f $stamp)
+    try{[BwAirQa]::Capture($h,$failureShot)}catch{}
+    throw "The on-foot approach did not enter the F-16; capture: $failureShot"
+  }
   [BwAirQa]::Tap($h,0x43,120); Start-Sleep -Milliseconds 200
   [BwAirQa]::Tap($h,0x7B,120);Start-Sleep -Milliseconds 250
   # Build speed, rotate, then start a coordinated turn as soon as the wheels

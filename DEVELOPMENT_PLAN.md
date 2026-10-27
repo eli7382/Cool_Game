@@ -604,3 +604,18 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - Rebuilt through the pinned Windows x64 Release wrapper; exit code 0 and no warning lines appeared. The executable is 1,971,712 bytes, SHA-256 `A39612EAAF5D180B76F660143356D3AE1F99925B9EECF0A5DDEAA0A8BA865F45`. Refreshed `dist/Breakwater_Windows_x64.exe`; byte count and SHA match the build.
 - Current-build and packaged-build `--qa-f16-fixedwing-missile --qa-silent` fixtures each exited 0, logged muted audio, launched one AIM-9 from the port station, hit once and destroyed the seeded F-16 at 2.15 simulated seconds for the packaged run. Reviewed the fresh current-build launch frame and packaged launch frame; the launch now appears at the port wingtip. Packaged captures: `screenshots/Breakwater_1793111577748_1.png` and `screenshots/Breakwater_1793111579431_2.png`.
 - This validates only the deterministic launch/kill fixture and the rendered launch location. Guidance, motor, fuze and flight envelope remain gameplay approximations; the F-16 and world remain stylized below the requested reference. Routine tests were silent. No controlled FPS or GPU measurement was collected.
+
+## Muted QA and tree-crown impact logging - 2026-10-27
+
+- Followed the user's standing preference: all non-audio game launches from `scripts/` now pass `--qa-silent`. Audio playback remains enabled only in scripts that specifically test audio or narration. The latest landing, breakup and aircraft-route attempts were muted.
+- Fixed tree-impact telemetry so canopy/crown hits report `material=foliage` rather than the trunk's `wood` label. The breakup fixture now asserts foliage material and crown shearing.
+- Rebuilt through the pinned Windows x64 Release wrapper with no warnings shown; refreshed the packaged executable from that build and verified matching hashes.
+- Muted runway fixture passed: gear down, runway contact at 73.11 m/s, pre-contact sink −2.57 m/s, 2.01 simulated seconds. Reviewed the in-game capture at `screenshots/Breakwater_1793112655686_1.png`.
+- Muted tree-strike fixture passed at 61.2 m/s: F-16 nose hit the foliage crown, port wing separated, fuselage and fragment contacted terrain, and the wreckage confirmation fired at 3.14 simulated seconds. The tree was damaged but not felled. Reviewed `screenshots/Breakwater_1793113278261_1.png`.
+- A normal takeoff-return-landing circuit remains unverified. The latest input harness did not enter the F-16, and its attempted desktop screenshot captured Codex instead of the game, so it was rejected as gameplay evidence. Computer Use guidance prohibits mixing its UI controls with PowerShell UI automation in one turn; no further interactive retry was made in this pass.
+- The F-16 and world remain stylized below the requested War Thunder/AAA target; tree proxies and flight/structural responses remain approximate rather than physically calibrated. No FPS/GPU measurement was collected.
+
+### Standing muted-testing preference
+
+- [x] Pass `--qa-silent` for non-audio QA, captures and test launches.
+- [x] Keep audio enabled only when a test directly validates sound, narration or audio settings.

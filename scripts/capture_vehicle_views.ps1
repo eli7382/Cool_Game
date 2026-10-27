@@ -38,7 +38,7 @@ public static class BreakwaterWindowCapture {
 $workspace = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $exe = (Resolve-Path (Join-Path $workspace 'build\bin\Release\game.exe')).Path
 $output = Join-Path $workspace ("screenshots\Breakwater_FinalVehicle_{0}.png" -f $Mode)
-$process = Start-Process -FilePath $exe -ArgumentList ("--qa-capture={0}" -f $Mode) -WorkingDirectory $workspace -PassThru
+$process = Start-Process -FilePath $exe -ArgumentList ("--qa-capture={0} --qa-silent" -f $Mode) -WorkingDirectory $workspace -PassThru
 for ($attempt = 0; $attempt -lt 80; $attempt++) {
     $process.Refresh()
     if ($process.HasExited) { throw "Game exited before its $Mode view was ready (exit $($process.ExitCode))." }

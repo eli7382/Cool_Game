@@ -13,6 +13,7 @@ $started = Get-Date
 $output = Join-Path $workspace ("screenshots\Breakwater_LiveQA_{0}.png" -f $Mode)
 $arguments = @(("--qa-capture={0}" -f $Mode))
 if ($Preset -eq 'Low') { $arguments += '--qa-capture-low' }
+$arguments += '--qa-silent'
 $process = Start-Process -FilePath $exe -ArgumentList $arguments -WorkingDirectory $workspace -PassThru
 $exited = $process.WaitForExit(20000)
 $process.Refresh()

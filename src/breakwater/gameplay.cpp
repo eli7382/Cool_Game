@@ -652,7 +652,8 @@ void UpdateHostileFixedWings(float dt){
             else if(tree.damage>=1.0f)tree.felled=true;
             target.alive=false;target.downed=true;v.crashed=true;v.damage=Clamp(v.damage+.35f,0,1);v.wreckAge=0;v.pitchRate-=.38f;v.rollRate+=(Rand01(tree.seed,(int)g.elapsed)>0.5f?1.0f:-1.0f)*.42f;
             SpawnParticles(treeImpact.point,treeImpact.canopy?Color{112,143,89,215}:Color{151,117,77,225},treeImpact.canopy?13:20,3.0f,.09f);
-            LogEvent(TextFormat("hostile-f16-tree-impact,part=%s,material=wood,tree-seed=%d,canopy=%d,speed-mps=%.1f",treeImpact.part,tree.seed,treeImpact.canopy?1:0,v.speed));continue;
+            LogEvent(TextFormat("hostile-f16-tree-impact,part=%s,material=%s,tree-seed=%d,canopy=%d,speed-mps=%.1f",
+                                treeImpact.part,treeImpact.canopy?"foliage":"wood",tree.seed,treeImpact.canopy?1:0,v.speed));continue;
         }
         const float terrain=std::max(TerrainHeight(v.p.x,v.p.z),g.water);
         if(v.p.y<terrain+12.0f&&desiredAltitude>terrain+55.0f){v.pitchRate+=.35f*dt;}
@@ -1445,8 +1446,9 @@ void CrashPlaneIntoTree(const PlaneTreeImpact &impact){
     SpawnParticles(impact.point,Color{134,104,69,245},catastrophic?34:15,catastrophic?5.6f:2.8f,.12f);
     SpawnParticles(Add(impact.point,V(0,.2f,0)),Color{76,109,59,230},impact.canopy?24:12,3.8f,.18f);
     PlaySpatial(g.treeImpactSfx,impact.point,Clamp(.92f-impactSpeed*.002f,.72f,.92f),Clamp(.24f+impactSpeed*.009f,.24f,.74f),140.0f,Sound{},true);
-    LogEvent(TextFormat("plane-tree-impact,tree-seed=%d,part=%s,material=wood,crown=%d,speed-ms=%.1f,stem-radius-m=%.2f,break-speed-ms=%.1f,tree-damage=%.2f,tree-felled=%d",
-                        impact.tree->seed,impact.part,impact.canopy?1:0,impactSpeed,impact.tree->trunkBaseRadius,trunkFailureSpeed,impact.tree->damage,impact.tree->felled?1:0));
+    LogEvent(TextFormat("plane-tree-impact,tree-seed=%d,part=%s,material=%s,crown=%d,crown-sheared=%d,speed-ms=%.1f,stem-radius-m=%.2f,break-speed-ms=%.1f,tree-damage=%.2f,tree-felled=%d",
+                        impact.tree->seed,impact.part,impact.canopy?"foliage":"wood",impact.canopy?1:0,impact.tree->crownSheared?1:0,
+                        impactSpeed,impact.tree->trunkBaseRadius,trunkFailureSpeed,impact.tree->damage,impact.tree->felled?1:0));
 }
 void UpdatePlaneWreckage(float dt){
     Vehicle &plane=g.plane;plane.wreckAge+=dt;

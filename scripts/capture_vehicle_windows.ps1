@@ -34,7 +34,7 @@ $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
 $results = [System.Collections.Generic.List[object]]::new()
 foreach ($mode in @('car','car-front','car-cockpit','plane','plane-front','plane-cockpit','heli','heli-front','heli-cockpit')) {
     $output = Join-Path $workspace ("screenshots\Breakwater_VehicleDetail_{0}_{1}.png" -f $stamp,$mode)
-    $process = Start-Process -FilePath $exe -ArgumentList ("--qa-capture={0}" -f $mode) -WorkingDirectory $workspace -PassThru
+    $process = Start-Process -FilePath $exe -ArgumentList ("--qa-capture={0} --qa-silent" -f $mode) -WorkingDirectory $workspace -PassThru
     try {
         for ($attempt = 0; $attempt -lt 100; $attempt++) {
             $process.Refresh()

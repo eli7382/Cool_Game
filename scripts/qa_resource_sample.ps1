@@ -5,7 +5,7 @@ $exe = (Resolve-Path (Join-Path $root 'build\bin\Release\game.exe')).Path
 $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
 $token = "resource_$stamp"
 $graphicsMode = if ($High) { 'High' } else { 'Low' }
-$arguments = @('--qa-task-tour',"--qa-task-token=$token")
+$arguments = @('--qa-task-tour',"--qa-task-token=$token",'--qa-silent')
 if ($High) { $arguments += '--qa-high-preset' }
 $stdoutPath = Join-Path $root ("logs\qa_resource_console_{0}.log" -f $stamp)
 $stderrPath = Join-Path $root ("logs\qa_resource_console_{0}.err" -f $stamp)

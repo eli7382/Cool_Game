@@ -23,7 +23,7 @@ public static class BwSafehouseQa {
 }
 "@
 $gameArgument = if ($Mode -eq 'stair-descent') { '--qa-safehouse-descent' } else { '--qa-safehouse' }
-$process = Start-Process -FilePath $exe -ArgumentList $gameArgument -WorkingDirectory $root -PassThru
+$process = Start-Process -FilePath $exe -ArgumentList @($gameArgument,'--qa-silent') -WorkingDirectory $root -PassThru
 $runText = ''
 try {
     $null = $process.WaitForInputIdle(10000)

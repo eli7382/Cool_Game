@@ -13,7 +13,7 @@ public static class BwF16BreakupQa {
  [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr h,uint m,IntPtr w,IntPtr l);
 }
 "@
-$p = Start-Process -FilePath $exe -ArgumentList '--qa-plane-tree-impact' -WorkingDirectory $root -PassThru
+$p = Start-Process -FilePath $exe -ArgumentList @('--qa-plane-tree-impact','--qa-silent') -WorkingDirectory $root -PassThru
 try {
     $null = $p.WaitForInputIdle(10000)
     $p.Refresh()
@@ -26,6 +26,7 @@ try {
     $required = @(
         'qa-plane-tree-impact-fixture,',
         'plane-tree-impact,',
+        'plane-tree-impact,tree-seed=910,part=NOSE,material=foliage,crown=1,crown-sheared=1,',
         'f16-wing-breakaway,',
         'f16-fuselage-ground-contact,',
         'f16-wing-fragment-ground-contact,',

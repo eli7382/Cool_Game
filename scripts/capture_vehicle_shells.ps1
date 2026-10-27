@@ -5,7 +5,7 @@ $exe = (Resolve-Path (Join-Path $workspace 'build\bin\Release\game.exe')).Path
 $results = [System.Collections.Generic.List[object]]::new()
 foreach ($mode in $Modes) {
     $started = Get-Date
-    $process = Start-Process -FilePath $exe -ArgumentList ("--qa-capture={0}" -f $mode) -WorkingDirectory $workspace -PassThru
+    $process = Start-Process -FilePath $exe -ArgumentList ("--qa-capture={0} --qa-silent" -f $mode) -WorkingDirectory $workspace -PassThru
     try {
         $exited = $process.WaitForExit(30000)
         if (-not $exited) { throw "Game did not complete the in-game capture for $mode." }

@@ -16,7 +16,7 @@ foreach ($case in $cases) {
     $pattern = "Breakwater_LiveQA_$($case.Mode)_*.png"
     $before = [System.Collections.Generic.HashSet[string]]::new()
     Get-ChildItem -LiteralPath $screenshotDir -Filter $pattern -File | ForEach-Object { [void]$before.Add($_.FullName) }
-    $process = Start-Process -FilePath $exe -ArgumentList @("--qa-capture=$($case.Mode)") -WorkingDirectory $root -Wait -PassThru
+    $process = Start-Process -FilePath $exe -ArgumentList @("--qa-capture=$($case.Mode)",'--qa-silent') -WorkingDirectory $root -Wait -PassThru
     if ($process.ExitCode -ne 0) { throw "Capture process for $($case.Mode) exited $($process.ExitCode)." }
     $deadline = (Get-Date).AddSeconds(4)
     $candidate = $null
