@@ -619,3 +619,11 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 
 - [x] Pass `--qa-silent` for non-audio QA, captures and test launches.
 - [x] Keep audio enabled only when a test directly validates sound, narration or audio settings.
+
+## F-16 material-specific PBR refinement - 2026-10-27
+
+- Generated a 30-entry material microdetail mask from the Blender-authored F-16 material names and routed it through the game renderer. Camouflage, underside paint, stores, radome and bare alloy receive distinct detail strengths; canopy, rubber, cockpit, markings and fittings no longer inherit the same paint grain.
+- Pinned Windows x64 Release build succeeded (exit 0; no compiler warning lines). Updated `dist/Breakwater_Windows_x64.exe`; its SHA-256 matches `build/bin/Release/game.exe`.
+- Captured and reviewed fresh in-game F-16 exterior and cockpit views with `--qa-silent`; the game log confirms muted output. Evidence: `screenshots/Breakwater_LiveQA_plane_1793121104275_1.png` and `screenshots/Breakwater_LiveQA_plane-cockpit_1793121114220_1.png`.
+- Material response is more differentiated, but visible model, cockpit, terrain and lighting still fall below the requested War Thunder/Forza/AAA realism target. The captures validate the render path only; no flight operation or performance profile was run.
+- No ImageGen calls this pass; cumulative calls remain 64. FPS/GPU measurements remain unavailable.

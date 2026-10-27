@@ -747,7 +747,7 @@ void main(){
 )";
     const char *fs=R"(#version 330
 in vec2 uv;in vec3 worldPos;in vec3 worldNormal;in vec4 tint;in float modelHeight;
-uniform sampler2D texture0;uniform sampler2D environmentMap;uniform sampler2D vehicleNormalMap;uniform sampler2D vehicleRoughnessMap;uniform sampler2D vehiclePaintDetailMap;uniform vec4 colDiffuse;uniform vec3 viewPos;uniform vec3 lightDir;uniform vec4 fogColor;uniform vec2 fogRange;uniform float paintTextureBlend;uniform float vehicleSurfaceKind;uniform float heroMaterialPbr;uniform float heroPaintCoat;uniform float heroMaterialMetalness;uniform float heroMaterialRoughness;uniform float heroGlassAlpha;uniform float heroGlassOpacity;uniform vec3 heroGlassTint;uniform vec2 heroUvScale;uniform vec2 heroUvOffset;uniform float customTextureScale;uniform float waterSurface;uniform float waterTime;uniform float waterLevel;uniform float foliageSurface;uniform float terrainSurface;uniform float cockpitFill;uniform vec3 safehouseLightPosition0;uniform vec3 safehouseLightPosition1;uniform float safehouseLightingEnabled;
+uniform sampler2D texture0;uniform sampler2D environmentMap;uniform sampler2D vehicleNormalMap;uniform sampler2D vehicleRoughnessMap;uniform sampler2D vehiclePaintDetailMap;uniform vec4 colDiffuse;uniform vec3 viewPos;uniform vec3 lightDir;uniform vec4 fogColor;uniform vec2 fogRange;uniform float paintTextureBlend;uniform float vehicleSurfaceKind;uniform float heroMaterialPbr;uniform float heroPaintCoat;uniform float heroMaterialMetalness;uniform float heroMaterialRoughness;uniform float heroMicrodetailWeight;uniform float heroGlassAlpha;uniform float heroGlassOpacity;uniform vec3 heroGlassTint;uniform vec2 heroUvScale;uniform vec2 heroUvOffset;uniform float customTextureScale;uniform float waterSurface;uniform float waterTime;uniform float waterLevel;uniform float foliageSurface;uniform float terrainSurface;uniform float cockpitFill;uniform vec3 safehouseLightPosition0;uniform vec3 safehouseLightPosition1;uniform float safehouseLightingEnabled;
 out vec4 finalColor;
 float terrainHeightAt(vec2 p){
     float radius=length(p),edge=7.0-max(0.0,radius-170.0)*.073;
@@ -776,13 +776,14 @@ void main(){
     }
     baseColor*=mix(vec3(1.0),vec3(.76,.81,.80),terrainWetness*.58);
     float heroSurface=clamp(heroMaterialPbr,0.0,1.0);
+    float materialDetail=clamp(heroMicrodetailWeight,0.0,1.0);
     float heroPaintFinish=clamp(heroPaintCoat,0.0,1.0)*heroSurface;
     float surfaceKind=clamp(vehicleSurfaceKind,0.0,3.0);
     float paintWear=dot(texture(vehiclePaintDetailMap,detailUv).rgb,vec3(0.2126,0.7152,0.0722));
     float wearResponse=clamp(1.0+(paintWear-0.46)*0.24,0.88,1.10);
-    baseColor*=mix(1.0,wearResponse,heroSurface*0.68);
+    baseColor*=mix(1.0,wearResponse,heroSurface*0.68*materialDetail);
     float grimeCeiling=surfaceKind>2.5?0.72:(surfaceKind>1.5?0.52:0.62);
-    float lowerGrime=(1.0-smoothstep(grimeCeiling*0.42,grimeCeiling,modelHeight))*heroSurface;
+    float lowerGrime=(1.0-smoothstep(grimeCeiling*0.42,grimeCeiling,modelHeight))*heroSurface*materialDetail;
     float grimeAmount=lowerGrime*(0.10+0.19*(1.0-clamp(paintWear,0.0,1.0)));
     baseColor*=mix(vec3(1.0),vec3(0.73,0.71,0.65),grimeAmount);
     // Terrain uses the same texture-blend control to mix its vertex elevation tint
@@ -802,7 +803,7 @@ void main(){
     float paintRoughness=surfaceKind>0.5&&surfaceKind<1.5?0.35:(surfaceKind>1.5&&surfaceKind<2.5?0.50:(surfaceKind>2.5?0.34:0.32));
     metal=mix(metal,paintMetal,vehicleCoat);
     float mappedRoughness=0.5;
-    if(vehicleCoat>0.015||heroSurface>0.015){
+    if(vehicleCoat>0.015||heroSurface*materialDetail>0.015){
         vec3 dp1=dFdx(worldPos),dp2=dFdy(worldPos);vec2 duv1=dFdx(uv),duv2=dFdy(uv);
         vec3 tangent=normalize(dp1*duv2.y-dp2*duv1.y);tangent=normalize(tangent-n*dot(tangent,n));
         vec3 bitangent=normalize(cross(n,tangent));
@@ -812,13 +813,13 @@ void main(){
         // Smooth automotive clear coat needs much lower normal-map amplitude than
         // the rough rescue-airframe panels; otherwise fine albedo grain reads as orange peel.
         float normalStrength=vehicleSurfaceKind>2.5?0.16:(vehicleSurfaceKind>0.5&&vehicleSurfaceKind<1.5?0.26:0.54);
-        n=normalize(mix(n,mapped,clamp(vehicleCoat*0.70+heroSurface*normalStrength,0.0,0.82)));
+        n=normalize(mix(n,mapped,clamp(vehicleCoat*0.70+heroSurface*materialDetail*normalStrength,0.0,0.82)));
         mappedRoughness=texture(vehicleRoughnessMap,detailUv).r;
     }
     float nl=max(dot(n,l),0.0),nv=max(dot(n,v),0.025),nh=max(dot(n,h),0.0),vh=max(dot(v,h),0.0);
     metal=mix(metal,clamp(heroMaterialMetalness,0.0,1.0),heroSurface);
     float roughBase=mix(mix(0.74,0.29,metal),mix(paintRoughness,mappedRoughness,0.68),vehicleCoat);
-    float heroRough=mix(clamp(heroMaterialRoughness,0.04,1.0),mappedRoughness,0.38);
+    float heroRough=mix(clamp(heroMaterialRoughness,0.04,1.0),mappedRoughness,0.38*materialDetail);
     heroRough=mix(heroRough,min(1.0,heroRough+0.18),lowerGrime*0.52);
     float rough=mix(roughBase,heroRough,heroSurface);rough=mix(rough,.23,terrainWetness*.68);
     float alpha=rough*rough,a2=alpha*alpha;
@@ -997,6 +998,13 @@ void DrawHeroMesh(Model &model,int index){
         g.activeHeroUvScale=uvScale;g.activeHeroUvOffsetX=0.0f;g.activeHeroUvOffsetY=uvOffsetY;
     }
     Material surface=model.materials[material];
+    float microdetailWeight=1.0f;
+    if(&model==&g.planeHero&&model.meshCount==F16NetzMesh::MeshCount){
+        microdetailWeight=(material>=0&&material<F16NetzMesh::MaterialCount)?F16NetzMesh::MaterialMicrodetailWeights[material]:0.0f;
+    }
+    if(g.locHeroMicrodetail>=0&&g.activeHeroMicrodetail!=microdetailWeight){
+        rlDrawRenderBatchActive();SetShaderValue(g.worldShader,g.locHeroMicrodetail,&microdetailWeight,SHADER_UNIFORM_FLOAT);g.activeHeroMicrodetail=microdetailWeight;
+    }
     // Only painted exterior shells receive the dielectric enamel layer. Glass,
     // tyre rubber, seats, instruments and bare hardware keep their authored response.
     const bool suvPaintShell=&model==&g.carHero&&index==313;
@@ -3994,7 +4002,7 @@ void InitWorld(){
     SetTextureFilter(g.barkTex,TEXTURE_FILTER_ANISOTROPIC_4X);SetTextureFilter(g.pineNeedlesTex,TEXTURE_FILTER_ANISOTROPIC_4X);SetTextureFilter(g.broadleafTex,TEXTURE_FILTER_ANISOTROPIC_4X);SetTextureFilter(g.forestGroundTex,TEXTURE_FILTER_ANISOTROPIC_8X);
     SetTextureFilter(g.pineBillboardTex,TEXTURE_FILTER_TRILINEAR);SetTextureFilter(g.broadleafBillboardTex,TEXTURE_FILTER_TRILINEAR);
     g.worldShader=MakeShader();g.locLight=GetShaderLocation(g.worldShader,"lightDir");g.locEye=GetShaderLocation(g.worldShader,"viewPos");
-    g.locFog=GetShaderLocation(g.worldShader,"fogColor");g.locFogRange=GetShaderLocation(g.worldShader,"fogRange");g.locEnvironment=GetShaderLocation(g.worldShader,"environmentMap");g.locPaintBlend=GetShaderLocation(g.worldShader,"paintTextureBlend");g.locVehicleNormal=GetShaderLocation(g.worldShader,"vehicleNormalMap");g.locVehicleRoughness=GetShaderLocation(g.worldShader,"vehicleRoughnessMap");g.locVehiclePaintDetail=GetShaderLocation(g.worldShader,"vehiclePaintDetailMap");g.locVehicleSurface=GetShaderLocation(g.worldShader,"vehicleSurfaceKind");g.locDiffuse=GetShaderLocation(g.worldShader,"colDiffuse");g.locHeroPbr=GetShaderLocation(g.worldShader,"heroMaterialPbr");g.locHeroPaintCoat=GetShaderLocation(g.worldShader,"heroPaintCoat");g.locHeroMetal=GetShaderLocation(g.worldShader,"heroMaterialMetalness");g.locHeroRoughness=GetShaderLocation(g.worldShader,"heroMaterialRoughness");g.locHeroGlassAlpha=GetShaderLocation(g.worldShader,"heroGlassAlpha");g.locHeroGlassOpacity=GetShaderLocation(g.worldShader,"heroGlassOpacity");g.locHeroGlassTint=GetShaderLocation(g.worldShader,"heroGlassTint");g.locHeroUvScale=GetShaderLocation(g.worldShader,"heroUvScale");g.locHeroUvOffset=GetShaderLocation(g.worldShader,"heroUvOffset");g.locCustomTextureScale=GetShaderLocation(g.worldShader,"customTextureScale");g.locWaterSurface=GetShaderLocation(g.worldShader,"waterSurface");g.locWaterTime=GetShaderLocation(g.worldShader,"waterTime");g.locWaterWakeCenter=GetShaderLocation(g.worldShader,"waterWakeCenter");g.locWaterWakeIntensity=GetShaderLocation(g.worldShader,"waterWakeIntensity");g.locWaterLevel=GetShaderLocation(g.worldShader,"waterLevel");g.locFoliageSurface=GetShaderLocation(g.worldShader,"foliageSurface");g.locTerrainSurface=GetShaderLocation(g.worldShader,"terrainSurface");g.locVegetationBend=GetShaderLocation(g.worldShader,"vegetationBend");g.locCockpitFill=GetShaderLocation(g.worldShader,"cockpitFill");g.locSafehouseLight0=GetShaderLocation(g.worldShader,"safehouseLightPosition0");g.locSafehouseLight1=GetShaderLocation(g.worldShader,"safehouseLightPosition1");g.locSafehouseLighting=GetShaderLocation(g.worldShader,"safehouseLightingEnabled");
+    g.locFog=GetShaderLocation(g.worldShader,"fogColor");g.locFogRange=GetShaderLocation(g.worldShader,"fogRange");g.locEnvironment=GetShaderLocation(g.worldShader,"environmentMap");g.locPaintBlend=GetShaderLocation(g.worldShader,"paintTextureBlend");g.locVehicleNormal=GetShaderLocation(g.worldShader,"vehicleNormalMap");g.locVehicleRoughness=GetShaderLocation(g.worldShader,"vehicleRoughnessMap");g.locVehiclePaintDetail=GetShaderLocation(g.worldShader,"vehiclePaintDetailMap");g.locVehicleSurface=GetShaderLocation(g.worldShader,"vehicleSurfaceKind");g.locDiffuse=GetShaderLocation(g.worldShader,"colDiffuse");g.locHeroPbr=GetShaderLocation(g.worldShader,"heroMaterialPbr");g.locHeroPaintCoat=GetShaderLocation(g.worldShader,"heroPaintCoat");g.locHeroMetal=GetShaderLocation(g.worldShader,"heroMaterialMetalness");g.locHeroRoughness=GetShaderLocation(g.worldShader,"heroMaterialRoughness");g.locHeroMicrodetail=GetShaderLocation(g.worldShader,"heroMicrodetailWeight");g.locHeroGlassAlpha=GetShaderLocation(g.worldShader,"heroGlassAlpha");g.locHeroGlassOpacity=GetShaderLocation(g.worldShader,"heroGlassOpacity");g.locHeroGlassTint=GetShaderLocation(g.worldShader,"heroGlassTint");g.locHeroUvScale=GetShaderLocation(g.worldShader,"heroUvScale");g.locHeroUvOffset=GetShaderLocation(g.worldShader,"heroUvOffset");g.locCustomTextureScale=GetShaderLocation(g.worldShader,"customTextureScale");g.locWaterSurface=GetShaderLocation(g.worldShader,"waterSurface");g.locWaterTime=GetShaderLocation(g.worldShader,"waterTime");g.locWaterWakeCenter=GetShaderLocation(g.worldShader,"waterWakeCenter");g.locWaterWakeIntensity=GetShaderLocation(g.worldShader,"waterWakeIntensity");g.locWaterLevel=GetShaderLocation(g.worldShader,"waterLevel");g.locFoliageSurface=GetShaderLocation(g.worldShader,"foliageSurface");g.locTerrainSurface=GetShaderLocation(g.worldShader,"terrainSurface");g.locVegetationBend=GetShaderLocation(g.worldShader,"vegetationBend");g.locCockpitFill=GetShaderLocation(g.worldShader,"cockpitFill");g.locSafehouseLight0=GetShaderLocation(g.worldShader,"safehouseLightPosition0");g.locSafehouseLight1=GetShaderLocation(g.worldShader,"safehouseLightPosition1");g.locSafehouseLighting=GetShaderLocation(g.worldShader,"safehouseLightingEnabled");
     if(IsShaderValid(g.worldShader)&&g.locCustomTextureScale>=0){const float unitScale=1.0f;SetShaderValue(g.worldShader,g.locCustomTextureScale,&unitScale,SHADER_UNIFORM_FLOAT);}
     if(IsShaderValid(g.worldShader)&&g.locPaintBlend>=0){const float fullTexture=1.0f;SetShaderValue(g.worldShader,g.locPaintBlend,&fullTexture,SHADER_UNIFORM_FLOAT);}
     if(IsShaderValid(g.worldShader)&&g.locWaterSurface>=0){const float disabled=0.0f;SetShaderValue(g.worldShader,g.locWaterSurface,&disabled,SHADER_UNIFORM_FLOAT);}
