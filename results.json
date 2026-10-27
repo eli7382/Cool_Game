@@ -437,7 +437,10 @@
     "screenshots/Breakwater_1793122946651_1.png",
     "screenshots/Breakwater_1793122959459_1.png",
     "screenshots/Breakwater_AircraftApproachFailure_20261027_193336.png",
-    "screenshots/Breakwater_AircraftApproachFailure_20261027_193535.png"
+    "screenshots/Breakwater_AircraftApproachFailure_20261027_193535.png",
+    "screenshots/Breakwater_LiveQA_plane_1793125089134_1.png",
+    "screenshots/Breakwater_LiveQA_plane-cockpit_1793125846580_1.png",
+    "screenshots/Breakwater_LiveQA_plane-cockpit_1793125108530_1.png"
   ],
   "qa": {
     "final_binary_launch_and_menu_smoke": true,
@@ -1102,7 +1105,10 @@
         "three lower-surface access covers per side",
         "flush fastener rows on both wing skins",
         "preserved text mesh names for generated runtime ranges",
-        "full-length 2.83 m in-flight AIM-9 body, seeker, bands, swept canards and cruciform aft fins"
+        "full-length 2.83 m in-flight AIM-9 body, seeker, bands, swept canards and cruciform aft fins",
+        "charcoal MFD bezels and recessed dark display faces",
+        "restrained phosphor raster plus F-16 display-material shader emission",
+        "cylindrical UV mapping for dorsal speedbrake lobes"
       ],
       "blender_render_exit_code": 0,
       "blender_captures": [
@@ -1120,19 +1126,20 @@
         "Static image review does not validate normal flight or aircraft handling.",
         "No human-controlled test, frame-time/GPU measurement, or structural aircraft accuracy study was performed in this pass."
       ],
-      "glb_size_bytes": 14904856,
-      "source_blend_size_bytes": 17048535,
+      "glb_size_bytes": 14911540,
+      "source_blend_size_bytes": 17050780,
       "generated_mesh_count": 111,
       "raylib_primitive_count": 161,
       "blender_process_exit_code": 0,
       "latest_blender_process_exit_code": 0,
-      "visual_assessment": "Added closed swept missile fins and seeker/nozzle detail alongside the rounded tire profile. Updated Blender and actual game renders reviewed; cockpit/lighting remain stylized below target.",
+      "visual_assessment": "Latest GLB has corrected recessed-display materials, an F-16-only phosphor emission path, and UVs on closed dorsal speedbrake lobes. Reviewed game captures still show a stylized airframe, sparse cockpit and stylized world, below the approved mockup/War Thunder fidelity target.",
       "game_gear_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-gear_1793055211080.png",
       "game_close_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-close_1793055238547.png",
       "game_top_capture": "screenshots/Breakwater_LiveQA_hostile-fixed-wing-top_1793055225197.png",
       "in_flight_capture": "screenshots/Breakwater_1793111577748_1.png",
       "in_flight_capture_inspected": true,
-      "in_flight_visual_assessment": "Fresh packaged-build capture reviewed: the F-16 carries the revised AIM-9 and the launched store is visibly offset from the port wingtip rail; overall art remains stylized."
+      "in_flight_visual_assessment": "Fresh packaged-build capture reviewed: the F-16 carries the revised AIM-9 and the launched store is visibly offset from the port wingtip rail; overall art remains stylized.",
+      "fidelity_gate": "not_met"
     },
     "current_ballistic_impact_qa": {
       "command": "build/bin/Release/game.exe --qa-ballistics",
@@ -1519,7 +1526,60 @@
         "view": "F-16 exterior chase",
         "screenshot": "screenshots/Breakwater_LiveQA_plane_1793122299957_1.png",
         "assessment": "Actual renderer capture was reviewed. The aircraft and world remain stylized and visibly below the requested War Thunder/AAA reference fidelity."
+      },
+      "f16_presentation_refinement": {
+        "result": "pass",
+        "executable": "build/bin/Release/game.exe",
+        "capture_process_exit_code": 0,
+        "audio_muted": true,
+        "logged_events": [
+          "qa-audio-output-muted",
+          "qa-capture-plane-cockpit",
+          "f16-display-emission-active"
+        ],
+        "screenshot": "screenshots/Breakwater_LiveQA_plane-cockpit_1793125846580_1.png",
+        "screenshot_reviewed": true,
+        "notes": "A single earlier capture returned 0xC0000008 after creating its screenshot; an immediate repeated capture exited 0. A separate MFD reposition experiment was rejected and reverted."
       }
+    },
+    "f16_cockpit_display_refinement": {
+      "date": "2026-10-27",
+      "blender_version": "5.2.3",
+      "blender_export_exit_code": 0,
+      "glb": "assets/f16_netz.glb",
+      "glb_bytes": 14911540,
+      "source_blend": "assets/f16_netz_source.blend",
+      "source_blend_bytes": 17050780,
+      "mesh_count": 111,
+      "raylib_mesh_count": 161,
+      "material_count": 30,
+      "shader_material_route_logged": true,
+      "shader_log": "f16-display-emission-active,material=14,expected=14,uniform=28,value=1.15",
+      "final_high_cockpit_process_exit_code": 0,
+      "final_high_cockpit_audio_muted": true,
+      "final_high_cockpit_screenshot": "screenshots/Breakwater_LiveQA_plane-cockpit_1793125846580_1.png",
+      "final_high_cockpit_screenshot_reviewed": true,
+      "exterior_screenshot": "screenshots/Breakwater_LiveQA_plane_1793125089134_1.png",
+      "low_cockpit_screenshot": "screenshots/Breakwater_LiveQA_plane-cockpit_1793125108530_1.png",
+      "failed_overlay_experiment": {
+        "screenshots": [
+          "screenshots/Breakwater_LiveQA_plane-cockpit_1793125574405_1.png",
+          "screenshots/Breakwater_LiveQA_plane-cockpit_1793125730614_1.png"
+        ],
+        "result": "reverted after visual review",
+        "reason": "MFDs became blank"
+      },
+      "transient_capture_exit": {
+        "hex": "0xC0000008",
+        "screenshot": "screenshots/Breakwater_LiveQA_plane-cockpit_1793125809913_1.png",
+        "windows_exit_code": -1073741816,
+        "repeat_exit_code": 0
+      },
+      "fidelity_gate": "not_met",
+      "assessment": "Materials and exported UV routing improved, but the aircraft remains visibly stylized with sparse cockpit detail and does not meet the approved mockup/War Thunder target.",
+      "operation_or_performance_validation": "not performed",
+      "image_generation_calls_this_pass": 0,
+      "cumulative_image_generation_calls": 64
     }
   },
   "quality_gates": {
@@ -1664,16 +1724,16 @@
     "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\build.ps1",
     "configuration": "Windows x64 Release; pinned MSVC 19.44.35229; C++20; raylib 5.5",
     "executable": "build/bin/Release/game.exe",
-    "executable_bytes": 1973760,
+    "executable_bytes": 1974784,
     "warnings_observed": 0,
-    "note": "Pinned Windows x64 Release build succeeded after the known SDK registry sandbox retry; no compiler warning lines appeared. The packaged executable matches build/bin/Release/game.exe byte-for-byte.",
+    "note": "Pinned Windows x64 Release wrapper succeeded after the known SDK registry sandbox restriction. No compiler warning lines appeared. The refreshed dist executable matches build/bin/Release/game.exe byte-for-byte.",
     "packaged_executable": "dist/Breakwater_Windows_x64.exe",
-    "packaged_executable_bytes": 1973760,
-    "executable_sha256": "EB343A9461933CDE281A9F86B50A50D3E09C75279025BDBC4A53A32AEF9AD9BB",
-    "built_at": "2026-10-27T17:42:03Z",
-    "packaged_executable_sha256": "EB343A9461933CDE281A9F86B50A50D3E09C75279025BDBC4A53A32AEF9AD9BB"
+    "packaged_executable_bytes": 1974784,
+    "executable_sha256": "240FA793F6241055AB8C25FE8712517B649B1704C29BEEE5DEFC5759AC62AEB1",
+    "built_at": "2026-10-27T18:32:22Z",
+    "packaged_executable_sha256": "240FA793F6241055AB8C25FE8712517B649B1704C29BEEE5DEFC5759AC62AEB1"
   },
-  "last_updated_at_iso8601": "2026-10-27T19:44:19+02:00",
-  "package_size_bytes": 1973760,
-  "package_sha256": "EB343A9461933CDE281A9F86B50A50D3E09C75279025BDBC4A53A32AEF9AD9BB"
+  "last_updated_at_iso8601": "2026-10-27T20:32:22+02:00",
+  "package_size_bytes": 1974784,
+  "package_sha256": "240FA793F6241055AB8C25FE8712517B649B1704C29BEEE5DEFC5759AC62AEB1"
 }

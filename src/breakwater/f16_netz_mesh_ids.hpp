@@ -23,6 +23,7 @@ inline constexpr int StarboardWheelHub = 134;
 inline constexpr int CanopyMaterial = 9;
 inline constexpr int GlassMaterial = 9;
 inline constexpr int IntakeMaterial = 24;
+inline constexpr int DisplayMaterial = 14;
 inline constexpr int PortSpeedbrake = 117;
 inline constexpr int StarboardSpeedbrake = 119;
 inline constexpr int PortMissile = 5;

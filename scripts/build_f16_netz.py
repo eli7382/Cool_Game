@@ -469,7 +469,9 @@ for side,label in ((1,"Port"),(-1,"Starboard")):
     for p in list(v):v.append((p[0],p[1],p[2]-.017))
     f.extend([(0,1,3,2),(4,6,7,5),(0,2,6,4),(1,5,7,3),(0,4,5,1),(2,3,7,6)])
     mids.extend([0,1,0,0,0,0])
-    keep(obj_from_mesh("Speedbrake | "+label+" dorsal petal",v,f,mids,[CAMO_MAT,MAT[3]]))
+    # Continue the fuselage's cylindrical paint projection across the closed
+    # dorsal petals; an un-UV'd texture sampled at (0,0) showed as a black slab.
+    keep(obj_from_mesh("Speedbrake | "+label+" dorsal petal",v,f,mids,[CAMO_MAT,MAT[3]],uv_mode="cylinder"))
 
 # Paired hydraulic jacks and hinge knuckles make the twin brake leaves read as
 # working aircraft hardware instead of thin painted rectangles.
@@ -603,8 +605,24 @@ for side in (-1,1):
 # A real-looking layered glareshield, MFD bezels, standby dials, stick and throttle.
 add_ellipsoid(b,(2.93,0,1.77),(.24,.39,.13),9,14,24)
 for side in (-1,0,1):
-    add_box(b,(2.98,side*.25,1.88),(.018,.18,.085),11,-.05)
-    add_box(b,(2.994,side*.25,1.88),(.009,.145,.061),17,-.05)
+    screen_y=side*.25
+    # The bezel is charcoal and sits behind a recessed, nearly-black display.
+    # The old material order put phosphor green on the bezel, producing three
+    # oversized neon-green blocks in the in-game cockpit view.
+    add_box(b,(2.98,screen_y,1.88),(.018,.18,.085),9,-.05)
+    add_box(b,(2.994,screen_y,1.88),(.009,.145,.061),17,-.05)
+    # Fine green raster traces give the glass readable instrument content while
+    # leaving most of the screen dark, as a dim aircraft multifunction display.
+    for row,(z,width,offset) in enumerate(((1.899,.104,-.004),(1.887,.078,.012),
+                                           (1.875,.112,-.008),(1.863,.065,.016),
+                                           (1.851,.096,-.012))):
+        add_box(b,(3.001,screen_y+offset,z),(.0025,width,.0028),11)
+    # A restrained centerline and tick marks make the middle display read as a
+    # live flight page instead of another row of identical horizontal bars.
+    if side==0:
+        add_box(b,(3.002,screen_y,1.875),(.0025,.0025,.040),11)
+        for tick in range(5):
+            add_box(b,(3.003,screen_y-.030+tick*.015,1.875),(.0025,.007,.0012),11)
 for side in (-1,1):
     add_cylinder(b,(3.12,side*.40,1.78),(3.14,side*.40,1.88),.040,8,20)
     add_cylinder(b,(3.145,side*.40,1.83),(3.155,side*.40,1.83),.031,9,20)
@@ -1188,6 +1206,7 @@ ids={"Canopy":find_mesh("Canopy | one-piece"),"NoseWheel":find_mesh("Wheel | Nos
      "NoseWheelHub":find_mesh("Wheel hub | Nose"),"PortWheelHub":find_mesh("Wheel hub | Port"),
      "StarboardWheelHub":find_mesh("Wheel hub | Starboard"),"CanopyMaterial":find_mat("Canopy | warm olive bronze")+1,
      "GlassMaterial":find_mat("Canopy | warm olive bronze")+1,"IntakeMaterial":find_mat("Intake | deep carbon")+1,
+     "DisplayMaterial":find_mat("Display | phosphor green")+1,
      "PortSpeedbrake":find_mesh("Speedbrake | Port"),"StarboardSpeedbrake":find_mesh("Speedbrake | Starboard"),
      "PortMissile":find_mesh("AIM-9 | Port"),"StarboardMissile":find_mesh("AIM-9 | Starboard")}
 dynamic_ranges={

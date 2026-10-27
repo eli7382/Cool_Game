@@ -644,3 +644,19 @@ This entry supersedes the earlier “latest refinement” measurements above. Al
 - [ ] Replace hand-shaped coefficients with measured, stores-specific Netz aerodynamic and structural data.
 - [ ] Validate a normal player-controlled takeoff, flight circuit and runway landing.
 - [ ] Reach the requested photoreal F-16 and world quality; the reviewed captures remain stylized.
+
+## F-16 cockpit material and speedbrake UV refinement - 2026-10-27
+
+- Corrected the authored MFD bezel/display material assignment so the three bezels render charcoal and the recessed faces stay dark instead of becoming oversized phosphor-green blocks. Added a restrained phosphor raster and an F-16-only shader emission contribution. The HUD/MFD cues still use sparse line graphics; the in-game cockpit is not a detailed, legible avionics simulation.
+- Rebuilt the dorsal speedbrake lobes with cylindrical UV mapping so they have usable coordinates for the fuselage camouflage rather than sampling a single texture corner. The mesh contains UVs, but the wide in-game shot does not establish that every dark dorsal patch artifact is resolved.
+- Blender 5.2.3 exported `assets/f16_netz.glb` (14,911,540 bytes; 111 source meshes, 161 raylib meshes, 30 materials) and saved `assets/f16_netz_source.blend` (17,050,780 bytes). The pinned Windows x64 wrapper succeeded after the sandbox's existing Windows SDK registry restriction; no compiler warning lines appeared. Build and distribution executable match at 1,974,784 bytes, SHA-256 `240FA793F6241055AB8C25FE8712517B649B1704C29BEEE5DEFC5759AC62AEB1`.
+- Reviewed fresh muted in-game renders: exterior `screenshots/Breakwater_LiveQA_plane_1793125089134_1.png`, High cockpit `screenshots/Breakwater_LiveQA_plane-cockpit_1793125846580_1.png`, and Low cockpit `screenshots/Breakwater_LiveQA_plane-cockpit_1793125108530_1.png`. The final High capture repeated successfully with exit 0 and logged `qa-audio-output-muted`; an earlier capture did create its image but exited with Windows code `0xC0000008`, and the successful repeat is the recorded result.
+- A cockpit overlay depth/position experiment made the MFDs blank; it was visually reviewed and reverted. This is logged as an unsuccessful refinement, not counted as a pass. The final reviewed cockpit returns to the prior sparse MFD presentation.
+- The F-16 still looks stylized and does not reach the approved orthographic mockup or War Thunder fidelity target. This pass validates Blender export, shader material routing, executable build/package parity, and muted renderer captures only; it does not validate flight operation, detailed avionics, or performance.
+- No ImageGen calls this pass; cumulative calls remain 64. FPS/GPU and model/runtime usage measurements remain unavailable.
+
+- [x] Rebuild the GLB with speedbrake UVs and correct MFD materials.
+- [x] Verify the F-16 display-emission material is routed in the game renderer.
+- [x] Rebuild and refresh the matching Windows x64 distribution executable.
+- [ ] Reach the approved mockup/War Thunder exterior and cockpit fidelity; current renders remain stylized.
+- [ ] Validate normal player-controlled F-16 takeoff, circuit, and landing.

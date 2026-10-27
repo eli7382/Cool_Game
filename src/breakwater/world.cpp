@@ -747,7 +747,7 @@ void main(){
 )";
     const char *fs=R"(#version 330
 in vec2 uv;in vec3 worldPos;in vec3 worldNormal;in vec4 tint;in float modelHeight;
-uniform sampler2D texture0;uniform sampler2D environmentMap;uniform sampler2D vehicleNormalMap;uniform sampler2D vehicleRoughnessMap;uniform sampler2D vehiclePaintDetailMap;uniform vec4 colDiffuse;uniform vec3 viewPos;uniform vec3 lightDir;uniform vec4 fogColor;uniform vec2 fogRange;uniform float paintTextureBlend;uniform float vehicleSurfaceKind;uniform float heroMaterialPbr;uniform float heroPaintCoat;uniform float heroMaterialMetalness;uniform float heroMaterialRoughness;uniform float heroMicrodetailWeight;uniform float heroGlassAlpha;uniform float heroGlassOpacity;uniform vec3 heroGlassTint;uniform vec2 heroUvScale;uniform vec2 heroUvOffset;uniform float customTextureScale;uniform float waterSurface;uniform float waterTime;uniform float waterLevel;uniform float foliageSurface;uniform float terrainSurface;uniform float cockpitFill;uniform vec3 safehouseLightPosition0;uniform vec3 safehouseLightPosition1;uniform float safehouseLightingEnabled;
+uniform sampler2D texture0;uniform sampler2D environmentMap;uniform sampler2D vehicleNormalMap;uniform sampler2D vehicleRoughnessMap;uniform sampler2D vehiclePaintDetailMap;uniform vec4 colDiffuse;uniform vec3 viewPos;uniform vec3 lightDir;uniform vec4 fogColor;uniform vec2 fogRange;uniform float paintTextureBlend;uniform float vehicleSurfaceKind;uniform float heroMaterialPbr;uniform float heroPaintCoat;uniform float heroMaterialMetalness;uniform float heroMaterialRoughness;uniform float heroMicrodetailWeight;uniform float heroDisplayEmission;uniform float heroGlassAlpha;uniform float heroGlassOpacity;uniform vec3 heroGlassTint;uniform vec2 heroUvScale;uniform vec2 heroUvOffset;uniform float customTextureScale;uniform float waterSurface;uniform float waterTime;uniform float waterLevel;uniform float foliageSurface;uniform float terrainSurface;uniform float cockpitFill;uniform vec3 safehouseLightPosition0;uniform vec3 safehouseLightPosition1;uniform float safehouseLightingEnabled;
 out vec4 finalColor;
 float terrainHeightAt(vec2 p){
     float radius=length(p),edge=7.0-max(0.0,radius-170.0)*.073;
@@ -859,6 +859,9 @@ void main(){
     float paintFresnel=0.04+0.96*pow(1.0-vh,5.0);
     float paintEnvironment=heroPaintFinish*(surfaceKind>2.5?0.22:(surfaceKind>1.5?0.10:0.15));
     vec3 color=base*(diffuseAmbient+0.72*nl+diffuseEnvironment*0.34*heroSurface)+spec*(0.68+0.31*vehicleCoat)+vec3(coatSpec*(clearCoatResponse*vehicleCoat+heroClearCoat+automotiveClearcoat))+env*F*(0.05+0.18*metal+environmentResponse*vehicleCoat+heroEnvironment)+env*paintFresnel*paintEnvironment;
+    // Phosphor is a restrained emissive contribution on the F-16's tiny MFD
+    // traces only; it keeps the displays readable without lighting the bezel.
+    color+=base*clamp(heroDisplayEmission,0.0,1.25);
     if(safehouseLightingEnabled>0.5){
         vec3 delta0=safehouseLightPosition0-worldPos,delta1=safehouseLightPosition1-worldPos;
         float distance0=length(delta0),distance1=length(delta1);
@@ -1004,6 +1007,16 @@ void DrawHeroMesh(Model &model,int index){
     }
     if(g.locHeroMicrodetail>=0&&g.activeHeroMicrodetail!=microdetailWeight){
         rlDrawRenderBatchActive();SetShaderValue(g.worldShader,g.locHeroMicrodetail,&microdetailWeight,SHADER_UNIFORM_FLOAT);g.activeHeroMicrodetail=microdetailWeight;
+    }
+    const float displayEmission=(&model==&g.planeHero&&model.meshCount==F16NetzMesh::MeshCount&&material==F16NetzMesh::DisplayMaterial)?1.15f:0.0f;
+    if(g.locHeroDisplayEmission>=0&&g.activeHeroDisplayEmission!=displayEmission){
+        rlDrawRenderBatchActive();SetShaderValue(g.worldShader,g.locHeroDisplayEmission,&displayEmission,SHADER_UNIFORM_FLOAT);g.activeHeroDisplayEmission=displayEmission;
+    }
+    static bool loggedF16DisplayEmission=false;
+    if(g.qaCaptureActive&&!loggedF16DisplayEmission&&displayEmission>0.0f){
+        LogEvent(TextFormat("f16-display-emission-active,material=%d,expected=%d,uniform=%d,value=%.2f",
+            material,F16NetzMesh::DisplayMaterial,g.locHeroDisplayEmission,displayEmission));
+        loggedF16DisplayEmission=true;
     }
     // Only painted exterior shells receive the dielectric enamel layer. Glass,
     // tyre rubber, seats, instruments and bare hardware keep their authored response.
@@ -4002,7 +4015,7 @@ void InitWorld(){
     SetTextureFilter(g.barkTex,TEXTURE_FILTER_ANISOTROPIC_4X);SetTextureFilter(g.pineNeedlesTex,TEXTURE_FILTER_ANISOTROPIC_4X);SetTextureFilter(g.broadleafTex,TEXTURE_FILTER_ANISOTROPIC_4X);SetTextureFilter(g.forestGroundTex,TEXTURE_FILTER_ANISOTROPIC_8X);
     SetTextureFilter(g.pineBillboardTex,TEXTURE_FILTER_TRILINEAR);SetTextureFilter(g.broadleafBillboardTex,TEXTURE_FILTER_TRILINEAR);
     g.worldShader=MakeShader();g.locLight=GetShaderLocation(g.worldShader,"lightDir");g.locEye=GetShaderLocation(g.worldShader,"viewPos");
-    g.locFog=GetShaderLocation(g.worldShader,"fogColor");g.locFogRange=GetShaderLocation(g.worldShader,"fogRange");g.locEnvironment=GetShaderLocation(g.worldShader,"environmentMap");g.locPaintBlend=GetShaderLocation(g.worldShader,"paintTextureBlend");g.locVehicleNormal=GetShaderLocation(g.worldShader,"vehicleNormalMap");g.locVehicleRoughness=GetShaderLocation(g.worldShader,"vehicleRoughnessMap");g.locVehiclePaintDetail=GetShaderLocation(g.worldShader,"vehiclePaintDetailMap");g.locVehicleSurface=GetShaderLocation(g.worldShader,"vehicleSurfaceKind");g.locDiffuse=GetShaderLocation(g.worldShader,"colDiffuse");g.locHeroPbr=GetShaderLocation(g.worldShader,"heroMaterialPbr");g.locHeroPaintCoat=GetShaderLocation(g.worldShader,"heroPaintCoat");g.locHeroMetal=GetShaderLocation(g.worldShader,"heroMaterialMetalness");g.locHeroRoughness=GetShaderLocation(g.worldShader,"heroMaterialRoughness");g.locHeroMicrodetail=GetShaderLocation(g.worldShader,"heroMicrodetailWeight");g.locHeroGlassAlpha=GetShaderLocation(g.worldShader,"heroGlassAlpha");g.locHeroGlassOpacity=GetShaderLocation(g.worldShader,"heroGlassOpacity");g.locHeroGlassTint=GetShaderLocation(g.worldShader,"heroGlassTint");g.locHeroUvScale=GetShaderLocation(g.worldShader,"heroUvScale");g.locHeroUvOffset=GetShaderLocation(g.worldShader,"heroUvOffset");g.locCustomTextureScale=GetShaderLocation(g.worldShader,"customTextureScale");g.locWaterSurface=GetShaderLocation(g.worldShader,"waterSurface");g.locWaterTime=GetShaderLocation(g.worldShader,"waterTime");g.locWaterWakeCenter=GetShaderLocation(g.worldShader,"waterWakeCenter");g.locWaterWakeIntensity=GetShaderLocation(g.worldShader,"waterWakeIntensity");g.locWaterLevel=GetShaderLocation(g.worldShader,"waterLevel");g.locFoliageSurface=GetShaderLocation(g.worldShader,"foliageSurface");g.locTerrainSurface=GetShaderLocation(g.worldShader,"terrainSurface");g.locVegetationBend=GetShaderLocation(g.worldShader,"vegetationBend");g.locCockpitFill=GetShaderLocation(g.worldShader,"cockpitFill");g.locSafehouseLight0=GetShaderLocation(g.worldShader,"safehouseLightPosition0");g.locSafehouseLight1=GetShaderLocation(g.worldShader,"safehouseLightPosition1");g.locSafehouseLighting=GetShaderLocation(g.worldShader,"safehouseLightingEnabled");
+    g.locFog=GetShaderLocation(g.worldShader,"fogColor");g.locFogRange=GetShaderLocation(g.worldShader,"fogRange");g.locEnvironment=GetShaderLocation(g.worldShader,"environmentMap");g.locPaintBlend=GetShaderLocation(g.worldShader,"paintTextureBlend");g.locVehicleNormal=GetShaderLocation(g.worldShader,"vehicleNormalMap");g.locVehicleRoughness=GetShaderLocation(g.worldShader,"vehicleRoughnessMap");g.locVehiclePaintDetail=GetShaderLocation(g.worldShader,"vehiclePaintDetailMap");g.locVehicleSurface=GetShaderLocation(g.worldShader,"vehicleSurfaceKind");g.locDiffuse=GetShaderLocation(g.worldShader,"colDiffuse");g.locHeroPbr=GetShaderLocation(g.worldShader,"heroMaterialPbr");g.locHeroPaintCoat=GetShaderLocation(g.worldShader,"heroPaintCoat");g.locHeroMetal=GetShaderLocation(g.worldShader,"heroMaterialMetalness");g.locHeroRoughness=GetShaderLocation(g.worldShader,"heroMaterialRoughness");g.locHeroMicrodetail=GetShaderLocation(g.worldShader,"heroMicrodetailWeight");g.locHeroDisplayEmission=GetShaderLocation(g.worldShader,"heroDisplayEmission");g.locHeroGlassAlpha=GetShaderLocation(g.worldShader,"heroGlassAlpha");g.locHeroGlassOpacity=GetShaderLocation(g.worldShader,"heroGlassOpacity");g.locHeroGlassTint=GetShaderLocation(g.worldShader,"heroGlassTint");g.locHeroUvScale=GetShaderLocation(g.worldShader,"heroUvScale");g.locHeroUvOffset=GetShaderLocation(g.worldShader,"heroUvOffset");g.locCustomTextureScale=GetShaderLocation(g.worldShader,"customTextureScale");g.locWaterSurface=GetShaderLocation(g.worldShader,"waterSurface");g.locWaterTime=GetShaderLocation(g.worldShader,"waterTime");g.locWaterWakeCenter=GetShaderLocation(g.worldShader,"waterWakeCenter");g.locWaterWakeIntensity=GetShaderLocation(g.worldShader,"waterWakeIntensity");g.locWaterLevel=GetShaderLocation(g.worldShader,"waterLevel");g.locFoliageSurface=GetShaderLocation(g.worldShader,"foliageSurface");g.locTerrainSurface=GetShaderLocation(g.worldShader,"terrainSurface");g.locVegetationBend=GetShaderLocation(g.worldShader,"vegetationBend");g.locCockpitFill=GetShaderLocation(g.worldShader,"cockpitFill");g.locSafehouseLight0=GetShaderLocation(g.worldShader,"safehouseLightPosition0");g.locSafehouseLight1=GetShaderLocation(g.worldShader,"safehouseLightPosition1");g.locSafehouseLighting=GetShaderLocation(g.worldShader,"safehouseLightingEnabled");
     if(IsShaderValid(g.worldShader)&&g.locCustomTextureScale>=0){const float unitScale=1.0f;SetShaderValue(g.worldShader,g.locCustomTextureScale,&unitScale,SHADER_UNIFORM_FLOAT);}
     if(IsShaderValid(g.worldShader)&&g.locPaintBlend>=0){const float fullTexture=1.0f;SetShaderValue(g.worldShader,g.locPaintBlend,&fullTexture,SHADER_UNIFORM_FLOAT);}
     if(IsShaderValid(g.worldShader)&&g.locWaterSurface>=0){const float disabled=0.0f;SetShaderValue(g.worldShader,g.locWaterSurface,&disabled,SHADER_UNIFORM_FLOAT);}
@@ -4027,9 +4040,15 @@ void InitWorld(){
     LogEvent(IsModelValid(g.carHero)&&IsModelValid(g.planeHero)&&IsModelValid(g.heliHero)?"cc0-vehicle-models-ready":"cc0-vehicle-model-load-failed");
     LogEvent(TextFormat("f16-netz-glb-meshes=%d,materials=%d,expected-primitives=%d",g.planeHero.meshCount,g.planeHero.materialCount,F16NetzMesh::MeshCount));
     if(g.planeHero.meshMaterial&&g.planeHero.meshCount>F16NetzMesh::CockpitInteriorStart+F16NetzMesh::CockpitInteriorCount){
-        LogEvent(TextFormat("f16-authored-material-map,canopy=%d,HUD=%d,cockpit=%d,expected-glass=%d",
+        LogEvent(TextFormat("f16-authored-material-map,canopy=%d,HUD=%d,cockpit=%d,mfd=%d:%d:%d:%d:%d:%d:%d:%d:%d:%d,display=%d,emission-uniform=%d,expected-glass=%d",
             g.planeHero.meshMaterial[F16NetzMesh::Canopy],g.planeHero.meshMaterial[F16NetzMesh::CockpitHudStart],
-            g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart],F16NetzMesh::GlassMaterial));
+            g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart],
+            g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart],g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart+1],
+            g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart+2],g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart+3],
+            g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart+4],g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart+5],
+            g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart+6],g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart+7],
+            g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart+8],g.planeHero.meshMaterial[F16NetzMesh::CockpitInteriorStart+9],
+            F16NetzMesh::DisplayMaterial,g.locHeroDisplayEmission,F16NetzMesh::GlassMaterial));
     }
     g.safehouse.p=V(56,TerrainHeight(56,146),146);g.safehouse.yaw=0;g.safehouse.doorAngle=0;g.safehouse.doorOpen=false;
     g.safehouseHero=LoadModel("assets/detached-two-storey-house_cc0.glb");
