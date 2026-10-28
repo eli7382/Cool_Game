@@ -1,0 +1,15 @@
+{
+  "passed":true,
+  "analytic_ray_box_probes":48,
+  "body_transforms":3,
+  "lit_probes":36,
+  "occluded_probes":12,
+  "maximum_visibility_error":0,
+  "finite_r32f_depth":true,
+  "occupied_depth_pixels":22812,
+  "alpha_discard_and_opaque_cast_passed":true,
+  "self_shadow_plane_pixels":320,
+  "minimum_unoccluded_plane_visibility":1,
+  "scope":"Actual production depth writer and PBR shadow lookup read back from GPU; independent ray/AABB expectations, 3 body transforms, alpha-mask fixture, and 5 sloped unoccluded receiver/caster planes",
+  "limits":["Finite probes away from PCF boundaries; car coverage, cache, appearance and performance are separate checks"]
+}

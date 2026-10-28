@@ -1,24 +1,24 @@
 {
-  "reviewed_at": "2026-10-28T21:56:44.705525+00:00",
+  "reviewed_at": "2026-10-28T22:17:50.613305+00:00",
   "baseline_commit": "608b77b6cd8b15ede475c59eef7619e0d7c35df7",
   "baseline_source": "Matching native captures from that commit, locally retained under ignored .tools/lighting-baseline",
-  "current_executable_sha256": "8674526c79cd457ac72e5804c644655d7e67bec76d149813e7075b2b5475d83d",
+  "current_executable_sha256": "35629712e68701fc89b00217e53318df306b0c42846ceadbb265418f97c4e601",
   "numeric_bake_validation": "docs/porsche-ibl-validation.json",
   "native_gpu_validation": "docs/porsche-native-lighting-qa.json",
   "matched_views": [
     {
       "path": "screenshots/porsche-native-front.png",
-      "sha256": "36f7d90a8828eabc85efb6624a42129da3783787b584b6e4b30fd67860a54ad4",
+      "sha256": "23cb5508cffc8e6ceda6b5456a91fcd4933f651f03c0380e273be994406c8efc",
       "baseline_sha256": "42dfbed2aab9f9ad161d4ef0219444763b78400fa81c0383bdf6e5980726dcb7"
     },
     {
       "path": "screenshots/porsche-native-grille-close.png",
-      "sha256": "32b988dec0c9d23f82f87457fb82718be333817d1b59edb41347b27afd7bd4b3",
+      "sha256": "39729531531bdcdf7a24c07f8b7e5bdffe1a8564e60d140b2a9c997514466a13",
       "baseline_sha256": "1a4f65945ce0aff3275e17636c1d8e64fa49a7e8a09555ed31ea54e3a15b7729"
     },
     {
       "path": "screenshots/porsche-native-live-cockpit.png",
-      "sha256": "49ac891243bdec81c89e2f8b30d15978870d07b067d30cb819ec879660a41e81",
+      "sha256": "ad48d40aff3ea145f1d2459d5601fae2adbaba9c2a786b459c414d1f3792301e",
       "baseline_sha256": "28f402653554749a43b2535ffa73f19676ca2dca292243f9b0a653542ab9ca1f"
     }
   ],
@@ -28,7 +28,7 @@
     "Close grille wires remain prone to subpixel aliasing; filtering and render resolution need further review"
   ],
   "remaining": [
-    "Vehicle self-shadowing and local ambient occlusion",
+    "Ground/world cast shadows and local ambient occlusion",
     "Glass refraction, full material-extension interpretation and remaining surface detailing",
     "Full-game performance, load policy, swept clearance and requested final fidelity",
     "Final planar mirror optics and full-game rendering cost"

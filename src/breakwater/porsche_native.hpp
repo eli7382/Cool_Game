@@ -65,4 +65,5 @@ bool PorscheMirrorPass();
 bool PorscheMirrorInView(Vector3 point,float radius);
 PorscheMirrorStats GetPorscheMirrorStats();
 void DrawPorscheMirrorTestMarkers();
+void PreparePorscheShadows(bool force=false);
 }

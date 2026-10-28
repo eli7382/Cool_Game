@@ -1,0 +1,246 @@
+{
+  "reviewed_at": "2026-10-28T22:17:50.613305+00:00",
+  "stage": "Native directional sun self-shadowing with receiver-plane filtered comparisons",
+  "baseline_commit": "dcebb8c80d1aa33feaaef635300cef376036601d",
+  "executable_sha256": "35629712e68701fc89b00217e53318df306b0c42846ceadbb265418f97c4e601",
+  "reviewer_sha256": "682dfec068593a42dde83abf1b85b8c806a55c4298852b7e6041813f70d6ee56",
+  "source_hashes": {
+    "src/breakwater/porsche_native.cpp": "52d3e7d640518f558c9579cbd43335f636c0b41519079d9ee00c00d95e0a1a53",
+    "src/breakwater/porsche_native.hpp": "0bccc8219cf10bd07dc1cf237b03caa3d5eec46d35b47044b1f82f2be8890dec",
+    "src/breakwater/porsche_shadow.cpp": "f9e5d461a92b5cd7bb790be1945d4e49ee10f565487c04f7e2ac37f1dea5a8c4",
+    "src/breakwater/porsche_shadow.hpp": "90571e07773674abb9c0556a4d80e337d0f1f129e561a3ed8ce2aa233b59bf77",
+    "src/breakwater/world.cpp": "e98afc591f40faf1456ebd6782b5ee31f22269e51f5b4a4e69bbbb0e2aec5a4b",
+    "assets/porsche/shaders/porsche.fs": "664bfe0014b15c9388188ab5141ddad474c564d287733f4a1de74ea1ea2379de",
+    "assets/porsche/shaders/porsche_depth.vs": "fb921a34f16aa70eaa4e51758f67be8743bd9c74a71064ef7a538a7092b51a77",
+    "assets/porsche/shaders/porsche_depth.fs": "02f47a773799438c29bfb631a051eb383b299ab83a94d8b3f4d02affbe9cadf7"
+  },
+  "asset_source_hashes": {
+    "hero": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+    "near": "516f02ea0b47bfac113fa29c5327be39cad0110f00663d449901e17449cc712a",
+    "far": "63c51db9d5715b33cf522ec8d2df9b0563b132930f878b246333fdf9a4c64f0d"
+  },
+  "native_qa": {
+    "passed": true,
+    "checks": 103,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "new_checks": [
+    {
+      "name": "native-sun-shadow-depth-and-lookup-match-analytic-occluders",
+      "passed": true
+    },
+    {
+      "name": "native-shadow-high-and-low-targets-ready",
+      "passed": true
+    },
+    {
+      "name": "parked-shadow-cache-reuses-map-under-camera-and-world-translation",
+      "passed": true
+    },
+    {
+      "name": "moving-parts-and-body-orientation-refresh-shadow-depth",
+      "passed": true
+    },
+    {
+      "name": "shadow-targets-follow-independent-vehicle-slots",
+      "passed": true
+    },
+    {
+      "name": "shadow-pass-restores-main-camera-matrices-and-framebuffer",
+      "passed": true
+    },
+    {
+      "name": "all-posed-car-caster-bounds-fit-shadow-map",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    }
+  ],
+  "gpu_probes": {
+    "passed": true,
+    "analytic_ray_box_probes": 48,
+    "body_transforms": 3,
+    "lit_probes": 36,
+    "occluded_probes": 12,
+    "maximum_visibility_error": 0,
+    "finite_r32f_depth": true,
+    "occupied_depth_pixels": 22812,
+    "alpha_discard_and_opaque_cast_passed": true,
+    "self_shadow_plane_pixels": 320,
+    "minimum_unoccluded_plane_visibility": 1,
+    "scope": "Actual production depth writer and PBR shadow lookup read back from GPU; independent ray/AABB expectations, 3 body transforms, alpha-mask fixture, and 5 sloped unoccluded receiver/caster planes",
+    "limits": [
+      "Finite probes away from PCF boundaries; car coverage, cache, appearance and performance are separate checks"
+    ]
+  },
+  "car_state_and_bounds": {
+    "targets_and_presets": true,
+    "camera_orbit_reuses_map": true,
+    "world_translation_reuses_local_map": true,
+    "moving_parts_and_body_rotation_update_depth": true,
+    "vehicle_slot_targets_are_separate": true,
+    "main_matrices_and_framebuffer_restored": true,
+    "posed_caster_bounds_inside_map": true,
+    "coverage_poses": 72,
+    "caster_box_corners_checked": 157440,
+    "maximum_absolute_ndc_extent": 0.695476,
+    "scope": "Actual production car depth targets and cache; 3 detail levels, 6 body orientations, 4 combinations of open doors/aero/steering/suspension, including morphed spring bounds",
+    "limits": [
+      "Conservative transformed mesh boxes for these finite poses; not swept mechanical clearance or frame-rate validation"
+    ]
+  },
+  "images": [
+    {
+      "path": "screenshots/porsche-shadow-exterior-off.png",
+      "sha256": "b369be5a55ef5d47d10cfc65657c57ba2cdd6d8c70794e5f70932bb20cd835be",
+      "view": "exterior",
+      "self_shadows": false
+    },
+    {
+      "path": "screenshots/porsche-shadow-exterior-on.png",
+      "sha256": "91a268c1c64dad5be9a0ebf65e1c8eb4e70b6606af44ceab4fc34fcdde26c3ce",
+      "view": "exterior",
+      "self_shadows": true
+    },
+    {
+      "path": "screenshots/porsche-shadow-rear-off.png",
+      "sha256": "8cda5249efa3c86056da150d429c24758091aa7d16b79022d969ae071ea9e39b",
+      "view": "rear",
+      "self_shadows": false
+    },
+    {
+      "path": "screenshots/porsche-shadow-rear-on.png",
+      "sha256": "a3decb7891a056c7155c7f24ce74d4318eea7196e05241db2695063b4314207b",
+      "view": "rear",
+      "self_shadows": true
+    },
+    {
+      "path": "screenshots/porsche-shadow-cockpit-off.png",
+      "sha256": "bfbc9ef81b1ab65e00c776050efb6fe80cc50c84240e4ddde17818ec376369f1",
+      "view": "cockpit",
+      "self_shadows": false
+    },
+    {
+      "path": "screenshots/porsche-shadow-cockpit-on.png",
+      "sha256": "0da4d95605c593424301e79ff028c8e702352c256b1468a134b481e88cbbb3f7",
+      "view": "cockpit",
+      "self_shadows": true
+    },
+    {
+      "path": "screenshots/porsche-shadow-open-off.png",
+      "sha256": "a143dbd80d530c38173357ba6145ba516418beb4c4308bce8b8163fc73415a32",
+      "view": "open",
+      "self_shadows": false
+    },
+    {
+      "path": "screenshots/porsche-shadow-open-on.png",
+      "sha256": "0f03c9647996673869ca0b2be21a5ddacef14d3fe34eede1336ed4e861f63aee",
+      "view": "open",
+      "self_shadows": true
+    }
+  ],
+  "matched_image_differences": [
+    {
+      "view": "exterior",
+      "changed_pixels_over_2_levels": 20424,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 89,
+      "maximum_brighten": 1
+    },
+    {
+      "view": "rear",
+      "changed_pixels_over_2_levels": 38148,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 59,
+      "maximum_brighten": 1
+    },
+    {
+      "view": "cockpit",
+      "changed_pixels_over_2_levels": 151445,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 64,
+      "maximum_brighten": 1
+    },
+    {
+      "view": "open",
+      "changed_pixels_over_2_levels": 21531,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 89,
+      "maximum_brighten": 1
+    }
+  ],
+  "render_policy": {
+    "high_map": 2048,
+    "low_map": 1024,
+    "format": "R32F color depth plus depth renderbuffer",
+    "car_relative_span_m": 7.2,
+    "filter": "3x3 nearest comparisons, each evaluated at its actual texel centre and receiver-plane depth",
+    "normal_offset": "Small slope-aware geometric-normal offset plus constant depth epsilon",
+    "casters": "Posed source meshes and spring morphs; glazing, blended layers, fine grille wires, coplanar decals and live screens excluded; masked alpha retained",
+    "cache": "Quantized sun-local projection, caster transforms, spring weights, caster level and preset; unchanged world translation and camera orbit reuse the local map",
+    "order": "Before scene mirrors and main view",
+    "lighting": "Direct sun base and clearcoat only; existing environment and emission contributions retained"
+  },
+  "visual_observations": [
+    "Matched exterior and open-door views show recessed and overlapping parts shading one another",
+    "The door mirror casts a visible shadow onto the opened white door",
+    "Receiver-plane filtering removes the initial fine banding on broad hood and dashboard surfaces",
+    "Cockpit overlaps shade the dashboard without globally darkening the instrument emission",
+    "Source geometry, rig datums, material textures and the corrected horn-hub steering frame are unchanged"
+  ],
+  "legacy_regression": {
+    "passed": true,
+    "evidence": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.74,total-wear=0.00008251,peak-speed-mps=16.00"
+  },
+  "remaining": [
+    "Directional cast shadows on ground/world receivers and world-to-car occlusion",
+    "Local ambient occlusion and further glass/material/optical refinement",
+    "Full-game frame time, loading policy and memory review",
+    "Porsche-specific vehicle tuning, whole-model clearance and requested final fidelity"
+  ],
+  "complete": false,
+  "final_fidelity_verified": false
+}

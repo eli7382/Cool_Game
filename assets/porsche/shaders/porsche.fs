@@ -14,6 +14,11 @@ uniform sampler2D texture6; // correlated Smith GGX DFG lookup, linear
 uniform sampler2D texture10; // native scene reflection, already display encoded
 uniform float mirrorReady;
 uniform mat4 mirrorMatrix;
+uniform sampler2D vehicleShadow; // explicit texture unit 11, outside raylib's material locations
+uniform mat4 vehicleShadowMatrix;
+uniform vec3 shadowInfo; // inverse map width, world texel width, normalized depth bias
+uniform float shadowReady;
+uniform vec3 shadowProbeNormal;
 uniform vec4 environmentRects[11]; // atlas gutter origin xy, content dimensions zw
 uniform vec2 environmentSize;
 uniform vec4 lightingProbe; // QA only: xyz direction/lookup coordinates, w mode
@@ -62,13 +67,33 @@ vec3 irradiance(vec3 n){return environment(n,1.0);}
 vec2 dfg(float nv,float rough){return texture(texture6,(vec2(clamp(nv,0.0,1.0),rough)*127.0+.5)/128.0).rg;}
 vec3 integratedSpecular(vec3 f0,vec2 brdf){vec3 energy=f0*brdf.x+brdf.y;return energy*(1.0+f0*(1.0/max(brdf.x+brdf.y,.001)-1.0));}
 vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.0,1.0);}
+float sunVisibility(vec3 position,vec3 normal){
+    if(shadowReady<.5)return 1.0;
+    vec3 light=normalize(vec3(.42,.88,-.28));float offset=shadowInfo.y*(.35+.8*(1.0-max(dot(normal,light),0.0)));
+    vec4 projected=vehicleShadowMatrix*vec4(position+normal*offset,1);vec3 coord=projected.xyz/projected.w*.5+.5;
+    // Compare every PCF texel with the receiver plane at that texel, rather
+    // than comparing sloped neighbouring depths with the centre depth.
+    // Derivatives precede the per-fragment bounds branch.
+    vec3 dx=dFdx(coord),dy=dFdy(coord);float determinant=dx.x*dy.y-dx.y*dy.x;
+    vec2 gradient=abs(determinant)>1e-12?vec2(dx.z*dy.y-dy.z*dx.y,dy.z*dx.x-dx.z*dy.x)/determinant:vec2(0);
+    gradient=clamp(gradient,vec2(-16),vec2(16));
+    if(any(lessThan(coord,vec3(0)))||any(greaterThan(coord,vec3(1))))return 1.0;
+    float visible=0;for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){
+        vec2 sampleUV=(floor(coord.xy/shadowInfo.x)+vec2(x,y)+.5)*shadowInfo.x;
+        float receiverDepth=coord.z+dot(gradient,sampleUV-coord.xy)-shadowInfo.z;
+        visible+=receiverDepth<=texture(vehicleShadow,sampleUV).r?1.0:0.0;
+    }
+    return visible/9.0;
+}
 void main(){
     if(mirrorReady>.5){vec4 projected=mirrorMatrix*vec4(worldPosition,1);vec2 coord=projected.xy/projected.w;
         if(projected.w>0&&all(greaterThanEqual(coord,vec2(0)))&&all(lessThanEqual(coord,vec2(1)))){finalColor=vec4(displayColor(srgb(texture(texture10,coord).rgb)*vec3(.92,.94,.96)),1);return;}}
     if(lightingProbe.w>.5){
-        vec3 value=lightingProbe.w<1.5?irradiance(lightingProbe.xyz)/8.0:lightingProbe.w<2.5?environment(lightingProbe.xyz,probeRoughness)/8.0:lightingProbe.w<3.5?vec3(dfg(lightingProbe.x,lightingProbe.y),0):integratedSpecular(vec3(lightingProbe.x),dfg(lightingProbe.y,probeRoughness));
+        if(lightingProbe.w>5.5){finalColor=vec4(vec3(sunVisibility(worldPosition,normalize(worldNormal))),1);return;}
+        vec3 value=lightingProbe.w<1.5?irradiance(lightingProbe.xyz)/8.0:lightingProbe.w<2.5?environment(lightingProbe.xyz,probeRoughness)/8.0:lightingProbe.w<3.5?vec3(dfg(lightingProbe.x,lightingProbe.y),0):lightingProbe.w<4.5?integratedSpecular(vec3(lightingProbe.x),dfg(lightingProbe.y,probeRoughness)):vec3(sunVisibility(lightingProbe.xyz,shadowProbeNormal));
         finalColor=vec4(value,1);return;
     }
+    float sunlight=sunVisibility(worldPosition,normalize(worldNormal)*(gl_FrontFacing?1.0:-1.0));
     vec4 color=baseFactor;
     vec2 displayUV=vec2(uv0.x,1.0-uv0.y);
     if(maps.x>.5||liveDisplay>.5){vec4 texel=texture(texture0,liveDisplay>.5?displayUV:uv(channels.x));color*=vec4(srgb(texel.rgb),texel.a);}
@@ -84,14 +109,14 @@ void main(){
     float dielectric=pow((optics.y-1.0)/(optics.y+1.0),2.0);vec3 f0=mix(vec3(dielectric),color.rgb,metallic),f=fresnel(vh,f0);
     vec3 spec=distribution(nh,rough)*visibility(nv,nl,rough)*f;
     vec3 diffuse=(1.0-f)*(1.0-metallic)*color.rgb/PI;
-    vec3 radiance=(diffuse+spec)*vec3(2.7,2.55,2.35)*nl;
+    vec3 radiance=(diffuse+spec)*vec3(2.7,2.55,2.35)*nl*sunlight;
     vec3 specularEnergy=integratedSpecular(f0,dfg(nv,rough));
     vec3 ambientDiffuse=irradiance(n)*color.rgb*(1.0-metallic)*(1.0-clamp(specularEnergy,0.0,1.0));
     vec3 ambientSpecular=environment(reflect(-v,n),rough)*specularEnergy;
     float cv=max(dot(coatN,v),.001),cl=max(dot(coatN,l),0.0),ch=max(dot(coatN,h),0.0),cr=max(pbr.w,.04);
     float cf=.04+.96*pow(1.0-cv,5.0),coatSpec=distribution(ch,cr)*visibility(cv,cl,cr)*(.04+.96*pow(1.0-vh,5.0));
     float coatEnergy=integratedSpecular(vec3(.04),dfg(cv,cr)).r;
-    radiance=radiance*(1.0-pbr.z*cf)*(1.0-pbr.z*(.04+.96*pow(1.0-cl,5.0)))+(ambientDiffuse+ambientSpecular)*(1.0-pbr.z*coatEnergy)+pbr.z*(coatSpec*cl*vec3(2.7,2.55,2.35)+environment(reflect(-v,coatN),cr)*coatEnergy);
+    radiance=radiance*(1.0-pbr.z*cf)*(1.0-pbr.z*(.04+.96*pow(1.0-cl,5.0)))+(ambientDiffuse+ambientSpecular)*(1.0-pbr.z*coatEnergy)+pbr.z*(coatSpec*cl*vec3(2.7,2.55,2.35)*sunlight+environment(reflect(-v,coatN),cr)*coatEnergy);
     vec3 emission=emissionFactor;if(emissiveMap.x>.5||liveDisplay>.5)emission*=srgb(texture(texture5,liveDisplay>.5?displayUV:uv(emissiveMap.y)).rgb);
     float alpha=color.a;
     if(optics.x>.01){

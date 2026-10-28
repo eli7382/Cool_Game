@@ -1,5 +1,5 @@
 {
-  "reviewed_at": "2026-10-28T21:56:44.705525+00:00",
+  "reviewed_at": "2026-10-28T22:17:50.613305+00:00",
   "change": "Rotate about the circular horn-hub shaft instead of the eccentric outer-rim centre",
   "measured_pivot_translation_m": 0.024668387945242815,
   "rim_to_hub_axis_offset_m": 0.019877196265259356,
@@ -260,7 +260,7 @@
   },
   "source_sha256": "f7226ca3dc58b3b4077abe9390d1929c7f4277539e840e13889b5cf428394b3e",
   "hero_export_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
-  "native_executable_sha256": "8674526c79cd457ac72e5804c644655d7e67bec76d149813e7075b2b5475d83d",
+  "native_executable_sha256": "35629712e68701fc89b00217e53318df306b0c42846ceadbb265418f97c4e601",
   "source_motion": [
     {
       "export_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
@@ -328,7 +328,7 @@
   ],
   "native_qa": {
     "passed": true,
-    "checks": 88,
+    "checks": 103,
     "failures": 0,
     "native_steering_poses": 69,
     "maximum_axial_drift_m": 2.03028e-07,
@@ -389,17 +389,17 @@
   "images": [
     {
       "path": "screenshots/porsche-native-steering-negative.png",
-      "sha256": "a01cd39fa4e959e572d63a82dc3e17ec25198fe5562930b0efb8ca6582588f0f",
+      "sha256": "b9302cd2058ab4d90b4e0f96012692bd7638a3238e38a265b1a15f083968090d",
       "view": "Native driver camera; same parked pose and camera; road steer -0.33 radians"
     },
     {
       "path": "screenshots/porsche-native-steering-centre.png",
-      "sha256": "434d669f58ed942956583b9696ebf8eb26e75812c1d1d5f024d134f39a20e0f1",
+      "sha256": "69cb148d97b0aebf56d40b392414255752196f006e1d6bad38ff0b68f35b6007",
       "view": "Native driver camera; same parked pose and camera; road steer 0 radians"
     },
     {
       "path": "screenshots/porsche-native-steering-positive.png",
-      "sha256": "104fb1234a71cc5e125a7dd91dcfa0c00cfa128bc8950e1e2d40b1df8bb5860f",
+      "sha256": "4b53fb17f5410a4c56846cc4d03bc0e09259bab43077cf129dfefacfdaa298e6",
       "view": "Native driver camera; same parked pose and camera; road steer 0.33 radians"
     }
   ],

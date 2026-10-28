@@ -100,8 +100,30 @@ native world drawing for the main camera and reflected cameras. The render
 targets are owned separately from shared model materials and are released at
 shutdown. The rear-view adjustment API is `SetPorscheRearview(vehicle,yaw,pitch)`.
 
-Local shadowing, material refinements, comprehensive clearance, optical
-appearance and full-game profiling remain in development.
+The Porsche now casts directional sun shadows onto its own parts. Each vehicle
+owns a car-relative R32F depth target: 2048 square on High, 1024 on Low. The
+depth pass uses the posed doors, wheels, aero, suspension and spring morphs;
+transparent glazing, fine grille wires and coplanar artwork do not become
+opaque blockers. Alpha-masked casters retain their alpha test.
+
+A 3-by-3 comparison filter uses the receiver plane's depth at each sampled
+texel to prevent bands on sloped panels. It attenuates direct sun lighting;
+environment lighting and emission keep their existing contributions. The map
+updates before the mirror captures, so scene reflections include these shadows.
+Camera motion and world translation reuse an unchanged local map. Body
+orientation, pose, caster detail and quality-preset changes invalidate it.
+The shadow sampler uses texture unit 11 explicitly; assigning it through
+`SHADER_LOC_MAP_ALBEDO + 11` would overlap raylib's bone-attribute locations.
+
+See `docs/porsche-shadow-review.json` for matched exterior, cockpit and open-door
+views. Native GPU checks compare 48 ray/box visibility samples, alpha masks,
+320 unoccluded pixels on five sloped planes, and 157440 conservative caster-box
+corners across 72 posed-car cases. Cache, target ownership, quality changes and
+main rendering-state restoration are checked separately. These are finite
+correctness checks; the full-game rendering cost still needs profiling.
+
+Ground/world cast shadows, local ambient occlusion, material refinements,
+comprehensive clearance, optical appearance and full-game profiling remain in development.
 The linkage datums are fitted to the source model; the joint solver supplies
 visual articulation and does not replace the game's tire-force simulation.
 The requested final visual fidelity is not verified.
@@ -226,9 +248,9 @@ preservation, the sharp Fresnel limit and the analytic roughness-one white
 furnace result. It also emits seventeen native GPU probe references. The native
 test reads those probes through the actual production shader and texture
 bindings. See `docs/porsche-ibl-validation.json` and
-`docs/porsche-native-lighting-qa.json`. These checks do not validate local scene
-reflections, self-shadowing or full-vehicle appearance; those require separate
-work and visual review.
+`docs/porsche-native-lighting-qa.json`. Scene mirrors and car self-shadowing
+have separate fixtures and matched-view reviews. Full-vehicle appearance and
+the requested final fidelity still require further work.
 
 The mirror fixture compares 54 reflected/cropped/oblique projections against
 the existing Three implementation, using actual optical vertices from all

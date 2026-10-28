@@ -1,0 +1,14 @@
+{
+  "targets_and_presets":true,
+  "camera_orbit_reuses_map":true,
+  "world_translation_reuses_local_map":true,
+  "moving_parts_and_body_rotation_update_depth":true,
+  "vehicle_slot_targets_are_separate":true,
+  "main_matrices_and_framebuffer_restored":true,
+  "posed_caster_bounds_inside_map":true,
+  "coverage_poses":72,
+  "caster_box_corners_checked":157440,
+  "maximum_absolute_ndc_extent":0.695476,
+  "scope":"Actual production car depth targets and cache; 3 detail levels, 6 body orientations, 4 combinations of open doors/aero/steering/suspension, including morphed spring bounds",
+  "limits":["Conservative transformed mesh boxes for these finite poses; not swept mechanical clearance or frame-rate validation"]
+}
