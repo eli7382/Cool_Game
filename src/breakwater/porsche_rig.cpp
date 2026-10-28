@@ -1,4 +1,5 @@
 #include "porsche_native.hpp"
+#include "porsche_suspension.hpp"
 #include "raymath.h"
 #include <algorithm>
 #include <cmath>
@@ -6,10 +7,12 @@
 #include <stdexcept>
 
 namespace bw {
-PorscheRig::PorscheRig(std::span<const porsche_data::RigNode> nodes):source(nodes),local(nodes.size()),world(nodes.size()) {
-    for(std::size_t i=0;i<nodes.size();++i)names.emplace(nodes[i].name,static_cast<int>(i));
+PorscheRig::PorscheRig(std::span<const porsche_data::RigNode> nodes,std::span<const porsche_data::SpringSpec> springs):source(nodes),local(nodes.size()),world(nodes.size()) {
+    for(std::size_t i=0;i<nodes.size();++i){names.emplace(nodes[i].name,static_cast<int>(i));local[i]=nodes[i].local;world[i]=nodes[i].world;}
+    suspension=std::make_unique<PorscheSuspension>(*this,springs);
     Pose({});
 }
+PorscheRig::~PorscheRig()=default;
 int PorscheRig::Find(const std::string& name) const {auto found=names.find(name);return found==names.end()?-1:found->second;}
 Matrix PorscheRig::World(int node) const {return node>=0?world.at(node):MatrixIdentity();}
 Vector3 PorscheRig::Position(const std::string& name) const {const auto m=World(Find(name));return {m.m12,m.m13,m.m14};}
@@ -39,7 +42,12 @@ void PorscheRig::WingLinkages(){
     }
     Refresh();
 }
-void PorscheRig::Pose(const PorscheControls& c){
+void PorscheRig::Pose(const PorscheControls& inputs){
+    PorscheControls c=inputs;
+    auto bounded=[](float value,float minimum,float maximum){return std::isfinite(value)?std::clamp(value,minimum,maximum):0.0f;};
+    c.steering=bounded(c.steering,-.55f,.55f);c.rearSteering=bounded(c.rearSteering,-.08f,.08f);c.rpm=bounded(c.rpm,0,9000);
+    for(float* value:{&c.doorL,&c.doorR,&c.windowL,&c.windowR,&c.drs,&c.airbrake,&c.brake,&c.throttle,&c.paddleL,&c.paddleR})*value=bounded(*value,0,1);
+    for(float& value:c.travel)value=bounded(value,-.05f,.05f);for(float& value:c.wheelAngles)if(!std::isfinite(value))value=0;
     for(std::size_t i=0;i<source.size();++i)local[i]=source[i].local;
     constexpr Vector3 x{1,0,0},y{0,1,0},z{0,0,1};
     Rotate("Door_L",y,-c.doorL*1.05f);Rotate("Door_R",y,c.doorR*1.05f);
@@ -50,12 +58,9 @@ void PorscheRig::Pose(const PorscheControls& c){
     Rotate("ShiftPaddle_L",y,c.paddleL*.12f);Rotate("ShiftPaddle_R",y,-c.paddleR*.12f);
     Rotate("Tachometer_Needle",z,std::clamp(c.rpm/9000.0f,0.0f,1.0f)*4.241150082346221f);
     for(std::size_t i=0;i<4;++i){const std::string key=std::array<const char*,4>{"FL","FR","RL","RR"}[i];
-        // Carrier heights remain at their authored rest datums until the native
-        // closed-link solver is ported; independently moving wishbones require it.
-        Rotate((i<2?"Steer_":"RearSteer_")+key,y,i<2?c.steering:c.rearSteering);
         Rotate("WheelSpin_"+key,x,c.wheelAngles[i]);
     }
     Translate("Window_L",{0,-c.windowL*.29f,0});Translate("Window_R",{0,-c.windowR*.29f,0});
-    Refresh();WingLinkages();
+    Refresh();suspension->Update(c);WingLinkages();
 }
 }

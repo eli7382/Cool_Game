@@ -5,6 +5,8 @@ struct RigNode { const char* name; int parent; Matrix local; Matrix world; };
 struct Binding { int node,material,vertices; };
 struct MapRef { const char* path; int uv; float strength; };
 struct Surface { const char* name; Vector4 base; Vector3 emission; float metallic,roughness,coat,coatRoughness,transmission,ior,alphaCutoff,emissiveStrength; MapRef albedo,normal,orm,coatNormal,emissive; int alphaMode; bool doubleSided; };
+struct SpringSpec { const char* name; float restSpan,range,lowerSeat,upperSeat,housingLength,rodLength; };
+struct MorphBinding { int mesh,corner,vertices; unsigned int positions[2],normals[2]; };
 inline constexpr RigNode HeroNodes[]={
 {"ARB rubber bearing FL",1,{1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f},{-1.34358856e-07f,1.00000013f,0.0f,0.25f,-1.00000013f,-1.34358856e-07f,0.0f,0.311735958f,0.0f,0.0f,1.0f,1.04399467f,0.0f,0.0f,0.0f,1.0f}},
 {"ARB chassis bushing FL",489,{-1.34358856e-07f,1.00000013f,0.0f,0.25f,-1.00000013f,-1.34358856e-07f,0.0f,0.311735958f,0.0f,0.0f,1.0f,1.04399467f,0.0f,0.0f,0.0f,1.0f},{-1.34358856e-07f,1.00000013f,0.0f,0.25f,-1.00000013f,-1.34358856e-07f,0.0f,0.311735958f,0.0f,0.0f,1.0f,1.04399467f,0.0f,0.0f,0.0f,1.0f}},
@@ -596,6 +598,18 @@ inline constexpr Surface HeroSurfaces[]={
 {"TwiXeR_992_headlight_1.001_0",{1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},0.608001828f,0.251807243f,0.0f,0.0f,0.0f,1.5f,0.5f,1.0f,{"assets/porsche/textures/8965481b0740d6d90876778038f950006b70aa6bca07c1de79cd8a5fdb85b4f9.png",0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},0,true},
 {"TwiXeR_992_ID03_stitch_001vents_a.003",{0.800000012f,0.800000012f,0.800000012f,1.0f},{0.0f,0.0f,0.0f},0.0f,0.779999971f,0.0f,0.0f,0.0f,1.5f,0.5f,1.0f,{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},0,true},
 {"Underbody | textured black coating",{0.00899999961f,0.00999999978f,0.0120000001f,1.0f},{0.0f,0.0f,0.0f},1.0f,1.0f,0.0f,0.0f,0.0f,1.5f,0.5f,1.0f,{nullptr,0,1.0f},{"assets/porsche/textures/2716374f4fe6227c7af58b09b250f949f5c0840834dfc53ffadf58279ed6cb3a.png",1,0.600000024f},{"assets/porsche/textures/8034fbe6a22a6fff9798f8d06149b752c1bd1c3a32744f36560347fe962cea1c.png",1,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},0,true},
+};
+inline constexpr SpringSpec HeroSprings[]={
+{"Spring_FL",0.2948447f,0.075f,0.075f,0.045f,0.26f,0.28f},
+{"Spring_FR",0.2948447f,0.075f,0.075f,0.045f,0.26f,0.28f},
+{"Spring_RL",0.405024736f,0.075f,0.075f,0.045f,0.34f,0.29f},
+{"Spring_RR",0.405024736f,0.075f,0.075f,0.045f,0.34f,0.29f},
+};
+inline constexpr MorphBinding HeroMorphs[]={
+{152,0,1930,{0,46320},{23160,69480}},
+{153,1,1930,{92640,138960},{115800,162120}},
+{154,2,1930,{185280,231600},{208440,254760}},
+{155,3,1930,{277920,324240},{301080,347400}},
 };
 inline constexpr RigNode NearNodes[]={
 {"ARB rubber bearing FL",1,{1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f},{-1.34358856e-07f,1.00000013f,0.0f,0.25f,-1.00000013f,-1.34358856e-07f,0.0f,0.311735958f,0.0f,0.0f,1.0f,1.04399467f,0.0f,0.0f,0.0f,1.0f}},
@@ -1190,6 +1204,18 @@ inline constexpr Surface NearSurfaces[]={
 {"TwiXeR_992_ID03_stitch_001vents_a.003",{0.800000012f,0.800000012f,0.800000012f,1.0f},{0.0f,0.0f,0.0f},0.0f,0.779999971f,0.0f,0.0f,0.0f,1.5f,0.5f,1.0f,{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},0,true},
 {"Underbody | textured black coating",{0.00899999961f,0.00999999978f,0.0120000001f,1.0f},{0.0f,0.0f,0.0f},0.100000001f,0.789353728f,0.0f,0.0f,0.0f,1.5f,0.5f,1.0f,{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},0,true},
 };
+inline constexpr SpringSpec NearSprings[]={
+{"Spring_FL",0.2948447f,0.075f,0.075f,0.045f,0.26f,0.28f},
+{"Spring_FR",0.2948447f,0.075f,0.075f,0.045f,0.26f,0.28f},
+{"Spring_RL",0.405024736f,0.075f,0.075f,0.045f,0.34f,0.29f},
+{"Spring_RR",0.405024736f,0.075f,0.075f,0.045f,0.34f,0.29f},
+};
+inline constexpr MorphBinding NearMorphs[]={
+{150,0,776,{0,18624},{9312,27936}},
+{151,1,776,{37248,55872},{46560,65184}},
+{152,2,776,{74496,93120},{83808,102432}},
+{153,3,776,{111744,130368},{121056,139680}},
+};
 inline constexpr RigNode FarNodes[]={
 {"ARB rubber bearing FL",1,{1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f,0.0f,0.0f,0.0f,1.0f},{-1.34358856e-07f,1.00000013f,0.0f,0.25f,-1.00000013f,-1.34358856e-07f,0.0f,0.311735958f,0.0f,0.0f,1.0f,1.04399467f,0.0f,0.0f,0.0f,1.0f}},
 {"ARB chassis bushing FL",488,{-1.34358856e-07f,1.00000013f,0.0f,0.25f,-1.00000013f,-1.34358856e-07f,0.0f,0.311735958f,0.0f,0.0f,1.0f,1.04399467f,0.0f,0.0f,0.0f,1.0f},{-1.34358856e-07f,1.00000013f,0.0f,0.25f,-1.00000013f,-1.34358856e-07f,0.0f,0.311735958f,0.0f,0.0f,1.0f,1.04399467f,0.0f,0.0f,0.0f,1.0f}},
@@ -1782,5 +1808,17 @@ inline constexpr Surface FarSurfaces[]={
 {"TwiXeR_992_headlight_1.001_0",{1.0f,1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},0.608001828f,0.251807243f,0.0f,0.0f,0.0f,1.5f,0.5f,1.0f,{"assets/porsche/textures/e65562f4c4563bdc167065b7da05190c026b2a3a34ff417393ad2d12e6c3c1da.png",0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},0,true},
 {"TwiXeR_992_ID03_stitch_001vents_a.003",{0.800000012f,0.800000012f,0.800000012f,1.0f},{0.0f,0.0f,0.0f},0.0f,0.779999971f,0.0f,0.0f,0.0f,1.5f,0.5f,1.0f,{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},0,true},
 {"Underbody | textured black coating",{0.00899999961f,0.00999999978f,0.0120000001f,1.0f},{0.0f,0.0f,0.0f},0.100000001f,0.789353728f,0.0f,0.0f,0.0f,1.5f,0.5f,1.0f,{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},{nullptr,0,1.0f},0,true},
+};
+inline constexpr SpringSpec FarSprings[]={
+{"Spring_FL",0.2948447f,0.075f,0.075f,0.045f,0.26f,0.28f},
+{"Spring_FR",0.2948447f,0.075f,0.075f,0.045f,0.26f,0.28f},
+{"Spring_RL",0.405024736f,0.075f,0.075f,0.045f,0.34f,0.29f},
+{"Spring_RR",0.405024736f,0.075f,0.075f,0.045f,0.34f,0.29f},
+};
+inline constexpr MorphBinding FarMorphs[]={
+{149,0,294,{0,7056},{3528,10584}},
+{150,1,294,{14112,21168},{17640,24696}},
+{151,2,294,{28224,35280},{31752,38808}},
+{152,3,294,{42336,49392},{45864,52920}},
 };
 }

@@ -21,11 +21,19 @@ Vehicle selection keeps each parked car's identity and position.
 | R | Reset the occupied car at the base |
 
 Wheels spin at their separate front/rear tyre radii; calipers retain their
-non-spinning parents. Doors, windows, pedals, paddles, tachometer needle and
-wing surfaces use the named rig. Braking at speed raises the visual airbrake
+non-spinning parents. A double-precision joint solver poses the front wishbones
+and rear five-link assemblies at each wheel's requested height and steering
+angle. Steering rods and antiroll links retain their lengths; dampers telescope,
+rear shafts use the source's small plunge approximation, and four springs
+compress/extend through their exported morph targets. The physics contact
+positions now match the stock wheel centres, and each corner drives its own
+named wheel. The visual travel envelope is +/- 50 mm.
+
+Doors, windows, pedals, paddles, tachometer needle and wing surfaces use the
+named rig. Braking at speed raises the visual airbrake
 and takes priority over DRS. Paddles currently animate without a manual
 gearbox. The Porsche currently inherits the game's existing driving model;
-Porsche-specific mass, gearing, contact geometry and handling are unfinished.
+Porsche-specific mass, gearing and tire-force handling are unfinished.
 
 The driver camera follows the authored seat anchor and body transform. A
 dedicated native shader uses the original artwork UVs, detail UVs, packed
@@ -35,10 +43,15 @@ use filtered panorama mips, rather than a full GGX environment convolution.
 The HDR panorama is converted to linear RGB32F because default raylib 5.5
 builds disable HDR image decoding. No library build flags need changing.
 
-Native closed-link suspension, spring morph updates, live screen textures,
-scene-reflecting mirrors, material refinements, comprehensive clearance and
-full-game profiling remain in development. The native suspension currently
-retains the authored carrier heights; steering link motion is not yet ported.
+The fine front grille switches between physical wires and the existing
+prefiltered radiator maps according to projected pitch, with hysteresis.
+This keeps unresolved wires out of normal-distance views while retaining
+physical detail for close inspection.
+
+Live screen textures, scene-reflecting mirrors, material refinements,
+comprehensive clearance and full-game profiling remain in development.
+The linkage datums are fitted to the source model; the joint solver supplies
+visual articulation and does not replace the game's tire-force simulation.
 The requested final visual fidelity is not verified.
 
 ## Prepared assets
@@ -52,7 +65,8 @@ materials and texture bytes are retained. Hero has 682,643 triangles, Near
 not established.
 
 `src/breakwater/porsche_asset_data.hpp` provides generated parent indices,
-local/rest world matrices and mesh-to-node bindings. Raylib loads meshes in
+local/rest world matrices, spring spans/limits, morph buffer offsets, and
+mesh-to-node bindings. Raylib loads meshes in
 node order and bakes node transforms into vertices. A runtime rig must apply
 `posedWorld * inverse(restWorld)` to each baked mesh. Parents can appear after
 children in the generated table; evaluate them recursively or topologically.
@@ -137,6 +151,18 @@ Its current result is recorded in `docs/porsche-asset-validation.json`.
 The HDR check compares all converted RGB channels against the existing viewer
 loader. The native pose reference is generated from the exported models and
 the production Three adapter; the game itself requires no JavaScript runtime.
+
+The suspension check covers 65 compression/front-steer/rear-steer combinations
+per detail level. It compares 19,110 actual node frames and 24,960 sampled spring
+positions/normals to the production Three rig, alongside independent joint,
+link-length, wheel-height and damper-overlap checks. See
+`docs/porsche-native-suspension-qa.json` and the rest/cross-axle mechanism
+captures in `screenshots/porsche-native-suspension-*.png`. Regenerate its binary
+reference when the source asset or rig changes:
+
+```powershell
+node tests/build_porsche_suspension_reference.mjs ../Porsche_911
+```
 
 Keep `assets/porsche/ATTRIBUTION.md` with distributions. The body and original
 cockpit are adapted from Black Snow's CC BY 4.0 model; the rig, wheel assemblies,

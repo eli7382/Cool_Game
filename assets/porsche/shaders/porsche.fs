@@ -19,8 +19,9 @@ uniform vec4 maps; // has albedo, ORM, base normal, coat normal
 uniform vec4 channels; // UV set for albedo, ORM, base normal, coat normal
 uniform vec2 normalStrength;
 uniform vec2 emissiveMap; // has map, UV set
+uniform vec2 detailRepeat;
 const float PI=3.14159265359;
-vec2 uv(float channel){return channel>.5?uv1:uv0;}
+vec2 uv(float channel){return channel>.5?uv1*detailRepeat:uv0;}
 vec3 srgb(vec3 c){return pow(max(c,vec3(0)),vec3(2.2));}
 vec3 surfaceNormal(vec3 n,sampler2D map,float channel,float strength){
     vec2 t=uv(channel);vec3 a=dFdx(worldPosition),b=dFdy(worldPosition);vec2 u=dFdx(t),v=dFdy(t);

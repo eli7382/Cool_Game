@@ -260,6 +260,7 @@ SurfaceSample SampleSurface(float x,float z);
 float F16WaveDragCoefficient(float mach);
 float F16MaximumTrueAirspeed(float airDensity,float temperatureKelvin);
 std::array<float,4> CarCornerNormalLoads(float longitudinalAcceleration,float lateralAcceleration,float normalG);
+std::array<Vector2,4> CarWheelContactOffsets(const Vehicle& vehicle);
 void InitWorld();
 bool RunBallisticImpactQA();
 void ShutdownWorld();

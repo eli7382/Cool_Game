@@ -1056,8 +1056,8 @@ void UpdateFoot(float dt){
 }
 void MarkTires(){
     int wheelIndex=0;
-    for(int side=-1;side<=1;side+=2)for(int axle=-1;axle<=1;axle+=2){
-        const Vector3 wheel=Local(g.car.p,g.car.yaw,V(side*.86f,.02f,axle*1.38f));
+    for(const Vector2 contact:CarWheelContactOffsets(g.car)){
+        const Vector3 wheel=Local(g.car.p,g.car.yaw,V(contact.x,.02f,contact.y));
         const SurfaceSample material=SampleSurface(wheel.x,wheel.z);
         const float y=SurfaceMarkHeight(wheel.x,wheel.z),wet=material.wetness;
         const float slip=Clamp(fabsf(g.car.lateralSpeed)*.035f,0,.6f);
@@ -1087,6 +1087,12 @@ void MarkTires(){
     if(g.tracks.size()>700)g.tracks.erase(g.tracks.begin(),g.tracks.begin()+80);
 }
 } // namespace
+std::array<Vector2,4> CarWheelContactOffsets(const Vehicle& vehicle){
+    // Contact slots: -X rear, +X rear, -X front, +X front. The Porsche's
+    // dimensions match the exported stock wheel centres, rather than the SUV.
+    if(vehicle.isPorsche)return {{{-.791f,-1.257f},{.791f,-1.257f},{-.815f,1.2f},{.815f,1.2f}}};
+    return {{{-.86f,-1.38f},{.86f,-1.38f},{-.86f,1.38f},{.86f,1.38f}}};
+}
 std::array<float,4> CarCornerNormalLoads(float longitudinalAcceleration,float lateralAcceleration,float normalG){
     // Wheel order is rear-left, rear-right, front-left, front-right. The
     // simplified sprung-mass model conserves total normal load while moving
@@ -1119,7 +1125,8 @@ void UpdateCar(float dt){
     const float centerGround=TerrainHeight(g.car.p.x,g.car.p.z);
     const SurfaceSample contactSurface=SampleSurface(g.car.p.x,g.car.p.z);
     const AtmosphereSample weather=SampleAtmosphere(g.car.p,g.car.p.y);
-    const std::array<Vector2,4> wheelOffset{{Vector2{-.86f,-1.38f},Vector2{.86f,-1.38f},Vector2{-.86f,1.38f},Vector2{.86f,1.38f}}};
+    const auto wheelOffset=CarWheelContactOffsets(g.car);
+    const float contactWheelbase=wheelOffset[2].y-wheelOffset[0].y,contactTrack=((wheelOffset[1].x-wheelOffset[0].x)+(wheelOffset[3].x-wheelOffset[2].x))*.5f;
     std::array<SurfaceSample,4> wheelSurfaces{};
     std::array<float,4> wheelTireGrip{};
     float grip=0.0f,meanRollingResistance=0.0f;
@@ -1244,17 +1251,18 @@ void UpdateCar(float dt){
     // while the wheel assemblies can move independently over uneven ground.
     const float brakingTransfer=Clamp(-longitudinal*.0075f,-.065f,.10f);
     const float corneringTransfer=Clamp(lateralAcceleration*.0065f,-.07f,.07f);
+    const float minimumTravel=g.car.isPorsche?-.05f:-.17f,maximumTravel=g.car.isPorsche?.05f:.20f;
     for(std::size_t i=0;i<wheelOffset.size();++i){
         const bool front=wheelOffset[i].y>0;const bool left=wheelOffset[i].x<0;
         const float pitchLoad=front?brakingTransfer:-brakingTransfer;
         const float rollLoad=left?corneringTransfer:-corneringTransfer;
-        const float target=Clamp((wheelGround[i]-meanGround)*.72f+pitchLoad+rollLoad,-.17f,.20f);
+        const float target=Clamp((wheelGround[i]-meanGround)*.72f+pitchLoad+rollLoad,minimumTravel,maximumTravel);
         const float acceleration=(target-g.car.wheelTravel[i])*64.0f-g.car.wheelTravelVelocity[i]*11.5f;
         g.car.wheelTravelVelocity[i]=Clamp(g.car.wheelTravelVelocity[i]+acceleration*dt,-3.2f,3.2f);
-        g.car.wheelTravel[i]=Clamp(g.car.wheelTravel[i]+g.car.wheelTravelVelocity[i]*dt,-.17f,.20f);
+        g.car.wheelTravel[i]=Clamp(g.car.wheelTravel[i]+g.car.wheelTravelVelocity[i]*dt,minimumTravel,maximumTravel);
     }
-    g.car.pitch=Lerp(g.car.pitch,Clamp(atan2f(rearGround-frontGround,2.76f)-longitudinal*.012f,-.14f,.14f),Clamp(dt*5.5f,0,1));
-    g.car.roll=Lerp(g.car.roll,Clamp(atan2f(rightGround-leftGround,1.72f)+lateralAcceleration*.013f,-.18f,.18f),Clamp(dt*6.0f,0,1));
+    g.car.pitch=Lerp(g.car.pitch,Clamp(atan2f(rearGround-frontGround,contactWheelbase)-longitudinal*.012f,-.14f,.14f),Clamp(dt*5.5f,0,1));
+    g.car.roll=Lerp(g.car.roll,Clamp(atan2f(rightGround-leftGround,contactTrack)+lateralAcceleration*.013f,-.18f,.18f),Clamp(dt*6.0f,0,1));
     const float radius=sqrtf(g.car.p.x*g.car.p.x+g.car.p.z*g.car.p.z);
     if(radius>418){const Vector3 n=Norm(V(g.car.p.x,0,g.car.p.z));const float hitSpeed=std::max(0.0f,Vector3DotProduct(g.car.velocity,n));g.car.velocity=Sub(g.car.velocity,Mul(n,hitSpeed*1.18f));g.car.p.x*=418/radius;g.car.p.z*=418/radius;g.car.damage=Clamp(g.car.damage+hitSpeed*hitSpeed*.00012f,0,1);}
     for(const auto &o:g.obstacles){const float d=DistXZ(g.car.p,o.p),minimum=o.radius+1.55f;if(d<minimum&&d>.01f){

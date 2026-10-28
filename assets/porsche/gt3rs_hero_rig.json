@@ -24846,6 +24846,10 @@
     {
       "mesh": 152,
       "vertex_count": 1930,
+      "target_names": [
+        "Compressed",
+        "Extended"
+      ],
       "targets": [
         {
           "POSITION": 0,
@@ -24860,6 +24864,10 @@
     {
       "mesh": 153,
       "vertex_count": 1930,
+      "target_names": [
+        "Compressed",
+        "Extended"
+      ],
       "targets": [
         {
           "POSITION": 92640,
@@ -24874,6 +24882,10 @@
     {
       "mesh": 154,
       "vertex_count": 1930,
+      "target_names": [
+        "Compressed",
+        "Extended"
+      ],
       "targets": [
         {
           "POSITION": 185280,
@@ -24888,6 +24900,10 @@
     {
       "mesh": 155,
       "vertex_count": 1930,
+      "target_names": [
+        "Compressed",
+        "Extended"
+      ],
       "targets": [
         {
           "POSITION": 277920,

@@ -84,7 +84,9 @@ def convert(path,out):
         for primitive in result['meshes'][node['mesh']]['primitives']:
             binding={'node':ni,'material':primitive.get('material',0),'vertices':result['accessors'][primitive['attributes']['POSITION']]['count']};bindings.append(binding)
             if primitive.get('targets'):
-                record={'mesh':len(bindings)-1,'vertex_count':binding['vertices'],'targets':[]}
+                target_names=result['meshes'][node['mesh']].get('extras',{}).get('targetNames',[])
+                assert target_names==['Compressed','Extended'],'Identify spring target order explicitly'
+                record={'mesh':len(bindings)-1,'vertex_count':binding['vertices'],'target_names':target_names,'targets':[]}
                 for target in primitive['targets']:
                     row={}
                     for semantic in ['POSITION','NORMAL']:
@@ -102,7 +104,9 @@ def convert(path,out):
 def header(levels):
     text=['#pragma once','#include "raylib.h"','namespace bw::porsche_data {','struct RigNode { const char* name; int parent; Matrix local; Matrix world; };','struct Binding { int node,material,vertices; };',
         'struct MapRef { const char* path; int uv; float strength; };',
-        'struct Surface { const char* name; Vector4 base; Vector3 emission; float metallic,roughness,coat,coatRoughness,transmission,ior,alphaCutoff,emissiveStrength; MapRef albedo,normal,orm,coatNormal,emissive; int alphaMode; bool doubleSided; };']
+        'struct Surface { const char* name; Vector4 base; Vector3 emission; float metallic,roughness,coat,coatRoughness,transmission,ior,alphaCutoff,emissiveStrength; MapRef albedo,normal,orm,coatNormal,emissive; int alphaMode; bool doubleSided; };',
+        'struct SpringSpec { const char* name; float restSpan,range,lowerSeat,upperSeat,housingLength,rodLength; };',
+        'struct MorphBinding { int mesh,corner,vertices; unsigned int positions[2],normals[2]; };']
     def floats(values):return ','.join(format(float(v),'.9g')+'f' if '.' in format(float(v),'.9g') or 'e' in format(float(v),'.9g') else format(float(v),'.9g')+'.0f' for v in values)
     def mat(values):return '{'+floats(np.array(values).reshape(4,4,order='F').flatten())+'}'
     for meta in levels:
@@ -120,6 +124,16 @@ def header(levels):
                 floats([p.get('metallicFactor',1),p.get('roughnessFactor',1),coat.get('clearcoatFactor',0),coat.get('clearcoatRoughnessFactor',0),ex.get('KHR_materials_transmission',{}).get('transmissionFactor',0),ex.get('KHR_materials_ior',{}).get('ior',1.5),m.get('alphaCutoff',.5),ex.get('KHR_materials_emissive_strength',{}).get('emissiveStrength',1)]),
                 map_ref(p.get('baseColorTexture')),map_ref(m.get('normalTexture')),map_ref(p.get('metallicRoughnessTexture')),map_ref(coat.get('clearcoatNormalTexture')),map_ref(m.get('emissiveTexture')),str({'OPAQUE':0,'MASK':1,'BLEND':2}[m.get('alphaMode','OPAQUE')]),'true' if m.get('doubleSided',False) else 'false']
             text.append('{'+','.join(fields)+'},')
+        text.append('};')
+        text.append(f'inline constexpr SpringSpec {label}Springs[]={{')
+        for key in ['FL','FR','RL','RR']:
+            node=next(n for n in meta['nodes'] if n['name']=='Spring_'+key);ex=node['extras'];housing=next(n for n in meta['nodes'] if n['name']=='DamperBody_'+key)['extras']['housing_length'];rod=next(n for n in meta['nodes'] if n['name']=='DamperRod_'+key)['extras']['rod_length']
+            text.append('{'+json.dumps(node['name'])+','+floats([ex['spring_rest_span'],ex['spring_morph_range'],ex['lower_seat_offset'],ex['upper_seat_offset'],housing,rod])+'},')
+        text.append('};');text.append(f'inline constexpr MorphBinding {label}Morphs[]={{')
+        for morph in meta['morphs']:
+            node=meta['nodes'][meta['bindings'][morph['mesh']]['node']];parent=meta['nodes'][node['parent']]['name'];assert parent.startswith('Spring_')
+            corner=['FL','FR','RL','RR'].index(parent[7:]);targets=morph['targets'];assert all('POSITION' in t and 'NORMAL' in t for t in targets)
+            text.append('{'+f"{morph['mesh']},{corner},{morph['vertex_count']},"+'{'+','.join(str(t['POSITION']) for t in targets)+'},{'+','.join(str(t['NORMAL']) for t in targets)+'}},')
         text.append('};')
     text.append('}')
     (ROOT/'src/breakwater/porsche_asset_data.hpp').write_text('\n'.join(text)+'\n',encoding='utf-8')

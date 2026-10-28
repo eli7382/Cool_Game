@@ -1,0 +1,29 @@
+{
+  "fixture_sha256": "1427d225e955aac3da75a07e4c96805e30ebc7ccb93201ca36660ef5ccdee040",
+  "generator_sha256": "969302f8559b49ba3eec93a9a2c7421d21c6e42ad4f888cb129cfb17089f7869",
+  "adapter_sha256": "45f76e655bbf96347a8c044d048c7a98040047de17e713ca00a7ac63eb3bfe10",
+  "solver_sha256": "6e1f8db3e6964e8d651a19994dfb24cf038487fdb32de846d07ccb14d2cfe366",
+  "levels": [
+    {
+      "level": "hero",
+      "runtime_sha256": "cc189bfd46c3a29faea767f323f824618f7179e1fbfd8c7eb83bbae7ef1f959c",
+      "poses": 65,
+      "spring_samples_per_pose": 128
+    },
+    {
+      "level": "near",
+      "runtime_sha256": "d2353b1194a92dd189299b25bd1500ffeb4dc05ab3f614a128b564ad30b7a0d5",
+      "poses": 65,
+      "spring_samples_per_pose": 128
+    },
+    {
+      "level": "far",
+      "runtime_sha256": "00723e2c1a3af3ed9d562905c43d36b6f55c1baa3112267e8bb20b7875107a59",
+      "poses": 65,
+      "spring_samples_per_pose": 128
+    }
+  ],
+  "node_frames_each_pose": 98,
+  "bytes": 1840984,
+  "scope": "65 travel/front/rear-steer poses per level; actual control frames, spring weights, sampled morphed positions and normals from the production Three rig"
+}
