@@ -88,6 +88,11 @@ struct Projectile { Vector3 p{},velocity{}; float life{},damage{},blastRadius{};
 struct Explosion { Vector3 p{}; float life{},duration{},radius{}; };
 struct AudioEcho { Sound dry{},muffled{}; Vector3 p{}; float delay{},pitch{1},volume{}; };
 struct Vehicle {
+    bool isPorsche{},porscheLights{true},porscheDRS{},porscheWindowsOpen{};
+    std::array<bool,2> porscheDoorsOpen{};
+    std::array<float,2> porscheDoor{};
+    std::array<float,4> porscheWheelAngles{};
+    float porscheWindow{},porscheAero{},porscheAirbrake{},porscheBrake{},porscheThrottle{},porschePaddleL{},porschePaddleR{};
     Vector3 p{},velocity{};
     float yaw{},speed{},wheelAngle{},wheelSpinRate{},steer{},suspension{},damage{};
     float pitch{},roll{},verticalSpeed{},collective{},rotorAngle{},propAngle{};
@@ -168,7 +173,9 @@ struct Game {
     Difficulty difficulty{Difficulty::Standard};
     VehicleKind vehicle{VehicleKind::Foot};
     Player player{};
-    Vehicle car{},plane{},heli{};
+    Vehicle car{},extraCar{},plane{},heli{};
+    bool qaPorsche{};
+    float qaPorscheThrottle{},qaPorscheSteering{},qaPorscheBrake{};
     Safehouse safehouse{};
     Camera3D camera{};
     std::array<Vector3,3> gates{{Vector3{-205,0,-35},Vector3{200,0,-55},Vector3{2,0,-254}}};

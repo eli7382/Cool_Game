@@ -1,0 +1,22 @@
+{
+  "adapter_sha256": "45f76e655bbf96347a8c044d048c7a98040047de17e713ca00a7ac63eb3bfe10",
+  "generator_sha256": "f0a33f4e5114c522c616357ec1d05ef09f76ad19778535c7d0f8c3ee5bae7fee",
+  "levels": [
+    {
+      "level": "Hero",
+      "export_sha256": "173cc59885999649838b545146acc9bb3024f3b62c08ed5dc595f54da3f37e2b",
+      "nodes": 490
+    },
+    {
+      "level": "Near",
+      "export_sha256": "5d9680a1f40c212ad680e1b9f9bca68674653d870ddc5c33299b9c41e85c7a0c",
+      "nodes": 489
+    },
+    {
+      "level": "Far",
+      "export_sha256": "3b04ca5287b905f66ff263f0d55d05778b6655d62840e1bf008a10c842ae8a38",
+      "nodes": 489
+    }
+  ],
+  "scope": "Actual exported nodes under production Three adapter: zero, DRS, airbrake, independent doors/windows/pedals/paddles/needle/wheel-spin fixtures"
+}

@@ -100,13 +100,27 @@ def convert(path,out):
     (out/f'gt3rs_{level}_rig.json').write_text(json.dumps(metadata,indent=2),encoding='utf-8');print(json.dumps({k:metadata[k] for k in ['level','source_sha256','runtime_sha256','triangles','raylib_meshes','additional_primitives','maximum_vertices_per_primitive']}),flush=True)
     return metadata
 def header(levels):
-    text=['#pragma once','#include "raylib.h"','namespace bw::porsche_data {','struct RigNode { const char* name; int parent; Matrix local; Matrix world; };','struct Binding { int node,material,vertices; };']
+    text=['#pragma once','#include "raylib.h"','namespace bw::porsche_data {','struct RigNode { const char* name; int parent; Matrix local; Matrix world; };','struct Binding { int node,material,vertices; };',
+        'struct MapRef { const char* path; int uv; float strength; };',
+        'struct Surface { const char* name; Vector4 base; Vector3 emission; float metallic,roughness,coat,coatRoughness,transmission,ior,alphaCutoff,emissiveStrength; MapRef albedo,normal,orm,coatNormal,emissive; int alphaMode; bool doubleSided; };']
     def floats(values):return ','.join(format(float(v),'.9g')+'f' if '.' in format(float(v),'.9g') or 'e' in format(float(v),'.9g') else format(float(v),'.9g')+'.0f' for v in values)
     def mat(values):return '{'+floats(np.array(values).reshape(4,4,order='F').flatten())+'}'
     for meta in levels:
         label=meta['level'].title();text.append(f'inline constexpr RigNode {label}Nodes[]={{')
         for node in meta['nodes']:text.append('{'+json.dumps(node['name'])+','+str(node['parent'])+','+mat(node['local'])+','+mat(node['world'])+'},')
         text.append('};');text.append(f'inline constexpr Binding {label}Bindings[]={{'+','.join('{'+','.join(str(b[k]) for k in ['node','material','vertices'])+'}' for b in meta['bindings'])+'};')
+        def map_ref(info):
+            if not info:return '{nullptr,0,1.0f}'
+            texture=meta['textures'][info['index']];uri=meta['images'][texture['source']]['uri']
+            return '{'+json.dumps('assets/porsche/'+uri)+','+str(info.get('texCoord',0))+','+floats([info.get('scale',1)])+'}'
+        text.append(f'inline constexpr Surface {label}Surfaces[]={{')
+        for m in meta['materials']:
+            p=m.get('pbrMetallicRoughness',{});ex=m.get('extensions',{});coat=ex.get('KHR_materials_clearcoat',{})
+            fields=[json.dumps(m.get('name','')),'{'+floats(p.get('baseColorFactor',[1,1,1,1]))+'}','{'+floats(m.get('emissiveFactor',[0,0,0]))+'}',
+                floats([p.get('metallicFactor',1),p.get('roughnessFactor',1),coat.get('clearcoatFactor',0),coat.get('clearcoatRoughnessFactor',0),ex.get('KHR_materials_transmission',{}).get('transmissionFactor',0),ex.get('KHR_materials_ior',{}).get('ior',1.5),m.get('alphaCutoff',.5),ex.get('KHR_materials_emissive_strength',{}).get('emissiveStrength',1)]),
+                map_ref(p.get('baseColorTexture')),map_ref(m.get('normalTexture')),map_ref(p.get('metallicRoughnessTexture')),map_ref(coat.get('clearcoatNormalTexture')),map_ref(m.get('emissiveTexture')),str({'OPAQUE':0,'MASK':1,'BLEND':2}[m.get('alphaMode','OPAQUE')]),'true' if m.get('doubleSided',False) else 'false']
+            text.append('{'+','.join(fields)+'},')
+        text.append('};')
     text.append('}')
     (ROOT/'src/breakwater/porsche_asset_data.hpp').write_text('\n'.join(text)+'\n',encoding='utf-8')
 if __name__=='__main__':

@@ -1,0 +1,78 @@
+{
+  "reviewed_at": "2026-10-28T18:19:45.033641+00:00",
+  "stage": "Driveable native development integration",
+  "native_stack": "C++20, raylib 5.5, OpenGL 3.3",
+  "executable_sha256": "2593d05e42ef019d29ec331b34943d8babd1be99aa506f7ffc06ce094dd82b01",
+  "source_hashes": {
+    "src/breakwater/game.hpp": "cd0045fc5d828eb87e024c6489c7805c7c69b06af375ff384bbb32861c0307bc",
+    "src/breakwater/gameplay.cpp": "d942676e56c16fffcb4d439b4a529e968be554326b8c35aa259f92d2c7c5f3b9",
+    "src/breakwater/main.cpp": "0f2a3705809ea886e5fce9f230fc199daf4c0388a9563e40d9b451dd392f51a7",
+    "src/breakwater/world.cpp": "6ae3dbc7c2a0ac6f8957894d57cd19be612a98063c4ae4d88fcbc78627dfd41a",
+    "src/breakwater/ui.cpp": "1cd192abd976401ab5c6d7b12ce37bff119375665dafb47a5b04f409721b3b5a",
+    "src/breakwater/porsche_native.cpp": "40d7666e6c3b2d382c12a3326118aaa43979b1cb3aeab9a06a4cb39b2cedce78",
+    "src/breakwater/porsche_native.hpp": "8fb606446740d73a2da669095fd5efa5b8149f2e7b9326fe1d28706abfdfb31d",
+    "src/breakwater/porsche_rig.cpp": "5addf8c8ce07e3812e2ba181016126c09eb2df263a46caa3bf8977d12f70320b",
+    "src/breakwater/porsche_asset_data.hpp": "4d868c8a2f880d9b6092332b3de593cffc65d2676547f68e7f324eab71bbbd96",
+    "assets/porsche/shaders/porsche.vs": "22bb65756d5809d3ef1368ebdd37b63ac8e315f56e54022a3c6a95a672875c13",
+    "assets/porsche/shaders/porsche.fs": "47620ed17b7fd828254bd767f3ed4c50ea5c6726f39f931be3e5d8fa318c70c9",
+    "tests/porsche_reference.hpp": "0ff1a1777e8509a289b142ceb9bca884051bd67734f495321633fce19429f1c4"
+  },
+  "asset_source_hashes": {
+    "hero": "173cc59885999649838b545146acc9bb3024f3b62c08ed5dc595f54da3f37e2b",
+    "near": "5d9680a1f40c212ad680e1b9f9bca68674653d870ddc5c33299b9c41e85c7a0c",
+    "far": "3b04ca5287b905f66ff263f0d55d05778b6655d62840e1bf008a10c842ae8a38"
+  },
+  "native_qa": {
+    "passed": true,
+    "checks": 33,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 1.56462e-07,
+    "maximum_radial_drift_m": 6.03735e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 1980,
+    "accelerated_speed_mps": 9.97313,
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Native suspension solver, spring morphs, instruments, mirrors and material refinements remain in development"
+    ]
+  },
+  "environment_channels_compared": 1572864,
+  "environment_maximum_error": 0,
+  "images": [
+    {
+      "path": "screenshots/porsche-native-front.png",
+      "sha256": "7c96c551b89fe7f1eafc4ffbe073708a9c93f686a2771a7745fff81522943dc5"
+    },
+    {
+      "path": "screenshots/porsche-native-open.png",
+      "sha256": "146d998309860a12e5f3dde2ddc28fbe0a84b34110b81cd2c72dd3b0f4d36bde"
+    },
+    {
+      "path": "screenshots/porsche-native-steering-negative.png",
+      "sha256": "15a3146470ec754c7b44c0c04e18ce8dbecc040cd9d4b0e73ca87d185bd6df11"
+    },
+    {
+      "path": "screenshots/porsche-native-steering-centre.png",
+      "sha256": "280bd346b429c5a43bf005c26a00d9191bb0b533fb41f49a79d56bc39d425806"
+    },
+    {
+      "path": "screenshots/porsche-native-steering-positive.png",
+      "sha256": "0056473b843f338ef5578d42eb45500197577779f170cca003e057201de704a3"
+    },
+    {
+      "path": "screenshots/porsche-integration-pickup-regression.png",
+      "sha256": "b99dac8673cf02a5abbee501b36fa8efdfc71488fa27dba38f02ec32ff1b8b5a"
+    }
+  ],
+  "limitations": [
+    "Native closed-link suspension and spring morph updates are not yet implemented",
+    "Dashboard screens and mirrors currently retain their authored/static environment representation",
+    "Driving still uses the existing game model; Porsche-specific tuning is pending",
+    "HDR filtering, glass and material extensions are native approximations; final requested fidelity and game-level performance remain unverified"
+  ],
+  "complete": false,
+  "final_quality_verified": false
+}

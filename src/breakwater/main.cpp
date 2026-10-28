@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "porsche_native.hpp"
 #include <chrono>
 #include <filesystem>
 #include <string_view>
@@ -376,9 +377,12 @@ void ShutdownAudioSystem(){
 
 int main(int argc,char **argv) {
     using namespace bw;
+    bool qaHidden=false;
     std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0,qaHostileF16Deadline=0.0;bool qaHasRunMode=false,qaAudioEnabled=false,qaTaskTour=false,qaPlaneLanding=false,qaPlaneLandingLogged=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarLoadTransferPassed=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaF16Gun=false,qaF16Missile=false,qaHostileF16=false,qaCombat=false,qaHostileRoadVehicle=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{},qaHostileF16Start{};int qaCarTreeTargetSeed=-1;
     for(int i=1;i<argc;++i){
         const std::string_view arg(argv[i]);
+        if(arg=="--qa-porsche")g.qaPorsche=true;
+        if(arg=="--qa-hidden")qaHidden=true;
         if(arg.rfind("--qa-",0)==0){if(arg=="--qa-audio-enabled")qaAudioEnabled=true;else qaHasRunMode=true;}
         constexpr std::string_view prefix="--qa-capture=";
         if(arg.rfind(prefix,0)==0)qaCapture=std::string(arg.substr(prefix.size()));
@@ -405,9 +409,11 @@ int main(int argc,char **argv) {
     }
     const bool qaSilent=qaHasRunMode&&!qaAudioEnabled;
     SetConfigFlags(FLAG_WINDOW_RESIZABLE|FLAG_WINDOW_HIGHDPI|FLAG_VSYNC_HINT|FLAG_MSAA_4X_HINT);
+    if(g.qaPorsche||qaHidden){SetConfigFlags(FLAG_WINDOW_HIDDEN);std::filesystem::create_directories(".tools");g.logPath=g.qaPorsche?".tools/porsche-qa-session.log":".tools/hidden-qa-session.log";}
     InitWindow(1280,720,"BREAKWATER: HIGH WATER");
     SetTargetFPS(60);SetExitKey(KEY_NULL);if(qaSilent)g.muted=true;
     InitWorld();InitAudioSystem();if(qaSilent)LogEvent("qa-audio-output-muted");EnableCursor();
+    if(g.qaPorsche){const bool passed=RunPorscheQA();ShutdownAudioSystem();ShutdownWorld();CloseWindow();return passed?0:2;}
     if(qaBallistics){StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;qaBallisticsPassed=RunBallisticImpactQA();LogEvent(qaBallisticsPassed?"qa-ballistics-pass":"qa-ballistics-fail");g.exitRequested=true;}
     if(!qaCapture.empty()){
         StartMission();g.screen=Screen::Playing;g.clock=5.4f;g.graphics=qaCaptureLow?GraphicsMode::Low:GraphicsMode::High;

@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "f16_netz_mesh_ids.hpp"
+#include "porsche_native.hpp"
 
 namespace bw {
 namespace {
@@ -2758,10 +2759,12 @@ void DrawGroundShadow(Vector3 actor,float radiusX,float radiusZ,float alpha,floa
     const float ground=TerrainHeight(actor.x,actor.z),height=Clamp(actor.y-ground,0,80);
     const float shadowX=actor.x-.477f*height,shadowZ=actor.z+.318f*height;
     // Roads, pads, and the runway sit slightly above the sampled terrain mesh.
-    const float shadowY=TerrainHeight(shadowX,shadowZ)+.43f;
+    const float shadowY=SurfaceMarkHeight(shadowX,shadowZ)+.012f;
     const unsigned char opacity=(unsigned char)Clamp(alpha/(1.0f+height*.09f),0,70);
     UsePaintBlend(0.0f);
+    rlDrawRenderBatchActive();rlDisableDepthMask();
     DrawModelEx(g.detailSphere,V(shadowX,shadowY,shadowZ),V(0,1,0),yaw/DEG,V(radiusX+height*.035f,.015f,radiusZ+height*.03f),Color{8,12,14,opacity});
+    rlDrawRenderBatchActive();rlEnableDepthMask();
 }
 void DrawVehicleShadows(){
     DrawGroundShadow(g.car.p,1.65f,2.55f,28.0f,g.car.yaw);
@@ -2887,6 +2890,7 @@ void DrawVehicles(){
         return;
     }
     DrawVehicleShadows();
+    if(g.missionStarted){DrawGroundShadow(g.extraCar.p,1.35f,2.4f,25.0f,g.extraCar.yaw);DrawCar(g.extraCar);}
     if(g.vehicle==VehicleKind::Car&&g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else DrawCar(g.car);DrawVehicleImpactOverlay(g.car,0);
     if(g.vehicle==VehicleKind::Plane&&g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else DrawPlane(g.plane);DrawVehicleImpactOverlay(g.plane,1);DrawF16BreakawayParts();
     if(g.vehicle==VehicleKind::Helicopter&&g.cameraActualDistance<=3.5f)DrawHeliCockpit(g.heli);else DrawHeli(g.heli);DrawVehicleImpactOverlay(g.heli,2);
@@ -3134,6 +3138,7 @@ void DrawPickupWheel(Vector3 center,float yaw,float steer,float spin,bool front,
     }
 }
 void DrawCar(const Vehicle &v){
+    if(v.isPorsche){DrawPorsche(v,false);return;}
     const float q=v.yaw,susp=v.suspension;const Color body{153,126,83,255},bodyLight{183,155,107,255},dark{34,42,42,255};
     const bool braking=g.vehicle==VehicleKind::Car&&(IsKeyDown(KEY_SPACE)||IsKeyDown(KEY_S));
     const bool beacon=(int)(g.clock*5.0f)%2==0;
@@ -3562,6 +3567,7 @@ void DrawHeli(const Vehicle &v){
     }
 }
 void DrawCarCockpit(const Vehicle &v){
+    if(v.isPorsche){DrawPorsche(v,true);return;}
     const float heroGroundOffset=v.p.y-TerrainHeight(v.p.x,v.p.z)-.075f;
     DrawHeroVehicle(g.carHero,v.p,v,0,v.yaw+PI*.5f,v.pitch,v.roll,heroGroundOffset,3.0f,g.carNormalTex,g.carRoughnessTex,true);
     SetCockpitFill(.52f);
@@ -4037,6 +4043,7 @@ void InitWorld(){
     TextureModel(g.heliBody,g.heliPaintTex,g.worldShader);TextureModel(g.heliTail,g.heliPaintTex,g.worldShader);TextureModel(g.heliPaintSphere,g.heliPaintTex,g.worldShader);
     g.carHero=LoadModel("assets/vehicle_suv_cc0.glb");g.planeHero=LoadModel("assets/f16_netz.glb");g.heliHero=LoadModel("assets/vehicle_helicopter_cc0.glb");
     ConfigureHeroVehicle(g.carHero,0);ConfigureHeroVehicle(g.planeHero,1);ConfigureHeroVehicle(g.heliHero,2);
+    LogEvent(InitPorsche()?"porsche-native-ready":"porsche-native-unavailable");
     LogEvent(IsModelValid(g.carHero)&&IsModelValid(g.planeHero)&&IsModelValid(g.heliHero)?"cc0-vehicle-models-ready":"cc0-vehicle-model-load-failed");
     LogEvent(TextFormat("f16-netz-glb-meshes=%d,materials=%d,expected-primitives=%d",g.planeHero.meshCount,g.planeHero.materialCount,F16NetzMesh::MeshCount));
     if(g.planeHero.meshMaterial&&g.planeHero.meshCount>F16NetzMesh::CockpitInteriorStart+F16NetzMesh::CockpitInteriorCount){
@@ -4099,6 +4106,7 @@ void InitWorld(){
     LogEvent(g.locVehicleNormal>=0&&g.locVehicleRoughness>=0&&IsTextureValid(g.carNormalTex)&&IsTextureValid(g.planeNormalTex)&&IsTextureValid(g.heliNormalTex)&&IsTextureValid(g.carRoughnessTex)&&IsTextureValid(g.planeRoughnessTex)&&IsTextureValid(g.heliRoughnessTex)?"vehicle-detail-maps-ready":"vehicle-detail-maps-unavailable");
 }
 void ShutdownWorld(){
+    ShutdownPorsche();
     if(IsModelValid(g.terrain))UnloadModel(g.terrain);if(IsModelValid(g.road))UnloadModel(g.road);if(IsModelValid(g.waterMesh))UnloadModel(g.waterMesh);if(IsModelValid(g.waterMeshHigh))UnloadModel(g.waterMeshHigh);
     if(IsModelValid(g.cube))UnloadModel(g.cube);if(IsModelValid(g.concreteCube))UnloadModel(g.concreteCube);if(IsModelValid(g.detailSphere))UnloadModel(g.detailSphere);
     if(IsModelValid(g.carBody))UnloadModel(g.carBody);if(IsModelValid(g.carRoof))UnloadModel(g.carRoof);if(IsModelValid(g.carPaintSphere))UnloadModel(g.carPaintSphere);
@@ -4132,7 +4140,13 @@ void UpdateCamera(){
     Vector3 target=V(p.x,p.y+1.2f,p.z);float yaw=g.cameraYaw;
     if(g.vehicle==VehicleKind::Car){
         yaw=g.car.yaw;const Vector3 f=Forward(yaw);
-        if(g.qaCaptureWheelView){
+        if(g.car.isPorsche){
+            const Matrix body=PorscheVehicleMatrix(g.car);
+            const Vector3 origin=Vector3Transform(V(0,0,0),body);
+            if(cameraDistance<=3.5f){g.camera.position=PorscheDriverEye(g.car);target=Add(g.camera.position,Sub(Vector3Transform(V(0,-.18f,1),body),origin));cameraUp=Norm(Sub(Vector3Transform(V(0,1,0),body),origin));}
+            else{g.camera.position=Local(p,yaw,V(0,2.1f,-cameraDistance));target=Add(p,V(0,-.05f,0));}
+        }
+        else if(g.qaCaptureWheelView){
             // The GLB's wheel axes are rotated relative to the gameplay frame.
             // Place the QA camera beside the near front wheel, outside the fender.
             g.camera.position=Local(p,yaw,V(1.92f,.92f,2.05f));
@@ -4186,7 +4200,7 @@ void UpdateCamera(){
     }
     if(g.qaCaptureActive&&cameraDistance>3.5f&&!g.qaCaptureWheelView){
         const float frontSign=g.qaCaptureFront?1.0f:-1.0f;
-        if(g.vehicle==VehicleKind::Car){const Vector3 f=Forward(g.car.yaw),r=Right(g.car.yaw);g.camera.position=Add(Add(Add(p,Mul(f,frontSign*cameraDistance*.82f)),Mul(r,cameraDistance*.58f)),V(0,2.12f,0));target=Add(p,V(0,1.0f,0));}
+        if(g.vehicle==VehicleKind::Car){const Vector3 f=Forward(g.car.yaw),r=Right(g.car.yaw);g.camera.position=Add(Add(Add(p,Mul(f,frontSign*cameraDistance*.82f)),Mul(r,cameraDistance*.58f)),V(0,g.car.isPorsche?1.30f:2.12f,0));target=Add(p,V(0,g.car.isPorsche?0.0f:1.0f,0));}
         else if(g.vehicle==VehicleKind::Plane){const Vector3 f=V(-sinf(g.plane.yaw)*cosf(g.plane.pitch),sinf(g.plane.pitch),-cosf(g.plane.yaw)*cosf(g.plane.pitch));const float foreOffset=g.qaCaptureFront?.94f:.34f,sideOffset=g.qaCaptureFront?.35f:.90f;g.camera.position=Add(Add(Add(p,Mul(f,frontSign*cameraDistance*foreOffset)),Mul(Right(g.plane.yaw),cameraDistance*sideOffset)),V(0,2.45f,0));target=Add(p,V(0,.18f,0));}
         else if(g.vehicle==VehicleKind::Helicopter){const Vector3 f=Forward(g.heli.yaw);g.camera.position=Add(Add(Add(p,Mul(f,frontSign*cameraDistance*.82f)),Mul(Right(g.heli.yaw),cameraDistance*.58f)),V(0,5.0f,0));target=Add(p,V(0,.65f,0));}
     }

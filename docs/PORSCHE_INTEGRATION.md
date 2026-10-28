@@ -1,9 +1,45 @@
 # Porsche integration in progress
 
-The white/red 992 GT3 RS assets are prepared for this native C++20/raylib 5.5
-game. Gameplay and renderer integration are still being implemented. The game
-currently uses its existing SUV; adding the asset files alone does not select
-the Porsche in gameplay.
+The white/red 992 GT3 RS now loads and drives in this native C++20/raylib 5.5
+game, alongside the existing pickup. Start a mission and walk to the white/red
+car beside the pickup at the base. Press E nearby to enter; E exits at low speed.
+Vehicle selection keeps each parked car's identity and position.
+
+## Controls and current behavior
+
+| Control | Action |
+| --- | --- |
+| W / S | Accelerate, brake, reverse |
+| A / D | Steer left / right |
+| Space | Brake |
+| C | Driver / chase camera |
+| O / K | Left / right door, when stopped |
+| I | Raise / lower both windows |
+| G | Toggle the visual DRS flap |
+| L | Toggle headlamp emitters |
+| [ / ] | Animate the shift paddles |
+| R | Reset the occupied car at the base |
+
+Wheels spin at their separate front/rear tyre radii; calipers retain their
+non-spinning parents. Doors, windows, pedals, paddles, tachometer needle and
+wing surfaces use the named rig. Braking at speed raises the visual airbrake
+and takes priority over DRS. Paddles currently animate without a manual
+gearbox. The Porsche currently inherits the game's existing driving model;
+Porsche-specific mass, gearing, contact geometry and handling are unfinished.
+
+The driver camera follows the authored seat anchor and body transform. A
+dedicated native shader uses the original artwork UVs, detail UVs, packed
+roughness/metalness, normal maps, independent clearcoat normals, emission and
+HDR reflections. Glazing uses a thin alpha approximation. Rough HDR reflections
+use filtered panorama mips, rather than a full GGX environment convolution.
+The HDR panorama is converted to linear RGB32F because default raylib 5.5
+builds disable HDR image decoding. No library build flags need changing.
+
+Native closed-link suspension, spring morph updates, live screen textures,
+scene-reflecting mirrors, material refinements, comprehensive clearance and
+full-game profiling remain in development. The native suspension currently
+retains the authored carrier heights; steering link motion is not yet ported.
+The requested final visual fidelity is not verified.
 
 ## Prepared assets
 
@@ -28,8 +64,10 @@ current visual steering ratio. Positive front steering points toward vehicle
 Do not use the previous negative sign or world-space Z axis.
 
 Raylib's stock loader does not implement all retained glTF physical material
-extensions or spring morph controls. Native shading, rig animation, driver
-camera, vehicle tuning, clearance and in-game profiling still need work.
+extensions or spring morph controls. The custom renderer interprets the
+supported material fields, owns shared texture resources, sorts transparent
+surfaces, and lazily loads the required detail level. First use of an uncached
+level can stall; loading policy and the final rendering budget need profiling.
 
 ## Standalone build on this machine
 
@@ -56,8 +94,29 @@ From the repository root:
 ./build-native/ninja/bin/game.exe
 ```
 
-The baseline game has compiled and linked successfully with this build path.
-This is build evidence, not a test of a playable Porsche integration.
+The game compiles and links with the Porsche implementation through this build
+path. Existing benchmark/MSVC entry points are retained; they need their
+external benchmark dependencies as before.
+
+## Native checks
+
+```powershell
+./build-native/ninja/bin/game.exe --qa-porsche
+./build-native/ninja/bin/game.exe --qa-capture=car-front --qa-hidden
+```
+
+The Porsche test uses a hidden OpenGL window. It enters the parked car through
+the game's interaction path, retains the pickup, loads all three detail levels,
+checks native steering geometry and reference poses, then drives, turns and
+brakes under the actual game physics. It also captures exterior, open-door and
+driver steering views in `screenshots/porsche-native-*.png`. Current results
+are in `docs/porsche-native-qa.json`. These are finite development checks;
+they do not prove complete collision clearance, final performance or OEM
+vehicle dynamics.
+
+Ground shadows now sit near the rendered ground and do not write depth. The
+previous raised shadow ellipsoid cut through the Porsche's low body. The
+existing pickup capture was repeated after that correction.
 
 ## Asset regeneration and checks
 
@@ -67,11 +126,17 @@ checkout:
 ```powershell
 python scripts/prepare_porsche_assets.py --source ../Porsche_911
 python tests/check_porsche_assets.py --source ../Porsche_911
+python scripts/prepare_porsche_environment.py
+node tests/check_porsche_environment.mjs ../Porsche_911
+node tests/build_porsche_reference.mjs ../Porsche_911
 ```
 
 The independent check compares every source triangle corner, including all
 vertex attributes and spring morphs, and verifies image bytes and metadata.
 Its current result is recorded in `docs/porsche-asset-validation.json`.
+The HDR check compares all converted RGB channels against the existing viewer
+loader. The native pose reference is generated from the exported models and
+the production Three adapter; the game itself requires no JavaScript runtime.
 
 Keep `assets/porsche/ATTRIBUTION.md` with distributions. The body and original
 cockpit are adapted from Black Snow's CC BY 4.0 model; the rig, wheel assemblies,

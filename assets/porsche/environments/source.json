@@ -1,0 +1,15 @@
+{
+  "source": "Kloofendal 48d Partly Cloudy",
+  "author": "Greg Zaal",
+  "url": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy",
+  "license": "CC0",
+  "source_sha256": "5477b7dbb2aea4a6947cb36b96339c119f90bf36a03b039af3254b5e6a22896d",
+  "linear_sha256": "94d54ae711c9bfc19e6072684ccc689141e5a6617cecd2dbae145aa1c8d26c16",
+  "width": 1024,
+  "height": 512,
+  "format": "PGHF header (16 bytes), little-endian RGB float32, top scanline first",
+  "generator_sha256": "31bd6a84877ff855aebb79f681ae1bf0578c4c60c0fe70c992628c9a72814491",
+  "limits": [
+    "Mipmap filtering of the panorama approximates native rough reflections; not preconvolved GGX IBL"
+  ]
+}

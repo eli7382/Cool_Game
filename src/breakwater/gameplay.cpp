@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include "porsche_native.hpp"
 
 namespace bw {
 // Gameplay proxy for the transonic drag rise and the supersonic wave-drag floor.
@@ -32,8 +33,8 @@ float EnemyFireIntervalScale(){return g.difficulty==Difficulty::Relaxed?1.24f:(g
 bool EnemiesNear(Vector3 p,float radius,int station=-1){for(const auto &e:g.enemies)if(e.alive&&(station<0||station==e.station)&&DistXZ(e.p,p)<radius)return true;return false;}
 int NearestGate(Vector3 p,float radius){int n=-1;float best=radius;for(int i=0;i<3;++i){float d=DistXZ(p,g.gates[i]);if(d<best){best=d;n=i;}}return n;}
 int NearestVehicle(Vector3 p,float radius){
-    const std::array<Vector3,3> positions{g.car.p,g.plane.p,g.heli.p};int found=-1;float best=radius;
-    for(int i=0;i<3;++i){float d=DistXZ(p,positions[i]);if(d<best){best=d;found=i;}}return found;
+    const std::array<Vector3,4> positions{g.car.p,g.plane.p,g.heli.p,g.extraCar.p};int found=-1;float best=radius;
+    for(int i=0;i<4;++i){float d=DistXZ(p,positions[i]);if(d<best){best=d;found=i;}}return found;
 }
 bool SafehouseInterior(Vector3 local){return fabsf(local.x)<4.78f&&local.z>-6.18f&&local.z<5.14f;}
 bool SafehouseStairwell(Vector3 local){return fabsf(local.x-3.45f)<.63f&&local.z>=-5.05f&&local.z<=-.25f;}
@@ -214,7 +215,7 @@ void RestoreVehicleCondition(Vehicle &vehicle){
     vehicle.tireHealth.fill(1.0f);vehicle.tireTemperatureC.fill(20.0f);vehicle.tireWear.fill(0.0f);
     vehicle.longitudinalG=vehicle.lateralG=0;vehicle.normalG=1.0f;
 }
-void SetCarAtBase(){g.car.p=V(7,TerrainHeight(7,165)+.72f,165);g.car.yaw=0;g.car.speed=0;g.car.velocity=V(0,0,0);g.car.yawRate=0;g.car.lateralSpeed=0;g.car.engineRpm=.18f;g.car.suspension=0;g.car.suspensionVelocity=0;g.car.wheelTravel.fill(0);g.car.wheelTravelVelocity.fill(0);g.car.pitch=0;g.car.roll=0;g.car.damage=0;RestoreVehicleCondition(g.car);g.car.gunFlash=0;g.car.crashed=false;}
+void SetCarAtBase(){const bool porsche=g.car.isPorsche;g.car=Vehicle{};g.car.isPorsche=porsche;const float x=porsche?14.0f:7.0f;g.car.p=V(x,TerrainHeight(x,165)+.72f,165);g.car.engineRpm=.18f;RestoreVehicleCondition(g.car);}
 void SetPlaneAtRunway(){g.plane.p=V(-7,TerrainHeight(-7,43)+1.35f,43);g.plane.yaw=PI;g.plane.speed=0;g.plane.wheelAngle=0;g.plane.wheelSpinRate=0;g.plane.gearExtension=1;g.plane.speedBrakeExtension=0;g.plane.velocity=V(0,0,0);g.plane.pitch=0;g.plane.roll=0;g.plane.pitchRate=0;g.plane.rollRate=0;g.plane.yawRate=0;g.plane.lateralSpeed=0;g.plane.controlAileron=0;g.plane.controlElevator=0;g.plane.controlRudder=0;g.plane.engineRpm=.16f;g.plane.verticalSpeed=0;g.plane.airborne=false;g.plane.crashed=false;g.plane.landingGearDown=true;g.plane.afterburner=false;g.plane.speedBrake=false;g.plane.damage=0;g.plane.wreckAge=0;g.plane.brokenWingSide=0;g.plane.wreckOnGround=false;g.f16Breakaway={};RestoreVehicleCondition(g.plane);g.plane.gunAmmo=500;g.plane.missileAmmo=2;g.plane.missilePresent={true,true};g.plane.gunCooldown=0;g.plane.gunAudioCooldown=0;g.plane.gunAccumulator=0;g.plane.gunFlash=0;g.planeMissileSelected=false;g.lockedAirContact=-1;g.missileLockQuality=0;g.guidedMissiles.clear();}
 void SetHeliAtPad(){g.heli.p=V(25,TerrainHeight(25,174)+1.25f,174);g.heli.yaw=0;g.heli.speed=0;g.heli.velocity=V(0,0,0);g.heli.pitch=0;g.heli.roll=0;g.heli.pitchRate=0;g.heli.rollRate=0;g.heli.yawRate=0;g.heli.verticalSpeed=0;g.heli.collective=0;g.heli.engineRpm=0;g.heli.rotorRpm=0;g.heli.rotorAngle=0;g.heli.tailRotorAngle=0;g.heli.airborne=false;g.heli.crashed=false;g.heli.damage=0;RestoreVehicleCondition(g.heli);g.heli.gunFlash=0;}
 void ResetVehicle(VehicleKind k){if(k==VehicleKind::Car)SetCarAtBase();else if(k==VehicleKind::Plane)SetPlaneAtRunway();else if(k==VehicleKind::Helicopter)SetHeliAtPad();}
@@ -240,14 +241,16 @@ void Interact(){
         g.safehouse.doorOpen=!g.safehouse.doorOpen;LogEvent(g.safehouse.doorOpen?"safehouse-door-open":"safehouse-door-close");
         Notify(g.safehouse.doorOpen?"SAFEHOUSE UNLATCHED":"SAFEHOUSE SECURED",1.6f);return;
     }
-    const int v=NearestVehicle(g.player.p,7);
+    int v=NearestVehicle(g.player.p,7);
     if(v>=0){
+        if(v==3){std::swap(g.car,g.extraCar);v=0;}
         g.vehicle=v==0?VehicleKind::Car:(v==1?VehicleKind::Plane:VehicleKind::Helicopter);if(v==0)g.tireTracksInitialized=false;g.vehiclesEntered++;
         // The fixed-wing rescue plane has a 13 m wingspan; keep its full silhouette readable in chase view.
         g.cameraDistance=v==0?8.5f:(v==1?14.5f:9.5f);
         LogEvent(v==0?"enter-car":(v==1?"enter-plane":"enter-helicopter"));
-        Notify(v==0?"PICKUP: W/S DRIVE — A/D STEER — C CAMERA":(v==1?"F-16A NETZ: W POWER — ALT+W AFTERBURNER — G GEAR":"HELICOPTER: SPACE/Ctrl COLLECTIVE — WASD CYCLIC"),5);
-        Announce(v==0?NarrationCue::PickupControls:(v==1?NarrationCue::PlaneControls:NarrationCue::HelicopterControls));return;
+        Notify(v==0?(g.car.isPorsche?"911 GT3 RS: WASD DRIVE / C CAMERA / O,K DOORS / I WINDOWS / G DRS":"PICKUP: W/S DRIVE — A/D STEER — C CAMERA"):(v==1?"F-16A NETZ: W POWER — ALT+W AFTERBURNER — G GEAR":"HELICOPTER: SPACE/Ctrl COLLECTIVE — WASD CYCLIC"),5);
+        if(v==0&&g.car.isPorsche)LogEvent("enter-porsche");
+        else Announce(v==0?NarrationCue::PickupControls:(v==1?NarrationCue::PlaneControls:NarrationCue::HelicopterControls));return;
     }
     const int gate=NearestGate(g.player.p,10);
     if(gate>=0&&!g.gateDone[gate]){
@@ -1110,8 +1113,9 @@ namespace {
 void UpdateCar(float dt){
     if(g.vehicle!=VehicleKind::Car)return;
     const Vector3 carPreviousPosition=g.car.p;
-    float throttle=(IsKeyDown(KEY_W)||IsKeyDown(KEY_UP)?1.0f:0.0f)-(IsKeyDown(KEY_S)||IsKeyDown(KEY_DOWN)?1.0f:0.0f);
-    const float steerInput=(IsKeyDown(KEY_D)?1.0f:0.0f)-(IsKeyDown(KEY_A)?1.0f:0.0f);
+    float throttle=g.qaPorsche?g.qaPorscheThrottle:(IsKeyDown(KEY_W)||IsKeyDown(KEY_UP)?1.0f:0.0f)-(IsKeyDown(KEY_S)||IsKeyDown(KEY_DOWN)?1.0f:0.0f);
+    const float keyboardSteer=(IsKeyDown(KEY_D)?1.0f:0.0f)-(IsKeyDown(KEY_A)?1.0f:0.0f);
+    const float steerInput=g.qaPorsche?g.qaPorscheSteering:(g.car.isPorsche?-keyboardSteer:keyboardSteer);
     const float centerGround=TerrainHeight(g.car.p.x,g.car.p.z);
     const SurfaceSample contactSurface=SampleSurface(g.car.p.x,g.car.p.z);
     const AtmosphereSample weather=SampleAtmosphere(g.car.p,g.car.p.y);
@@ -1131,10 +1135,11 @@ void UpdateCar(float dt){
     }
     const Vector3 f=Forward(g.car.yaw),r=Right(g.car.yaw);
     const float oldForward=Vector3DotProduct(g.car.velocity,Forward(g.car.yaw));
-    float drive=throttle,brake=IsKeyDown(KEY_SPACE)?1.0f:0.0f;
+    float drive=throttle,brake=g.qaPorsche?g.qaPorscheBrake:(IsKeyDown(KEY_SPACE)?1.0f:0.0f);
     if(throttle<0&&oldForward>1.0f){drive=0;brake=std::max(brake,.72f);}
     else if(throttle>0&&oldForward< -1.0f){drive=0;brake=std::max(brake,.72f);}
     else if(throttle<0)drive=-.52f;
+    if(g.car.isPorsche){g.car.porscheThrottle=std::max(0.0f,drive);g.car.porscheBrake=brake;}
     const Vector3 airRelative=Sub(V(g.car.velocity.x,0,g.car.velocity.z),V(weather.windVelocity.x,0,weather.windVelocity.z));
     const float airspeed=Vector3Length(airRelative),airDragScale=.5f*weather.airDensity*.95f/1900.0f*airspeed;
     const Vector3 aerodynamicAcceleration=Mul(airRelative,-airDragScale);
@@ -1877,7 +1882,7 @@ bool RunBallisticImpactQA(){
 void StartMission(){
     g.player=Player{};g.player.p=V(0,TerrainHeight(0,165)+1,165);g.gateDone={false,false,false};g.taskAnnounced={false,false,false,false};g.water=LOW_WATER;g.waterTarget=LOW_WATER;
     g.safehouse.doorOpen=false;g.safehouse.doorAngle=0;
-    g.vehicle=VehicleKind::Foot;SetCarAtBase();SetPlaneAtRunway();SetHeliAtPad();
+    g.vehicle=VehicleKind::Foot;g.car.isPorsche=false;SetCarAtBase();g.extraCar=Vehicle{};g.extraCar.isPorsche=true;g.extraCar.p=V(14,TerrainHeight(14,165)+.72f,165);SetPlaneAtRunway();SetHeliAtPad();
     InitializeHostileRotorcraft();InitializeHostileFixedWings();InitializeHostileRoadVehicles();
     for(auto &e:g.enemies){e.alive=true;e.health=(e.leader?145.0f:90.0f)*EnemyHealthScale();e.alert=0;e.cooldown=0;e.suppression=0;e.p=V(e.home.x,TerrainHeight(e.home.x,e.home.z)+1,e.home.z);}
     g.missionStarted=true;g.missionComplete=false;g.elapsed=0;g.hits=0;g.shots=0;g.gatesOperated=0;g.vehiclesEntered=0;g.maxCar=g.maxPlane=g.maxHeli=g.maxAltitude=0;
@@ -1927,6 +1932,7 @@ void UpdateGameplay(float dt){
         }
     }
     if(g.vehicle==VehicleKind::Foot)UpdateFoot(dt);else if(g.vehicle==VehicleKind::Car)UpdateCar(dt);else if(g.vehicle==VehicleKind::Plane)UpdatePlane(dt);else UpdateHeli(dt);
+    UpdatePorscheControls(g.car,dt,g.vehicle==VehicleKind::Car);UpdatePorscheControls(g.extraCar,dt,false);
     if(g.vehicle!=VehicleKind::Plane&&g.plane.crashed)UpdatePlaneWreckage(dt);
     UpdateF16Breakaway(dt);
     UpdateEnemies(dt);

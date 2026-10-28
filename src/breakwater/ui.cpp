@@ -94,7 +94,7 @@ void MissionHud(){
     if(g.vehicle==VehicleKind::Car){
         const SurfaceSample surface=SampleSurface(g.car.p.x,g.car.p.z);
         const char *surfaceName=surface.kind==SurfaceKind::Asphalt?"ASPHALT":(surface.kind==SurfaceKind::Concrete?"CONCRETE":(surface.kind==SurfaceKind::Gravel?"GRAVEL":(surface.kind==SurfaceKind::Mud?"MUD":(surface.kind==SurfaceKind::Water?"WATER":(surface.kind==SurfaceKind::Rock?"ROCK":"GRASS")))));
-        Panel(Rectangle{sw-252.0f,sh-108.0f,230,83});DrawText("PICKUP  /  4WD",sw-238,sh-94,14,Color{210,201,178,255});
+        Panel(Rectangle{sw-252.0f,sh-108.0f,230,83});DrawText(g.car.isPorsche?"911 GT3 RS":"PICKUP  /  4WD",sw-238,sh-94,14,Color{210,201,178,255});
         DrawText(TextFormat("%03.0f km/h",fabsf(g.car.speed)*3.6f),sw-238,sh-72,23,Color{233,228,203,255});
         DrawText(TextFormat("%s  MU %.2f  LAT %+.1f G",surfaceName,surface.friction,g.car.lateralG),sw-238,sh-43,11,Color{173,199,189,255});
     }else if(g.vehicle==VehicleKind::Plane){
@@ -114,7 +114,7 @@ void MissionHud(){
         std::array<const char*,4> labels{};std::array<std::string,4> readouts{};std::array<float,4> values{};const char *title="INSTRUMENT PANEL";
         if(g.vehicle==VehicleKind::Car){
             const SurfaceSample surface=SampleSurface(g.car.p.x,g.car.p.z);
-            title="PICKUP  /  DRIVE";labels={"KM/H","BODY","GRIP","LAT G"};values={Clamp(fabsf(g.car.speed)/36,0,1),1-g.car.damage,surface.friction,Clamp(.5f+g.car.lateralG/3.0f,0,1)};
+            title=g.car.isPorsche?"911 GT3 RS / DRIVE":"PICKUP  /  DRIVE";labels={"KM/H","BODY","GRIP","LAT G"};values={Clamp(fabsf(g.car.speed)/36,0,1),1-g.car.damage,surface.friction,Clamp(.5f+g.car.lateralG/3.0f,0,1)};
             readouts={TextFormat("%02.0f",fabsf(g.car.speed)*3.6f),TextFormat("%02.0f%%",(1-g.car.damage)*100),TextFormat("%02.0f%%",surface.friction*100),TextFormat("%+.1f",g.car.lateralG)};
         }else if(g.vehicle==VehicleKind::Plane){
             const float altitude=g.plane.p.y-std::max(TerrainHeight(g.plane.p.x,g.plane.p.z),g.water);
