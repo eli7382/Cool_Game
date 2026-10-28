@@ -75,7 +75,7 @@ void ShutdownPorscheDisplays(){
     for(auto font:{regular,bold})if(IsFontValid(font)&&font.texture.id!=GetFontDefault().texture.id)UnloadFont(font);regular={};bold={};ready=false;
 }
 void PreparePorscheDisplays(bool force){
-    if(!ready)return;
+    if(!ready||rlGetActiveFramebuffer()!=0)return;const Matrix savedProjection=rlGetMatrixProjection(),savedModelview=rlGetMatrixModelview();
     const std::array<Vehicle*,2> cars{&g.car,&g.extraCar};
     for(int slot=0;slot<2;++slot){const Vehicle& v=*cars[slot];if(!v.isPorsche||(!force&&Vector3Distance(v.p,g.camera.position)>65))continue;
         auto& d=displays[slot];const auto state=PorscheDisplayTelemetry(v,slot==0&&g.vehicle==VehicleKind::Car);const auto key=state.Key();
@@ -84,6 +84,7 @@ void PreparePorscheDisplays(bool force){
         for(int i=0;i<4;++i){BeginTextureMode(d.target[i]);DrawDisplay(i,state);EndTextureMode();GenTextureMipmaps(&d.target[i].texture);SetTextureFilter(d.target[i].texture,TEXTURE_FILTER_TRILINEAR);}
         d.key=key;d.bucket=bucket;++d.revision;
     }
+    rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedModelview);
 }
 Texture2D PorscheDisplayTexture(const Vehicle& v,int kind){const int slot=Slot(v);return slot>=0&&kind>=0&&kind<4?displays[slot].target[kind].texture:Texture2D{};}
 unsigned int PorscheDisplayRevision(const Vehicle& v){const int slot=Slot(v);return slot>=0?displays[slot].revision:0;}

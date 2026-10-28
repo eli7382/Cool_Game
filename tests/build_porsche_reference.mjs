@@ -30,8 +30,13 @@ for(const [label,suffix] of [['Hero','Development'],['Near','LOD1'],['Far','LOD2
   for(const node of fixture.nodes)if(node.name==='Chrono_Seconds'||node.name==='Chrono_Minutes')lines.push('{'+JSON.stringify(node.name)+','+matrix(node.matrixWorld)+'},');
   lines.push('};');
  }
+ if(label==='Hero')for(const [name,yaw,pitch] of [['RearviewAdjusted',.12,-.08],['RearviewLimit',.18,.12]]){
+  Object.assign(car.state,car.target,{mirrorYaw:yaw,mirrorPitch:pitch});car.update(0);fixture.scene.updateMatrixWorld(true);lines.push(`inline constexpr Node ${name}[]={`);
+  for(const node of fixture.nodes){let inside=false;for(let p=node;p;p=p.parent)if(p.name==='Mirror_Adjust_Interior')inside=true;if(inside)lines.push('{'+JSON.stringify(node.name)+','+matrix(node.matrixWorld)+'},');}
+  lines.push('};');
+ }
  car.dispose();
 }
 lines.push('}');await fs.writeFile(path.join(root,'tests/porsche_reference.hpp'),lines.join('\n')+'\n');
-await fs.writeFile(path.join(root,'docs/porsche-pose-reference.json'),JSON.stringify({adapter_sha256:sha(adapter),generator_sha256:sha(await fs.readFile(fileURLToPath(import.meta.url))),levels:outputs,scope:'Actual exported nodes under production Three adapter: zero, DRS, airbrake, independent doors/windows/pedals/paddles/needle/wheel-spin and three stopwatch hand fixtures'},null,2));
+await fs.writeFile(path.join(root,'docs/porsche-pose-reference.json'),JSON.stringify({adapter_sha256:sha(adapter),generator_sha256:sha(await fs.readFile(fileURLToPath(import.meta.url))),levels:outputs,scope:'Actual exported nodes under production Three adapter: zero, DRS, airbrake, independent doors/windows/pedals/paddles/needle/wheel-spin, three stopwatch hand and two interior-mirror joint fixtures'},null,2));
 console.log(JSON.stringify({levels:outputs,adapter_sha256:sha(adapter)}));

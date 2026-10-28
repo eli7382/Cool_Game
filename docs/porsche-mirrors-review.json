@@ -1,0 +1,186 @@
+{
+  "reviewed_at": "2026-10-28T21:05:56.253346+00:00",
+  "stage": "Native game scene mirrors and adjustable rear-view",
+  "executable_sha256": "f0edf3f5b7a7023f0033adb12980e4c9d95957d874de3abdbdae2741a332667f",
+  "checks": [
+    {
+      "name": "native-mirror-reflection-crop-and-oblique-clip-match-source-rig",
+      "passed": true
+    },
+    {
+      "name": "rearview-shell-and-optic-adjustment-match-source-and-angle-limits",
+      "passed": true
+    },
+    {
+      "name": "offscreen-displays-and-mirrors-restore-main-camera-and-UI-matrices",
+      "passed": true
+    },
+    {
+      "name": "three-native-scene-mirror-targets-ready",
+      "passed": true
+    },
+    {
+      "name": "actual-scene-reflection-textures-bind-on-all-three-detail-levels",
+      "passed": true
+    },
+    {
+      "name": "export-native-scene-mirror-marker-view",
+      "passed": true
+    },
+    {
+      "name": "export-native-scene-mirror-marker-view",
+      "passed": true
+    },
+    {
+      "name": "export-native-scene-mirror-marker-view",
+      "passed": true
+    },
+    {
+      "name": "all-three-mirrors-show-real-scene-markers-at-projected-positions",
+      "passed": true
+    },
+    {
+      "name": "moving-world-geometry-updates-all-three-scene-mirrors",
+      "passed": true
+    },
+    {
+      "name": "GPU-oblique-plane-rejects-geometry-behind-silvered-face",
+      "passed": true
+    },
+    {
+      "name": "export-main-cockpit-with-live-mirror-marker-geometry",
+      "passed": true
+    },
+    {
+      "name": "visible-mirrors-composite-scene-markers-at-physical-reflection-positions",
+      "passed": true
+    },
+    {
+      "name": "mirror-scheduler-caps-normal-updates-and-prevents-recursion",
+      "passed": true
+    },
+    {
+      "name": "opening-door-moves-real-optical-plane-and-reflection-camera",
+      "passed": true
+    },
+    {
+      "name": "low-preset-reallocates-and-renders-all-mirror-targets",
+      "passed": true
+    },
+    {
+      "name": "vehicle-swap-keeps-parked-car-mirrors-separate-from-occupied-slot",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-scene-mirrors.png",
+      "passed": true
+    },
+    {
+      "name": "HUD-pixel-coordinates-survive-reflection-and-display-passes",
+      "passed": true
+    }
+  ],
+  "source_projection_validation": {
+    "passed": true,
+    "source_projection_cases": 54,
+    "actual_pane_vertices": 2628,
+    "maximum_uv_error": 6.92904e-05,
+    "maximum_eye_point_error_m": 1.50789e-06,
+    "maximum_normal_error": 1.23104e-07,
+    "maximum_fitted_plane_error_m": 9.31099e-05,
+    "fixture_error": "",
+    "limits": [
+      "Independent production Three projection comparison; scene rendering, update policy and appearance are separate"
+    ]
+  },
+  "native_scene_validation": {
+    "passed": true,
+    "maximum_marker_uv_error": 0.00171197,
+    "composited_mirror_views": 2,
+    "maximum_composited_marker_error_px": 0.11647,
+    "normal_updates_scheduled": 2,
+    "maximum_recursion_depth": 1,
+    "marker_pixels_initial": [
+      457,
+      1788,
+      349
+    ],
+    "marker_pixels_moved": [
+      462,
+      1756,
+      343
+    ],
+    "limits": [
+      "Deterministic scene-geometry fixture and finite projection sweep; final optical fidelity and full-game performance require separate review",
+      "QA forces all three targets; ordinary rendering budgets one eligible mirror update per frame"
+    ]
+  },
+  "reference": "docs/porsche-mirror-reference.json",
+  "render_policy": {
+    "high_target": [
+      512,
+      256
+    ],
+    "low_target": [
+      256,
+      128
+    ],
+    "high_per_pane_limit_hz": 30,
+    "low_per_pane_limit_hz": 15,
+    "normal_updates_per_frame": 1,
+    "minimum_pane_pixels": [
+      10,
+      3
+    ],
+    "maximum_vehicle_eye_distance_m": 12,
+    "filter": "Trilinear mipmaps and up to 8x anisotropy",
+    "qa_force": "May update all eligible panes for controlled inspection"
+  },
+  "controls": {
+    "Home/End": "Rearview yaw",
+    "PageUp/PageDown": "Rearview pitch",
+    "Backspace": "Reset aim",
+    "yaw_envelope_rad": [
+      -0.18,
+      0.18
+    ],
+    "pitch_envelope_rad": [
+      -0.12,
+      0.12
+    ]
+  },
+  "images": [
+    {
+      "path": "screenshots/porsche-native-scene-mirrors.png",
+      "sha256": "ccc429fd4b1bf37d01d1bfc535df4b38c7f85175733f83d5261157dc543a9af3"
+    },
+    {
+      "path": "screenshots/porsche-native-mirror-markers.png",
+      "sha256": "ff848fbbe22e469927367c35c390629523fc0697385d270887950b2f08371d91"
+    },
+    {
+      "path": "screenshots/porsche-mirror-left-markers.png",
+      "sha256": "f900e782793f1c69027dc032e412e99386290f12f3351af41cc4da54b0710045"
+    },
+    {
+      "path": "screenshots/porsche-mirror-right-markers.png",
+      "sha256": "e4b8620ac9130bf37bd2e1289dc9f79cf64b937fe0b20d12037c69e8f2407b37"
+    },
+    {
+      "path": "screenshots/porsche-mirror-interior-markers.png",
+      "sha256": "1f816b38bfd2eafdfe413d040fc408bf547612fd93126dc082e4136e96a4e89c"
+    }
+  ],
+  "visual_observations": [
+    "The clean driver capture shows actual road/terrain and rear-window framing in the visible panes",
+    "Colored test objects are real scene geometry behind the vehicle and appear in both mirror targets and the main cockpit",
+    "Small details in the reflected scene are filtered; the optical model is planar and final frame rate is not measured"
+  ],
+  "remaining": [
+    "Full-game mirror cost and refresh/loading policy assessment",
+    "Final optical appearance and swept driver/cabin clearance",
+    "Vehicle-specific physics, local shadowing and final material/appearance review"
+  ],
+  "complete": false,
+  "final_fidelity_verified": false
+}

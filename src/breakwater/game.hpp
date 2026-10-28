@@ -94,6 +94,7 @@ struct Vehicle {
     std::array<float,4> porscheWheelAngles{};
     double porscheChronoSeconds{},porscheDisplayClock{};
     bool porscheChronoRunning{};
+    float porscheMirrorYaw{},porscheMirrorPitch{};
     float porscheWindow{},porscheAero{},porscheAirbrake{},porscheBrake{},porscheThrottle{},porschePaddleL{},porschePaddleR{};
     Vector3 p{},velocity{};
     float yaw{},speed{},wheelAngle{},wheelSpinRate{},steer{},suspension{},damage{};
@@ -267,6 +268,7 @@ void InitWorld();
 bool RunBallisticImpactQA();
 void ShutdownWorld();
 void DrawWorld();
+void DrawWorldScene(const Matrix* projection=nullptr);
 void DrawActors();
 void UpdateCamera();
 void DrawUI();

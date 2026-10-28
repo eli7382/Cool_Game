@@ -1,7 +1,7 @@
 {
-  "reviewed_at": "2026-10-28T20:10:33.650144+00:00",
+  "reviewed_at": "2026-10-28T21:05:56.253346+00:00",
   "passed": true,
-  "executable_sha256": "e8d87d3c1c469786dbf5149e68562dcae623b8bf80d504dad29d49433ddaf93d",
+  "executable_sha256": "f0edf3f5b7a7023f0033adb12980e4c9d95957d874de3abdbdae2741a332667f",
   "checks": [
     {
       "name": "native-stopwatch-hands-match-production-rig-all-detail-levels",
@@ -159,7 +159,7 @@
     },
     {
       "path": "screenshots/porsche-native-live-cockpit.png",
-      "sha256": "36d48044deb5978d5fc29195ee94b1163ec37f772bfcef7cd9e3db94a2395deb"
+      "sha256": "f5fd7ad7c6c67df7b256bb530c5184e9021f7dc009c6491504183f193cb606f2"
     }
   ],
   "limits": [

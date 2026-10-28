@@ -46,6 +46,7 @@ void PorscheRig::Pose(const PorscheControls& inputs){
     PorscheControls c=inputs;
     auto bounded=[](float value,float minimum,float maximum){return std::isfinite(value)?std::clamp(value,minimum,maximum):0.0f;};
     c.steering=bounded(c.steering,-.55f,.55f);c.rearSteering=bounded(c.rearSteering,-.08f,.08f);c.rpm=bounded(c.rpm,0,9000);
+    c.mirrorYaw=bounded(c.mirrorYaw,-.18f,.18f);c.mirrorPitch=bounded(c.mirrorPitch,-.12f,.12f);
     for(float* value:{&c.doorL,&c.doorR,&c.windowL,&c.windowR,&c.drs,&c.airbrake,&c.brake,&c.throttle,&c.paddleL,&c.paddleR})*value=bounded(*value,0,1);
     for(float& value:c.travel)value=bounded(value,-.05f,.05f);for(float& value:c.wheelAngles)if(!std::isfinite(value))value=0;
     for(std::size_t i=0;i<source.size();++i)local[i]=source[i].local;
@@ -54,6 +55,7 @@ void PorscheRig::Pose(const PorscheControls& inputs){
     Rotate("WingUpper_Hinge",x,(40*c.airbrake-12*c.drs*(1-c.airbrake))*DEG2RAD);
     for(const char* side:{"L","R"})Rotate(std::string("FrontAero_")+side,x,(20*c.airbrake-8*c.drs)*DEG2RAD);
     Rotate("SteeringWheel_Pivot",z,c.steering*8);
+    Rotate("Mirror_Adjust_Interior",y,c.mirrorYaw);Rotate("Mirror_Adjust_Interior",x,c.mirrorPitch);
     Rotate("BrakePedal_Pivot",x,-c.brake*.18f);Rotate("ThrottlePedal_Pivot",x,c.throttle*.12f);
     Rotate("ShiftPaddle_L",y,c.paddleL*.12f);Rotate("ShiftPaddle_R",y,-c.paddleR*.12f);
     Rotate("Tachometer_Needle",z,std::clamp(c.rpm/9000.0f,0.0f,1.0f)*4.241150082346221f);

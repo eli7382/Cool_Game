@@ -20,6 +20,9 @@ Vehicle selection keeps each parked car's identity and position.
 | [ / ] | Animate the shift paddles |
 | J | Start / pause the Sport Chrono stopwatch |
 | U | Stop and zero the stopwatch |
+| Home / End | Adjust rear-view mirror yaw |
+| Page Up / Page Down | Adjust rear-view mirror pitch |
+| Backspace | Reset rear-view mirror aim |
 | R | Reset the occupied car at the base |
 
 Wheels spin at their separate front/rear tyre radii; calipers retain their
@@ -71,8 +74,34 @@ detail levels and keep separate targets for occupied and parked cars.
 Unchanged telemetry reuses the existing targets. Barlow fonts and their
 redistribution license are bundled in `assets/porsche/fonts/`.
 
-Scene-reflecting mirrors, material refinements,
-comprehensive clearance and full-game profiling remain in development.
+All three optical panes now show the native game scene. The reflected camera
+and projection follow each fitted pane, including door movement and rear-view
+adjustment. Projection is cropped to the actual optical vertices, and an
+oblique near plane rejects geometry behind the silvered surface. The plane
+construction follows the production Three viewer; the clipping method is
+described by [Eric Lengyel](https://terathon.com/lengyel/Lengyel-SelectedPapers.pdf).
+These are planar approximations to the source optics, with inferred adjustment
+limits of +/- 0.18 rad yaw and +/- 0.12 rad pitch.
+
+Normal rendering updates at most one eligible mirror per frame, with a
+30 Hz per-pane limit on High and 15 Hz on Low. Targets are 512x256 or 256x128,
+with trilinear mip filtering and up to 8x anisotropy. Panes outside the main view, smaller than ten
+pixels or facing away are skipped, as are updates when the viewer is more
+than 12 metres from the vehicle.
+Image content updates on that budget while projection follows the current
+pane and eye. Reflective panes are hidden during mirror passes to prevent
+feedback. The existing HDR material remains the fallback. Reflecting scene
+content is already display encoded; the final mirror copy applies a linear
+silver tint without a second exposure/tone-map pass.
+
+Display and mirror updates run outside 3D mode and restore the main camera,
+projection/modelview matrices and viewport. `DrawWorldScene` supplies the same
+native world drawing for the main camera and reflected cameras. The render
+targets are owned separately from shared model materials and are released at
+shutdown. The rear-view adjustment API is `SetPorscheRearview(vehicle,yaw,pitch)`.
+
+Local shadowing, material refinements, comprehensive clearance, optical
+appearance and full-game profiling remain in development.
 The linkage datums are fitted to the source model; the joint solver supplies
 visual articulation and does not replace the game's tire-force simulation.
 The requested final visual fidelity is not verified.
@@ -173,6 +202,7 @@ python scripts/prepare_porsche_ibl.py
 python tests/check_porsche_ibl.py
 node tests/check_porsche_environment.mjs ../Porsche_911
 node tests/build_porsche_reference.mjs ../Porsche_911
+node tests/build_porsche_mirror_reference.mjs ../Porsche_911
 ```
 
 The independent check compares every source triangle corner, including all
@@ -191,6 +221,18 @@ bindings. See `docs/porsche-ibl-validation.json` and
 `docs/porsche-native-lighting-qa.json`. These checks do not validate local scene
 reflections, self-shadowing or full-vehicle appearance; those require separate
 work and visual review.
+
+The mirror fixture compares 54 reflected/cropped/oblique projections against
+the existing Three implementation, using actual optical vertices from all
+three detail levels and movement, nonuniform scale, door, joint and camera
+poses. Native GPU checks move real scene markers behind the vehicle, compare
+their positions in the targets and main cockpit, and reject a depth-disabled
+marker behind the clipping plane. They also check graphics-preset target
+replacement, vehicle ownership, the update budget, and main HUD coordinates.
+See `docs/porsche-native-mirror-projection-qa.json`,
+`docs/porsche-native-mirrors-qa.json` and the clean/marked cockpit captures.
+QA can force all three updates; ordinary rendering retains the one-update
+budget. These finite tests do not establish final optical fidelity or frame rate.
 
 The nine-coefficient SH candidate was rejected after it exceeded the diffuse
 reference tolerance in darker directions. The retained 128x64 irradiance map

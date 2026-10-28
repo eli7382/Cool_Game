@@ -1,0 +1,11 @@
+{
+  "passed":true,
+  "source_projection_cases":54,
+  "actual_pane_vertices":2628,
+  "maximum_uv_error":6.92904e-05,
+  "maximum_eye_point_error_m":1.50789e-06,
+  "maximum_normal_error":1.23104e-07,
+  "maximum_fitted_plane_error_m":9.31099e-05,
+  "fixture_error":"",
+  "limits":["Independent production Three projection comparison; scene rendering, update policy and appearance are separate"]
+}

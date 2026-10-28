@@ -2,6 +2,7 @@
 #include "porsche_native.hpp"
 #include "porsche_displays.hpp"
 #include "porsche_ibl_data.hpp"
+#include "porsche_mirror_projection.hpp"
 #include <cstring>
 #include <memory>
 #include <stdexcept>
@@ -38,14 +39,26 @@ struct NativeLevel {
     bool detailedGrille{true};
     bool ready{};
     int lastWireMeshes{},lastFilteredMeshes{};
+    std::array<int,3> mirrorMesh{{-1,-1,-1}},mirrorFrame{{-1,-1,-1}};
 };
+struct NativeMirror {RenderTexture2D target{};PorscheMirrorProjection projection;double lastUpdate{-1e9};bool ready{},visible{};};
+struct CarMirrors {std::array<NativeMirror,3> panes;bool active{};};
+std::array<CarMirrors,2> carMirrors;
+PorscheMirrorStats mirrorStats;
+bool mirrorPass{};
+PorscheMirrorProjection currentMirror;
+bool qaMirrorMarkers{};
+std::array<Vector3,3> qaMirrorMarkerPositions{};
+constexpr Color qaMirrorColors[]{{230,24,38,255},{24,230,38,255},{24,38,230,255}};
+int MirrorKind(const char* name){const char* names[]{"Mirror | silvered glass L","Mirror | silvered glass R","Mirror | silvered glass Interior"};for(int i=0;i<3;++i)if(std::strcmp(name,names[i])==0)return i;return -1;}
+NativeMirror* MirrorFor(const Vehicle& vehicle,int kind){const int slot=&vehicle==&g.car?0:&vehicle==&g.extraCar?1:-1;return slot>=0&&kind>=0?&carMirrors[slot].panes[kind]:nullptr;}
 std::array<NativeLevel,3> levels;
 Shader porscheShader{};
 Texture2D environment{},dfgTexture{};
 bool porscheReady{};
 int qaDetailLevel{-1};
 std::unordered_map<std::string,Texture2D> textures;
-struct Locations {int eye,base,emission,pbr,optics,maps,channels,normalStrength,emissiveMap,detailRepeat,liveDisplay;} locations;
+struct Locations {int eye,base,emission,pbr,optics,maps,channels,normalStrength,emissiveMap,detailRepeat,liveDisplay,mirrorReady,mirrorMatrix;} locations;
 Texture2D LinearTexture(const char* path,const char* magic){
     std::ifstream file(path,std::ios::binary);if(!file)throw std::runtime_error(std::string("Missing native lighting: ")+path);std::vector<char> bytes((std::istreambuf_iterator<char>(file)),{});
     if(bytes.size()<16||std::memcmp(bytes.data(),magic,4)!=0)throw std::runtime_error("Invalid native lighting header");
@@ -101,6 +114,8 @@ bool LoadLevel(int level){
         data.morphs.push_back(std::move(morph));
     }}catch(...){UnloadFileData(raw);throw;}UnloadFileData(raw);
     data.rig=std::make_unique<PorscheRig>(nodes,data.springs);
+    for(std::size_t i=0;i<data.bindings.size();++i){const int kind=MirrorKind(data.surfaces[data.bindings[i].material].name);if(kind>=0){if(data.mirrorMesh[kind]>=0)throw std::runtime_error("Multiple native mirror optical meshes");data.mirrorMesh[kind]=static_cast<int>(i);}}
+    const char* frames[]{"Mirror_Frame_L","Mirror_Frame_R","Mirror_Frame_Interior"};for(int kind=0;kind<3;++kind){data.mirrorFrame[kind]=data.rig->Find(frames[kind]);if(data.mirrorMesh[kind]<0||data.mirrorFrame[kind]<0)throw std::runtime_error("Missing native optical mirror binding");}
     if(level==0){
         for(std::size_t i=0;i<data.surfaces.size();++i){const std::string name=data.surfaces[i].name;if(name=="Cooling | satin protective grille wire")data.wireMaterial=static_cast<int>(i);if(name=="Cooling | recessed aluminium radiator fins")data.radiatorMaterial=static_cast<int>(i);}
         const auto filtered=std::find_if(std::begin(porsche_data::NearSurfaces),std::end(porsche_data::NearSurfaces),[](const auto& s){return std::string(s.name)=="Cooling | prefiltered grille and radiator";});
@@ -134,7 +149,7 @@ PorscheControls Controls(const Vehicle& v,bool occupied){
     PorscheControls c;c.steering=Clamp(v.steer*.55f,-.55f,.55f);c.doorL=v.porscheDoor[0];c.doorR=v.porscheDoor[1];c.windowL=c.windowR=v.porscheWindow;c.drs=v.porscheAero;c.airbrake=v.porscheAirbrake;c.brake=v.porscheBrake;c.throttle=v.porscheThrottle;c.paddleL=v.porschePaddleL;c.paddleR=v.porschePaddleR;c.wheelAngles=v.porscheWheelAngles;c.rpm=occupied?900+Clamp((v.engineRpm-.18f)/.82f,0,1)*8100:0;
     // Physics contact slots are -X rear, +X rear, -X front, +X front;
     // the model's named left side is +X. Keep each corner on its own sample.
-    c.travel={Clamp(v.wheelTravel[3],-.05f,.05f),Clamp(v.wheelTravel[2],-.05f,.05f),Clamp(v.wheelTravel[1],-.05f,.05f),Clamp(v.wheelTravel[0],-.05f,.05f)};c.chronoSeconds=v.porscheChronoSeconds;return c;
+    c.travel={Clamp(v.wheelTravel[3],-.05f,.05f),Clamp(v.wheelTravel[2],-.05f,.05f),Clamp(v.wheelTravel[1],-.05f,.05f),Clamp(v.wheelTravel[0],-.05f,.05f)};c.chronoSeconds=v.porscheChronoSeconds;c.mirrorYaw=v.porscheMirrorYaw;c.mirrorPitch=v.porscheMirrorPitch;return c;
 }
 struct SuspensionReferenceReader {
     std::vector<char> bytes;std::size_t offset{};
@@ -202,12 +217,26 @@ bool RunLightingProbes(){
     const Vector4 reset{};SetShaderValue(porscheShader,probeLocation,&reset,SHADER_UNIFORM_VEC4);MemFree(material.maps);UnloadMesh(mesh);UnloadRenderTexture(target);
     const bool passed=count==static_cast<int>(std::size(porsche_ibl_reference::Probes))&&maximum<2.0f/255;std::ofstream report("docs/porsche-native-lighting-qa.json");report<<"{\n  \"passed\":"<<(passed?"true":"false")<<",\n  \"gpu_probes\":"<<count<<",\n  \"maximum_absolute_error\":"<<maximum<<",\n  \"quantization_tolerance\":"<<2.0/255<<",\n  \"scope\":\"Actual native shader, atlas/DFG textures, diffuse irradiance and compensated furnace response read back from a 16x16 GPU target; independent bake validation is separate\",\n  \"limits\":[\"Finite probe samples and RGBA8 quantization; not whole-vehicle appearance or local shadow validation\"]\n}\n";return passed;
 }
+bool RunMirrorProjectionReference(){
+    int cases=0,vertices=0;double maxUV=0,maxEye=0,maxNormal=0,maxPlane=0;bool passed=false;std::string error;
+    try{SuspensionReferenceReader reader("tests/porsche_mirror_reference.bin");if(reader.String(4)!="MRRF"||reader.Read<unsigned int>()!=1||reader.Read<unsigned int>()!=54)throw std::runtime_error("Unknown mirror reference fixture");
+        for(int record=0;record<54;++record){const auto level=reader.Read<unsigned int>(),kind=reader.Read<unsigned int>(),count=reader.Read<unsigned int>();if(level>2||kind>2||count<3||count>2000)throw std::runtime_error("Invalid mirror reference dimensions");const Matrix frame=reader.Transform();Camera3D eye{};eye.position=reader.Point();eye.target=reader.Point();eye.up=reader.Point();eye.fovy=reader.Read<float>();eye.projection=CAMERA_PERSPECTIVE;const float aspect=reader.Read<float>(),nearPlane=reader.Read<float>(),farPlane=reader.Read<float>();std::vector<Vector3> pane;for(unsigned int i=0;i<count;++i)pane.push_back(reader.Point());
+            const Vector3 expectedEye=reader.Point(),expectedPoint=reader.Point(),expectedNormal=reader.Point();const float expectedDistance=reader.Read<float>();const Matrix expectedTexture=reader.Transform(),expectedClip=reader.Transform();PorscheMirrorProjection projection;if(!projection.Build(frame,pane,eye,aspect,nearPlane,farPlane))throw std::runtime_error("Valid source mirror projection rejected");
+            maxEye=std::max({maxEye,static_cast<double>(Vector3Distance(projection.camera.position,expectedEye)),static_cast<double>(Vector3Distance(projection.point,expectedPoint)),static_cast<double>(std::abs(projection.eyeDistance-expectedDistance))});maxNormal=std::max(maxNormal,static_cast<double>(Vector3Distance(projection.normal,expectedNormal)));
+            for(Vector3 p:pane){const auto actual=PorscheProjectPoint(p,projection.texture),expected=PorscheProjectPoint(p,expectedTexture);const double x=actual.x/actual.w,y=actual.y/actual.w;maxUV=std::max({maxUV,std::abs(x-expected.x/expected.w),std::abs(y-expected.y/expected.w)});if(x<-.001||x>1.001||y<-.001||y>1.001)throw std::runtime_error("Actual pane outside mirror target");maxPlane=std::max(maxPlane,static_cast<double>(std::abs(Vector3DotProduct(projection.normal,Sub(p,projection.point)))));++vertices;}
+            const Vector3 direction=Norm(Sub(projection.point,eye.position)),reflected=Sub(direction,Mul(projection.normal,2*Vector3DotProduct(direction,projection.normal))),target=Add(projection.point,Mul(reflected,5));const auto visible=PorscheProjectPoint(target,projection.clipMatrix),hidden=PorscheProjectPoint(Sub(projection.point,Mul(projection.normal,.02f)),projection.clipMatrix);if(visible.z+visible.w<=0||hidden.z+hidden.w>=0)throw std::runtime_error("Mirror oblique clipping side incorrect");
+            const Matrix expectedView=MatrixLookAt(projection.camera.position,projection.camera.target,projection.camera.up);const auto sourceDepth=PorscheProjectPoint(target,MatrixMultiply(expectedView,expectedClip));if(sourceDepth.z+sourceDepth.w<=0)throw std::runtime_error("Reference oblique clipping mismatch");++cases;
+        }if(reader.offset!=reader.bytes.size())throw std::runtime_error("Unconsumed mirror reference data");passed=cases==54&&maxUV<.0015&&maxEye<2e-5&&maxNormal<2e-5&&maxPlane<.00025;
+    }catch(const std::exception& e){error=e.what();TraceLog(LOG_ERROR,"Native mirror projection: %s",e.what());}
+    std::ofstream report("docs/porsche-native-mirror-projection-qa.json");report<<"{\n  \"passed\":"<<(passed?"true":"false")<<",\n  \"source_projection_cases\":"<<cases<<",\n  \"actual_pane_vertices\":"<<vertices<<",\n  \"maximum_uv_error\":"<<maxUV<<",\n  \"maximum_eye_point_error_m\":"<<maxEye<<",\n  \"maximum_normal_error\":"<<maxNormal<<",\n  \"maximum_fitted_plane_error_m\":"<<maxPlane<<",\n  \"fixture_error\":\""<<error<<"\",\n  \"limits\":[\"Independent production Three projection comparison; scene rendering, update policy and appearance are separate\"]\n}\n";return passed;
+}
 }
 bool InitPorsche(){
     try{
         porscheShader=LoadShader("assets/porsche/shaders/porsche.vs","assets/porsche/shaders/porsche.fs");if(!IsShaderValid(porscheShader)||porscheShader.id==rlGetShaderIdDefault())return false;
         locations={GetShaderLocation(porscheShader,"eyePosition"),GetShaderLocation(porscheShader,"baseFactor"),GetShaderLocation(porscheShader,"emissionFactor"),GetShaderLocation(porscheShader,"pbr"),GetShaderLocation(porscheShader,"optics"),GetShaderLocation(porscheShader,"maps"),GetShaderLocation(porscheShader,"channels"),GetShaderLocation(porscheShader,"normalStrength"),GetShaderLocation(porscheShader,"emissiveMap"),GetShaderLocation(porscheShader,"detailRepeat")};
         locations.liveDisplay=GetShaderLocation(porscheShader,"liveDisplay");if(!InitPorscheDisplays())throw std::runtime_error("Cannot initialize native cockpit fonts");
+        locations.mirrorReady=GetShaderLocation(porscheShader,"mirrorReady");locations.mirrorMatrix=GetShaderLocation(porscheShader,"mirrorMatrix");porscheShader.locs[SHADER_LOC_MAP_BRDF]=GetShaderLocation(porscheShader,"texture10");
         for(int i=0;i<7;++i)porscheShader.locs[SHADER_LOC_MAP_ALBEDO+i]=GetShaderLocation(porscheShader,TextFormat("texture%d",i));
         environment=LinearTexture("assets/porsche/environments/daylight_ggx.bin","PGGA");dfgTexture=LinearTexture("assets/porsche/environments/ggx_dfg.bin","PGDF");
         const int rectLocation=GetShaderLocation(porscheShader,"environmentRects[0]"),sizeLocation=GetShaderLocation(porscheShader,"environmentSize");if(rectLocation<0||sizeLocation<0||porscheShader.locs[SHADER_LOC_MAP_HEIGHT]<0)throw std::runtime_error("Native IBL shader bindings missing");
@@ -217,6 +246,7 @@ bool InitPorsche(){
     }catch(const std::exception& e){TraceLog(LOG_ERROR,"Porsche initialization: %s",e.what());LogEvent("porsche-initialization-failed");return false;}
 }
 void ShutdownPorsche(){
+    for(auto& mirrors:carMirrors){for(auto& pane:mirrors.panes)if(IsRenderTextureValid(pane.target))UnloadRenderTexture(pane.target);mirrors={};}mirrorStats={};mirrorPass=false;
     ShutdownPorscheDisplays();
     for(auto& level:levels){if(IsModelValid(level.model))UnloadModel(level.model);if(level.filteredRadiator.maps)MemFree(level.filteredRadiator.maps);level={};}
     for(const auto& [name,texture]:textures)UnloadTexture(texture);textures.clear();
@@ -237,6 +267,8 @@ void UpdatePorscheControls(Vehicle& v,float dt,bool occupied){
     v.porscheChronoSeconds=std::isfinite(v.porscheChronoSeconds)?std::clamp(v.porscheChronoSeconds,0.0,5999.9):0.0;
     if(v.porscheChronoRunning){v.porscheChronoSeconds=std::min(5999.9,v.porscheChronoSeconds+elapsed);if(v.porscheChronoSeconds>=5999.9)v.porscheChronoRunning=false;}
     if(occupied&&!g.qaPorsche){
+        SetPorscheRearview(v,v.porscheMirrorYaw+(IsKeyDown(KEY_END)-IsKeyDown(KEY_HOME))*dt*.15f,v.porscheMirrorPitch+(IsKeyDown(KEY_PAGE_UP)-IsKeyDown(KEY_PAGE_DOWN))*dt*.15f);
+        if(IsKeyPressed(KEY_BACKSPACE))SetPorscheRearview(v,0,0);
         if(IsKeyPressed(KEY_J))SetPorscheChrono(v,!v.porscheChronoRunning);
         if(IsKeyPressed(KEY_U))SetPorscheChrono(v,false,true);
         if(IsKeyPressed(KEY_O)&&fabsf(v.speed)<.5f)v.porscheDoorsOpen[0]=!v.porscheDoorsOpen[0];
@@ -261,6 +293,41 @@ void SetPorscheChrono(Vehicle& v,bool running,bool reset){
     if(reset||!std::isfinite(v.porscheChronoSeconds))v.porscheChronoSeconds=0;
     v.porscheChronoRunning=running&&v.porscheChronoSeconds<5999.9;
 }
+bool PorscheMirrorPass(){return mirrorPass;}
+void SetPorscheRearview(Vehicle& v,float yaw,float pitch){if(v.isPorsche){v.porscheMirrorYaw=std::isfinite(yaw)?std::clamp(yaw,-.18f,.18f):0;v.porscheMirrorPitch=std::isfinite(pitch)?std::clamp(pitch,-.12f,.12f):0;}}
+bool PorscheMirrorInView(Vector3 point,float radius){return currentMirror.SphereVisible(point,radius);}
+PorscheMirrorStats GetPorscheMirrorStats(){return mirrorStats;}
+void DrawPorscheMirrorTestMarkers(){if(g.qaPorsche&&qaMirrorMarkers){for(int i=0;i<3;++i)DrawCubeV(qaMirrorMarkerPositions[i],{.06f,.06f,.06f},qaMirrorColors[i]);
+    if(mirrorPass){rlDrawRenderBatchActive();rlDisableDepthTest();DrawCubeV(Sub(currentMirror.point,Mul(currentMirror.normal,.03f)),{.008f,.008f,.008f},MAGENTA);rlDrawRenderBatchActive();rlEnableDepthTest();}
+}}
+void PreparePorscheMirrors(bool force){
+    if(!porscheReady||mirrorPass||rlGetActiveFramebuffer()!=0)return;mirrorStats.visible=mirrorStats.lastFrameUpdates=0;const Matrix savedProjection=rlGetMatrixProjection(),savedModelview=rlGetMatrixModelview();
+    struct Candidate {NativeMirror* pane;double now;};std::vector<Candidate> candidates;const Camera3D eye=g.camera;
+    const float aspect=static_cast<float>(GetRenderWidth())/std::max(1,GetRenderHeight());const std::array<Vehicle*,2> cars{&g.car,&g.extraCar};
+    for(int slot=0;slot<2;++slot){const Vehicle& v=*cars[slot];auto& mirrors=carMirrors[slot];
+        if(!v.isPorsche){mirrors.active=false;for(auto& pane:mirrors.panes)pane.visible=pane.ready=false;continue;}
+        if(!mirrors.active){for(auto& pane:mirrors.panes)pane.ready=false;mirrors.active=true;}
+        for(auto& pane:mirrors.panes)pane.visible=false;if(Vector3Distance(v.p,eye.position)>12)continue;
+        auto& level=levels[0].ready?levels[0]:levels[1];level.rig->Pose(Controls(v,slot==0&&g.vehicle==VehicleKind::Car));const Matrix body=PorscheVehicleMatrix(v);const double now=v.porscheDisplayClock;
+        for(int kind=0;kind<3;++kind){auto& pane=mirrors.panes[kind];const int index=level.mirrorMesh[kind];const auto& mesh=level.model.meshes[index];const Matrix transform=MatrixMultiply(level.rig->MeshDelta(level.bindings[index].node),body),frame=MatrixMultiply(level.rig->World(level.mirrorFrame[kind]),body);
+            std::vector<Vector3> vertices;vertices.reserve(mesh.vertexCount);for(int i=0;i<mesh.vertexCount;++i)vertices.push_back(Vector3Transform({mesh.vertices[i*3],mesh.vertices[i*3+1],mesh.vertices[i*3+2]},transform));
+            if(!pane.projection.Build(frame,vertices,eye,aspect,rlGetCullDistanceNear(),rlGetCullDistanceFar()))continue;
+            const auto b=pane.projection.screenBounds;const float width=(b.z-b.x)*GetRenderWidth()*.5f,height=(b.w-b.y)*GetRenderHeight()*.5f;
+            if(!force&&(b.x>1||b.z< -1||b.y>1||b.w< -1||width<10||height<3))continue;
+            pane.visible=true;++mirrorStats.visible;if(now<pane.lastUpdate||now-pane.lastUpdate>.25)pane.ready=false;
+            if(force||!pane.ready||now-pane.lastUpdate>=1.0/(g.graphics==GraphicsMode::High?30:15))candidates.push_back({&pane,now});
+        }
+    }
+    std::stable_sort(candidates.begin(),candidates.end(),[](const Candidate& a,const Candidate& b){if(a.pane->ready!=b.pane->ready)return !a.pane->ready;return a.pane->lastUpdate<b.pane->lastUpdate;});
+    for(const auto& candidate:candidates){if(!force&&mirrorStats.lastFrameUpdates>=1)break;auto& pane=*candidate.pane;const int width=g.graphics==GraphicsMode::High?512:256;
+        if(pane.target.texture.width!=width){if(IsRenderTextureValid(pane.target))UnloadRenderTexture(pane.target);pane.target=LoadRenderTexture(width,width/2);pane.ready=false;SetTextureFilter(pane.target.texture,TEXTURE_FILTER_BILINEAR);SetTextureWrap(pane.target.texture,TEXTURE_WRAP_CLAMP);}
+        if(!IsRenderTextureValid(pane.target))continue;
+        mirrorPass=true;mirrorStats.maximumDepth=std::max(mirrorStats.maximumDepth,1);currentMirror=pane.projection;g.camera=pane.projection.camera;BeginTextureMode(pane.target);ClearBackground({94,123,132,255});
+        try{DrawWorldScene(&pane.projection.projection);pane.ready=true;pane.lastUpdate=candidate.now;++mirrorStats.lastFrameUpdates;++mirrorStats.totalUpdates;}catch(const std::exception& error){EndMode3D();pane.ready=false;TraceLog(LOG_ERROR,"Porsche mirror pass: %s",error.what());}
+        EndTextureMode();if(pane.ready){GenTextureMipmaps(&pane.target.texture);SetTextureFilter(pane.target.texture,TEXTURE_FILTER_TRILINEAR);SetTextureFilter(pane.target.texture,TEXTURE_FILTER_ANISOTROPIC_8X);}g.camera=eye;mirrorPass=false;
+    }
+    rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedModelview);if(IsShaderValid(g.worldShader))SetShaderValue(g.worldShader,g.locEye,&eye.position,SHADER_UNIFORM_VEC3);SetShaderValue(porscheShader,locations.eye,&eye.position,SHADER_UNIFORM_VEC3);
+}
 void DrawPorsche(const Vehicle& v,bool cockpit,bool mechanismOnly){
     if(!porscheReady)return;
     const float distance=Vector3Distance(v.p,g.camera.position);
@@ -271,6 +338,7 @@ void DrawPorsche(const Vehicle& v,bool cockpit,bool mechanismOnly){
     level.lastWireMeshes=level.lastFilteredMeshes=0;
     if(index==0){const float range=std::max(.01f,Vector3Distance(Vector3Transform(level.grilleCentre,vehicle),g.camera.position));const float pitchPixels=.004f*GetRenderHeight()/(2*std::tan(g.camera.fovy*DEG*.5f)*range);level.detailedGrille=level.detailedGrille?pitchPixels>=2.5f:pitchPixels>3.4f;}
     for(std::size_t i=0;i<level.bindings.size();++i){const auto& s=level.surfaces[level.bindings[i].material];
+        if(mirrorPass&&MirrorKind(s.name)>=0)continue;
         if(index==0&&!level.detailedGrille&&level.bindings[i].material==level.wireMaterial)continue;
         if(mechanismOnly){bool mechanism=false,wheel=false;for(int node=level.bindings[i].node;node>=0;node=level.rig->Nodes()[node].parent){const std::string name=level.rig->Nodes()[node].name;
             if(name.starts_with("WheelSpin_"))wheel=true;
@@ -285,7 +353,8 @@ void DrawPorsche(const Vehicle& v,bool cockpit,bool mechanismOnly){
     int last=-1;auto draw=[&](int i){const int material=level.bindings[i].material;const bool filtered=index==0&&!level.detailedGrille&&material==level.radiatorMaterial;auto s=filtered?level.filteredSurface:level.surfaces[material];auto& renderMaterial=filtered?level.filteredRadiator:level.model.materials[material+1];
         const auto display=PorscheDisplayTexture(v,PorscheDisplayKind(s.name));const bool live=IsTextureValid(display);
         if(live){renderMaterial.maps[MATERIAL_MAP_DIFFUSE].texture=renderMaterial.maps[MATERIAL_MAP_EMISSION].texture=display;s.base={1,1,1,1};s.emission={1,1,1};s.emissiveStrength=.65f;s.metallic=0;s.roughness=.34f;}
-        if(material!=last){Surface(s,v,filtered?Vector2{2,4}:Vector2{1,1});const float enabled=live?1.0f:0.0f;SetShaderValue(porscheShader,locations.liveDisplay,&enabled,SHADER_UNIFORM_FLOAT);last=material;}
+        if(material!=last){Surface(s,v,filtered?Vector2{2,4}:Vector2{1,1});const float enabled=live?1.0f:0.0f;SetShaderValue(porscheShader,locations.liveDisplay,&enabled,SHADER_UNIFORM_FLOAT);
+            const auto* mirror=MirrorFor(v,MirrorKind(s.name));const float reflected=mirror&&!mirrorPass&&mirror->ready&&mirror->visible?1.0f:0.0f;SetShaderValue(porscheShader,locations.mirrorReady,&reflected,SHADER_UNIFORM_FLOAT);if(reflected>.5f){renderMaterial.maps[MATERIAL_MAP_BRDF].texture=mirror->target.texture;SetShaderValueMatrix(porscheShader,locations.mirrorMatrix,mirror->projection.texture);}else renderMaterial.maps[MATERIAL_MAP_BRDF].texture={};last=material;}
         if(s.doubleSided)rlDisableBackfaceCulling();else rlEnableBackfaceCulling();DrawMesh(level.model.meshes[i],renderMaterial,transform(i));if(material==level.wireMaterial)++level.lastWireMeshes;if(filtered)++level.lastFilteredMeshes;};
     for(int i:opaque)draw(i);
     BeginBlendMode(BLEND_ALPHA);rlDisableDepthMask();last=-1;for(int i:glass)draw(i);rlEnableDepthMask();EndBlendMode();rlEnableBackfaceCulling();
@@ -296,6 +365,7 @@ bool RunPorscheQA(){
     const bool shaderReady=porscheReady&&IsShaderValid(porscheShader)&&porscheShader.id!=rlGetShaderIdDefault();check(shaderReady,"dedicated-native-shader-and-linear-environment-ready");
     if(!shaderReady){std::ofstream("docs/porsche-native-qa.json")<<"{\"passed\":false,\"failure\":\"Native Porsche shader unavailable\"}";return false;}
     check(RunLightingProbes(),"native-GGX-atlas-DFG-and-diffuse-irradiance-match-independent-GPU-probes");
+    check(RunMirrorProjectionReference(),"native-mirror-reflection-crop-and-oblique-clip-match-source-rig");
     StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;
     // Drive the game's existing E-interaction path, including the parked-car
     // swap, instead of replacing the active car solely inside this fixture.
@@ -353,6 +423,7 @@ bool RunPorscheQA(){
     bool chronoPose=true;
     for(auto& level:levels)for(const auto& [seconds,reference]:std::array<std::pair<double,std::span<const porsche_reference::Node>>,3>{{{75.3,porsche_reference::ChronoShort},{1830.4,porsche_reference::ChronoWrap},{5999.9,porsche_reference::ChronoLimit}}}){PorscheControls c;c.chronoSeconds=seconds;level.rig->Pose(c);chronoPose=chronoPose&&compareReference(*level.rig,reference)<2e-5;}
     check(chronoPose,"native-stopwatch-hands-match-production-rig-all-detail-levels");
+    bool mirrorPose=true;for(auto& level:levels){PorscheControls c;c.mirrorYaw=.12f;c.mirrorPitch=-.08f;level.rig->Pose(c);mirrorPose=mirrorPose&&compareReference(*level.rig,porsche_reference::RearviewAdjusted)<2e-5;c.mirrorYaw=5;c.mirrorPitch=5;level.rig->Pose(c);mirrorPose=mirrorPose&&compareReference(*level.rig,porsche_reference::RearviewLimit)<2e-5;}check(mirrorPose,"rearview-shell-and-optic-adjustment-match-source-and-angle-limits");
     Vehicle timer=g.car;SetPorscheChrono(timer,true,true);for(int i=0;i<10;++i)UpdatePorscheControls(timer,.1f,true);SetPorscheChrono(timer,false);const double paused=timer.porscheChronoSeconds;UpdatePorscheControls(timer,.2f,false);
     check(std::abs(paused-1.0)<1e-6&&timer.porscheChronoSeconds==paused,"stopwatch-start-pause-retains-elapsed-simulation-time");
     SetPorscheChrono(timer,true,true);UpdatePorscheControls(timer,1.5f,false);check(std::abs(timer.porscheChronoSeconds-1.5)<1e-6,"stopwatch-retains-full-elapsed-time-across-a-long-frame");timer.porscheChronoSeconds=paused;SetPorscheChrono(timer,false);
@@ -403,7 +474,44 @@ bool RunPorscheQA(){
     check(isolated&&pixelHash(PorscheDisplayTexture(g.car,1))!=pixelHash(PorscheDisplayTexture(g.extraCar,1)),"parked-and-occupied-cars-have-independent-display-targets");
     std::swap(g.car,g.extraCar);PreparePorscheDisplays(true);check(PorscheDisplayTelemetry(g.car,true).chronoTenths==234&&PorscheDisplayTelemetry(g.extraCar,false).chronoTenths==753,"vehicle-swap-keeps-each-stopwatch-with-its-car");g.extraCar=savedExtra;
     g.car=initial;
-    std::ofstream report("docs/porsche-native-qa.json");report<<"{\n  \"passed\": "<<(failures==0?"true":"false")<<",\n  \"checks\": "<<checks<<",\n  \"failures\": "<<failures<<",\n  \"native_steering_poses\": "<<poses<<",\n  \"maximum_axial_drift_m\": "<<maximumAxial<<",\n  \"maximum_radial_drift_m\": "<<maximumRadial<<",\n  \"maximum_raw_rest_adjustment_m\": "<<maximumRest<<",\n  \"maximum_reference_pose_error_m\": "<<maximumReferenceError<<",\n  \"reference_nodes_compared\": "<<referenceNodes<<",\n  \"accelerated_speed_mps\": "<<acceleratedSpeed<<",\n  \"suspension_evidence\":\"docs/porsche-native-suspension-qa.json\",\n  \"limits\": [\"Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics\",\"Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames\",\"Source-fitted suspension and live screens are implemented; Porsche tire-force tuning, scene mirrors, instrument artwork and material refinements remain in development\"]\n}\n";
+    // Observe the actual game scene in all three render targets. Markers are
+    // geometry behind the vehicle, not pixels composited into a mirror image.
+    g.cameraDistance=g.cameraActualDistance=1.8f;g.cameraInitialized=false;UpdateCamera();const Camera3D mirrorEye=g.camera;const Matrix beforeProjection=rlGetMatrixProjection(),beforeModelview=rlGetMatrixModelview();PreparePorscheDisplays(true);PreparePorscheMirrors(true);
+    auto matrixError=[](Matrix a,Matrix b){float result=0;const auto av=MatrixToFloatV(a),bv=MatrixToFloatV(b);for(int i=0;i<16;++i)result=std::max(result,std::abs(av.v[i]-bv.v[i]));return result;};
+    check(rlGetActiveFramebuffer()==0&&matrixError(beforeProjection,rlGetMatrixProjection())<1e-7f&&matrixError(beforeModelview,rlGetMatrixModelview())<1e-7f&&Vector3Distance(g.camera.position,mirrorEye.position)==0&&Vector3Distance(g.camera.target,mirrorEye.target)==0,"offscreen-displays-and-mirrors-restore-main-camera-and-UI-matrices");
+    bool mirrorsReady=true;std::array<Image,3> baseline{};for(int kind=0;kind<3;++kind){auto& pane=carMirrors[0].panes[kind];mirrorsReady=mirrorsReady&&pane.ready&&IsRenderTextureValid(pane.target);if(pane.ready)baseline[kind]=LoadImageFromTexture(pane.target.texture);const auto& p=pane.projection;Vector3 incoming=Norm(Sub(p.point,mirrorEye.position)),reflected=Sub(incoming,Mul(p.normal,2*Vector3DotProduct(incoming,p.normal)));qaMirrorMarkerPositions[kind]=Add(p.point,Mul(reflected,5));}
+    check(mirrorsReady,"three-native-scene-mirror-targets-ready");BeginDrawing();ClearBackground(BLACK);DrawWorldScene();rlDrawRenderBatchActive();Image baselineMirrorScreen=LoadImageFromScreen();EndDrawing();qaMirrorMarkers=true;PreparePorscheMirrors(true);
+    bool mirrorBindings=true;for(int detail=0;detail<3;++detail){qaDetailLevel=detail;BeginDrawing();BeginMode3D(g.camera);DrawPorsche(g.car,true);EndMode3D();EndDrawing();auto& level=levels[detail];for(int kind=0;kind<3;++kind){const int mesh=level.mirrorMesh[kind];mirrorBindings=mirrorBindings&&level.model.materials[level.bindings[mesh].material+1].maps[MATERIAL_MAP_BRDF].texture.id==carMirrors[0].panes[kind].target.texture.id;}}qaDetailLevel=-1;check(mirrorBindings,"actual-scene-reflection-textures-bind-on-all-three-detail-levels");
+    struct MirrorPixels {int count{},clippedColor{};Vector2 centroid{};};
+    auto observe=[&](int kind){MirrorPixels found;auto& pane=carMirrors[0].panes[kind];if(!pane.ready||!baseline[kind].data)return found;Image image=LoadImageFromTexture(pane.target.texture);
+        for(int y=0;y<image.height;++y)for(int x=0;x<image.width;++x){const Color a=GetImageColor(image,x,y),b=GetImageColor(baseline[kind],x,y);const int delta=std::abs(a.r-b.r)+std::abs(a.g-b.g)+std::abs(a.b-b.b);if(delta<60)continue;
+            if(a.r>200&&a.b>200&&a.g<70)++found.clippedColor;const int values[]{a.r,a.g,a.b};const bool color=values[kind]>130&&values[kind]>values[(kind+1)%3]*1.7f&&values[kind]>values[(kind+2)%3]*1.7f;
+            if(color){++found.count;found.centroid.x+=(x+.5f)/image.width;found.centroid.y+=(y+.5f)/image.height;}
+        }if(found.count){found.centroid.x/=found.count;found.centroid.y/=found.count;}UnloadImage(image);return found;
+    };
+    std::array<MirrorPixels,3> first{},moved{};float markerError=0;bool markerViews=true,clipViews=true,markerMotion=true;const char* mirrorNames[]{"left","right","interior"};
+    for(int kind=0;kind<3;++kind){auto& pane=carMirrors[0].panes[kind];first[kind]=observe(kind);const auto uv=PorscheProjectPoint(qaMirrorMarkerPositions[kind],pane.projection.texture);markerError=std::max(markerError,Vector2Distance(first[kind].centroid,{uv.x/uv.w,uv.y/uv.w}));markerViews=markerViews&&first[kind].count>20;clipViews=clipViews&&first[kind].clippedColor==0;
+        Image image=LoadImageFromTexture(pane.target.texture);ImageFlipVertical(&image);check(ExportImage(image,TextFormat("screenshots/porsche-mirror-%s-markers.png",mirrorNames[kind])),"export-native-scene-mirror-marker-view");UnloadImage(image);
+        const Vector3 forward=Norm(Sub(pane.projection.camera.target,pane.projection.camera.position)),right=Norm(Vector3CrossProduct(forward,pane.projection.camera.up)),up=Norm(Vector3CrossProduct(right,forward));qaMirrorMarkerPositions[kind]=Add(qaMirrorMarkerPositions[kind],Add(Mul(right,.12f),Mul(up,.05f)));
+    }
+    PreparePorscheMirrors(true);for(int kind=0;kind<3;++kind){moved[kind]=observe(kind);const auto uv=PorscheProjectPoint(qaMirrorMarkerPositions[kind],carMirrors[0].panes[kind].projection.texture);markerError=std::max(markerError,Vector2Distance(moved[kind].centroid,{uv.x/uv.w,uv.y/uv.w}));markerMotion=markerMotion&&moved[kind].count>20&&Vector2Distance(moved[kind].centroid,first[kind].centroid)>.005f;clipViews=clipViews&&moved[kind].clippedColor==0;}
+    check(markerViews&&markerError<.01f,"all-three-mirrors-show-real-scene-markers-at-projected-positions");check(markerMotion,"moving-world-geometry-updates-all-three-scene-mirrors");check(clipViews,"GPU-oblique-plane-rejects-geometry-behind-silvered-face");
+    BeginDrawing();ClearBackground(BLACK);DrawWorldScene();rlDrawRenderBatchActive();Image composedMirrorScreen=LoadImageFromScreen();check(ExportImage(composedMirrorScreen,"screenshots/porsche-native-mirror-markers.png"),"export-main-cockpit-with-live-mirror-marker-geometry");EndDrawing();
+    int composedViews=0;float composedError=0;bool composed=true;
+    for(int kind=0;kind<3;++kind){const auto& p=carMirrors[0].panes[kind].projection;const auto b=p.screenBounds;if(b.x>1||b.z< -1||b.y>1||b.w< -1)continue;const int width=composedMirrorScreen.width,height=composedMirrorScreen.height;
+        int count=0;Vector2 centre{};for(int y=std::max(0,static_cast<int>((.5f-b.w*.5f)*height));y<std::min(height,static_cast<int>((.5f-b.y*.5f)*height)+1);++y)for(int x=std::max(0,static_cast<int>((b.x*.5f+.5f)*width));x<std::min(width,static_cast<int>((b.z*.5f+.5f)*width)+1);++x){const Color a=GetImageColor(composedMirrorScreen,x,y),old=GetImageColor(baselineMirrorScreen,x,y);const int c[]{a.r,a.g,a.b};if(std::abs(a.r-old.r)+std::abs(a.g-old.g)+std::abs(a.b-old.b)>50&&c[kind]>120&&c[kind]>c[(kind+1)%3]*1.7f&&c[kind]>c[(kind+2)%3]*1.7f){++count;centre.x+=x+.5f;centre.y+=y+.5f;}}
+        const Vector3 imagePoint=Sub(qaMirrorMarkerPositions[kind],Mul(p.normal,2*Vector3DotProduct(p.normal,Sub(qaMirrorMarkerPositions[kind],p.point))));const Matrix main=MatrixMultiply(MatrixLookAt(mirrorEye.position,mirrorEye.target,mirrorEye.up),MatrixPerspective(mirrorEye.fovy*DEG,static_cast<float>(width)/height,rlGetCullDistanceNear(),rlGetCullDistanceFar()));const auto clip=PorscheProjectPoint(imagePoint,main);const Vector2 expected{(clip.x/clip.w*.5f+.5f)*width,(.5f-clip.y/clip.w*.5f)*height};
+        if(count){centre.x/=count;centre.y/=count;composedError=std::max(composedError,Vector2Distance(centre,expected));}composed=composed&&count>=3;++composedViews;
+    }check(composed&&composedViews>=2&&composedError<5,"visible-mirrors-composite-scene-markers-at-physical-reflection-positions");UnloadImage(composedMirrorScreen);UnloadImage(baselineMirrorScreen);
+    qaMirrorMarkers=false;PreparePorscheMirrors(true);g.car.porscheDisplayClock+=.1;bool budget=true;int scheduled=0;for(int i=0;i<4;++i){PreparePorscheMirrors();budget=budget&&mirrorStats.lastFrameUpdates<=1;scheduled+=mirrorStats.lastFrameUpdates;}
+    check(budget&&scheduled>0&&mirrorStats.maximumDepth==1,"mirror-scheduler-caps-normal-updates-and-prevents-recursion");
+    const auto closedMirror=carMirrors[0].panes[0].projection;g.car.porscheDoor[0]=.35f;PreparePorscheMirrors(true);check(Vector3Distance(carMirrors[0].panes[0].projection.normal,closedMirror.normal)>.2f&&Vector3Distance(carMirrors[0].panes[0].projection.point,closedMirror.point)>.1f,"opening-door-moves-real-optical-plane-and-reflection-camera");g.car.porscheDoor[0]=0;
+    const GraphicsMode originalGraphics=g.graphics;g.graphics=GraphicsMode::Low;PreparePorscheMirrors(true);bool lowTargets=true;for(const auto& pane:carMirrors[0].panes)lowTargets=lowTargets&&pane.target.texture.width==256&&pane.target.texture.height==128&&pane.ready;check(lowTargets,"low-preset-reallocates-and-renders-all-mirror-targets");g.graphics=originalGraphics;PreparePorscheMirrors(true);
+    const Vehicle parkedMirrorCar=g.extraCar;const unsigned int occupiedTarget=carMirrors[0].panes[2].target.texture.id;std::swap(g.car,g.extraCar);PreparePorscheMirrors(true);check(!carMirrors[0].panes[2].ready&&carMirrors[1].panes[2].ready&&carMirrors[1].panes[2].target.texture.id!=occupiedTarget,"vehicle-swap-keeps-parked-car-mirrors-separate-from-occupied-slot");std::swap(g.car,g.extraCar);g.extraCar=parkedMirrorCar;PreparePorscheMirrors(true);
+    capture("screenshots/porsche-native-scene-mirrors.png");BeginDrawing();ClearBackground(BLACK);DrawWorld();DrawRectangle(GetRenderWidth()-12,GetRenderHeight()-12,10,10,MAGENTA);rlDrawRenderBatchActive();Image uiImage=LoadImageFromScreen();const Color uiPixel=GetImageColor(uiImage,GetRenderWidth()-7,GetRenderHeight()-7);check(uiPixel.r==255&&uiPixel.g==0&&uiPixel.b==255,"HUD-pixel-coordinates-survive-reflection-and-display-passes");UnloadImage(uiImage);EndDrawing();
+    std::ofstream mirrorReport("docs/porsche-native-mirrors-qa.json");mirrorReport<<"{\n  \"passed\":"<<(mirrorsReady&&markerViews&&markerMotion&&clipViews&&markerError<.01f&&budget&&composed&&composedViews>=2&&composedError<5?"true":"false")<<",\n  \"maximum_marker_uv_error\":"<<markerError<<",\n  \"composited_mirror_views\":"<<composedViews<<",\n  \"maximum_composited_marker_error_px\":"<<composedError<<",\n  \"normal_updates_scheduled\":"<<scheduled<<",\n  \"maximum_recursion_depth\":"<<mirrorStats.maximumDepth<<",\n  \"marker_pixels_initial\":["<<first[0].count<<","<<first[1].count<<","<<first[2].count<<"],\n  \"marker_pixels_moved\":["<<moved[0].count<<","<<moved[1].count<<","<<moved[2].count<<"],\n  \"limits\":[\"Deterministic scene-geometry fixture and finite projection sweep; final optical fidelity and full-game performance require separate review\",\"QA forces all three targets; ordinary rendering budgets one eligible mirror update per frame\"]\n}\n";
+    for(auto& image:baseline)if(image.data)UnloadImage(image);
+    std::ofstream report("docs/porsche-native-qa.json");report<<"{\n  \"passed\": "<<(failures==0?"true":"false")<<",\n  \"checks\": "<<checks<<",\n  \"failures\": "<<failures<<",\n  \"native_steering_poses\": "<<poses<<",\n  \"maximum_axial_drift_m\": "<<maximumAxial<<",\n  \"maximum_radial_drift_m\": "<<maximumRadial<<",\n  \"maximum_raw_rest_adjustment_m\": "<<maximumRest<<",\n  \"maximum_reference_pose_error_m\": "<<maximumReferenceError<<",\n  \"reference_nodes_compared\": "<<referenceNodes<<",\n  \"accelerated_speed_mps\": "<<acceleratedSpeed<<",\n  \"suspension_evidence\":\"docs/porsche-native-suspension-qa.json\",\n  \"limits\": [\"Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics\",\"Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames\",\"Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development\"]\n}\n";
     return failures==0;
 }
 }

@@ -1,0 +1,11 @@
+{
+  "passed":true,
+  "maximum_marker_uv_error":0.00171197,
+  "composited_mirror_views":2,
+  "maximum_composited_marker_error_px":0.11647,
+  "normal_updates_scheduled":2,
+  "maximum_recursion_depth":1,
+  "marker_pixels_initial":[457,1788,349],
+  "marker_pixels_moved":[462,1756,343],
+  "limits":["Deterministic scene-geometry fixture and finite projection sweep; final optical fidelity and full-game performance require separate review","QA forces all three targets; ordinary rendering budgets one eligible mirror update per frame"]
+}

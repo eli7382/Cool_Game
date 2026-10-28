@@ -2345,6 +2345,7 @@ Vector2 VegetationWindAt(Vector3 p,int seed){
     return wind;
 }
 bool FoliageInView(Vector3 p,float maxDistance,float radius){
+    if(PorscheMirrorPass())return Vector3Distance(p,g.camera.position)<=maxDistance&&PorscheMirrorInView(p,radius);
     const Vector3 view=Norm(Sub(g.camera.target,g.camera.position)),to=Sub(p,g.camera.position);
     const float distance=Vector3Length(to);if(distance>maxDistance)return false;
     const float forward=Vector3DotProduct(to,view);if(forward< -radius)return false;
@@ -4224,7 +4225,11 @@ void UpdateCamera(){
     }
 }
 void DrawWorld(){
-    UpdateCamera();PreparePorscheDisplays();BeginMode3D(g.camera);
+    UpdateCamera();PreparePorscheDisplays();PreparePorscheMirrors();DrawWorldScene();
+}
+void DrawWorldScene(const Matrix* projection){
+    if(IsShaderValid(g.worldShader)){const Vector3 light=Norm(V(-.42f,-.88f,.28f));const float fog[4]{.46f,.57f,.59f,1};const Vector2 range=g.graphics==GraphicsMode::High?Vector2{115,460}:Vector2{90,320};SetShaderValue(g.worldShader,g.locLight,&light,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locEye,&g.camera.position,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locFog,fog,SHADER_UNIFORM_VEC4);SetShaderValue(g.worldShader,g.locFogRange,&range,SHADER_UNIFORM_VEC2);}
+    BeginMode3D(g.camera);if(projection)rlSetMatrixProjection(*projection);
     if(IsModelValid(g.skyDome)&&IsTextureValid(g.skyTex)){
         rlDisableBackfaceCulling();DrawModelEx(g.skyDome,g.camera.position,V(1,0,0),54,V(1,1,1),WHITE);rlEnableBackfaceCulling();
     }
@@ -4286,6 +4291,7 @@ void DrawWorld(){
     if(IsShaderValid(g.worldShader))BeginShaderMode(g.worldShader);
     DrawVehicles();DrawActorModels();DrawParticles();
     if(IsShaderValid(g.worldShader))EndShaderMode();
+    DrawPorscheMirrorTestMarkers();
     EndMode3D();
 }
 

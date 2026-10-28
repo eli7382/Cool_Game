@@ -1,0 +1,350 @@
+{
+  "generator_sha256": "8b0c584272921fa5c48a29a61d6069bd6a9cdb4bd316669a49c928f8fff5e8f1",
+  "adapter_sha256": "45f76e655bbf96347a8c044d048c7a98040047de17e713ca00a7ac63eb3bfe10",
+  "projection_sha256": "8e852bf8f3a2cbe6a267f329f4a548c469ce5a6d72718cb68efcdfff66a2a38b",
+  "binary_sha256": "7e9c8db9836b27737751db81d351c6f9eab7c94762d24beeaa8ae33b14bbeee3",
+  "exports": [
+    {
+      "level": 0,
+      "file": "Porsche_911_GT3RS_Development.glb",
+      "export_sha256": "173cc59885999649838b545146acc9bb3024f3b62c08ed5dc595f54da3f37e2b"
+    },
+    {
+      "level": 1,
+      "file": "Porsche_911_GT3RS_LOD1.glb",
+      "export_sha256": "5d9680a1f40c212ad680e1b9f9bca68674653d870ddc5c33299b9c41e85c7a0c"
+    },
+    {
+      "level": 2,
+      "file": "Porsche_911_GT3RS_LOD2.glb",
+      "export_sha256": "3b04ca5287b905f66ff263f0d55d05778b6655d62840e1bf008a10c842ae8a38"
+    }
+  ],
+  "cases": [
+    {
+      "level": 0,
+      "pose": 0,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 0,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 0,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 0,
+      "pose": 1,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 1,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 1,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 0,
+      "pose": 2,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 2,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 2,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 0,
+      "pose": 3,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 3,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 3,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 0,
+      "pose": 4,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 4,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 4,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 0,
+      "pose": 5,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 5,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 0,
+      "pose": 5,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 1,
+      "pose": 0,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 0,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 0,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 1,
+      "pose": 1,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 1,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 1,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 1,
+      "pose": 2,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 2,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 2,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 1,
+      "pose": 3,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 3,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 3,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 1,
+      "pose": 4,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 4,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 4,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 1,
+      "pose": 5,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 5,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 1,
+      "pose": 5,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 2,
+      "pose": 0,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 0,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 0,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 2,
+      "pose": 1,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 1,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 1,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 2,
+      "pose": 2,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 2,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 2,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 2,
+      "pose": 3,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 3,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 3,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 2,
+      "pose": 4,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 4,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 4,
+      "id": "Interior",
+      "vertices": 42
+    },
+    {
+      "level": 2,
+      "pose": 5,
+      "id": "L",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 5,
+      "id": "R",
+      "vertices": 52
+    },
+    {
+      "level": 2,
+      "pose": 5,
+      "id": "Interior",
+      "vertices": 42
+    }
+  ],
+  "scope": "Actual source optical vertices and production reflected/cropped/oblique projection across all three detail levels, root movement/nonuniform scale, doors, interior adjustment and camera pan"
+}

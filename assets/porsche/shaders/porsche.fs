@@ -11,6 +11,9 @@ uniform sampler2D texture3; // independent clear resin normal, linear
 uniform sampler2D texture4; // HDR environment, linear
 uniform sampler2D texture5; // emission, sRGB
 uniform sampler2D texture6; // correlated Smith GGX DFG lookup, linear
+uniform sampler2D texture10; // native scene reflection, already display encoded
+uniform float mirrorReady;
+uniform mat4 mirrorMatrix;
 uniform vec4 environmentRects[11]; // atlas gutter origin xy, content dimensions zw
 uniform vec2 environmentSize;
 uniform vec4 lightingProbe; // QA only: xyz direction/lookup coordinates, w mode
@@ -60,6 +63,8 @@ vec2 dfg(float nv,float rough){return texture(texture6,(vec2(clamp(nv,0.0,1.0),r
 vec3 integratedSpecular(vec3 f0,vec2 brdf){vec3 energy=f0*brdf.x+brdf.y;return energy*(1.0+f0*(1.0/max(brdf.x+brdf.y,.001)-1.0));}
 vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.0,1.0);}
 void main(){
+    if(mirrorReady>.5){vec4 projected=mirrorMatrix*vec4(worldPosition,1);vec2 coord=projected.xy/projected.w;
+        if(projected.w>0&&all(greaterThanEqual(coord,vec2(0)))&&all(lessThanEqual(coord,vec2(1)))){finalColor=vec4(displayColor(srgb(texture(texture10,coord).rgb)*vec3(.92,.94,.96)),1);return;}}
     if(lightingProbe.w>.5){
         vec3 value=lightingProbe.w<1.5?irradiance(lightingProbe.xyz)/8.0:lightingProbe.w<2.5?environment(lightingProbe.xyz,probeRoughness)/8.0:lightingProbe.w<3.5?vec3(dfg(lightingProbe.x,lightingProbe.y),0):integratedSpecular(vec3(lightingProbe.x),dfg(lightingProbe.y,probeRoughness));
         finalColor=vec4(value,1);return;

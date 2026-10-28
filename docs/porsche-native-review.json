@@ -1,34 +1,38 @@
 {
-  "reviewed_at": "2026-10-28T20:10:33.650144+00:00",
-  "stage": "Native cosine irradiance and GGX split-sum lighting",
+  "reviewed_at": "2026-10-28T21:05:56.253346+00:00",
+  "stage": "Native game scene mirrors and adjustable rear-view",
   "native_stack": "C++20, raylib 5.5, OpenGL 3.3",
-  "executable_sha256": "e8d87d3c1c469786dbf5149e68562dcae623b8bf80d504dad29d49433ddaf93d",
+  "executable_sha256": "f0edf3f5b7a7023f0033adb12980e4c9d95957d874de3abdbdae2741a332667f",
   "source_hashes": {
-    "src/breakwater/game.hpp": "70f5e5f78c00ceee511930b83e130f7d0c681a9dc20053acb67e2192bf5aaec3",
+    "src/breakwater/game.hpp": "422e91d506496a9eea596b7d02117b14091c9803786b71d95f9202e5fd43588c",
     "src/breakwater/gameplay.cpp": "1e0cdd36c3468c279128aa1e6a5022cdc370f42af251e66d2328b7b77b4cbc54",
     "src/breakwater/main.cpp": "0f2a3705809ea886e5fce9f230fc199daf4c0388a9563e40d9b451dd392f51a7",
-    "src/breakwater/world.cpp": "78d5c2232dc7316978008955f0adc9c739e2f41a236367e9a318c7b2be242823",
+    "src/breakwater/world.cpp": "2084a301791237c7d8f9a0140e754281da615813b4e4a88b88c1b08b5e3361f0",
     "src/breakwater/ui.cpp": "4fbad21164f05fe19f949cae897f70c642f7e54557cde254132a723216fa9f46",
-    "src/breakwater/porsche_native.cpp": "b61bd9009a9018ec57fd58d6eb8462131a27ea16a6b073205f6b8b286e5c3550",
-    "src/breakwater/porsche_native.hpp": "bfadf5706ca143774d54a86376219cc59f153eb0d7429673bac0da49c08db77b",
-    "src/breakwater/porsche_rig.cpp": "10f4cc99bbea4b729ee3a6b5da8cc65b4f71861ed64dd83a565afcda06b58e1a",
+    "src/breakwater/porsche_native.cpp": "4e3fb42e3ee7f1203bd0f974ac809afd42f79221da37fae1ed6e8326b168a857",
+    "src/breakwater/porsche_native.hpp": "7642aeed0597140215871639a4e140277863328233af8ef8dc733b6acacee53f",
+    "src/breakwater/porsche_rig.cpp": "6d34b60928559d0b6587b6178acc2624498bddf80d841a85559ac6c72d274b9f",
     "src/breakwater/porsche_asset_data.hpp": "7e8f0ccf3cd6780d2aa0f5c7309c831cbd34dde447c378a915e1b0fb090d42bd",
     "assets/porsche/shaders/porsche.vs": "22bb65756d5809d3ef1368ebdd37b63ac8e315f56e54022a3c6a95a672875c13",
-    "assets/porsche/shaders/porsche.fs": "3fc27e4e468af0ef8d9bf6958903899176c70f610e6ce4e7e904fa849b31b222",
-    "tests/porsche_reference.hpp": "117ec263547a2fbf66f487c110f6a8d18dac19be603b2353126571673bdeada8",
+    "assets/porsche/shaders/porsche.fs": "f3548fd999bfced26b0f2e0b1fe92ba87604c32e8d08e97ce2fd7f3b64c20108",
+    "tests/porsche_reference.hpp": "72f0f12734f09af90874b87cedf315bc32ded9246e0fefd2c803cbec267b3aba",
     "src/breakwater/porsche_suspension.hpp": "81ca7a450827acbc8799545f13bcf2b31c66b1f6f0b99f2a813b2e23c4002c4c",
     "src/breakwater/porsche_suspension.cpp": "f1a4fc408a5c10da91096ef1c8d05119a146674013f84d21fa367bacedbf850b",
     "scripts/prepare_porsche_assets.py": "60a70e0754a524ea02fe7d3f2de1331796beb97c0caa62c748702a5847bc1c00",
     "tests/build_porsche_suspension_reference.mjs": "969302f8559b49ba3eec93a9a2c7421d21c6e42ad4f888cb129cfb17089f7869",
     "tests/porsche_suspension_reference.bin": "1427d225e955aac3da75a07e4c96805e30ebc7ccb93201ca36660ef5ccdee040",
     "src/breakwater/porsche_displays.hpp": "b97b701b7a9cf479003eb1ab9dd128926a3072ab4e308561324be02da72ba12d",
-    "src/breakwater/porsche_displays.cpp": "294788fd4f825036f6eb130c6869035c7dc28804914eff4696ccf6872afd54e4",
-    "tests/build_porsche_reference.mjs": "ba499a84efbb4b0405420bd0244220fd586d5b38c8a813d6dca2c53e268b539d",
+    "src/breakwater/porsche_displays.cpp": "3d1e02e6ae94bebb125c8347946850016af63edc2c145739011955a0143a9b95",
+    "tests/build_porsche_reference.mjs": "8c232e73c951f17af74a2a8b9a100a6eefa1a4f079c086bf298bb8f869c85489",
     "scripts/prepare_porsche_environment.py": "9581e3cfc733b6b21b26089459c89b3670e21b2de6e4778c1ec0005d6a46bd88",
     "scripts/prepare_porsche_ibl.py": "052a9053cf530b8c0f9cdde2ffbe4246bb31a8c6644007a112023a7112817ccc",
     "tests/check_porsche_ibl.py": "3262ce71f1a1a012181a01e4c361bc659b4c3212987a9921f0d56f99f01ccaf3",
     "src/breakwater/porsche_ibl_data.hpp": "95479e42bdba83285ac0a7c955918858730ef33e8b4d496dd6565bad1e37289e",
-    "tests/porsche_ibl_reference.hpp": "55be38d0329956cfac739d22e2232c4a243fad67ed44facfdc3300fa3b3294d4"
+    "tests/porsche_ibl_reference.hpp": "55be38d0329956cfac739d22e2232c4a243fad67ed44facfdc3300fa3b3294d4",
+    "src/breakwater/porsche_mirror_projection.hpp": "6586f2d7adcaec2d17265d2edabd3afaa4dceea26d4dcf72ed5ad2c0e9ed28a2",
+    "src/breakwater/porsche_mirror_projection.cpp": "b90d01934c4cbe00cffbccb8c7acc1d1f17e7019697fb1fae080867f20a4a865",
+    "tests/build_porsche_mirror_reference.mjs": "8b0c584272921fa5c48a29a61d6069bd6a9cdb4bd316669a49c928f8fff5e8f1",
+    "tests/porsche_mirror_reference.bin": "7e9c8db9836b27737751db81d351c6f9eab7c94762d24beeaa8ae33b14bbeee3"
   },
   "asset_source_hashes": {
     "hero": "173cc59885999649838b545146acc9bb3024f3b62c08ed5dc595f54da3f37e2b",
@@ -37,20 +41,20 @@
   },
   "native_qa": {
     "passed": true,
-    "checks": 69,
+    "checks": 88,
     "failures": 0,
     "native_steering_poses": 69,
     "maximum_axial_drift_m": 1.56462e-07,
     "maximum_radial_drift_m": 6.03735e-07,
     "maximum_raw_rest_adjustment_m": 0.0241878,
     "maximum_reference_pose_error_m": 2.6656e-07,
-    "reference_nodes_compared": 2488,
+    "reference_nodes_compared": 2512,
     "accelerated_speed_mps": 9.97313,
     "suspension_evidence": "docs/porsche-native-suspension-qa.json",
     "limits": [
       "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
       "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
-      "Source-fitted suspension and live screens are implemented; Porsche tire-force tuning, scene mirrors, instrument artwork and material refinements remain in development"
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
     ]
   },
   "environment_channels_compared": 1572864,
@@ -58,23 +62,23 @@
   "images": [
     {
       "path": "screenshots/porsche-native-front.png",
-      "sha256": "310de12696442f5c3fdda75ad6036e0e6fa79cc8b00fc8a1382f5530a41f9565"
+      "sha256": "a7928ab4a0417c7951a15f9fb8673f9d3351777d207b802073a0e776a1c8e6c4"
     },
     {
       "path": "screenshots/porsche-native-open.png",
-      "sha256": "c736d54b74717f10edfcc95bcdc1ae033dab6cddf3883640acbad14a8ddd7d12"
+      "sha256": "19cc376a1b6b5292d901cb3c056dd10751037a51e9bb5c4a5babba1b4aeec8a0"
     },
     {
       "path": "screenshots/porsche-native-steering-negative.png",
-      "sha256": "7b1444f88799aa3065ace46ea08a57d6f08ccac418a1afd838f0630e3e99dd27"
+      "sha256": "17926314ed6548c7e1bd87f1e4ad600348b571cc0a2f801d79597443c9145884"
     },
     {
       "path": "screenshots/porsche-native-steering-centre.png",
-      "sha256": "263c3d6796e443497508f6dd2b1dcc29fd84a70d299b9f42c13b0256983fd7f3"
+      "sha256": "12434ef57341419bf991c8f2e57c4e7f8d64ba3ba333e621a25f6c822c78fc8b"
     },
     {
       "path": "screenshots/porsche-native-steering-positive.png",
-      "sha256": "bf08b995fca8985b6dd71611a7e9de64917ff724bd7b33a9c1efe6d676451178"
+      "sha256": "c2062204032c2a13444fccde9c57c45f521195c49af5cf3951c39907f33ab7fa"
     },
     {
       "path": "screenshots/porsche-integration-pickup-regression.png",
@@ -82,15 +86,15 @@
     },
     {
       "path": "screenshots/porsche-native-suspension-rest.png",
-      "sha256": "7bc4e176256c2f74085d8af9915cd63da74a0c67cf755027b0544e2ef7e777c9"
+      "sha256": "9e4fbe03516d53fc09ce75a0cad3802089ac4fe4a65b2878320a2d93ef1fc88d"
     },
     {
       "path": "screenshots/porsche-native-suspension-cross.png",
-      "sha256": "9625d41ac787f1fb4d4552419a42d86a35414f2c1de2ccaf9dae5ee937800d80"
+      "sha256": "9f0862f3b1da828b073a6797e53c252a9b3a3ea1772f9271a860d9651d3384fd"
     },
     {
       "path": "screenshots/porsche-native-grille-close.png",
-      "sha256": "5d55131269af1b835e6fbc0278f7b708d71f1de823ef2829cec2554f2bb4929c"
+      "sha256": "d15745fcc214948fea86d07128f4389000922df436827bd9cbf9817033c67483"
     },
     {
       "path": "screenshots/porsche-display-0-driving.png",
@@ -126,11 +130,31 @@
     },
     {
       "path": "screenshots/porsche-native-live-cockpit.png",
-      "sha256": "36d48044deb5978d5fc29195ee94b1163ec37f772bfcef7cd9e3db94a2395deb"
+      "sha256": "f5fd7ad7c6c67df7b256bb530c5184e9021f7dc009c6491504183f193cb606f2"
+    },
+    {
+      "path": "screenshots/porsche-native-scene-mirrors.png",
+      "sha256": "ccc429fd4b1bf37d01d1bfc535df4b38c7f85175733f83d5261157dc543a9af3"
+    },
+    {
+      "path": "screenshots/porsche-native-mirror-markers.png",
+      "sha256": "ff848fbbe22e469927367c35c390629523fc0697385d270887950b2f08371d91"
+    },
+    {
+      "path": "screenshots/porsche-mirror-left-markers.png",
+      "sha256": "f900e782793f1c69027dc032e412e99386290f12f3351af41cc4da54b0710045"
+    },
+    {
+      "path": "screenshots/porsche-mirror-right-markers.png",
+      "sha256": "e4b8620ac9130bf37bd2e1289dc9f79cf64b937fe0b20d12037c69e8f2407b37"
+    },
+    {
+      "path": "screenshots/porsche-mirror-interior-markers.png",
+      "sha256": "1f816b38bfd2eafdfe413d040fc408bf547612fd93126dc082e4136e96a4e89c"
     }
   ],
   "limitations": [
-    "Scene mirrors still retain the authored static environment representation; display artwork remains an approximation",
+    "Planar scene mirrors are implemented; optical approximation, refresh cost and display artwork still need final review",
     "Driving uses the existing game tire-force model; Porsche-specific mass, drive layout and gearing remain pending. Contact geometry now matches the source wheel centres",
     "GGX split-sum filtering is numerically checked; glass, layered material extensions, self-shadowing and close surface detailing still require refinement",
     "Full-vehicle swept clearance, game-level performance and requested final visual fidelity remain unverified"
@@ -181,5 +205,13 @@
     "broad_specular_max_relative_reference_error": 0.0012641448335914865,
     "dfg_max_absolute_reference_error": 0.0014851434145559672,
     "limits": "Finite numerical probes plus visual review; self-shadowing, scene mirrors and full game performance remain unverified"
+  },
+  "native_mirrors": {
+    "evidence": "docs/porsche-mirrors-review.json",
+    "source_projection_cases": 54,
+    "scene_targets": 3,
+    "maximum_main_marker_error_px": 0.11647,
+    "main_camera_and_hud_state": "Passed matrix/framebuffer and actual HUD pixel checks",
+    "final_optical_fidelity_verified": false
   }
 }

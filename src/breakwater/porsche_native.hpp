@@ -14,6 +14,7 @@ class PorscheSuspension;
 struct PorscheControls {
     float steering{},rearSteering{},doorL{},doorR{},windowL{},windowR{},drs{},airbrake{},brake{},throttle{},paddleL{},paddleR{},rpm{};
     double chronoSeconds{};
+    float mirrorYaw{},mirrorPitch{};
     std::array<float,4> wheelAngles{};
     std::array<float,4> travel{}; // FL, FR, RL, RR; metres, limited to the authored +/- .05m envelope
 };
@@ -56,5 +57,12 @@ Matrix PorscheVehicleMatrix(const Vehicle& vehicle);
 Vector3 PorscheDriverEye(const Vehicle& vehicle);
 void UpdatePorscheControls(Vehicle& vehicle,float dt,bool occupied);
 void SetPorscheChrono(Vehicle& vehicle,bool running,bool reset=false);
+void SetPorscheRearview(Vehicle& vehicle,float yaw,float pitch);
 bool RunPorscheQA();
+struct PorscheMirrorStats {int visible{},lastFrameUpdates{},totalUpdates{},maximumDepth{};};
+void PreparePorscheMirrors(bool force=false);
+bool PorscheMirrorPass();
+bool PorscheMirrorInView(Vector3 point,float radius);
+PorscheMirrorStats GetPorscheMirrorStats();
+void DrawPorscheMirrorTestMarkers();
 }
