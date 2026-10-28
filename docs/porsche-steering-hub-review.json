@@ -1,0 +1,426 @@
+{
+  "reviewed_at": "2026-10-28T21:56:44.705525+00:00",
+  "change": "Rotate about the circular horn-hub shaft instead of the eccentric outer-rim centre",
+  "measured_pivot_translation_m": 0.024668387945242815,
+  "rim_to_hub_axis_offset_m": 0.019877196265259356,
+  "fit": {
+    "pivot": "SteeringWheel_Pivot",
+    "rim": "TwiXeR_992_steer_3_TwiXeR_992_carpet.002_0",
+    "rim_vertices": 2214,
+    "outer_fit_vertices": 1454,
+    "fitted_center_blender": [
+      0.3439307947184362,
+      -0.22536441816367117,
+      0.750961000722887
+    ],
+    "fitted_axis_blender": [
+      3.0018418627036833e-07,
+      0.9318958677964051,
+      0.3627259179930425
+    ],
+    "previous_axis_blender": [
+      0.0011603801976889372,
+      0.9331498742103577,
+      0.35948556661605835
+    ],
+    "previous_axis_error_degrees": 0.21060687601309308,
+    "center_change_m": 0.024668387945242815,
+    "rim_singular_values": [
+      4.3712913787934395,
+      4.3150091288759205,
+      0.4718202147340921
+    ],
+    "rim_fit_center_blender": [
+      0.34411694826064665,
+      -0.21895989719054648,
+      0.7747827721491056
+    ],
+    "rim_fit_axis_blender": [
+      0.0011603779772872054,
+      0.9331498978281352,
+      0.359485634909506
+    ],
+    "hub_mesh": "TwiXeR_992_steer_3_TwiXeR_992_ID01_plastic_lgl_010101FF_0",
+    "hub_fit": {
+      "vertices": 36,
+      "angular_bins_of_24": 24,
+      "radius_m": 0.06710155211340608,
+      "maximum_circle_residual_m": 4.807181472440969e-05,
+      "points_blender": [
+        [
+          0.2770008,
+          -0.2271428,
+          0.7555557
+        ],
+        [
+          0.2771608,
+          -0.2229268,
+          0.7447553
+        ],
+        [
+          0.2788208,
+          -0.2311716,
+          0.7659828
+        ],
+        [
+          0.2790108,
+          -0.2191968,
+          0.7351536
+        ],
+        [
+          0.2824208,
+          -0.2350569,
+          0.7759413
+        ],
+        [
+          0.2827908,
+          -0.2153314,
+          0.725183
+        ],
+        [
+          0.2875008,
+          -0.2385041,
+          0.7847763
+        ],
+        [
+          0.2882808,
+          -0.2117787,
+          0.7159769
+        ],
+        [
+          0.2944708,
+          -0.2418341,
+          0.7932305
+        ],
+        [
+          0.3021408,
+          -0.2444229,
+          0.7998863
+        ],
+        [
+          0.3026808,
+          -0.2061835,
+          0.7016291
+        ],
+        [
+          0.3117908,
+          -0.2467444,
+          0.8058544
+        ],
+        [
+          0.3119808,
+          -0.20397,
+          0.6959624
+        ],
+        [
+          0.3220408,
+          -0.2023628,
+          0.6918257
+        ],
+        [
+          0.3222408,
+          -0.2484051,
+          0.8101373
+        ],
+        [
+          0.3325908,
+          -0.2493705,
+          0.8125868
+        ],
+        [
+          0.3331708,
+          -0.2013461,
+          0.6892499
+        ],
+        [
+          0.3439308,
+          -0.2497167,
+          0.8134885
+        ],
+        [
+          0.3439308,
+          -0.2010027,
+          0.6884896
+        ],
+        [
+          0.3546908,
+          -0.2013461,
+          0.6892499
+        ],
+        [
+          0.3552707,
+          -0.2493705,
+          0.8125868
+        ],
+        [
+          0.3656208,
+          -0.2484051,
+          0.8101373
+        ],
+        [
+          0.3658208,
+          -0.2023629,
+          0.6918257
+        ],
+        [
+          0.3758808,
+          -0.20397,
+          0.6959624
+        ],
+        [
+          0.3760708,
+          -0.2467444,
+          0.8058544
+        ],
+        [
+          0.3851808,
+          -0.2061835,
+          0.7016292
+        ],
+        [
+          0.3857208,
+          -0.244423,
+          0.7998863
+        ],
+        [
+          0.3933907,
+          -0.2418341,
+          0.7932305
+        ],
+        [
+          0.3995808,
+          -0.2117788,
+          0.7159769
+        ],
+        [
+          0.4003608,
+          -0.2385042,
+          0.7847763
+        ],
+        [
+          0.4050708,
+          -0.2153315,
+          0.725183
+        ],
+        [
+          0.4054408,
+          -0.2350569,
+          0.7759413
+        ],
+        [
+          0.4088508,
+          -0.2191968,
+          0.7351536
+        ],
+        [
+          0.4090408,
+          -0.2311717,
+          0.7659828
+        ],
+        [
+          0.4107008,
+          -0.2229268,
+          0.7447553
+        ],
+        [
+          0.4108608,
+          -0.2271428,
+          0.7555558
+        ]
+      ]
+    },
+    "radius_fit_m": 0.06710155211340608,
+    "rim_to_hub_axis_offset_m": 0.019877196265259356,
+    "preserved_direct_children": [
+      "Rotary dial red indicator",
+      "Rotary dial red indicator.001",
+      "Rotary dial red indicator.002",
+      "Rotary dial red indicator.003",
+      "RS dial mounting pad",
+      "RS dial mounting pad.001",
+      "RS rotary dial",
+      "RS rotary dial.001",
+      "RS rotary dial.002",
+      "RS rotary dial.003",
+      "ShiftPaddle_L",
+      "ShiftPaddle_R",
+      "TwiXeR_992_steer_3_TwiXeR_992_carpet.002_0",
+      "TwiXeR_992_steer_3_TwiXeR_992_ID01_plastic_lgl_010101FF_0",
+      "TwiXeR_992_steer_3_TwiXeR_992_ID03_stitch_001_111111FF.005_0",
+      "TwiXeR_992_steer_3_TwiXeR_992_ID06_stitch_001_0",
+      "TwiXeR_992_steer_3_TwiXeR_992_Interior_D_0",
+      "TwiXeR_992_steer_3_TwiXeR_992_symbols_1.003_0",
+      "TwiXeR_992_steer_3_TwiXeR_992_symbols_6_0"
+    ],
+    "limits": [
+      "Axis and centre inferred from retained source horn-hub geometry, not manufacturer CAD",
+      "The retained sculpted rim is eccentric relative to the circular horn hub",
+      "Rest-shape regression, actual exported motion sweep and visual review are required separately"
+    ]
+  },
+  "source_sha256": "f7226ca3dc58b3b4077abe9390d1929c7f4277539e840e13889b5cf428394b3e",
+  "hero_export_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+  "native_executable_sha256": "8674526c79cd457ac72e5804c644655d7e67bec76d149813e7075b2b5475d83d",
+  "source_motion": [
+    {
+      "export_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+      "passed": true,
+      "sweep_poses": 46,
+      "horn_hub": {
+        "current": {
+          "maximum_centre_orbit_m": 2.6915059791176146e-08,
+          "return_to_centre_error_m": 7.850462293418876e-17,
+          "poses": 6
+        },
+        "previous_rim_centred_pivot": {
+          "maximum_centre_orbit_m": 0.03714677858181329,
+          "return_to_centre_error_m": 2.220446049250313e-16,
+          "poses": 6
+        },
+        "measured_loop_vertices": 36,
+        "maximum_circle_fit_residual_m": 4.807181472440969e-05
+      },
+      "maximum_rest_position_change_m": 3.034391994920718e-08,
+      "rest_topology_uv_materials_and_images_retained": true
+    },
+    {
+      "export_sha256": "516f02ea0b47bfac113fa29c5327be39cad0110f00663d449901e17449cc712a",
+      "passed": true,
+      "sweep_poses": 46,
+      "horn_hub": {
+        "current": {
+          "maximum_centre_orbit_m": 2.6915059791176146e-08,
+          "return_to_centre_error_m": 7.850462293418876e-17,
+          "poses": 6
+        },
+        "previous_rim_centred_pivot": {
+          "maximum_centre_orbit_m": 0.03714677858181329,
+          "return_to_centre_error_m": 2.220446049250313e-16,
+          "poses": 6
+        },
+        "measured_loop_vertices": 36,
+        "maximum_circle_fit_residual_m": 4.807181472440969e-05
+      },
+      "maximum_rest_position_change_m": 3.034391994920718e-08,
+      "rest_topology_uv_materials_and_images_retained": true
+    },
+    {
+      "export_sha256": "63c51db9d5715b33cf522ec8d2df9b0563b132930f878b246333fdf9a4c64f0d",
+      "passed": true,
+      "sweep_poses": 46,
+      "horn_hub": {
+        "current": {
+          "maximum_centre_orbit_m": 2.6915059791176146e-08,
+          "return_to_centre_error_m": 7.850462293418876e-17,
+          "poses": 6
+        },
+        "previous_rim_centred_pivot": {
+          "maximum_centre_orbit_m": 0.03714677858181329,
+          "return_to_centre_error_m": 2.220446049250313e-16,
+          "poses": 6
+        },
+        "measured_loop_vertices": 36,
+        "maximum_circle_fit_residual_m": 4.807181472440969e-05
+      },
+      "maximum_rest_position_change_m": 3.014794400087168e-08,
+      "rest_topology_uv_materials_and_images_retained": true
+    }
+  ],
+  "native_qa": {
+    "passed": true,
+    "checks": 88,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "asset_equivalence": {
+    "passed": true,
+    "checker_sha256": "3d6a0d42b05ee555843e7ec872f24f17068f2d10b824b768f0a07dd0b02a6103",
+    "levels": [
+      {
+        "source_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+        "runtime_sha256": "f5a939d09bcc2b5c4f5a52d60dbdf9a9665d7541038ebce3dceba71ad850e8f7",
+        "triangles_compared": 682643,
+        "primitives_checked": 302,
+        "morph_targets_checked": 8,
+        "embedded_images_verified": 52,
+        "maximum_vertices_per_primitive": 60000,
+        "attributes_targets_winding_hierarchy_materials_images_retained": true,
+        "level": "hero"
+      },
+      {
+        "source_sha256": "516f02ea0b47bfac113fa29c5327be39cad0110f00663d449901e17449cc712a",
+        "runtime_sha256": "a0c6f3fddeb792c2949d97446bb6ed6fbd06c3973be8a35a34163093256ed704",
+        "triangles_compared": 218113,
+        "primitives_checked": 304,
+        "morph_targets_checked": 8,
+        "embedded_images_verified": 27,
+        "maximum_vertices_per_primitive": 27961,
+        "attributes_targets_winding_hierarchy_materials_images_retained": true,
+        "level": "near"
+      },
+      {
+        "source_sha256": "63c51db9d5715b33cf522ec8d2df9b0563b132930f878b246333fdf9a4c64f0d",
+        "runtime_sha256": "90c7ef825db7ee9aff918440770527fa30027080164efdddd979a481cf2e5604",
+        "triangles_compared": 156234,
+        "primitives_checked": 303,
+        "morph_targets_checked": 8,
+        "embedded_images_verified": 27,
+        "maximum_vertices_per_primitive": 15567,
+        "attributes_targets_winding_hierarchy_materials_images_retained": true,
+        "level": "far"
+      }
+    ],
+    "limits": [
+      "Exact source triangle-corner data comparison; native renderer, animation, collision and performance need separate tests"
+    ]
+  },
+  "images": [
+    {
+      "path": "screenshots/porsche-native-steering-negative.png",
+      "sha256": "a01cd39fa4e959e572d63a82dc3e17ec25198fe5562930b0efb8ca6582588f0f",
+      "view": "Native driver camera; same parked pose and camera; road steer -0.33 radians"
+    },
+    {
+      "path": "screenshots/porsche-native-steering-centre.png",
+      "sha256": "434d669f58ed942956583b9696ebf8eb26e75812c1d1d5f024d134f39a20e0f1",
+      "view": "Native driver camera; same parked pose and camera; road steer 0 radians"
+    },
+    {
+      "path": "screenshots/porsche-native-steering-positive.png",
+      "sha256": "104fb1234a71cc5e125a7dd91dcfa0c00cfa128bc8950e1e2d40b1df8bb5860f",
+      "view": "Native driver camera; same parked pose and camera; road steer 0.33 radians"
+    }
+  ],
+  "legacy_tire_and_load_transfer_regression_passed": true,
+  "observations": [
+    "The circular horn hub stays at the same projected position in the native negative, centre and positive views",
+    "The retained rim has an eccentric shape relative to the horn hub; that shape is preserved",
+    "Wheel, buttons and paddles share the shaft rotation; paddles also retain independent inputs"
+  ],
+  "source_tools": {
+    "build_steering_axis.py": "2840a43ff34d0bff4b185c1aca185a8dfff35277716d84fe6214a466eca19cf5",
+    "revise_steering_hub.py": "a069c50997522d697d099e3aae7ee21f1bd7b6aecdcc7e06b883803c6431b315",
+    "rebase_steering_hub.mjs": "a03ce0ab0d71ed60c14006c112947e6745075ca9a5ad6242ee40aefa654f1dd9",
+    "test_steering_axis.mjs": "feba02375123623f7d8f15740cb91765d403e11df37a39785798a2ccd6ba3cea"
+  },
+  "limits": [
+    "Measured source geometry, not OEM CAD",
+    "Visual steering ratio remains provisional at 8:1",
+    "Static native views plus finite pose and reversal checks; full cockpit clearance and final fidelity remain unfinished",
+    "Browser preview serves the new asset; interactive browser visual review was unavailable"
+  ],
+  "complete": false,
+  "final_fidelity_verified": false
+}

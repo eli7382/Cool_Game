@@ -129,6 +129,14 @@ current visual steering ratio. Positive front steering points toward vehicle
 +X, the driver's left. The rim top must move toward that same side near centre.
 Do not use the previous negative sign or world-space Z axis.
 
+The shaft is fitted to the circular horn hub. The sculpted outer rim has an
+eccentric centre, so fitting the pivot to that rim made the hub visibly orbit
+despite passing rigid-rotation checks. The hub-frame correction moves the
+pivot by 24.7 mm and preserves the resting mesh and artwork. Source tests cover
+all three detail levels, full steering lock, reversals and return to centre;
+the previous pivot reproduces a 37.1 mm hub orbit. Measurements and native
+driver views are recorded in [the hub review](porsche-steering-hub-review.json).
+
 Raylib's stock loader does not implement all retained glTF physical material
 extensions or spring morph controls. The custom renderer interprets the
 supported material fields, owns shared texture resources, sorts transparent

@@ -1,21 +1,21 @@
 {
-  "reviewed_at": "2026-10-28T21:05:56.253346+00:00",
-  "stage": "Native game scene mirrors and adjustable rear-view",
+  "reviewed_at": "2026-10-28T21:56:44.705525+00:00",
+  "stage": "Native steering shaft centred on circular horn hub",
   "native_stack": "C++20, raylib 5.5, OpenGL 3.3",
-  "executable_sha256": "f0edf3f5b7a7023f0033adb12980e4c9d95957d874de3abdbdae2741a332667f",
+  "executable_sha256": "8674526c79cd457ac72e5804c644655d7e67bec76d149813e7075b2b5475d83d",
   "source_hashes": {
     "src/breakwater/game.hpp": "422e91d506496a9eea596b7d02117b14091c9803786b71d95f9202e5fd43588c",
     "src/breakwater/gameplay.cpp": "1e0cdd36c3468c279128aa1e6a5022cdc370f42af251e66d2328b7b77b4cbc54",
     "src/breakwater/main.cpp": "0f2a3705809ea886e5fce9f230fc199daf4c0388a9563e40d9b451dd392f51a7",
-    "src/breakwater/world.cpp": "2084a301791237c7d8f9a0140e754281da615813b4e4a88b88c1b08b5e3361f0",
+    "src/breakwater/world.cpp": "41ae38400bb2e79949e1e2901ccba943a19880f614a13ba395d2ee05c887c6cf",
     "src/breakwater/ui.cpp": "4fbad21164f05fe19f949cae897f70c642f7e54557cde254132a723216fa9f46",
-    "src/breakwater/porsche_native.cpp": "4e3fb42e3ee7f1203bd0f974ac809afd42f79221da37fae1ed6e8326b168a857",
+    "src/breakwater/porsche_native.cpp": "5e1d36fc36a5163da5c69c9074b81b2f6886930d5fb721bd96c0397eda653722",
     "src/breakwater/porsche_native.hpp": "7642aeed0597140215871639a4e140277863328233af8ef8dc733b6acacee53f",
     "src/breakwater/porsche_rig.cpp": "6d34b60928559d0b6587b6178acc2624498bddf80d841a85559ac6c72d274b9f",
-    "src/breakwater/porsche_asset_data.hpp": "7e8f0ccf3cd6780d2aa0f5c7309c831cbd34dde447c378a915e1b0fb090d42bd",
+    "src/breakwater/porsche_asset_data.hpp": "4bd0b92f1496fc788ed59c4345585435d480f5f377806d6d1551d436e07ea01a",
     "assets/porsche/shaders/porsche.vs": "22bb65756d5809d3ef1368ebdd37b63ac8e315f56e54022a3c6a95a672875c13",
     "assets/porsche/shaders/porsche.fs": "f3548fd999bfced26b0f2e0b1fe92ba87604c32e8d08e97ce2fd7f3b64c20108",
-    "tests/porsche_reference.hpp": "72f0f12734f09af90874b87cedf315bc32ded9246e0fefd2c803cbec267b3aba",
+    "tests/porsche_reference.hpp": "a828839a3fa1f86b6ca6e9f3827a7882c7a4ecdb9d1f96243361b844691610ad",
     "src/breakwater/porsche_suspension.hpp": "81ca7a450827acbc8799545f13bcf2b31c66b1f6f0b99f2a813b2e23c4002c4c",
     "src/breakwater/porsche_suspension.cpp": "f1a4fc408a5c10da91096ef1c8d05119a146674013f84d21fa367bacedbf850b",
     "scripts/prepare_porsche_assets.py": "60a70e0754a524ea02fe7d3f2de1331796beb97c0caa62c748702a5847bc1c00",
@@ -35,17 +35,17 @@
     "tests/porsche_mirror_reference.bin": "7e9c8db9836b27737751db81d351c6f9eab7c94762d24beeaa8ae33b14bbeee3"
   },
   "asset_source_hashes": {
-    "hero": "173cc59885999649838b545146acc9bb3024f3b62c08ed5dc595f54da3f37e2b",
-    "near": "5d9680a1f40c212ad680e1b9f9bca68674653d870ddc5c33299b9c41e85c7a0c",
-    "far": "3b04ca5287b905f66ff263f0d55d05778b6655d62840e1bf008a10c842ae8a38"
+    "hero": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+    "near": "516f02ea0b47bfac113fa29c5327be39cad0110f00663d449901e17449cc712a",
+    "far": "63c51db9d5715b33cf522ec8d2df9b0563b132930f878b246333fdf9a4c64f0d"
   },
   "native_qa": {
     "passed": true,
     "checks": 88,
     "failures": 0,
     "native_steering_poses": 69,
-    "maximum_axial_drift_m": 1.56462e-07,
-    "maximum_radial_drift_m": 6.03735e-07,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
     "maximum_raw_rest_adjustment_m": 0.0241878,
     "maximum_reference_pose_error_m": 2.6656e-07,
     "reference_nodes_compared": 2512,
@@ -62,23 +62,23 @@
   "images": [
     {
       "path": "screenshots/porsche-native-front.png",
-      "sha256": "a7928ab4a0417c7951a15f9fb8673f9d3351777d207b802073a0e776a1c8e6c4"
+      "sha256": "36f7d90a8828eabc85efb6624a42129da3783787b584b6e4b30fd67860a54ad4"
     },
     {
       "path": "screenshots/porsche-native-open.png",
-      "sha256": "19cc376a1b6b5292d901cb3c056dd10751037a51e9bb5c4a5babba1b4aeec8a0"
+      "sha256": "5aca1b5825861bf5af483cfe999cddc887b0f634d5d8d6beb021e3f5a405f917"
     },
     {
       "path": "screenshots/porsche-native-steering-negative.png",
-      "sha256": "17926314ed6548c7e1bd87f1e4ad600348b571cc0a2f801d79597443c9145884"
+      "sha256": "a01cd39fa4e959e572d63a82dc3e17ec25198fe5562930b0efb8ca6582588f0f"
     },
     {
       "path": "screenshots/porsche-native-steering-centre.png",
-      "sha256": "12434ef57341419bf991c8f2e57c4e7f8d64ba3ba333e621a25f6c822c78fc8b"
+      "sha256": "434d669f58ed942956583b9696ebf8eb26e75812c1d1d5f024d134f39a20e0f1"
     },
     {
       "path": "screenshots/porsche-native-steering-positive.png",
-      "sha256": "c2062204032c2a13444fccde9c57c45f521195c49af5cf3951c39907f33ab7fa"
+      "sha256": "104fb1234a71cc5e125a7dd91dcfa0c00cfa128bc8950e1e2d40b1df8bb5860f"
     },
     {
       "path": "screenshots/porsche-integration-pickup-regression.png",
@@ -86,15 +86,15 @@
     },
     {
       "path": "screenshots/porsche-native-suspension-rest.png",
-      "sha256": "9e4fbe03516d53fc09ce75a0cad3802089ac4fe4a65b2878320a2d93ef1fc88d"
+      "sha256": "1a47ada8f38362c2f8e03dab6c996c386a59092294208caccd9ae53378aa6841"
     },
     {
       "path": "screenshots/porsche-native-suspension-cross.png",
-      "sha256": "9f0862f3b1da828b073a6797e53c252a9b3a3ea1772f9271a860d9651d3384fd"
+      "sha256": "9904d008b20b2e0c95d7336a56284761f241969409a3b91ef4c6bdda62df3b25"
     },
     {
       "path": "screenshots/porsche-native-grille-close.png",
-      "sha256": "d15745fcc214948fea86d07128f4389000922df436827bd9cbf9817033c67483"
+      "sha256": "32b988dec0c9d23f82f87457fb82718be333817d1b59edb41347b27afd7bd4b3"
     },
     {
       "path": "screenshots/porsche-display-0-driving.png",
@@ -130,15 +130,15 @@
     },
     {
       "path": "screenshots/porsche-native-live-cockpit.png",
-      "sha256": "f5fd7ad7c6c67df7b256bb530c5184e9021f7dc009c6491504183f193cb606f2"
+      "sha256": "49ac891243bdec81c89e2f8b30d15978870d07b067d30cb819ec879660a41e81"
     },
     {
       "path": "screenshots/porsche-native-scene-mirrors.png",
-      "sha256": "ccc429fd4b1bf37d01d1bfc535df4b38c7f85175733f83d5261157dc543a9af3"
+      "sha256": "2276bb92349905a81ffb65c011eb84e3917ed8d3de1a84c01e5b37311c58b317"
     },
     {
       "path": "screenshots/porsche-native-mirror-markers.png",
-      "sha256": "ff848fbbe22e469927367c35c390629523fc0697385d270887950b2f08371d91"
+      "sha256": "c2a417277c2b31eb7fab66e5a272b8923efcb7f3e812f827b2f5b0016fc8400e"
     },
     {
       "path": "screenshots/porsche-mirror-left-markers.png",
@@ -213,5 +213,6 @@
     "maximum_main_marker_error_px": 0.11647,
     "main_camera_and_hud_state": "Passed matrix/framebuffer and actual HUD pixel checks",
     "final_optical_fidelity_verified": false
-  }
+  },
+  "steering_hub_review": "docs/porsche-steering-hub-review.json"
 }

@@ -4,17 +4,17 @@
   "levels": [
     {
       "level": "Hero",
-      "export_sha256": "173cc59885999649838b545146acc9bb3024f3b62c08ed5dc595f54da3f37e2b",
+      "export_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
       "nodes": 490
     },
     {
       "level": "Near",
-      "export_sha256": "5d9680a1f40c212ad680e1b9f9bca68674653d870ddc5c33299b9c41e85c7a0c",
+      "export_sha256": "516f02ea0b47bfac113fa29c5327be39cad0110f00663d449901e17449cc712a",
       "nodes": 489
     },
     {
       "level": "Far",
-      "export_sha256": "3b04ca5287b905f66ff263f0d55d05778b6655d62840e1bf008a10c842ae8a38",
+      "export_sha256": "63c51db9d5715b33cf522ec8d2df9b0563b132930f878b246333fdf9a4c64f0d",
       "nodes": 489
     }
   ],

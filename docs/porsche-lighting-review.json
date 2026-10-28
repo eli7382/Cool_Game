@@ -1,24 +1,24 @@
 {
-  "reviewed_at": "2026-10-28T21:05:56.253346+00:00",
+  "reviewed_at": "2026-10-28T21:56:44.705525+00:00",
   "baseline_commit": "608b77b6cd8b15ede475c59eef7619e0d7c35df7",
   "baseline_source": "Matching native captures from that commit, locally retained under ignored .tools/lighting-baseline",
-  "current_executable_sha256": "f0edf3f5b7a7023f0033adb12980e4c9d95957d874de3abdbdae2741a332667f",
+  "current_executable_sha256": "8674526c79cd457ac72e5804c644655d7e67bec76d149813e7075b2b5475d83d",
   "numeric_bake_validation": "docs/porsche-ibl-validation.json",
   "native_gpu_validation": "docs/porsche-native-lighting-qa.json",
   "matched_views": [
     {
       "path": "screenshots/porsche-native-front.png",
-      "sha256": "a7928ab4a0417c7951a15f9fb8673f9d3351777d207b802073a0e776a1c8e6c4",
+      "sha256": "36f7d90a8828eabc85efb6624a42129da3783787b584b6e4b30fd67860a54ad4",
       "baseline_sha256": "42dfbed2aab9f9ad161d4ef0219444763b78400fa81c0383bdf6e5980726dcb7"
     },
     {
       "path": "screenshots/porsche-native-grille-close.png",
-      "sha256": "d15745fcc214948fea86d07128f4389000922df436827bd9cbf9817033c67483",
+      "sha256": "32b988dec0c9d23f82f87457fb82718be333817d1b59edb41347b27afd7bd4b3",
       "baseline_sha256": "1a4f65945ce0aff3275e17636c1d8e64fa49a7e8a09555ed31ea54e3a15b7729"
     },
     {
       "path": "screenshots/porsche-native-live-cockpit.png",
-      "sha256": "f5fd7ad7c6c67df7b256bb530c5184e9021f7dc009c6491504183f193cb606f2",
+      "sha256": "49ac891243bdec81c89e2f8b30d15978870d07b067d30cb819ec879660a41e81",
       "baseline_sha256": "28f402653554749a43b2535ffa73f19676ca2dca292243f9b0a653542ab9ca1f"
     }
   ],

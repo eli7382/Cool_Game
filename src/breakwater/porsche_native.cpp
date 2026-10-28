@@ -382,10 +382,10 @@ bool RunPorscheQA(){
     };
     for(int l=0;l<3;++l){
         check(LoadLevel(l),"native-level-load");auto& level=levels[l];auto& rig=*level.rig;rig.Pose({});
-        const int pivot=rig.Find("SteeringWheel_Pivot");const Vector3 centre=rig.Position("SteeringWheel_Pivot"),axis=Norm(V(.0011603803f,.3594856369f,-.9331498971f));const Matrix frame=rig.World(pivot);
+        const int pivot=rig.Find("SteeringWheel_Pivot");const Vector3 centre=rig.Position("SteeringWheel_Pivot"),axis=Norm(V(.000000300184f,.362725918f,-.931895868f));const Matrix frame=rig.World(pivot);
         const std::span<const porsche_reference::Node> reference=l==0?std::span<const porsche_reference::Node>(porsche_reference::HeroRest):l==1?std::span<const porsche_reference::Node>(porsche_reference::NearRest):std::span<const porsche_reference::Node>(porsche_reference::FarRest);
         check(compareReference(rig,reference)<2e-5,"native-zero-pose-matches-production-Three-rig");
-        check(Vector3Distance(centre,V(.3441169482f,.7747827714f,.2189599121f))<2e-6f,"column-centre-matches-authored-fit");
+        check(Vector3Distance(centre,V(.3439307947f,.7509610007f,.2253644182f))<2e-6f,"column-centre-matches-circular-horn-hub-fit");
         check(Vector3DotProduct(Norm(V(frame.m8,frame.m9,frame.m10)),axis)>.999999f,"column-axis-matches-authored-fit");
         int wheels=0;
         for(std::size_t i=0;i<level.bindings.size();++i){const int node=level.bindings[i].node;const auto matrix=rig.MeshDelta(node);const auto& mesh=level.model.meshes[i];
