@@ -8,8 +8,8 @@
   "width": 1024,
   "height": 512,
   "format": "PGHF header (16 bytes), little-endian RGB float32, top scanline first",
-  "generator_sha256": "31bd6a84877ff855aebb79f681ae1bf0578c4c60c0fe70c992628c9a72814491",
+  "generator_sha256": "9581e3cfc733b6b21b26089459c89b3670e21b2de6e4778c1ec0005d6a46bd88",
   "limits": [
-    "Mipmap filtering of the panorama approximates native rough reflections; not preconvolved GGX IBL"
+    "Raw linear panorama only; native SH/GGX/DFG outputs are prepared separately by scripts/prepare_porsche_ibl.py"
   ]
 }

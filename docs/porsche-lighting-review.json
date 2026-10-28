@@ -1,0 +1,38 @@
+{
+  "reviewed_at": "2026-10-28T20:10:33.650144+00:00",
+  "baseline_commit": "608b77b6cd8b15ede475c59eef7619e0d7c35df7",
+  "baseline_source": "Matching native captures from that commit, locally retained under ignored .tools/lighting-baseline",
+  "current_executable_sha256": "e8d87d3c1c469786dbf5149e68562dcae623b8bf80d504dad29d49433ddaf93d",
+  "numeric_bake_validation": "docs/porsche-ibl-validation.json",
+  "native_gpu_validation": "docs/porsche-native-lighting-qa.json",
+  "matched_views": [
+    {
+      "path": "screenshots/porsche-native-front.png",
+      "sha256": "310de12696442f5c3fdda75ad6036e0e6fa79cc8b00fc8a1382f5530a41f9565",
+      "baseline_sha256": "42dfbed2aab9f9ad161d4ef0219444763b78400fa81c0383bdf6e5980726dcb7"
+    },
+    {
+      "path": "screenshots/porsche-native-grille-close.png",
+      "sha256": "5d55131269af1b835e6fbc0278f7b708d71f1de823ef2829cec2554f2bb4929c",
+      "baseline_sha256": "1a4f65945ce0aff3275e17636c1d8e64fa49a7e8a09555ed31ea54e3a15b7729"
+    },
+    {
+      "path": "screenshots/porsche-native-live-cockpit.png",
+      "sha256": "36d48044deb5978d5fc29195ee94b1163ec37f772bfcef7cd9e3db94a2395deb",
+      "baseline_sha256": "28f402653554749a43b2535ffa73f19676ca2dca292243f9b0a653542ab9ca1f"
+    }
+  ],
+  "observations": [
+    "Bumper paint has a softer environment response and more diffuse body colour than the previous panorama-mip approximation",
+    "White body, red enamel, carbon and cabin leather remain visually distinct in the inspected captures",
+    "Close grille wires remain prone to subpixel aliasing; filtering and render resolution need further review"
+  ],
+  "remaining": [
+    "Scene reflections in mirrors",
+    "Vehicle self-shadowing and local ambient occlusion",
+    "Glass refraction, full material-extension interpretation and remaining surface detailing",
+    "Full-game performance, load policy, swept clearance and requested final fidelity"
+  ],
+  "complete": false,
+  "final_fidelity_verified": false
+}

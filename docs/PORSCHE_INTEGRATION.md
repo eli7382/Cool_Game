@@ -40,8 +40,14 @@ Porsche-specific mass, gearing and tire-force handling are unfinished.
 The driver camera follows the authored seat anchor and body transform. A
 dedicated native shader uses the original artwork UVs, detail UVs, packed
 roughness/metalness, normal maps, independent clearcoat normals, emission and
-HDR reflections. Glazing uses a thin alpha approximation. Rough HDR reflections
-use filtered panorama mips, rather than a full GGX environment convolution.
+HDR reflections. Glazing uses a thin alpha approximation. Native indirect
+lighting now uses a cosine-convolved irradiance map, an eleven-layer
+GGX radiance atlas and a correlated-Smith DFG lookup. Clearcoat has its own
+normal, roughness and integrated specular response. The split-sum equations
+follow [Filament's lighting model](https://google.github.io/filament/Filament.html).
+The atlas preserves 1024x512 sharp reflections and at least 128x64 directional
+resolution at rough levels, with wrapped horizontal/clamped polar gutters.
+HDR samples are not clipped before filtering.
 The HDR panorama is converted to linear RGB32F because default raylib 5.5
 builds disable HDR image decoding. No library build flags need changing.
 
@@ -163,6 +169,8 @@ checkout:
 python scripts/prepare_porsche_assets.py --source ../Porsche_911
 python tests/check_porsche_assets.py --source ../Porsche_911
 python scripts/prepare_porsche_environment.py
+python scripts/prepare_porsche_ibl.py
+python tests/check_porsche_ibl.py
 node tests/check_porsche_environment.mjs ../Porsche_911
 node tests/build_porsche_reference.mjs ../Porsche_911
 ```
@@ -173,6 +181,24 @@ Its current result is recorded in `docs/porsche-asset-validation.json`.
 The HDR check compares all converted RGB channels against the existing viewer
 loader. The native pose reference is generated from the exported models and
 the production Three adapter; the game itself requires no JavaScript runtime.
+
+The IBL checker uses independent Gauss-Legendre hemisphere quadrature for DFG,
+direct solid-angle cosine integration for diffuse light, constant-environment
+preservation, the sharp Fresnel limit and the analytic roughness-one white
+furnace result. It also emits seventeen native GPU probe references. The native
+test reads those probes through the actual production shader and texture
+bindings. See `docs/porsche-ibl-validation.json` and
+`docs/porsche-native-lighting-qa.json`. These checks do not validate local scene
+reflections, self-shadowing or full-vehicle appearance; those require separate
+work and visual review.
+
+The nine-coefficient SH candidate was rejected after it exceeded the diffuse
+reference tolerance in darker directions. The retained 128x64 irradiance map
+uses the exact roughness-one N=V GGX/cosine kernel. Broad GGX layers use direct
+512x256 spherical quadrature; the narrow 0.1 layer uses 1,024 filtered importance
+samples. The 128x128 DFG table includes both parameter endpoints and uses an
+explicit texel-centre coordinate transform. These choices and the rejected
+candidate's measured error are recorded in the validation report.
 
 The suspension check covers 65 compression/front-steer/rear-steer combinations
 per detail level. It compares 19,110 actual node frames and 24,960 sampled spring

@@ -10,6 +10,11 @@ uniform sampler2D texture2; // base normal, linear
 uniform sampler2D texture3; // independent clear resin normal, linear
 uniform sampler2D texture4; // HDR environment, linear
 uniform sampler2D texture5; // emission, sRGB
+uniform sampler2D texture6; // correlated Smith GGX DFG lookup, linear
+uniform vec4 environmentRects[11]; // atlas gutter origin xy, content dimensions zw
+uniform vec2 environmentSize;
+uniform vec4 lightingProbe; // QA only: xyz direction/lookup coordinates, w mode
+uniform float probeRoughness;
 uniform vec3 eyePosition;
 uniform vec4 baseFactor;
 uniform vec3 emissionFactor;
@@ -23,7 +28,8 @@ uniform vec2 detailRepeat;
 uniform float liveDisplay; // render targets have the opposite V origin to PNG maps
 const float PI=3.14159265359;
 vec2 uv(float channel){return channel>.5?uv1*detailRepeat:uv0;}
-vec3 srgb(vec3 c){return pow(max(c,vec3(0)),vec3(2.2));}
+vec3 srgb(vec3 c){c=max(c,vec3(0));return mix(c/12.92,pow((c+.055)/1.055,vec3(2.4)),step(vec3(.04045),c));}
+vec3 displayColor(vec3 c){return mix(c*12.92,1.055*pow(c,vec3(1.0/2.4))-.055,step(vec3(.0031308),c));}
 vec3 surfaceNormal(vec3 n,sampler2D map,float channel,float strength){
     vec2 t=uv(channel);vec3 a=dFdx(worldPosition),b=dFdy(worldPosition);vec2 u=dFdx(t),v=dFdy(t);
     vec3 tangent=a*v.y-b*u.y,bitangent=-a*v.x+b*u.x;
@@ -34,17 +40,30 @@ vec3 surfaceNormal(vec3 n,sampler2D map,float channel,float strength){
     return normalize(tangent*detail.x+bitangent*detail.y+n*detail.z);
 }
 vec3 fresnel(float cosine,vec3 f0){return f0+(1.0-f0)*pow(1.0-clamp(cosine,0.0,1.0),5.0);}
-float distribution(float nh,float rough){float a=max(.025,rough*rough),a2=a*a,d=nh*nh*(a2-1.0)+1.0;return a2/max(PI*d*d,1e-7);}
-float geometry(float n,float rough){float k=(rough+1.0)*(rough+1.0)/8.0;return n/(n*(1.0-k)+k);}
-vec3 environment(vec3 r,float rough){
+float distribution(float nh,float rough){float a=max(.002,rough*rough),a2=a*a,d=nh*nh*(a2-1.0)+1.0;return a2/max(PI*d*d,1e-12);}
+float visibility(float nv,float nl,float rough){float a2=pow(rough,4.0);return .5/max(nl*sqrt(nv*nv*(1.0-a2)+a2)+nv*sqrt(nl*nl*(1.0-a2)+a2),1e-7);}
+vec3 environmentDirection(vec3 r){
     float angle=1.35;vec3 d=vec3(r.x*cos(angle)-r.z*sin(angle),r.y,r.x*sin(angle)+r.z*cos(angle));
-    vec2 coord=vec2(atan(d.z,d.x)/(2.0*PI)+.5,acos(clamp(d.y,-1.0,1.0))/PI);
-    // Filtered panorama mips approximate a rough reflection. This is not a
-    // GGX convolution; the native IBL approximation is documented for review.
-    return min(textureLod(texture4,coord,rough*8.0).rgb,vec3(30.0));
+    return d;
 }
+vec3 environmentLayer(vec2 coord,int level){
+    vec4 rect=environmentRects[level];return texture(texture4,(rect.xy+vec2(1)+coord*rect.zw)/environmentSize).rgb;
+}
+vec3 environment(vec3 r,float rough){
+    vec3 d=environmentDirection(r);
+    vec2 coord=vec2(atan(d.z,d.x)/(2.0*PI)+.5,acos(clamp(d.y,-1.0,1.0))/PI);
+    float level=clamp(rough,0.0,1.0)*10.0;int low=int(floor(level));
+    return mix(environmentLayer(coord,low),environmentLayer(coord,min(low+1,10)),fract(level));
+}
+vec3 irradiance(vec3 n){return environment(n,1.0);}
+vec2 dfg(float nv,float rough){return texture(texture6,(vec2(clamp(nv,0.0,1.0),rough)*127.0+.5)/128.0).rg;}
+vec3 integratedSpecular(vec3 f0,vec2 brdf){vec3 energy=f0*brdf.x+brdf.y;return energy*(1.0+f0*(1.0/max(brdf.x+brdf.y,.001)-1.0));}
 vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.0,1.0);}
 void main(){
+    if(lightingProbe.w>.5){
+        vec3 value=lightingProbe.w<1.5?irradiance(lightingProbe.xyz)/8.0:lightingProbe.w<2.5?environment(lightingProbe.xyz,probeRoughness)/8.0:lightingProbe.w<3.5?vec3(dfg(lightingProbe.x,lightingProbe.y),0):integratedSpecular(vec3(lightingProbe.x),dfg(lightingProbe.y,probeRoughness));
+        finalColor=vec4(value,1);return;
+    }
     vec4 color=baseFactor;
     vec2 displayUV=vec2(uv0.x,1.0-uv0.y);
     if(maps.x>.5||liveDisplay>.5){vec4 texel=texture(texture0,liveDisplay>.5?displayUV:uv(channels.x));color*=vec4(srgb(texel.rgb),texel.a);}
@@ -58,14 +77,16 @@ void main(){
     vec3 v=normalize(eyePosition-worldPosition),l=normalize(vec3(.42,.88,-.28)),h=normalize(v+l);
     float nv=max(dot(n,v),.001),nl=max(dot(n,l),0.0),nh=max(dot(n,h),0.0),vh=max(dot(v,h),0.0);
     float dielectric=pow((optics.y-1.0)/(optics.y+1.0),2.0);vec3 f0=mix(vec3(dielectric),color.rgb,metallic),f=fresnel(vh,f0);
-    vec3 spec=distribution(nh,rough)*geometry(nv,rough)*geometry(nl,rough)*f/max(4.0*nv*max(nl,.001),.001);
+    vec3 spec=distribution(nh,rough)*visibility(nv,nl,rough)*f;
     vec3 diffuse=(1.0-f)*(1.0-metallic)*color.rgb/PI;
     vec3 radiance=(diffuse+spec)*vec3(2.7,2.55,2.35)*nl;
-    vec3 ambientDiffuse=environment(n,.95)*color.rgb*(1.0-metallic)*.42;
-    vec3 ambientSpecular=environment(reflect(-v,n),rough)*fresnel(nv,f0)*(1.0-rough*.45);
+    vec3 specularEnergy=integratedSpecular(f0,dfg(nv,rough));
+    vec3 ambientDiffuse=irradiance(n)*color.rgb*(1.0-metallic)*(1.0-clamp(specularEnergy,0.0,1.0));
+    vec3 ambientSpecular=environment(reflect(-v,n),rough)*specularEnergy;
     float cv=max(dot(coatN,v),.001),cl=max(dot(coatN,l),0.0),ch=max(dot(coatN,h),0.0),cr=max(pbr.w,.04);
-    float cf=.04+.96*pow(1.0-cv,5.0),coatSpec=distribution(ch,cr)*geometry(cv,cr)*geometry(cl,cr)*(.04+.96*pow(1.0-vh,5.0))/max(4.0*cv*max(cl,.001),.001);
-    radiance=(radiance+ambientDiffuse+ambientSpecular)*(1.0-pbr.z*cf)+pbr.z*(coatSpec*cl*vec3(2.7,2.55,2.35)+environment(reflect(-v,coatN),cr)*cf);
+    float cf=.04+.96*pow(1.0-cv,5.0),coatSpec=distribution(ch,cr)*visibility(cv,cl,cr)*(.04+.96*pow(1.0-vh,5.0));
+    float coatEnergy=integratedSpecular(vec3(.04),dfg(cv,cr)).r;
+    radiance=radiance*(1.0-pbr.z*cf)*(1.0-pbr.z*(.04+.96*pow(1.0-cl,5.0)))+(ambientDiffuse+ambientSpecular)*(1.0-pbr.z*coatEnergy)+pbr.z*(coatSpec*cl*vec3(2.7,2.55,2.35)+environment(reflect(-v,coatN),cr)*coatEnergy);
     vec3 emission=emissionFactor;if(emissiveMap.x>.5||liveDisplay>.5)emission*=srgb(texture(texture5,liveDisplay>.5?displayUV:uv(emissiveMap.y)).rgb);
     float alpha=color.a;
     if(optics.x>.01){
@@ -75,7 +96,7 @@ void main(){
         radiance=mix(radiance,environment(reflect(-v,n),rough)*mix(vec3(1),color.rgb,.25),optics.x);
         alpha=mix(alpha,clamp(.10+glassF*.72,.10,.85),optics.x);
     }
-    vec3 mapped=pow(aces((radiance+emission)*.95),vec3(1.0/2.2));
+    vec3 mapped=displayColor(aces((radiance+emission)*.95));
     float distanceFog=1.0-exp(-length(eyePosition-worldPosition)*.0017);
     finalColor=vec4(mix(mapped,vec3(.43,.53,.56),distanceFog),alpha);
 }

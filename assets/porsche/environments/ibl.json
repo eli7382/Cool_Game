@@ -1,0 +1,102 @@
+{
+  "format": 1,
+  "source_sha256": "94d54ae711c9bfc19e6072684ccc689141e5a6617cecd2dbae145aa1c8d26c16",
+  "generator_sha256": "052a9053cf530b8c0f9cdde2ffbe4246bb31a8c6644007a112023a7112817ccc",
+  "equations": "https://google.github.io/filament/Filament.html",
+  "diffuse": "Cosine-convolved irradiance/pi in final atlas layer: GGX roughness-one N=V kernel equals Lambert",
+  "specular": "GGX N=V normalized radiance convolution; 1024 filtered importance samples at roughness .1, direct 512x256 spherical quadrature at roughness >=.2",
+  "dfg": "128x128 endpoint grid, 4096 samples, height-correlated Smith visibility, channels A/B/unused",
+  "atlas_size": [
+    1026,
+    1430
+  ],
+  "rectangles": [
+    [
+      0,
+      0,
+      1024,
+      512
+    ],
+    [
+      0,
+      514,
+      512,
+      256
+    ],
+    [
+      0,
+      772,
+      256,
+      128
+    ],
+    [
+      0,
+      902,
+      128,
+      64
+    ],
+    [
+      0,
+      968,
+      128,
+      64
+    ],
+    [
+      0,
+      1034,
+      128,
+      64
+    ],
+    [
+      0,
+      1100,
+      128,
+      64
+    ],
+    [
+      0,
+      1166,
+      128,
+      64
+    ],
+    [
+      0,
+      1232,
+      128,
+      64
+    ],
+    [
+      0,
+      1298,
+      128,
+      64
+    ],
+    [
+      0,
+      1364,
+      128,
+      64
+    ]
+  ],
+  "roughness": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
+    1.0
+  ],
+  "files": {
+    "daylight_ggx.bin": "e08536375d82c2038b18d87fd26f8822474cba2f61e6f91d5ae9a6226ca68b4d",
+    "ggx_dfg.bin": "f1ee124f9abeeef2a769ed2282e2ecc2e201695c1fb17bfb65f51af03daec762"
+  },
+  "limits": [
+    "Static distant probe; scene reflection, local occlusion and shadowing are separate",
+    "Split-sum N=V approximation and finite directional/sample resolution; no exact path-traced equivalence"
+  ]
+}

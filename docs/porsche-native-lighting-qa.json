@@ -1,0 +1,8 @@
+{
+  "passed":true,
+  "gpu_probes":17,
+  "maximum_absolute_error":0.00200057,
+  "quantization_tolerance":0.00784314,
+  "scope":"Actual native shader, atlas/DFG textures, diffuse irradiance and compensated furnace response read back from a 16x16 GPU target; independent bake validation is separate",
+  "limits":["Finite probe samples and RGBA8 quantization; not whole-vehicle appearance or local shadow validation"]
+}

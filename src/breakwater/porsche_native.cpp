@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "porsche_native.hpp"
 #include "porsche_displays.hpp"
+#include "porsche_ibl_data.hpp"
 #include <cstring>
 #include <memory>
 #include <stdexcept>
@@ -11,6 +12,7 @@
 #include <limits>
 #include <type_traits>
 #include "../../tests/porsche_reference.hpp"
+#include "../../tests/porsche_ibl_reference.hpp"
 
 namespace bw {
 namespace {
@@ -39,11 +41,18 @@ struct NativeLevel {
 };
 std::array<NativeLevel,3> levels;
 Shader porscheShader{};
-Texture2D environment{};
+Texture2D environment{},dfgTexture{};
 bool porscheReady{};
 int qaDetailLevel{-1};
 std::unordered_map<std::string,Texture2D> textures;
 struct Locations {int eye,base,emission,pbr,optics,maps,channels,normalStrength,emissiveMap,detailRepeat,liveDisplay;} locations;
+Texture2D LinearTexture(const char* path,const char* magic){
+    std::ifstream file(path,std::ios::binary);if(!file)throw std::runtime_error(std::string("Missing native lighting: ")+path);std::vector<char> bytes((std::istreambuf_iterator<char>(file)),{});
+    if(bytes.size()<16||std::memcmp(bytes.data(),magic,4)!=0)throw std::runtime_error("Invalid native lighting header");
+    unsigned int d[3];std::memcpy(d,bytes.data()+4,12);if(!d[0]||!d[1]||d[0]>8192||d[1]>8192||d[2]!=1||bytes.size()!=16+static_cast<std::size_t>(d[0])*d[1]*12)throw std::runtime_error("Invalid native lighting dimensions");
+    const auto count=static_cast<std::size_t>(d[0])*d[1]*3;for(std::size_t i=0;i<count;++i){float value;std::memcpy(&value,bytes.data()+16+i*4,4);if(!std::isfinite(value)||value<0)throw std::runtime_error("Invalid linear lighting value");}
+    Image image{bytes.data()+16,static_cast<int>(d[0]),static_cast<int>(d[1]),1,PIXELFORMAT_UNCOMPRESSED_R32G32B32};Texture2D texture=LoadTextureFromImage(image);if(!IsTextureValid(texture))throw std::runtime_error("Cannot upload native lighting");SetTextureFilter(texture,TEXTURE_FILTER_BILINEAR);SetTextureWrap(texture,TEXTURE_WRAP_CLAMP);textures.emplace(path,texture);return texture;
+}
 Texture2D Texture(const char* path){
     if(!path)return Texture2D{};
     const auto found=textures.find(path);if(found!=textures.end())return found->second;
@@ -72,6 +81,7 @@ bool LoadLevel(int level){
         material.maps[MATERIAL_MAP_ROUGHNESS].texture=Texture(s.coatNormal.path);
         material.maps[MATERIAL_MAP_OCCLUSION].texture=environment;
         material.maps[MATERIAL_MAP_EMISSION].texture=Texture(s.emissive.path);
+        material.maps[MATERIAL_MAP_HEIGHT].texture=dfgTexture;
         material.maps[MATERIAL_MAP_DIFFUSE].color=WHITE;
     }
     data.centres.resize(data.bindings.size());
@@ -97,6 +107,7 @@ bool LoadLevel(int level){
         if(data.wireMaterial<0||data.radiatorMaterial<0||filtered==std::end(porsche_data::NearSurfaces))throw std::runtime_error("Missing filtered front grille material");
         data.filteredSurface=*filtered;data.filteredSurface.albedo.uv=data.filteredSurface.normal.uv=data.filteredSurface.orm.uv=1;
         data.filteredRadiator=LoadMaterialDefault();data.filteredRadiator.shader=porscheShader;data.filteredRadiator.maps[MATERIAL_MAP_DIFFUSE].texture=Texture(filtered->albedo.path);data.filteredRadiator.maps[MATERIAL_MAP_NORMAL].texture=Texture(filtered->normal.path);data.filteredRadiator.maps[MATERIAL_MAP_METALNESS].texture=Texture(filtered->orm.path);data.filteredRadiator.maps[MATERIAL_MAP_OCCLUSION].texture=environment;
+        data.filteredRadiator.maps[MATERIAL_MAP_HEIGHT].texture=dfgTexture;
         int count=0;for(std::size_t i=0;i<data.bindings.size();++i)if(data.bindings[i].material==data.wireMaterial){data.grilleCentre=Add(data.grilleCentre,data.centres[i]);++count;}if(!count)throw std::runtime_error("Missing physical grille meshes");data.grilleCentre=Mul(data.grilleCentre,1.0f/count);
     }
     data.ready=true;LogEvent(TextFormat("porsche-level-loaded,level=%d,meshes=%d,materials=%d",level,data.model.meshCount,static_cast<int>(data.surfaces.size())));return true;
@@ -178,19 +189,30 @@ bool RunSuspensionReference(){
     std::ofstream report("docs/porsche-native-suspension-qa.json");report<<"{\n  \"passed\":"<<(passed?"true":"false")<<",\n  \"poses\":"<<poses<<",\n  \"node_frames_compared\":"<<frames<<",\n  \"spring_vertices_compared\":"<<vertices<<",\n  \"maximum_frame_probe_error_m\":"<<maxPose<<",\n  \"maximum_morphed_position_error_m\":"<<maxPoint<<",\n  \"maximum_morphed_normal_error\":"<<maxNormal<<",\n  \"maximum_spring_weight_error\":"<<maxWeight<<",\n  \"maximum_solver_residual_m\":"<<maxResidual<<",\n  \"maximum_joint_gap_m\":"<<maxJoint<<",\n  \"maximum_wheel_height_error_m\":"<<maxWheel<<",\n  \"maximum_rigid_link_error_m\":"<<maxRigid<<",\n  \"minimum_damper_overlap_m\":"<<minDamper<<",\n  \"unconverged_corners\":"<<badSolve<<",\n  \"spring_envelope_violations\":"<<badEnvelope<<",\n  \"fixture_error\":\""<<error<<"\",\n  \"limits\":[\"Source-fitted visual joints, not OEM CAD or tire-force validation\",\"Finite native pose and sampled spring comparison; full-vehicle swept clearance and frame rate are separate\"]\n}\n";
     TraceLog(passed?LOG_INFO:LOG_ERROR,"Native suspension: %d poses, frame %.9f, spring %.9f, joints %.9f, rigid %.9f",poses,maxPose,maxPoint,maxJoint,maxRigid);return passed;
 }
+bool RunLightingProbes(){
+    const int probeLocation=GetShaderLocation(porscheShader,"lightingProbe"),roughLocation=GetShaderLocation(porscheShader,"probeRoughness");if(probeLocation<0||roughLocation<0)return false;
+    RenderTexture2D target=LoadRenderTexture(16,16);Mesh mesh=GenMeshPlane(2,2,1,1);Material material=LoadMaterialDefault();material.shader=porscheShader;material.maps[MATERIAL_MAP_OCCLUSION].texture=environment;material.maps[MATERIAL_MAP_HEIGHT].texture=dfgTexture;
+    if(!IsRenderTextureValid(target)||mesh.vertexCount<1){if(IsRenderTextureValid(target))UnloadRenderTexture(target);if(mesh.vertexCount>0)UnloadMesh(mesh);MemFree(material.maps);return false;}
+    Camera3D camera{{0,1,0},{0,0,0},{0,0,-1},2,CAMERA_ORTHOGRAPHIC};float maximum=0;int count=0;
+    for(const auto& probe:porsche_ibl_reference::Probes){
+        const Vector4 input{probe.direction.x,probe.direction.y,probe.direction.z,static_cast<float>(probe.mode)};SetShaderValue(porscheShader,probeLocation,&input,SHADER_UNIFORM_VEC4);SetShaderValue(porscheShader,roughLocation,&probe.roughness,SHADER_UNIFORM_FLOAT);
+        BeginTextureMode(target);ClearBackground(MAGENTA);BeginMode3D(camera);DrawMesh(mesh,material,MatrixIdentity());EndMode3D();EndTextureMode();Image image=LoadImageFromTexture(target.texture);const Color pixel=GetImageColor(image,8,8);UnloadImage(image);
+        maximum=std::max({maximum,std::abs(pixel.r/255.0f-probe.expected.x),std::abs(pixel.g/255.0f-probe.expected.y),std::abs(pixel.b/255.0f-probe.expected.z)});++count;
+    }
+    const Vector4 reset{};SetShaderValue(porscheShader,probeLocation,&reset,SHADER_UNIFORM_VEC4);MemFree(material.maps);UnloadMesh(mesh);UnloadRenderTexture(target);
+    const bool passed=count==static_cast<int>(std::size(porsche_ibl_reference::Probes))&&maximum<2.0f/255;std::ofstream report("docs/porsche-native-lighting-qa.json");report<<"{\n  \"passed\":"<<(passed?"true":"false")<<",\n  \"gpu_probes\":"<<count<<",\n  \"maximum_absolute_error\":"<<maximum<<",\n  \"quantization_tolerance\":"<<2.0/255<<",\n  \"scope\":\"Actual native shader, atlas/DFG textures, diffuse irradiance and compensated furnace response read back from a 16x16 GPU target; independent bake validation is separate\",\n  \"limits\":[\"Finite probe samples and RGBA8 quantization; not whole-vehicle appearance or local shadow validation\"]\n}\n";return passed;
+}
 }
 bool InitPorsche(){
     try{
         porscheShader=LoadShader("assets/porsche/shaders/porsche.vs","assets/porsche/shaders/porsche.fs");if(!IsShaderValid(porscheShader)||porscheShader.id==rlGetShaderIdDefault())return false;
         locations={GetShaderLocation(porscheShader,"eyePosition"),GetShaderLocation(porscheShader,"baseFactor"),GetShaderLocation(porscheShader,"emissionFactor"),GetShaderLocation(porscheShader,"pbr"),GetShaderLocation(porscheShader,"optics"),GetShaderLocation(porscheShader,"maps"),GetShaderLocation(porscheShader,"channels"),GetShaderLocation(porscheShader,"normalStrength"),GetShaderLocation(porscheShader,"emissiveMap"),GetShaderLocation(porscheShader,"detailRepeat")};
         locations.liveDisplay=GetShaderLocation(porscheShader,"liveDisplay");if(!InitPorscheDisplays())throw std::runtime_error("Cannot initialize native cockpit fonts");
-        for(int i=0;i<6;++i)porscheShader.locs[SHADER_LOC_MAP_ALBEDO+i]=GetShaderLocation(porscheShader,TextFormat("texture%d",i));
-        int bytes=0;unsigned char* raw=LoadFileData("assets/porsche/environments/daylight.rgb32f",&bytes);
-        if(!raw||bytes<16||std::memcmp(raw,"PGHF",4)!=0)throw std::runtime_error("Missing linear Porsche environment");
-        unsigned int dimensions[3]{};std::memcpy(dimensions,raw+4,12);const unsigned int width=dimensions[0],height=dimensions[1];
-        if(dimensions[2]!=1||width>8192||height>8192||static_cast<unsigned int>(bytes)!=16+width*height*12){UnloadFileData(raw);throw std::runtime_error("Invalid linear Porsche environment dimensions");}
-        Image panorama{raw+16,static_cast<int>(width),static_cast<int>(height),1,PIXELFORMAT_UNCOMPRESSED_R32G32B32};environment=LoadTextureFromImage(panorama);UnloadFileData(raw);
-        if(!IsTextureValid(environment))throw std::runtime_error("Cannot upload linear Porsche environment");GenTextureMipmaps(&environment);SetTextureFilter(environment,TEXTURE_FILTER_TRILINEAR);textures.emplace("linear environment",environment);
+        for(int i=0;i<7;++i)porscheShader.locs[SHADER_LOC_MAP_ALBEDO+i]=GetShaderLocation(porscheShader,TextFormat("texture%d",i));
+        environment=LinearTexture("assets/porsche/environments/daylight_ggx.bin","PGGA");dfgTexture=LinearTexture("assets/porsche/environments/ggx_dfg.bin","PGDF");
+        const int rectLocation=GetShaderLocation(porscheShader,"environmentRects[0]"),sizeLocation=GetShaderLocation(porscheShader,"environmentSize");if(rectLocation<0||sizeLocation<0||porscheShader.locs[SHADER_LOC_MAP_HEIGHT]<0)throw std::runtime_error("Native IBL shader bindings missing");
+        for(const auto& rect:porsche_ibl::Rectangles)if(rect.x<0||rect.y<0||rect.z<1||rect.w<1||rect.x+rect.z+2>environment.width||rect.y+rect.w+2>environment.height)throw std::runtime_error("Native environment atlas rectangle outside image");
+        const Vector2 size{static_cast<float>(environment.width),static_cast<float>(environment.height)};SetShaderValueV(porscheShader,rectLocation,porsche_ibl::Rectangles,SHADER_UNIFORM_VEC4,porsche_ibl::LayerCount);SetShaderValue(porscheShader,sizeLocation,&size,SHADER_UNIFORM_VEC2);
         porscheReady=LoadLevel(1);return porscheReady;
     }catch(const std::exception& e){TraceLog(LOG_ERROR,"Porsche initialization: %s",e.what());LogEvent("porsche-initialization-failed");return false;}
 }
@@ -198,7 +220,7 @@ void ShutdownPorsche(){
     ShutdownPorscheDisplays();
     for(auto& level:levels){if(IsModelValid(level.model))UnloadModel(level.model);if(level.filteredRadiator.maps)MemFree(level.filteredRadiator.maps);level={};}
     for(const auto& [name,texture]:textures)UnloadTexture(texture);textures.clear();
-    if(IsShaderValid(porscheShader))UnloadShader(porscheShader);porscheShader={};environment={};porscheReady=false;
+    if(IsShaderValid(porscheShader))UnloadShader(porscheShader);porscheShader={};environment={};dfgTexture={};porscheReady=false;
 }
 Matrix PorscheVehicleMatrix(const Vehicle& v){
     // Asset origin lies on the ground; gameplay vehicle p is .72 m above it.
@@ -273,6 +295,7 @@ bool RunPorscheQA(){
     int checks=0,failures=0;auto check=[&](bool ok,const char* name){++checks;if(!ok){++failures;TraceLog(LOG_ERROR,"PORSCHE QA: %s",name);}LogEvent(TextFormat("porsche-qa-check,name=%s,pass=%d",name,ok?1:0));};
     const bool shaderReady=porscheReady&&IsShaderValid(porscheShader)&&porscheShader.id!=rlGetShaderIdDefault();check(shaderReady,"dedicated-native-shader-and-linear-environment-ready");
     if(!shaderReady){std::ofstream("docs/porsche-native-qa.json")<<"{\"passed\":false,\"failure\":\"Native Porsche shader unavailable\"}";return false;}
+    check(RunLightingProbes(),"native-GGX-atlas-DFG-and-diffuse-irradiance-match-independent-GPU-probes");
     StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;
     // Drive the game's existing E-interaction path, including the parked-car
     // swap, instead of replacing the active car solely inside this fixture.
