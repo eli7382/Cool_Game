@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "f16_netz_mesh_ids.hpp"
 #include "porsche_native.hpp"
+#include "porsche_displays.hpp"
 
 namespace bw {
 namespace {
@@ -4223,7 +4224,7 @@ void UpdateCamera(){
     }
 }
 void DrawWorld(){
-    UpdateCamera();BeginMode3D(g.camera);
+    UpdateCamera();PreparePorscheDisplays();BeginMode3D(g.camera);
     if(IsModelValid(g.skyDome)&&IsTextureValid(g.skyTex)){
         rlDisableBackfaceCulling();DrawModelEx(g.skyDome,g.camera.position,V(1,0,0),54,V(1,1,1),WHITE);rlEnableBackfaceCulling();
     }

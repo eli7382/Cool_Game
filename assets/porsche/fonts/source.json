@@ -1,0 +1,26 @@
+{
+  "family": "Barlow",
+  "authors": "The Barlow Project Authors / Jeremy Tribby",
+  "license": "SIL Open Font License 1.1",
+  "modified": false,
+  "retrieved_at": "2026-10-28T19:35:01.284084+00:00",
+  "files": [
+    {
+      "path": "Barlow-Regular.ttf",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlow/Barlow-Regular.ttf",
+      "sha256": "95aa02c7c43096e0dd44d787ba6216864a67157e402adab59b35572e0c1577ea"
+    },
+    {
+      "path": "Barlow-Bold.ttf",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlow/Barlow-Bold.ttf",
+      "sha256": "84e6a4d61e7c3e21f3c50ea6a4f7e5303a3467864c038be6ea3759bab8d547f9"
+    },
+    {
+      "path": "OFL.txt",
+      "source": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlow/OFL.txt",
+      "sha256": "10b0e6bb43166a50fbe7cde2895bd7f703738a5da843acb5c97c95dc9ea26817",
+      "download_sha256": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f",
+      "normalization": "Trailing whitespace removed; license text retained"
+    }
+  ]
+}

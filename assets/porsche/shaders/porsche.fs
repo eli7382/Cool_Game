@@ -20,6 +20,7 @@ uniform vec4 channels; // UV set for albedo, ORM, base normal, coat normal
 uniform vec2 normalStrength;
 uniform vec2 emissiveMap; // has map, UV set
 uniform vec2 detailRepeat;
+uniform float liveDisplay; // render targets have the opposite V origin to PNG maps
 const float PI=3.14159265359;
 vec2 uv(float channel){return channel>.5?uv1*detailRepeat:uv0;}
 vec3 srgb(vec3 c){return pow(max(c,vec3(0)),vec3(2.2));}
@@ -45,7 +46,8 @@ vec3 environment(vec3 r,float rough){
 vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.0,1.0);}
 void main(){
     vec4 color=baseFactor;
-    if(maps.x>.5){vec4 texel=texture(texture0,uv(channels.x));color*=vec4(srgb(texel.rgb),texel.a);}
+    vec2 displayUV=vec2(uv0.x,1.0-uv0.y);
+    if(maps.x>.5||liveDisplay>.5){vec4 texel=texture(texture0,liveDisplay>.5?displayUV:uv(channels.x));color*=vec4(srgb(texel.rgb),texel.a);}
     if(optics.w>.5&&optics.w<1.5&&color.a<optics.z)discard;
     vec3 ormSample=maps.y>.5?texture(texture1,uv(channels.y)).rgb:vec3(1);
     float metallic=clamp(pbr.x*ormSample.b,0.0,1.0),rough=clamp(pbr.y*ormSample.g,.045,1.0);
@@ -64,7 +66,7 @@ void main(){
     float cv=max(dot(coatN,v),.001),cl=max(dot(coatN,l),0.0),ch=max(dot(coatN,h),0.0),cr=max(pbr.w,.04);
     float cf=.04+.96*pow(1.0-cv,5.0),coatSpec=distribution(ch,cr)*geometry(cv,cr)*geometry(cl,cr)*(.04+.96*pow(1.0-vh,5.0))/max(4.0*cv*max(cl,.001),.001);
     radiance=(radiance+ambientDiffuse+ambientSpecular)*(1.0-pbr.z*cf)+pbr.z*(coatSpec*cl*vec3(2.7,2.55,2.35)+environment(reflect(-v,coatN),cr)*cf);
-    vec3 emission=emissionFactor;if(emissiveMap.x>.5)emission*=srgb(texture(texture5,uv(emissiveMap.y)).rgb);
+    vec3 emission=emissionFactor;if(emissiveMap.x>.5||liveDisplay>.5)emission*=srgb(texture(texture5,liveDisplay>.5?displayUV:uv(emissiveMap.y)).rgb);
     float alpha=color.a;
     if(optics.x>.01){
         // Thin glazing uses Fresnel-weighted alpha to preserve the real scene

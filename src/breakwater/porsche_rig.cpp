@@ -57,6 +57,9 @@ void PorscheRig::Pose(const PorscheControls& inputs){
     Rotate("BrakePedal_Pivot",x,-c.brake*.18f);Rotate("ThrottlePedal_Pivot",x,c.throttle*.12f);
     Rotate("ShiftPaddle_L",y,c.paddleL*.12f);Rotate("ShiftPaddle_R",y,-c.paddleR*.12f);
     Rotate("Tachometer_Needle",z,std::clamp(c.rpm/9000.0f,0.0f,1.0f)*4.241150082346221f);
+    const double chrono=std::isfinite(c.chronoSeconds)?std::clamp(c.chronoSeconds,0.0,5999.9):0.0;
+    Rotate("Chrono_Seconds",z,static_cast<float>(std::fmod(chrono,60.0)/60.0*2*PI));
+    Rotate("Chrono_Minutes",z,static_cast<float>(std::fmod(chrono,1800.0)/1800.0*2*PI));
     for(std::size_t i=0;i<4;++i){const std::string key=std::array<const char*,4>{"FL","FR","RL","RR"}[i];
         Rotate("WheelSpin_"+key,x,c.wheelAngles[i]);
     }

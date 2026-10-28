@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "porsche_native.hpp"
+#include "porsche_displays.hpp"
 #include <cstring>
 #include <memory>
 #include <stdexcept>
@@ -40,8 +41,9 @@ std::array<NativeLevel,3> levels;
 Shader porscheShader{};
 Texture2D environment{};
 bool porscheReady{};
+int qaDetailLevel{-1};
 std::unordered_map<std::string,Texture2D> textures;
-struct Locations {int eye,base,emission,pbr,optics,maps,channels,normalStrength,emissiveMap,detailRepeat;} locations;
+struct Locations {int eye,base,emission,pbr,optics,maps,channels,normalStrength,emissiveMap,detailRepeat,liveDisplay;} locations;
 Texture2D Texture(const char* path){
     if(!path)return Texture2D{};
     const auto found=textures.find(path);if(found!=textures.end())return found->second;
@@ -121,7 +123,7 @@ PorscheControls Controls(const Vehicle& v,bool occupied){
     PorscheControls c;c.steering=Clamp(v.steer*.55f,-.55f,.55f);c.doorL=v.porscheDoor[0];c.doorR=v.porscheDoor[1];c.windowL=c.windowR=v.porscheWindow;c.drs=v.porscheAero;c.airbrake=v.porscheAirbrake;c.brake=v.porscheBrake;c.throttle=v.porscheThrottle;c.paddleL=v.porschePaddleL;c.paddleR=v.porschePaddleR;c.wheelAngles=v.porscheWheelAngles;c.rpm=occupied?900+Clamp((v.engineRpm-.18f)/.82f,0,1)*8100:0;
     // Physics contact slots are -X rear, +X rear, -X front, +X front;
     // the model's named left side is +X. Keep each corner on its own sample.
-    c.travel={Clamp(v.wheelTravel[3],-.05f,.05f),Clamp(v.wheelTravel[2],-.05f,.05f),Clamp(v.wheelTravel[1],-.05f,.05f),Clamp(v.wheelTravel[0],-.05f,.05f)};return c;
+    c.travel={Clamp(v.wheelTravel[3],-.05f,.05f),Clamp(v.wheelTravel[2],-.05f,.05f),Clamp(v.wheelTravel[1],-.05f,.05f),Clamp(v.wheelTravel[0],-.05f,.05f)};c.chronoSeconds=v.porscheChronoSeconds;return c;
 }
 struct SuspensionReferenceReader {
     std::vector<char> bytes;std::size_t offset{};
@@ -181,6 +183,7 @@ bool InitPorsche(){
     try{
         porscheShader=LoadShader("assets/porsche/shaders/porsche.vs","assets/porsche/shaders/porsche.fs");if(!IsShaderValid(porscheShader)||porscheShader.id==rlGetShaderIdDefault())return false;
         locations={GetShaderLocation(porscheShader,"eyePosition"),GetShaderLocation(porscheShader,"baseFactor"),GetShaderLocation(porscheShader,"emissionFactor"),GetShaderLocation(porscheShader,"pbr"),GetShaderLocation(porscheShader,"optics"),GetShaderLocation(porscheShader,"maps"),GetShaderLocation(porscheShader,"channels"),GetShaderLocation(porscheShader,"normalStrength"),GetShaderLocation(porscheShader,"emissiveMap"),GetShaderLocation(porscheShader,"detailRepeat")};
+        locations.liveDisplay=GetShaderLocation(porscheShader,"liveDisplay");if(!InitPorscheDisplays())throw std::runtime_error("Cannot initialize native cockpit fonts");
         for(int i=0;i<6;++i)porscheShader.locs[SHADER_LOC_MAP_ALBEDO+i]=GetShaderLocation(porscheShader,TextFormat("texture%d",i));
         int bytes=0;unsigned char* raw=LoadFileData("assets/porsche/environments/daylight.rgb32f",&bytes);
         if(!raw||bytes<16||std::memcmp(raw,"PGHF",4)!=0)throw std::runtime_error("Missing linear Porsche environment");
@@ -192,6 +195,7 @@ bool InitPorsche(){
     }catch(const std::exception& e){TraceLog(LOG_ERROR,"Porsche initialization: %s",e.what());LogEvent("porsche-initialization-failed");return false;}
 }
 void ShutdownPorsche(){
+    ShutdownPorscheDisplays();
     for(auto& level:levels){if(IsModelValid(level.model))UnloadModel(level.model);if(level.filteredRadiator.maps)MemFree(level.filteredRadiator.maps);level={};}
     for(const auto& [name,texture]:textures)UnloadTexture(texture);textures.clear();
     if(IsShaderValid(porscheShader))UnloadShader(porscheShader);porscheShader={};environment={};porscheReady=false;
@@ -206,7 +210,13 @@ Vector3 PorscheDriverEye(const Vehicle& v){
 }
 void UpdatePorscheControls(Vehicle& v,float dt,bool occupied){
     if(!v.isPorsche)return;
+    const double elapsed=std::isfinite(dt)?std::max(static_cast<double>(dt),0.0):0.0;
+    v.porscheDisplayClock=std::isfinite(v.porscheDisplayClock)?std::fmod(std::max(0.0,v.porscheDisplayClock)+elapsed,86400.0):0.0;
+    v.porscheChronoSeconds=std::isfinite(v.porscheChronoSeconds)?std::clamp(v.porscheChronoSeconds,0.0,5999.9):0.0;
+    if(v.porscheChronoRunning){v.porscheChronoSeconds=std::min(5999.9,v.porscheChronoSeconds+elapsed);if(v.porscheChronoSeconds>=5999.9)v.porscheChronoRunning=false;}
     if(occupied&&!g.qaPorsche){
+        if(IsKeyPressed(KEY_J))SetPorscheChrono(v,!v.porscheChronoRunning);
+        if(IsKeyPressed(KEY_U))SetPorscheChrono(v,false,true);
         if(IsKeyPressed(KEY_O)&&fabsf(v.speed)<.5f)v.porscheDoorsOpen[0]=!v.porscheDoorsOpen[0];
         if(IsKeyPressed(KEY_K)&&fabsf(v.speed)<.5f)v.porscheDoorsOpen[1]=!v.porscheDoorsOpen[1];
         if(IsKeyPressed(KEY_I))v.porscheWindowsOpen=!v.porscheWindowsOpen;
@@ -224,10 +234,15 @@ void UpdatePorscheControls(Vehicle& v,float dt,bool occupied){
     if(occupied)for(int i=0;i<4;++i)v.porscheWheelAngles[i]=std::remainder(v.porscheWheelAngles[i]+v.speed*dt/(i<2?.35025f:.3672f),2*PI);
     if(!occupied)v.porscheBrake=v.porscheThrottle=0;
 }
+void SetPorscheChrono(Vehicle& v,bool running,bool reset){
+    if(!v.isPorsche)return;
+    if(reset||!std::isfinite(v.porscheChronoSeconds))v.porscheChronoSeconds=0;
+    v.porscheChronoRunning=running&&v.porscheChronoSeconds<5999.9;
+}
 void DrawPorsche(const Vehicle& v,bool cockpit,bool mechanismOnly){
     if(!porscheReady)return;
     const float distance=Vector3Distance(v.p,g.camera.position);
-    int index=cockpit||distance<4?0:distance<22?1:2;if(g.qaPorsche)index=0;
+    int index=cockpit||distance<4?0:distance<22?1:2;if(g.qaPorsche)index=qaDetailLevel<0?0:qaDetailLevel;
     try{if(!LoadLevel(index))return;}catch(const std::exception& e){TraceLog(LOG_ERROR,"Porsche level: %s",e.what());return;}
     auto& level=levels[index];level.rig->Pose(Controls(v,g.vehicle==VehicleKind::Car && &v==&g.car));UpdateSpringMorphs(level);
     const Matrix vehicle=PorscheVehicleMatrix(v);std::vector<int> opaque,glass;
@@ -245,7 +260,11 @@ void DrawPorsche(const Vehicle& v,bool cockpit,bool mechanismOnly){
     auto transform=[&](int i){return MatrixMultiply(level.rig->MeshDelta(level.bindings[i].node),vehicle);};
     std::sort(glass.begin(),glass.end(),[&](int a,int b){return Vector3DistanceSqr(Vector3Transform(level.centres[a],transform(a)),g.camera.position)>Vector3DistanceSqr(Vector3Transform(level.centres[b],transform(b)),g.camera.position);});
     rlDrawRenderBatchActive();SetShaderValue(porscheShader,locations.eye,&g.camera.position,SHADER_UNIFORM_VEC3);
-    int last=-1;auto draw=[&](int i){const int material=level.bindings[i].material;const bool filtered=index==0&&!level.detailedGrille&&material==level.radiatorMaterial;const auto& s=filtered?level.filteredSurface:level.surfaces[material];if(material!=last){Surface(s,v,filtered?Vector2{2,4}:Vector2{1,1});last=material;}if(s.doubleSided)rlDisableBackfaceCulling();else rlEnableBackfaceCulling();DrawMesh(level.model.meshes[i],filtered?level.filteredRadiator:level.model.materials[material+1],transform(i));if(material==level.wireMaterial)++level.lastWireMeshes;if(filtered)++level.lastFilteredMeshes;};
+    int last=-1;auto draw=[&](int i){const int material=level.bindings[i].material;const bool filtered=index==0&&!level.detailedGrille&&material==level.radiatorMaterial;auto s=filtered?level.filteredSurface:level.surfaces[material];auto& renderMaterial=filtered?level.filteredRadiator:level.model.materials[material+1];
+        const auto display=PorscheDisplayTexture(v,PorscheDisplayKind(s.name));const bool live=IsTextureValid(display);
+        if(live){renderMaterial.maps[MATERIAL_MAP_DIFFUSE].texture=renderMaterial.maps[MATERIAL_MAP_EMISSION].texture=display;s.base={1,1,1,1};s.emission={1,1,1};s.emissiveStrength=.65f;s.metallic=0;s.roughness=.34f;}
+        if(material!=last){Surface(s,v,filtered?Vector2{2,4}:Vector2{1,1});const float enabled=live?1.0f:0.0f;SetShaderValue(porscheShader,locations.liveDisplay,&enabled,SHADER_UNIFORM_FLOAT);last=material;}
+        if(s.doubleSided)rlDisableBackfaceCulling();else rlEnableBackfaceCulling();DrawMesh(level.model.meshes[i],renderMaterial,transform(i));if(material==level.wireMaterial)++level.lastWireMeshes;if(filtered)++level.lastFilteredMeshes;};
     for(int i:opaque)draw(i);
     BeginBlendMode(BLEND_ALPHA);rlDisableDepthMask();last=-1;for(int i:glass)draw(i);rlEnableDepthMask();EndBlendMode();rlEnableBackfaceCulling();
 }
@@ -308,6 +327,18 @@ bool RunPorscheQA(){
     PorscheControls malformed;malformed.steering=std::numeric_limits<float>::infinity();malformed.rearSteering=-std::numeric_limits<float>::infinity();malformed.travel.fill(std::numeric_limits<float>::quiet_NaN());malformed.wheelAngles.fill(std::numeric_limits<float>::infinity());malformed.doorL=malformed.rpm=std::numeric_limits<float>::quiet_NaN();levels[0].rig->Pose(malformed);
     bool finiteRecovery=true;for(std::size_t i=0;i<levels[0].rig->Nodes().size();++i)for(float value:MatrixToFloatV(levels[0].rig->World(static_cast<int>(i))).v)finiteRecovery=finiteRecovery&&std::isfinite(value);
     check(finiteRecovery&&compareReference(*levels[0].rig,porsche_reference::HeroRest)<2e-5,"nonfinite-telemetry-recovers-to-finite-neutral-pose");
+    bool chronoPose=true;
+    for(auto& level:levels)for(const auto& [seconds,reference]:std::array<std::pair<double,std::span<const porsche_reference::Node>>,3>{{{75.3,porsche_reference::ChronoShort},{1830.4,porsche_reference::ChronoWrap},{5999.9,porsche_reference::ChronoLimit}}}){PorscheControls c;c.chronoSeconds=seconds;level.rig->Pose(c);chronoPose=chronoPose&&compareReference(*level.rig,reference)<2e-5;}
+    check(chronoPose,"native-stopwatch-hands-match-production-rig-all-detail-levels");
+    Vehicle timer=g.car;SetPorscheChrono(timer,true,true);for(int i=0;i<10;++i)UpdatePorscheControls(timer,.1f,true);SetPorscheChrono(timer,false);const double paused=timer.porscheChronoSeconds;UpdatePorscheControls(timer,.2f,false);
+    check(std::abs(paused-1.0)<1e-6&&timer.porscheChronoSeconds==paused,"stopwatch-start-pause-retains-elapsed-simulation-time");
+    SetPorscheChrono(timer,true,true);UpdatePorscheControls(timer,1.5f,false);check(std::abs(timer.porscheChronoSeconds-1.5)<1e-6,"stopwatch-retains-full-elapsed-time-across-a-long-frame");timer.porscheChronoSeconds=paused;SetPorscheChrono(timer,false);
+    SetPorscheChrono(timer,true);UpdatePorscheControls(timer,.1f,false);check(std::abs(timer.porscheChronoSeconds-1.1)<1e-6,"stopwatch-resumes-while-parked");
+    SetPorscheChrono(timer,false,true);check(timer.porscheChronoSeconds==0&&!timer.porscheChronoRunning,"stopwatch-reset");
+    timer.porscheChronoSeconds=5999.85;SetPorscheChrono(timer,true);UpdatePorscheControls(timer,.1f,false);check(timer.porscheChronoSeconds==5999.9&&!timer.porscheChronoRunning,"stopwatch-upper-limit-stops");
+    Vehicle telemetry=g.car;telemetry.speed=-10;telemetry.engineRpm=1;telemetry.porscheChronoSeconds=75.3;telemetry.tireTemperatureC={40,50,60,70};const auto state=PorscheDisplayTelemetry(telemetry,true);
+    check(state.speedKmh==36&&state.rpm==9000&&state.selection=='R'&&state.chronoTenths==753&&state.temperatures==std::array<float,4>{70,60,50,40},"displays-use-signed-game-speed-rpm-and-correct-corner-temperatures");
+    telemetry.speed=std::numeric_limits<float>::quiet_NaN();telemetry.engineRpm=std::numeric_limits<float>::infinity();const auto invalid=PorscheDisplayTelemetry(telemetry,true);check(invalid.speedKmh==0&&invalid.rpm==900,"invalid-display-telemetry-stays-finite");
     // Exercise real game physics with deterministic controls, without OS input.
     const Vehicle initial=g.car;g.qaPorscheThrottle=1;g.qaPorscheSteering=0;
     for(int i=0;i<240;++i)UpdateGameplay(1.0f/120);
@@ -334,7 +365,22 @@ bool RunPorscheQA(){
     }
     g.cameraDistance=g.cameraActualDistance=1.8f;
     for(int i=-1;i<=1;++i){g.car.steer=i*.6f;g.cameraInitialized=false;const char* path=i<0?"screenshots/porsche-native-steering-negative.png":i>0?"screenshots/porsche-native-steering-positive.png":"screenshots/porsche-native-steering-centre.png";capture(path);}
-    std::ofstream report("docs/porsche-native-qa.json");report<<"{\n  \"passed\": "<<(failures==0?"true":"false")<<",\n  \"checks\": "<<checks<<",\n  \"failures\": "<<failures<<",\n  \"native_steering_poses\": "<<poses<<",\n  \"maximum_axial_drift_m\": "<<maximumAxial<<",\n  \"maximum_radial_drift_m\": "<<maximumRadial<<",\n  \"maximum_raw_rest_adjustment_m\": "<<maximumRest<<",\n  \"maximum_reference_pose_error_m\": "<<maximumReferenceError<<",\n  \"reference_nodes_compared\": "<<referenceNodes<<",\n  \"accelerated_speed_mps\": "<<acceleratedSpeed<<",\n  \"suspension_evidence\":\"docs/porsche-native-suspension-qa.json\",\n  \"limits\": [\"Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics\",\"Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames\",\"Source-fitted suspension visuals are implemented; Porsche tire-force tuning, live instruments, mirrors and material refinements remain in development\"]\n}\n";
+    g.car=initial;PreparePorscheDisplays(true);const unsigned int revision=PorscheDisplayRevision(g.car);PreparePorscheDisplays();check(PorscheDisplayRevision(g.car)==revision,"unchanged-screen-state-reuses-render-targets");
+    for(int kind=0;kind<4;++kind)check(ExportPorscheDisplay(g.car,kind,TextFormat("screenshots/porsche-display-%d-rest.png",kind)),"export-rest-live-display");
+    std::array<unsigned int,4> restHashes{};auto pixelHash=[](Texture2D texture){Image image=LoadImageFromTexture(texture);const auto* pixels=static_cast<const unsigned char*>(image.data);unsigned int hash=2166136261u;const int bytes=GetPixelDataSize(image.width,image.height,image.format);for(int i=0;i<bytes;++i)hash=(hash^pixels[i])*16777619u;UnloadImage(image);return hash;};
+    for(int kind=0;kind<4;++kind)restHashes[kind]=pixelHash(PorscheDisplayTexture(g.car,kind));
+    g.car.speed=31.25f;g.car.engineRpm=.8f;g.car.porscheChronoSeconds=75.3;g.car.porscheChronoRunning=true;g.car.longitudinalG=.73f;g.car.lateralG=-.42f;g.car.tireTemperatureC={72,74,75,77};g.car.porscheDisplayClock+=.2;PreparePorscheDisplays();
+    for(int kind=0;kind<4;++kind){check(pixelHash(PorscheDisplayTexture(g.car,kind))!=restHashes[kind],"GPU-display-pixels-change-with-driving-telemetry");check(ExportPorscheDisplay(g.car,kind,TextFormat("screenshots/porsche-display-%d-driving.png",kind)),"export-driving-live-display");}
+    g.car.steer=0;g.cameraInitialized=false;capture("screenshots/porsche-native-live-cockpit.png");
+    bool displayBindings=true;for(int detail=0;detail<3;++detail){qaDetailLevel=detail;BeginDrawing();BeginMode3D(g.camera);DrawPorsche(g.car,true);EndMode3D();EndDrawing();auto& level=levels[detail];
+        for(int kind=0;kind<4;++kind){int count=0;for(std::size_t m=0;m<level.surfaces.size();++m)if(PorscheDisplayKind(level.surfaces[m].name)==kind){const auto texture=PorscheDisplayTexture(g.car,kind);displayBindings=displayBindings&&level.model.materials[m+1].maps[MATERIAL_MAP_DIFFUSE].texture.id==texture.id&&level.model.materials[m+1].maps[MATERIAL_MAP_EMISSION].texture.id==texture.id;++count;}displayBindings=displayBindings&&count==1;}
+    }qaDetailLevel=-1;check(displayBindings,"all-four-live-displays-bound-after-actual-detail-level-draws");
+    const auto rateRevision=PorscheDisplayRevision(g.car);g.car.engineRpm=.7f;PreparePorscheDisplays();check(PorscheDisplayRevision(g.car)==rateRevision,"changed-telemetry-is-throttled-within-one-display-tick");g.car.porscheDisplayClock+=.11;PreparePorscheDisplays();check(PorscheDisplayRevision(g.car)==rateRevision+1,"changed-telemetry-refreshes-on-next-display-tick");
+    const Vehicle savedExtra=g.extraCar;g.extraCar=g.car;g.extraCar.speed=-8;g.extraCar.porscheChronoSeconds=23.4;PreparePorscheDisplays(true);bool isolated=true;for(int kind=0;kind<4;++kind)isolated=isolated&&PorscheDisplayTexture(g.car,kind).id!=PorscheDisplayTexture(g.extraCar,kind).id;
+    check(isolated&&pixelHash(PorscheDisplayTexture(g.car,1))!=pixelHash(PorscheDisplayTexture(g.extraCar,1)),"parked-and-occupied-cars-have-independent-display-targets");
+    std::swap(g.car,g.extraCar);PreparePorscheDisplays(true);check(PorscheDisplayTelemetry(g.car,true).chronoTenths==234&&PorscheDisplayTelemetry(g.extraCar,false).chronoTenths==753,"vehicle-swap-keeps-each-stopwatch-with-its-car");g.extraCar=savedExtra;
+    g.car=initial;
+    std::ofstream report("docs/porsche-native-qa.json");report<<"{\n  \"passed\": "<<(failures==0?"true":"false")<<",\n  \"checks\": "<<checks<<",\n  \"failures\": "<<failures<<",\n  \"native_steering_poses\": "<<poses<<",\n  \"maximum_axial_drift_m\": "<<maximumAxial<<",\n  \"maximum_radial_drift_m\": "<<maximumRadial<<",\n  \"maximum_raw_rest_adjustment_m\": "<<maximumRest<<",\n  \"maximum_reference_pose_error_m\": "<<maximumReferenceError<<",\n  \"reference_nodes_compared\": "<<referenceNodes<<",\n  \"accelerated_speed_mps\": "<<acceleratedSpeed<<",\n  \"suspension_evidence\":\"docs/porsche-native-suspension-qa.json\",\n  \"limits\": [\"Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics\",\"Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames\",\"Source-fitted suspension and live screens are implemented; Porsche tire-force tuning, scene mirrors, instrument artwork and material refinements remain in development\"]\n}\n";
     return failures==0;
 }
 }

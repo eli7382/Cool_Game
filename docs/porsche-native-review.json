@@ -1,26 +1,29 @@
 {
-  "reviewed_at": "2026-10-28T19:21:02.723625+00:00",
-  "stage": "Native suspension, spring morphs and adaptive grille integration",
+  "reviewed_at": "2026-10-28T19:37:02.948294+00:00",
+  "stage": "Native live cockpit screens and Sport Chrono controls",
   "native_stack": "C++20, raylib 5.5, OpenGL 3.3",
-  "executable_sha256": "8df3e16b8f399ce15fa9e3796bd26970bdc960e9fdc23ec5d0af86a8427a3302",
+  "executable_sha256": "32635a1fc72f5295d3b85bf2e28b1785dc392876ec418eca2bb20456884f02be",
   "source_hashes": {
-    "src/breakwater/game.hpp": "7718d0027ce84ed94a511ec88914e44c304d208d23948aac16de310c76a83813",
+    "src/breakwater/game.hpp": "70f5e5f78c00ceee511930b83e130f7d0c681a9dc20053acb67e2192bf5aaec3",
     "src/breakwater/gameplay.cpp": "1e0cdd36c3468c279128aa1e6a5022cdc370f42af251e66d2328b7b77b4cbc54",
     "src/breakwater/main.cpp": "0f2a3705809ea886e5fce9f230fc199daf4c0388a9563e40d9b451dd392f51a7",
-    "src/breakwater/world.cpp": "6ae3dbc7c2a0ac6f8957894d57cd19be612a98063c4ae4d88fcbc78627dfd41a",
-    "src/breakwater/ui.cpp": "1cd192abd976401ab5c6d7b12ce37bff119375665dafb47a5b04f409721b3b5a",
-    "src/breakwater/porsche_native.cpp": "007fa74037eb35cbaa15cc0d6a88e71e344a40f7111c026b81d3b0b124c3328c",
-    "src/breakwater/porsche_native.hpp": "78b90b9a1068b1f7a3b0c1e097c0ffccea884f18a7205465e780a910778b0fa5",
-    "src/breakwater/porsche_rig.cpp": "d901294fdb44d23bbe5fb9ea8d4dbcd7a2b5b99a0e7237a580d8f463e8d253db",
+    "src/breakwater/world.cpp": "78d5c2232dc7316978008955f0adc9c739e2f41a236367e9a318c7b2be242823",
+    "src/breakwater/ui.cpp": "4fbad21164f05fe19f949cae897f70c642f7e54557cde254132a723216fa9f46",
+    "src/breakwater/porsche_native.cpp": "e70e9373c0444472888e80184f02c844e649fe074a723750cc7e94a6240149e0",
+    "src/breakwater/porsche_native.hpp": "bfadf5706ca143774d54a86376219cc59f153eb0d7429673bac0da49c08db77b",
+    "src/breakwater/porsche_rig.cpp": "10f4cc99bbea4b729ee3a6b5da8cc65b4f71861ed64dd83a565afcda06b58e1a",
     "src/breakwater/porsche_asset_data.hpp": "7e8f0ccf3cd6780d2aa0f5c7309c831cbd34dde447c378a915e1b0fb090d42bd",
     "assets/porsche/shaders/porsche.vs": "22bb65756d5809d3ef1368ebdd37b63ac8e315f56e54022a3c6a95a672875c13",
-    "assets/porsche/shaders/porsche.fs": "6c914e99a791d9610ecfaccc0436a89e3b02901ec5850c5387f85df3c84bb551",
-    "tests/porsche_reference.hpp": "0ff1a1777e8509a289b142ceb9bca884051bd67734f495321633fce19429f1c4",
+    "assets/porsche/shaders/porsche.fs": "964594d1ef5e314d40cf46d0ceecd235caa48d6cb5d05880e2fb23ca86103d3e",
+    "tests/porsche_reference.hpp": "117ec263547a2fbf66f487c110f6a8d18dac19be603b2353126571673bdeada8",
     "src/breakwater/porsche_suspension.hpp": "81ca7a450827acbc8799545f13bcf2b31c66b1f6f0b99f2a813b2e23c4002c4c",
     "src/breakwater/porsche_suspension.cpp": "f1a4fc408a5c10da91096ef1c8d05119a146674013f84d21fa367bacedbf850b",
     "scripts/prepare_porsche_assets.py": "60a70e0754a524ea02fe7d3f2de1331796beb97c0caa62c748702a5847bc1c00",
     "tests/build_porsche_suspension_reference.mjs": "969302f8559b49ba3eec93a9a2c7421d21c6e42ad4f888cb129cfb17089f7869",
-    "tests/porsche_suspension_reference.bin": "1427d225e955aac3da75a07e4c96805e30ebc7ccb93201ca36660ef5ccdee040"
+    "tests/porsche_suspension_reference.bin": "1427d225e955aac3da75a07e4c96805e30ebc7ccb93201ca36660ef5ccdee040",
+    "src/breakwater/porsche_displays.hpp": "b97b701b7a9cf479003eb1ab9dd128926a3072ab4e308561324be02da72ba12d",
+    "src/breakwater/porsche_displays.cpp": "294788fd4f825036f6eb130c6869035c7dc28804914eff4696ccf6872afd54e4",
+    "tests/build_porsche_reference.mjs": "ba499a84efbb4b0405420bd0244220fd586d5b38c8a813d6dca2c53e268b539d"
   },
   "asset_source_hashes": {
     "hero": "173cc59885999649838b545146acc9bb3024f3b62c08ed5dc595f54da3f37e2b",
@@ -29,20 +32,20 @@
   },
   "native_qa": {
     "passed": true,
-    "checks": 41,
+    "checks": 68,
     "failures": 0,
     "native_steering_poses": 69,
     "maximum_axial_drift_m": 1.56462e-07,
     "maximum_radial_drift_m": 6.03735e-07,
     "maximum_raw_rest_adjustment_m": 0.0241878,
     "maximum_reference_pose_error_m": 2.6656e-07,
-    "reference_nodes_compared": 2470,
+    "reference_nodes_compared": 2488,
     "accelerated_speed_mps": 9.97313,
     "suspension_evidence": "docs/porsche-native-suspension-qa.json",
     "limits": [
       "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
       "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
-      "Source-fitted suspension visuals are implemented; Porsche tire-force tuning, live instruments, mirrors and material refinements remain in development"
+      "Source-fitted suspension and live screens are implemented; Porsche tire-force tuning, scene mirrors, instrument artwork and material refinements remain in development"
     ]
   },
   "environment_channels_compared": 1572864,
@@ -50,23 +53,23 @@
   "images": [
     {
       "path": "screenshots/porsche-native-front.png",
-      "sha256": "75ae24d991b8838261532b1b663cc22a578e1e49c5ab865afc741927fa1b9694"
+      "sha256": "42dfbed2aab9f9ad161d4ef0219444763b78400fa81c0383bdf6e5980726dcb7"
     },
     {
       "path": "screenshots/porsche-native-open.png",
-      "sha256": "a50b7bfe155e3300351971c84070bef664733dbfaa43b5cf414b09d9fbc707b3"
+      "sha256": "1b9ee5591774d11bf03404a303f9d31593970bd22fbc4a96686a7403211aa20c"
     },
     {
       "path": "screenshots/porsche-native-steering-negative.png",
-      "sha256": "3c6af7d0498e1506d24df82ea8b5cc15f7d1e71f2601836e46c65ab2c622ac15"
+      "sha256": "60e2831e0c0e5ba3988c3e5f46ce9a0ee8806a4142b6aee08d54863ea54d14ec"
     },
     {
       "path": "screenshots/porsche-native-steering-centre.png",
-      "sha256": "b24e162a56de108fed31403eb9ecb4907d9bd718fc9a42b50db61d017b72071d"
+      "sha256": "7bbe68743f714f98a73a2435cc06f2c6610f0d4b51b1d32cf5d136a8df7b2094"
     },
     {
       "path": "screenshots/porsche-native-steering-positive.png",
-      "sha256": "47cf0970a4aac4b11eeeaa099728df937f3e8c1d71d47581b0817dad18b5ba8e"
+      "sha256": "c2d4dc475b25ff2890b271738cddab272a3e5b4d586e5390e74b53a67d522a12"
     },
     {
       "path": "screenshots/porsche-integration-pickup-regression.png",
@@ -74,19 +77,55 @@
     },
     {
       "path": "screenshots/porsche-native-suspension-rest.png",
-      "sha256": "65d2e5c57f10ddbf0a84e8b7b618e3e7f96362c8faff1bc90ae113cc08e4b859"
+      "sha256": "2e06974149d611367172d782ebd6531ed3b0c3eea5b8077822fda106e18822a5"
     },
     {
       "path": "screenshots/porsche-native-suspension-cross.png",
-      "sha256": "c3fc4ca01953c867f7f1acf91caa3d670f0c569eeda3e98fb0fb7d19e87e693a"
+      "sha256": "a842a70d4a82948d5019cc9fd56df4f8b5a5143989445c8095fd85b2eb3644ff"
     },
     {
       "path": "screenshots/porsche-native-grille-close.png",
-      "sha256": "f5d02e2b38ee6ef652822f15620f3a7fc586ef232d2928a035673549bc04928b"
+      "sha256": "1a4f65945ce0aff3275e17636c1d8e64fa49a7e8a09555ed31ea54e3a15b7729"
+    },
+    {
+      "path": "screenshots/porsche-display-0-driving.png",
+      "sha256": "c224f8d76d887261fce40bab13a02773877fb5a8b556bac5e8da9f2885820ac8"
+    },
+    {
+      "path": "screenshots/porsche-display-0-rest.png",
+      "sha256": "0d43f81d49d0773c73c113ea6c448d164365b44d02b77b84ed0a4de6ccbfd4cb"
+    },
+    {
+      "path": "screenshots/porsche-display-1-driving.png",
+      "sha256": "2f9e9bea5d2cb5acfda9ee9d13f93df29c517f653dca763b6235486f34d024c2"
+    },
+    {
+      "path": "screenshots/porsche-display-1-rest.png",
+      "sha256": "e2edadb01787386c365c03b2437da5cbcb96b1c10c4c8912e2e4c7e9882c4808"
+    },
+    {
+      "path": "screenshots/porsche-display-2-driving.png",
+      "sha256": "892fd55449cd438aebcfab72244aea99d156668aa36d8d897a1d03834382e521"
+    },
+    {
+      "path": "screenshots/porsche-display-2-rest.png",
+      "sha256": "2ad124efcc42f4a9ab6eec905bfeec70c5cc474debcb5ea23124726f8e7f980d"
+    },
+    {
+      "path": "screenshots/porsche-display-3-driving.png",
+      "sha256": "e303afda3f69b935e8744327e1bc04242c8fc78087e2027c3386b07152528a2a"
+    },
+    {
+      "path": "screenshots/porsche-display-3-rest.png",
+      "sha256": "4398e1e1a35ff6fe6f65f0033f99fab3bc13107bc9101242e65a1964e41678c6"
+    },
+    {
+      "path": "screenshots/porsche-native-live-cockpit.png",
+      "sha256": "28f402653554749a43b2535ffa73f19676ca2dca292243f9b0a653542ab9ca1f"
     }
   ],
   "limitations": [
-    "Dashboard screens and mirrors currently retain their authored/static environment representation",
+    "Scene mirrors still retain the authored static environment representation; display artwork remains an approximation",
     "Driving uses the existing game tire-force model; Porsche-specific mass, drive layout and gearing remain pending. Contact geometry now matches the source wheel centres",
     "HDR filtering, glass and material extensions remain native approximations; close paint shading needs refinement",
     "Full-vehicle swept clearance, game-level performance and requested final visual fidelity remain unverified"
@@ -119,6 +158,14 @@
     "test": "car tire thermal and load transfer",
     "passed": true,
     "evidence": "Explicit pass=1 and load-transfer-pass=1 in hidden QA log",
-    "peak_speed_mps": 16.0
+    "peak_speed_mps": 16.0,
+    "maximum_tire_temperature_c": 20.74
+  },
+  "native_displays": {
+    "evidence": "docs/porsche-native-displays-qa.json",
+    "screens": 4,
+    "refresh_limit_hz": 10,
+    "stopwatch": "J start/pause, U zero; vehicle-owned simulation time and two independent hands",
+    "font_source": "assets/porsche/fonts/source.json"
   }
 }

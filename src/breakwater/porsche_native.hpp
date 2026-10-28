@@ -13,6 +13,7 @@ struct Vehicle;
 class PorscheSuspension;
 struct PorscheControls {
     float steering{},rearSteering{},doorL{},doorR{},windowL{},windowR{},drs{},airbrake{},brake{},throttle{},paddleL{},paddleR{},rpm{};
+    double chronoSeconds{};
     std::array<float,4> wheelAngles{};
     std::array<float,4> travel{}; // FL, FR, RL, RR; metres, limited to the authored +/- .05m envelope
 };
@@ -54,5 +55,6 @@ void DrawPorsche(const Vehicle& vehicle,bool cockpit=false,bool mechanismOnly=fa
 Matrix PorscheVehicleMatrix(const Vehicle& vehicle);
 Vector3 PorscheDriverEye(const Vehicle& vehicle);
 void UpdatePorscheControls(Vehicle& vehicle,float dt,bool occupied);
+void SetPorscheChrono(Vehicle& vehicle,bool running,bool reset=false);
 bool RunPorscheQA();
 }

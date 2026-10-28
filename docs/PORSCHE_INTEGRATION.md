@@ -18,6 +18,8 @@ Vehicle selection keeps each parked car's identity and position.
 | G | Toggle the visual DRS flap |
 | L | Toggle headlamp emitters |
 | [ / ] | Animate the shift paddles |
+| J | Start / pause the Sport Chrono stopwatch |
+| U | Stop and zero the stopwatch |
 | R | Reset the occupied car at the base |
 
 Wheels spin at their separate front/rear tyre radii; calipers retain their
@@ -48,7 +50,22 @@ prefiltered radiator maps according to projected pitch, with hysteresis.
 This keeps unresolved wires out of normal-distance views while retaining
 physical detail for close inspection.
 
-Live screen textures, scene-reflecting mirrors, material refinements,
+The four native screen textures now refresh from game telemetry at up to
+10 Hz. They show speed, direction selection (D/R/N), RPM, corner tyre
+temperatures and wear, and longitudinal/lateral/normal loads. The selection
+indicates the current driving direction; a numbered PDK gearbox is unfinished.
+Unmodeled oil, coolant and fuel values are not presented as measurements.
+The screen layout is an authored telemetry approximation, not factory firmware.
+
+The Sport Chrono hands and LCD share vehicle-owned elapsed simulation time.
+J starts/pauses, U resets, and leaving/swapping vehicles retains each timer.
+It stops at 99:59.9. The display framebuffer updates run before the 3D pass,
+use flipped V coordinates for render-target sampling, share textures across
+detail levels and keep separate targets for occupied and parked cars.
+Unchanged telemetry reuses the existing targets. Barlow fonts and their
+redistribution license are bundled in `assets/porsche/fonts/`.
+
+Scene-reflecting mirrors, material refinements,
 comprehensive clearance and full-game profiling remain in development.
 The linkage datums are fitted to the source model; the joint solver supplies
 visual articulation and does not replace the game's tire-force simulation.
@@ -123,7 +140,12 @@ The Porsche test uses a hidden OpenGL window. It enters the parked car through
 the game's interaction path, retains the pickup, loads all three detail levels,
 checks native steering geometry and reference poses, then drives, turns and
 brakes under the actual game physics. It also captures exterior, open-door and
-driver steering views in `screenshots/porsche-native-*.png`. Current results
+driver steering views in `screenshots/porsche-native-*.png`. It also compares
+stopwatch hand poses to the production Three rig, checks start/pause/resume,
+vehicle ownership and 10 Hz refresh behavior, and reads the four real GPU
+display targets before/after controlled telemetry changes. The live cockpit
+capture uses a deterministic telemetry fixture; its 113 km/h reading is not
+a measured driving benchmark. Current results
 are in `docs/porsche-native-qa.json`. These are finite development checks;
 they do not prove complete collision clearance, final performance or OEM
 vehicle dynamics.

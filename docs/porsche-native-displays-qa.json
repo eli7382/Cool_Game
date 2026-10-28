@@ -1,0 +1,170 @@
+{
+  "reviewed_at": "2026-10-28T19:37:02.948294+00:00",
+  "passed": true,
+  "executable_sha256": "32635a1fc72f5295d3b85bf2e28b1785dc392876ec418eca2bb20456884f02be",
+  "checks": [
+    {
+      "name": "native-stopwatch-hands-match-production-rig-all-detail-levels",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-start-pause-retains-elapsed-simulation-time",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-retains-full-elapsed-time-across-a-long-frame",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-resumes-while-parked",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-reset",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-upper-limit-stops",
+      "passed": true
+    },
+    {
+      "name": "displays-use-signed-game-speed-rpm-and-correct-corner-temperatures",
+      "passed": true
+    },
+    {
+      "name": "invalid-display-telemetry-stays-finite",
+      "passed": true
+    },
+    {
+      "name": "unchanged-screen-state-reuses-render-targets",
+      "passed": true
+    },
+    {
+      "name": "export-rest-live-display",
+      "passed": true
+    },
+    {
+      "name": "export-rest-live-display",
+      "passed": true
+    },
+    {
+      "name": "export-rest-live-display",
+      "passed": true
+    },
+    {
+      "name": "export-rest-live-display",
+      "passed": true
+    },
+    {
+      "name": "GPU-display-pixels-change-with-driving-telemetry",
+      "passed": true
+    },
+    {
+      "name": "export-driving-live-display",
+      "passed": true
+    },
+    {
+      "name": "GPU-display-pixels-change-with-driving-telemetry",
+      "passed": true
+    },
+    {
+      "name": "export-driving-live-display",
+      "passed": true
+    },
+    {
+      "name": "GPU-display-pixels-change-with-driving-telemetry",
+      "passed": true
+    },
+    {
+      "name": "export-driving-live-display",
+      "passed": true
+    },
+    {
+      "name": "GPU-display-pixels-change-with-driving-telemetry",
+      "passed": true
+    },
+    {
+      "name": "export-driving-live-display",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-live-cockpit.png",
+      "passed": true
+    },
+    {
+      "name": "all-four-live-displays-bound-after-actual-detail-level-draws",
+      "passed": true
+    },
+    {
+      "name": "changed-telemetry-is-throttled-within-one-display-tick",
+      "passed": true
+    },
+    {
+      "name": "changed-telemetry-refreshes-on-next-display-tick",
+      "passed": true
+    },
+    {
+      "name": "parked-and-occupied-cars-have-independent-display-targets",
+      "passed": true
+    },
+    {
+      "name": "vehicle-swap-keeps-each-stopwatch-with-its-car",
+      "passed": true
+    }
+  ],
+  "reference_hand_poses": {
+    "elapsed_seconds": [
+      75.3,
+      1830.4,
+      5999.9
+    ],
+    "detail_levels": 3,
+    "expected_source": "production Three GT3RSCar.applyChronoHands",
+    "evidence": "tests/porsche_reference.hpp"
+  },
+  "actual_gpu_display_targets": 4,
+  "refresh_limit_hz": 10,
+  "images": [
+    {
+      "path": "screenshots/porsche-display-0-driving.png",
+      "sha256": "c224f8d76d887261fce40bab13a02773877fb5a8b556bac5e8da9f2885820ac8"
+    },
+    {
+      "path": "screenshots/porsche-display-0-rest.png",
+      "sha256": "0d43f81d49d0773c73c113ea6c448d164365b44d02b77b84ed0a4de6ccbfd4cb"
+    },
+    {
+      "path": "screenshots/porsche-display-1-driving.png",
+      "sha256": "2f9e9bea5d2cb5acfda9ee9d13f93df29c517f653dca763b6235486f34d024c2"
+    },
+    {
+      "path": "screenshots/porsche-display-1-rest.png",
+      "sha256": "e2edadb01787386c365c03b2437da5cbcb96b1c10c4c8912e2e4c7e9882c4808"
+    },
+    {
+      "path": "screenshots/porsche-display-2-driving.png",
+      "sha256": "892fd55449cd438aebcfab72244aea99d156668aa36d8d897a1d03834382e521"
+    },
+    {
+      "path": "screenshots/porsche-display-2-rest.png",
+      "sha256": "2ad124efcc42f4a9ab6eec905bfeec70c5cc474debcb5ea23124726f8e7f980d"
+    },
+    {
+      "path": "screenshots/porsche-display-3-driving.png",
+      "sha256": "e303afda3f69b935e8744327e1bc04242c8fc78087e2027c3386b07152528a2a"
+    },
+    {
+      "path": "screenshots/porsche-display-3-rest.png",
+      "sha256": "4398e1e1a35ff6fe6f65f0033f99fab3bc13107bc9101242e65a1964e41678c6"
+    },
+    {
+      "path": "screenshots/porsche-native-live-cockpit.png",
+      "sha256": "28f402653554749a43b2535ffa73f19676ca2dca292243f9b0a653542ab9ca1f"
+    }
+  ],
+  "limits": [
+    "Controlled telemetry fixture proves display updates, not driving at the displayed speed",
+    "Direction selection D/R/N is not a modeled PDK gear",
+    "Telemetry graphics approximate the stock design; full appearance matching and frame budget remain unverified"
+  ]
+}

@@ -92,6 +92,8 @@ struct Vehicle {
     std::array<bool,2> porscheDoorsOpen{};
     std::array<float,2> porscheDoor{};
     std::array<float,4> porscheWheelAngles{};
+    double porscheChronoSeconds{},porscheDisplayClock{};
+    bool porscheChronoRunning{};
     float porscheWindow{},porscheAero{},porscheAirbrake{},porscheBrake{},porscheThrottle{},porschePaddleL{},porschePaddleR{};
     Vector3 p{},velocity{};
     float yaw{},speed{},wheelAngle{},wheelSpinRate{},steer{},suspension{},damage{};

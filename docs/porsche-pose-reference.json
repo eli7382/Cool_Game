@@ -1,6 +1,6 @@
 {
   "adapter_sha256": "45f76e655bbf96347a8c044d048c7a98040047de17e713ca00a7ac63eb3bfe10",
-  "generator_sha256": "f0a33f4e5114c522c616357ec1d05ef09f76ad19778535c7d0f8c3ee5bae7fee",
+  "generator_sha256": "ba499a84efbb4b0405420bd0244220fd586d5b38c8a813d6dca2c53e268b539d",
   "levels": [
     {
       "level": "Hero",
@@ -18,5 +18,5 @@
       "nodes": 489
     }
   ],
-  "scope": "Actual exported nodes under production Three adapter: zero, DRS, airbrake, independent doors/windows/pedals/paddles/needle/wheel-spin fixtures"
+  "scope": "Actual exported nodes under production Three adapter: zero, DRS, airbrake, independent doors/windows/pedals/paddles/needle/wheel-spin and three stopwatch hand fixtures"
 }

@@ -93,6 +93,7 @@ void MissionHud(){
     }
     if(g.vehicle==VehicleKind::Car){
         const SurfaceSample surface=SampleSurface(g.car.p.x,g.car.p.z);
+        if(g.car.isPorsche)DrawText("J CHRONO START/PAUSE  |  U ZERO",sw-252,sh-123,11,Color{186,201,191,230});
         const char *surfaceName=surface.kind==SurfaceKind::Asphalt?"ASPHALT":(surface.kind==SurfaceKind::Concrete?"CONCRETE":(surface.kind==SurfaceKind::Gravel?"GRAVEL":(surface.kind==SurfaceKind::Mud?"MUD":(surface.kind==SurfaceKind::Water?"WATER":(surface.kind==SurfaceKind::Rock?"ROCK":"GRASS")))));
         Panel(Rectangle{sw-252.0f,sh-108.0f,230,83});DrawText(g.car.isPorsche?"911 GT3 RS":"PICKUP  /  4WD",sw-238,sh-94,14,Color{210,201,178,255});
         DrawText(TextFormat("%03.0f km/h",fabsf(g.car.speed)*3.6f),sw-238,sh-72,23,Color{233,228,203,255});
