@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "checker_sha256": "3d6a0d42b05ee555843e7ec872f24f17068f2d10b824b768f0a07dd0b02a6103",
+  "levels": [
+    {
+      "source_sha256": "173cc59885999649838b545146acc9bb3024f3b62c08ed5dc595f54da3f37e2b",
+      "runtime_sha256": "cc189bfd46c3a29faea767f323f824618f7179e1fbfd8c7eb83bbae7ef1f959c",
+      "triangles_compared": 682643,
+      "primitives_checked": 302,
+      "morph_targets_checked": 8,
+      "embedded_images_verified": 52,
+      "maximum_vertices_per_primitive": 60000,
+      "attributes_targets_winding_hierarchy_materials_images_retained": true,
+      "level": "hero"
+    },
+    {
+      "source_sha256": "5d9680a1f40c212ad680e1b9f9bca68674653d870ddc5c33299b9c41e85c7a0c",
+      "runtime_sha256": "d2353b1194a92dd189299b25bd1500ffeb4dc05ab3f614a128b564ad30b7a0d5",
+      "triangles_compared": 218113,
+      "primitives_checked": 304,
+      "morph_targets_checked": 8,
+      "embedded_images_verified": 27,
+      "maximum_vertices_per_primitive": 27961,
+      "attributes_targets_winding_hierarchy_materials_images_retained": true,
+      "level": "near"
+    },
+    {
+      "source_sha256": "3b04ca5287b905f66ff263f0d55d05778b6655d62840e1bf008a10c842ae8a38",
+      "runtime_sha256": "00723e2c1a3af3ed9d562905c43d36b6f55c1baa3112267e8bb20b7875107a59",
+      "triangles_compared": 156234,
+      "primitives_checked": 303,
+      "morph_targets_checked": 8,
+      "embedded_images_verified": 27,
+      "maximum_vertices_per_primitive": 15567,
+      "attributes_targets_winding_hierarchy_materials_images_retained": true,
+      "level": "far"
+    }
+  ],
+  "limits": [
+    "Exact source triangle-corner data comparison; native renderer, animation, collision and performance need separate tests"
+  ]
+}
