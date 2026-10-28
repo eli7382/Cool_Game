@@ -1,0 +1,16 @@
+{
+  "passed":true,
+  "vehicle_poses":3,
+  "world_gpu_points":126,
+  "lit_points":80,
+  "occluded_points":44,
+  "road_mesh_points":35,
+  "terrain_or_floor_mesh_points":91,
+  "partial_filter_edge_points":2,
+  "masked_only_oracle_hits_skipped":0,
+  "missing_ground_points":0,
+  "ground_height_span_m":0.762463,
+  "maximum_visibility_error":0.00130719,
+  "scope":"GPU world lookup at actual road/terrain/floor mesh intersections versus independent rays through posed car triangles at all nine PCF texel centres; closed, open/steered/tilted, and raised/rotated/suspension poses",
+  "limits":["The filtered reference uses posed triangles and inverse light projection; it never reads GPU depth values and includes partial PCF edges","Masked-only ray hits are excluded from the opaque triangle oracle; alpha masks have separate GPU fixtures","This tests receiver conformity and car shadow projection, not vehicle collision clearance or world geometry casting onto the car"]
+}

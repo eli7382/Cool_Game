@@ -1,28 +1,28 @@
 [
   {
     "view": "exterior",
-    "changed_pixels_over_2_levels": 20424,
+    "changed_pixels_over_2_levels": 20423,
     "brightened_pixels_over_2_levels": 0,
     "maximum_darken": 89,
     "maximum_brighten": 1
   },
   {
     "view": "rear",
-    "changed_pixels_over_2_levels": 38148,
+    "changed_pixels_over_2_levels": 38189,
     "brightened_pixels_over_2_levels": 0,
     "maximum_darken": 59,
     "maximum_brighten": 1
   },
   {
     "view": "cockpit",
-    "changed_pixels_over_2_levels": 151445,
+    "changed_pixels_over_2_levels": 151446,
     "brightened_pixels_over_2_levels": 0,
     "maximum_darken": 64,
     "maximum_brighten": 1
   },
   {
     "view": "open",
-    "changed_pixels_over_2_levels": 21531,
+    "changed_pixels_over_2_levels": 21541,
     "brightened_pixels_over_2_levels": 0,
     "maximum_darken": 89,
     "maximum_brighten": 1

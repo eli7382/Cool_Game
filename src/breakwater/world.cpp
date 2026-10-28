@@ -751,6 +751,36 @@ void main(){
 in vec2 uv;in vec3 worldPos;in vec3 worldNormal;in vec4 tint;in float modelHeight;
 uniform sampler2D texture0;uniform sampler2D environmentMap;uniform sampler2D vehicleNormalMap;uniform sampler2D vehicleRoughnessMap;uniform sampler2D vehiclePaintDetailMap;uniform vec4 colDiffuse;uniform vec3 viewPos;uniform vec3 lightDir;uniform vec4 fogColor;uniform vec2 fogRange;uniform float paintTextureBlend;uniform float vehicleSurfaceKind;uniform float heroMaterialPbr;uniform float heroPaintCoat;uniform float heroMaterialMetalness;uniform float heroMaterialRoughness;uniform float heroMicrodetailWeight;uniform float heroDisplayEmission;uniform float heroGlassAlpha;uniform float heroGlassOpacity;uniform vec3 heroGlassTint;uniform vec2 heroUvScale;uniform vec2 heroUvOffset;uniform float customTextureScale;uniform float waterSurface;uniform float waterTime;uniform float waterLevel;uniform float foliageSurface;uniform float terrainSurface;uniform float cockpitFill;uniform vec3 safehouseLightPosition0;uniform vec3 safehouseLightPosition1;uniform float safehouseLightingEnabled;
 out vec4 finalColor;
+uniform sampler2D porscheWorldDepth0,porscheWorldDepth1;
+uniform mat4 porscheWorldMatrix0,porscheWorldMatrix1;
+uniform vec3 porscheWorldInfo0,porscheWorldInfo1;
+uniform vec2 porscheWorldReady;
+uniform vec4 porscheWorldProbe;
+uniform vec3 porscheWorldProbeNormal;
+float porscheWorldVisibility(sampler2D depthMap,mat4 worldToClip,vec3 info,float enabled,vec3 position,vec3 normal){
+    if(enabled<.5)return 1.0;
+    vec3 light=normalize(vec3(.42,.88,-.28));
+    float offset=info.y*(.35+.8*(1.0-max(dot(normal,light),0.0)));
+    vec4 projected=worldToClip*vec4(position+normal*offset,1);vec3 coord=projected.xyz/projected.w*.5+.5;
+    vec3 dx=dFdx(coord),dy=dFdy(coord);float determinant=dx.x*dy.y-dx.y*dy.x;
+    vec2 gradient=abs(determinant)>1e-12?vec2(dx.z*dy.y-dy.z*dx.y,dy.z*dx.x-dx.z*dy.x)/determinant:vec2(0);
+    gradient=clamp(gradient,vec2(-16),vec2(16));
+    // The local map encloses the car's casters. A ground receiver can lie
+    // beyond its far plane when the car is airborne; extrude occupied texels
+    // along the sun ray, keeping clear texels fully lit.
+    if(any(lessThan(coord.xy,vec2(0)))||any(greaterThan(coord.xy,vec2(1)))||coord.z<0)return 1.0;
+    float visible=0;
+    for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){
+        vec2 sampleUV=(floor(coord.xy/info.x)+vec2(x,y)+.5)*info.x;
+        float receiverDepth=coord.z+dot(gradient,sampleUV-coord.xy)-info.z;
+        float casterDepth=texture(depthMap,sampleUV).r;
+        visible+=casterDepth>=.999999||receiverDepth<=casterDepth?1.0:0.0;
+    }return visible/9.0;
+}
+float porscheWorldSun(vec3 position,vec3 normal){
+    return min(porscheWorldVisibility(porscheWorldDepth0,porscheWorldMatrix0,porscheWorldInfo0,porscheWorldReady.x,position,normal),
+               porscheWorldVisibility(porscheWorldDepth1,porscheWorldMatrix1,porscheWorldInfo1,porscheWorldReady.y,position,normal));
+}
 float terrainHeightAt(vec2 p){
     float radius=length(p),edge=7.0-max(0.0,radius-170.0)*.073;
     float rolling=.9*sin(p.x*.023+p.y*.009)+.65*sin(p.y*.031-p.x*.014);
@@ -764,6 +794,13 @@ float terrainHeightAt(vec2 p){
     return mix(h,6.0+.08*sin(p.y*.025),runway);
 }
 void main(){
+    if(porscheWorldProbe.w>.5){
+        vec3 position=porscheWorldProbe.w<1.5?porscheWorldProbe.xyz:worldPos;
+        vec3 normal=porscheWorldProbe.w<1.5?porscheWorldProbeNormal:normalize(worldNormal);
+        finalColor=vec4(vec3(porscheWorldSun(position,normal)),1);return;
+    }
+    // Evaluate derivatives before foliage discard or other nonuniform branches.
+    float carSun=porscheWorldSun(worldPos,normalize(worldNormal));
     vec2 sourceUv=mix(uv,uv*heroUvScale+heroUvOffset,clamp(heroMaterialPbr,0.0,1.0));
     vec2 detailUv=sourceUv*customTextureScale;
     vec4 texel=texture(texture0,detailUv);if(foliageSurface>0.5&&texel.a<0.48)discard;vec3 flatBase=max(tint.rgb*colDiffuse.rgb,vec3(0.0));vec3 baseColor=mix(flatBase,texel.rgb*colDiffuse.rgb,clamp(paintTextureBlend,0.0,1.0));
@@ -860,7 +897,7 @@ void main(){
     // automotive gloss while allowing the rescue enamel to reflect the coastal sky.
     float paintFresnel=0.04+0.96*pow(1.0-vh,5.0);
     float paintEnvironment=heroPaintFinish*(surfaceKind>2.5?0.22:(surfaceKind>1.5?0.10:0.15));
-    vec3 color=base*(diffuseAmbient+0.72*nl+diffuseEnvironment*0.34*heroSurface)+spec*(0.68+0.31*vehicleCoat)+vec3(coatSpec*(clearCoatResponse*vehicleCoat+heroClearCoat+automotiveClearcoat))+env*F*(0.05+0.18*metal+environmentResponse*vehicleCoat+heroEnvironment)+env*paintFresnel*paintEnvironment;
+    vec3 color=base*(diffuseAmbient+0.72*nl*carSun+diffuseEnvironment*0.34*heroSurface)+spec*(0.68+0.31*vehicleCoat)*carSun+vec3(coatSpec*(clearCoatResponse*vehicleCoat+heroClearCoat+automotiveClearcoat))*carSun+env*F*(0.05+0.18*metal+environmentResponse*vehicleCoat+heroEnvironment)+env*paintFresnel*paintEnvironment;
     // Phosphor is a restrained emissive contribution on the F-16's tiny MFD
     // traces only; it keeps the displays readable without lighting the bezel.
     color+=base*clamp(heroDisplayEmission,0.0,1.25);
@@ -871,12 +908,12 @@ void main(){
         float diffuse0=max(dot(n,delta0/max(distance0,0.001)),0.0),diffuse1=max(dot(n,delta1/max(distance1,0.001)),0.0);
         color+=base*vec3(1.38,0.82,0.48)*(attenuation0*(.10+.76*diffuse0)+attenuation1*(.10+.76*diffuse1));
     }
-    float wetSun=pow(max(dot(reflect(-l,n),v),0.0),24.0)*terrainWetness*.16;
+    float wetSun=pow(max(dot(reflect(-l,n),v),0.0),24.0)*terrainWetness*.16*carSun;
     color=color*mix(1.0,.79,terrainWetness*.40)+vec3(.51,.61,.63)*wetSun+env*terrainWetness*.025;
     // Cabin surfaces receive sky and panel bounce, rather than the exterior sun vector alone.
     color+=base*clamp(cockpitFill,0.0,1.0)*1.8;
     float wrapLight=clamp((nl+0.42)/1.42,0.0,1.0),leafBackscatter=pow(max(dot(-n,l),0.0),2.0);
-    vec3 foliageColor=base*(0.53+0.64*wrapLight+0.23*leafBackscatter+0.18*diffuseEnvironment)+spec*0.13+env*F*0.045;
+    vec3 foliageColor=base*(0.53+(0.64*wrapLight+0.23*leafBackscatter)*carSun+0.18*diffuseEnvironment)+spec*0.13*carSun+env*F*0.045;
     color=mix(color,foliageColor,clamp(foliageSurface,0.0,1.0));
     float fd=length(viewPos-worldPos),fog=clamp((fd-fogRange.x)/(fogRange.y-fogRange.x),0.0,0.86);
     vec3 fogged=mix(color,pow(max(fogColor.rgb,vec3(0.0)),vec3(2.2)),fog);
@@ -901,7 +938,7 @@ void main(){
         vec3 waterColor=mix(deepWater,reflectedWater*vec3(.72,.88,.93),clamp(.24+.72*fresnel,0.0,.94))*broadSheen;
         float shortChop=.5+.5*sin(worldPos.x*.27+worldPos.z*.18+waterTime*1.5)*sin(worldPos.x*.16-worldPos.z*.31-waterTime*1.12);
         waterColor*=.90+.10*shortChop;
-        float glint=pow(max(dot(reflect(-l,waterNormal),v),0.0),52.0)*.82;
+        float glint=pow(max(dot(reflect(-l,waterNormal),v),0.0),52.0)*.82*carSun;
         waterColor+=vec3(.62,.78,.79)*glint+vec3(.025,.045,.050)*shortChop;
         float shallow=1.0-smoothstep(.12,.92,max(waterLevel-terrainHeightAt(worldPos.xz),0.0));
         float foamA=sin(worldPos.x*.83+sin(worldPos.z*.31)*3.4+waterTime*1.9);
@@ -2769,7 +2806,7 @@ void DrawGroundShadow(Vector3 actor,float radiusX,float radiusZ,float alpha,floa
     rlDrawRenderBatchActive();rlEnableDepthMask();
 }
 void DrawVehicleShadows(){
-    DrawGroundShadow(g.car.p,1.65f,2.55f,28.0f,g.car.yaw);
+    if(!PorscheHasWorldSunShadow(g.car))DrawGroundShadow(g.car.p,1.65f,2.55f,28.0f,g.car.yaw);
     const float planeHeight=Clamp(g.plane.p.y-std::max(TerrainHeight(g.plane.p.x,g.plane.p.z),g.water),0,80);
     DrawGroundShadow(g.plane.p,2.0f+planeHeight*.10f,3.0f+planeHeight*.08f,28.0f,g.plane.yaw);
     const float heliHeight=Clamp(g.heli.p.y-TerrainHeight(g.heli.p.x,g.heli.p.z),0,80);
@@ -2881,7 +2918,7 @@ void DrawVehicles(){
     if(g.qaCaptureActive&&g.vehicle==VehicleKind::Foot&&!g.qaCaptureWorldVehicles)return;
     if(g.qaCaptureActive&&g.vehicle!=VehicleKind::Foot){
         // Isolate the selected asset during renderer QA so the vehicle occupies the frame without nearby props hiding its geometry.
-        if(g.vehicle==VehicleKind::Car){if(g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else{DrawGroundShadow(g.car.p,1.65f,2.55f,28.0f,g.car.yaw);DrawCar(g.car);}DrawVehicleImpactOverlay(g.car,0);}
+        if(g.vehicle==VehicleKind::Car){if(g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else{if(!PorscheHasWorldSunShadow(g.car))DrawGroundShadow(g.car.p,1.65f,2.55f,28.0f,g.car.yaw);DrawCar(g.car);}DrawVehicleImpactOverlay(g.car,0);}
         else if(g.vehicle==VehicleKind::Plane){if(g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else{const float h=Clamp(g.plane.p.y-TerrainHeight(g.plane.p.x,g.plane.p.z),0,80);DrawGroundShadow(g.plane.p,2.0f+h*.10f,3.0f+h*.08f,28.0f,g.plane.yaw);DrawPlane(g.plane);}DrawVehicleImpactOverlay(g.plane,1);DrawF16BreakawayParts();}
         else if(g.vehicle==VehicleKind::Helicopter){if(g.cameraActualDistance<=3.5f)DrawHeliCockpit(g.heli);else{const float h=Clamp(g.heli.p.y-TerrainHeight(g.heli.p.x,g.heli.p.z),0,80);DrawGroundShadow(g.heli.p,1.45f,2.0f,28.0f,g.heli.yaw);if(h>1.5f&&h<42.0f)DrawGroundShadow(g.heli.p,4.65f+h*.07f,4.65f+h*.07f,12.0f,g.heli.yaw);DrawHeli(g.heli);}DrawVehicleImpactOverlay(g.heli,2);}
         for(const HostileFixedWing &contact:g.hostileFixedWings)if(contact.alive||contact.downed){
@@ -2892,7 +2929,7 @@ void DrawVehicles(){
         return;
     }
     DrawVehicleShadows();
-    if(g.missionStarted){DrawGroundShadow(g.extraCar.p,1.35f,2.4f,25.0f,g.extraCar.yaw);DrawCar(g.extraCar);}
+    if(g.missionStarted){if(!PorscheHasWorldSunShadow(g.extraCar))DrawGroundShadow(g.extraCar.p,1.35f,2.4f,25.0f,g.extraCar.yaw);DrawCar(g.extraCar);}
     if(g.vehicle==VehicleKind::Car&&g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else DrawCar(g.car);DrawVehicleImpactOverlay(g.car,0);
     if(g.vehicle==VehicleKind::Plane&&g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else DrawPlane(g.plane);DrawVehicleImpactOverlay(g.plane,1);DrawF16BreakawayParts();
     if(g.vehicle==VehicleKind::Helicopter&&g.cameraActualDistance<=3.5f)DrawHeliCockpit(g.heli);else DrawHeli(g.heli);DrawVehicleImpactOverlay(g.heli,2);
@@ -4229,7 +4266,7 @@ void DrawWorld(){
 }
 void DrawWorldScene(const Matrix* projection){
     if(IsShaderValid(g.worldShader)){const Vector3 light=Norm(V(-.42f,-.88f,.28f));const float fog[4]{.46f,.57f,.59f,1};const Vector2 range=g.graphics==GraphicsMode::High?Vector2{115,460}:Vector2{90,320};SetShaderValue(g.worldShader,g.locLight,&light,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locEye,&g.camera.position,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locFog,fog,SHADER_UNIFORM_VEC4);SetShaderValue(g.worldShader,g.locFogRange,&range,SHADER_UNIFORM_VEC2);}
-    BeginMode3D(g.camera);if(projection)rlSetMatrixProjection(*projection);
+    BindPorscheWorldSunShadows();BeginMode3D(g.camera);if(projection)rlSetMatrixProjection(*projection);
     if(IsModelValid(g.skyDome)&&IsTextureValid(g.skyTex)){
         rlDisableBackfaceCulling();DrawModelEx(g.skyDome,g.camera.position,V(1,0,0),54,V(1,1,1),WHITE);rlEnableBackfaceCulling();
     }
@@ -4292,7 +4329,7 @@ void DrawWorldScene(const Matrix* projection){
     DrawVehicles();DrawActorModels();DrawParticles();
     if(IsShaderValid(g.worldShader))EndShaderMode();
     DrawPorscheMirrorTestMarkers();
-    EndMode3D();
+    EndMode3D();EndPorscheWorldSunShadows();
 }
 
 } // namespace bw

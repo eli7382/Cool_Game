@@ -1,0 +1,15 @@
+{
+  "passed":true,
+  "analytic_ray_box_probes":114,
+  "body_transforms":3,
+  "independent_sampler_slots":2,
+  "maximum_visibility_error":0,
+  "alpha_mask_passed":true,
+  "disabled_maps_return_lit":true,
+  "sloped_plane_pixels":320,
+  "minimum_unoccluded_plane_visibility":1,
+  "partial_overlap_cases":12,
+  "maximum_duplicate_shadow_difference":0,
+  "scope":"Actual world shader receiver path, independent analytic ray-box expectations in each vehicle sampler, translated/yawed/tilted bodies, alpha masks, disabled maps, five sloped receiver/caster planes, and partial PCF overlap without doubled darkening",
+  "limits":["Finite fixtures; terrain conformity, real vehicle footprint, scene visuals and rendering cost need separate checks"]
+}

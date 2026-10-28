@@ -122,7 +122,32 @@ corners across 72 posed-car cases. Cache, target ownership, quality changes and
 main rendering-state restoration are checked separately. These are finite
 correctness checks; the full-game rendering cost still needs profiling.
 
-Ground/world cast shadows, local ambient occlusion, material refinements,
+The same car maps now shade world receivers through the existing world shader.
+Roads, terrain, runway boxes and nearby solid geometry receive the car's
+directional shadow at their real fragment positions. World texture units 12
+and 13 hold the two independently owned maps; the slot outside an active
+Porsche remains disabled. Overlapping filtered maps use minimum visibility,
+so identical shadows are not applied twice. The Porsche's oval placeholder
+is skipped while a directional map is available; other vehicles retain their
+existing shadows. The map bindings are cleared after each world/mirror pass.
+
+World receivers behind the map's far plane can still be shadowed: occupied
+texels extrude along the sun ray, while clear texels remain lit. This lets a
+raised car cast onto the ground without moving its shadow up with the body.
+Only direct sun terms are attenuated; environment, emission and local lamps
+retain their existing contributions. World geometry casting shadows onto the
+Porsche itself remains separate unfinished work.
+
+`docs/porsche-world-shadow-review.json` binds the receiver tests and matched
+closed/open/raised-car captures to the executable. The fixtures cover 114
+analytic receiver samples in both slots (including points beyond the caster
+depth range), 320 unoccluded slope pixels, and partial-filter overlap. A
+separate reference traces posed car triangles at nine light-texel centres for
+each of 126 actual road/terrain mesh points, including softened edges. It
+compares geometry rather than reading the rendered depth values. Masked-only
+oracle hits are classified separately; the alpha mask path has a GPU fixture.
+
+World-to-car occlusion, local ambient occlusion, material refinements,
 comprehensive clearance, optical appearance and full-game profiling remain in development.
 The linkage datums are fitted to the source model; the joint solver supplies
 visual articulation and does not replace the game's tire-force simulation.

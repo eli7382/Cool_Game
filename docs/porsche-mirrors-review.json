@@ -1,7 +1,7 @@
 {
-  "reviewed_at": "2026-10-28T22:17:50.613305+00:00",
+  "reviewed_at": "2026-10-28T22:52:25.696943+00:00",
   "stage": "Native game scene mirrors and adjustable rear-view",
-  "executable_sha256": "35629712e68701fc89b00217e53318df306b0c42846ceadbb265418f97c4e601",
+  "executable_sha256": "213fd10d7056f5229498004b184dc5805dceba9223d7abfee929fabc29c09946",
   "checks": [
     {
       "name": "native-mirror-reflection-crop-and-oblique-clip-match-source-rig",
@@ -152,11 +152,11 @@
   "images": [
     {
       "path": "screenshots/porsche-native-scene-mirrors.png",
-      "sha256": "e0ac0a389d595a839082a3c0ba38edfafc984efadbc24d2acd4c34d74ed1c7da"
+      "sha256": "f197ac8688fbf96ad8db4ff9ef3ef9b3196b5c291f4513c8e55183d57480fea0"
     },
     {
       "path": "screenshots/porsche-native-mirror-markers.png",
-      "sha256": "bc4d799f2df23fc467eac70c2032d0c3b04c743787b5ebac6a50f70c59585c04"
+      "sha256": "dbd060abca1055c0499e0ec99f202baa01d101c73d8227d01d642c502b801d6e"
     },
     {
       "path": "screenshots/porsche-mirror-left-markers.png",

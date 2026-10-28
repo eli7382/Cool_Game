@@ -1,15 +1,15 @@
 {
-  "reviewed_at": "2026-10-28T22:17:50.613305+00:00",
+  "reviewed_at": "2026-10-28T22:52:25.696943+00:00",
   "stage": "Native directional sun self-shadowing with receiver-plane filtered comparisons",
   "baseline_commit": "dcebb8c80d1aa33feaaef635300cef376036601d",
-  "executable_sha256": "35629712e68701fc89b00217e53318df306b0c42846ceadbb265418f97c4e601",
-  "reviewer_sha256": "682dfec068593a42dde83abf1b85b8c806a55c4298852b7e6041813f70d6ee56",
+  "executable_sha256": "213fd10d7056f5229498004b184dc5805dceba9223d7abfee929fabc29c09946",
+  "reviewer_sha256": "ef7903fa710d014ba5e1748ffdd42b69d37a6193d2b4b898f9782631fdf2bbbd",
   "source_hashes": {
-    "src/breakwater/porsche_native.cpp": "52d3e7d640518f558c9579cbd43335f636c0b41519079d9ee00c00d95e0a1a53",
-    "src/breakwater/porsche_native.hpp": "0bccc8219cf10bd07dc1cf237b03caa3d5eec46d35b47044b1f82f2be8890dec",
+    "src/breakwater/porsche_native.cpp": "002b4d724a2140f39264d591757b5ec5d9cfdebb03c901f3d9a2ca056b8edb5e",
+    "src/breakwater/porsche_native.hpp": "4a6eca8af419c77c60a4a12a66c13ecf5320844adff592aa5acfd4cee3b1c728",
     "src/breakwater/porsche_shadow.cpp": "f9e5d461a92b5cd7bb790be1945d4e49ee10f565487c04f7e2ac37f1dea5a8c4",
     "src/breakwater/porsche_shadow.hpp": "90571e07773674abb9c0556a4d80e337d0f1f129e561a3ed8ce2aa233b59bf77",
-    "src/breakwater/world.cpp": "e98afc591f40faf1456ebd6782b5ee31f22269e51f5b4a4e69bbbb0e2aec5a4b",
+    "src/breakwater/world.cpp": "0fe6d352cf519ebc5d5b3d55a51ea444ccef118db08426738b5b776c0acf5c29",
     "assets/porsche/shaders/porsche.fs": "664bfe0014b15c9388188ab5141ddad474c564d287733f4a1de74ea1ea2379de",
     "assets/porsche/shaders/porsche_depth.vs": "fb921a34f16aa70eaa4e51758f67be8743bd9c74a71064ef7a538a7092b51a77",
     "assets/porsche/shaders/porsche_depth.fs": "02f47a773799438c29bfb631a051eb383b299ab83a94d8b3f4d02affbe9cadf7"
@@ -21,7 +21,7 @@
   },
   "native_qa": {
     "passed": true,
-    "checks": 103,
+    "checks": 112,
     "failures": 0,
     "native_steering_poses": 69,
     "maximum_axial_drift_m": 2.03028e-07,
@@ -135,49 +135,49 @@
   "images": [
     {
       "path": "screenshots/porsche-shadow-exterior-off.png",
-      "sha256": "b369be5a55ef5d47d10cfc65657c57ba2cdd6d8c70794e5f70932bb20cd835be",
+      "sha256": "1e2daabb4bfd9e92464aafc8566cbab722b57c86ab936888ff18da7ec9bf0c8f",
       "view": "exterior",
       "self_shadows": false
     },
     {
       "path": "screenshots/porsche-shadow-exterior-on.png",
-      "sha256": "91a268c1c64dad5be9a0ebf65e1c8eb4e70b6606af44ceab4fc34fcdde26c3ce",
+      "sha256": "3a4421bd30cb9b3e9b2d6f68e6bcf8612beb84b1b9596ec029733525f8c2b8f1",
       "view": "exterior",
       "self_shadows": true
     },
     {
       "path": "screenshots/porsche-shadow-rear-off.png",
-      "sha256": "8cda5249efa3c86056da150d429c24758091aa7d16b79022d969ae071ea9e39b",
+      "sha256": "f17f19fa9c91c7e4e41a5f8c3319240b9b89d496cd9b60846727dd161bbfc483",
       "view": "rear",
       "self_shadows": false
     },
     {
       "path": "screenshots/porsche-shadow-rear-on.png",
-      "sha256": "a3decb7891a056c7155c7f24ce74d4318eea7196e05241db2695063b4314207b",
+      "sha256": "359d9254f380857477cfd6607408407103b53d6f306f4b36a4bbc603a8f9a843",
       "view": "rear",
       "self_shadows": true
     },
     {
       "path": "screenshots/porsche-shadow-cockpit-off.png",
-      "sha256": "bfbc9ef81b1ab65e00c776050efb6fe80cc50c84240e4ddde17818ec376369f1",
+      "sha256": "2d8184f0af81126a05afaedf8b58ec005fe39e1f92ad80a9ea4758713179f7e7",
       "view": "cockpit",
       "self_shadows": false
     },
     {
       "path": "screenshots/porsche-shadow-cockpit-on.png",
-      "sha256": "0da4d95605c593424301e79ff028c8e702352c256b1468a134b481e88cbbb3f7",
+      "sha256": "da0b1f13d39e6adcaa86657086744769cc963e65c5adf09972f84ef941cf5436",
       "view": "cockpit",
       "self_shadows": true
     },
     {
       "path": "screenshots/porsche-shadow-open-off.png",
-      "sha256": "a143dbd80d530c38173357ba6145ba516418beb4c4308bce8b8163fc73415a32",
+      "sha256": "c8e405a1836159ebf8153cce30f6fd9b2620d877c954bf48dd39ef932086aa90",
       "view": "open",
       "self_shadows": false
     },
     {
       "path": "screenshots/porsche-shadow-open-on.png",
-      "sha256": "0f03c9647996673869ca0b2be21a5ddacef14d3fe34eede1336ed4e861f63aee",
+      "sha256": "b5c377c30816d8c0bdbee2230a5b920bcfad84b59eccef3c2f1f55ce9a3a734f",
       "view": "open",
       "self_shadows": true
     }
@@ -185,28 +185,28 @@
   "matched_image_differences": [
     {
       "view": "exterior",
-      "changed_pixels_over_2_levels": 20424,
+      "changed_pixels_over_2_levels": 20423,
       "brightened_pixels_over_2_levels": 0,
       "maximum_darken": 89,
       "maximum_brighten": 1
     },
     {
       "view": "rear",
-      "changed_pixels_over_2_levels": 38148,
+      "changed_pixels_over_2_levels": 38189,
       "brightened_pixels_over_2_levels": 0,
       "maximum_darken": 59,
       "maximum_brighten": 1
     },
     {
       "view": "cockpit",
-      "changed_pixels_over_2_levels": 151445,
+      "changed_pixels_over_2_levels": 151446,
       "brightened_pixels_over_2_levels": 0,
       "maximum_darken": 64,
       "maximum_brighten": 1
     },
     {
       "view": "open",
-      "changed_pixels_over_2_levels": 21531,
+      "changed_pixels_over_2_levels": 21541,
       "brightened_pixels_over_2_levels": 0,
       "maximum_darken": 89,
       "maximum_brighten": 1
@@ -235,12 +235,14 @@
     "passed": true,
     "evidence": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.74,total-wear=0.00008251,peak-speed-mps=16.00"
   },
+  "world_receivers_enabled_in_both_matched_views": true,
   "remaining": [
-    "Directional cast shadows on ground/world receivers and world-to-car occlusion",
+    "World geometry casting onto the car; car-to-world receivers have a separate review",
     "Local ambient occlusion and further glass/material/optical refinement",
     "Full-game frame time, loading policy and memory review",
     "Porsche-specific vehicle tuning, whole-model clearance and requested final fidelity"
   ],
   "complete": false,
-  "final_fidelity_verified": false
+  "final_fidelity_verified": false,
+  "world_receiver_review": "docs/porsche-world-shadow-review.json"
 }

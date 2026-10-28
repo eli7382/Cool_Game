@@ -1,0 +1,216 @@
+{
+  "reviewed_at": "2026-10-28T22:52:24.414294+00:00",
+  "stage": "Porsche directional shadows on native world receivers",
+  "baseline_commit": "38a9f9535e37eb62000f2c1b2982b1b21210e0c2",
+  "executable_sha256": "213fd10d7056f5229498004b184dc5805dceba9223d7abfee929fabc29c09946",
+  "source_hashes": {
+    "src/breakwater/world.cpp": "0fe6d352cf519ebc5d5b3d55a51ea444ccef118db08426738b5b776c0acf5c29",
+    "src/breakwater/porsche_native.cpp": "002b4d724a2140f39264d591757b5ec5d9cfdebb03c901f3d9a2ca056b8edb5e",
+    "src/breakwater/porsche_native.hpp": "4a6eca8af419c77c60a4a12a66c13ecf5320844adff592aa5acfd4cee3b1c728",
+    "src/breakwater/porsche_shadow.cpp": "f9e5d461a92b5cd7bb790be1945d4e49ee10f565487c04f7e2ac37f1dea5a8c4",
+    "src/breakwater/porsche_shadow.hpp": "90571e07773674abb9c0556a4d80e337d0f1f129e561a3ed8ce2aa233b59bf77"
+  },
+  "reviewer_sha256": "39cdf3b821573f1b8695ae7c2ff5b7a28775c30776df30cc1a82639273367372",
+  "native_qa": {
+    "passed": true,
+    "checks": 112,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "receiver_gpu_fixtures": {
+    "passed": true,
+    "analytic_ray_box_probes": 114,
+    "body_transforms": 3,
+    "independent_sampler_slots": 2,
+    "maximum_visibility_error": 0,
+    "alpha_mask_passed": true,
+    "disabled_maps_return_lit": true,
+    "sloped_plane_pixels": 320,
+    "minimum_unoccluded_plane_visibility": 1,
+    "partial_overlap_cases": 12,
+    "maximum_duplicate_shadow_difference": 0,
+    "scope": "Actual world shader receiver path, independent analytic ray-box expectations in each vehicle sampler, translated/yawed/tilted bodies, alpha masks, disabled maps, five sloped receiver/caster planes, and partial PCF overlap without doubled darkening",
+    "limits": [
+      "Finite fixtures; terrain conformity, real vehicle footprint, scene visuals and rendering cost need separate checks"
+    ]
+  },
+  "real_car_triangle_reference": {
+    "passed": true,
+    "vehicle_poses": 3,
+    "world_gpu_points": 126,
+    "lit_points": 80,
+    "occluded_points": 44,
+    "road_mesh_points": 35,
+    "terrain_or_floor_mesh_points": 91,
+    "partial_filter_edge_points": 2,
+    "masked_only_oracle_hits_skipped": 0,
+    "missing_ground_points": 0,
+    "ground_height_span_m": 0.762463,
+    "maximum_visibility_error": 0.00130719,
+    "scope": "GPU world lookup at actual road/terrain/floor mesh intersections versus independent rays through posed car triangles at all nine PCF texel centres; closed, open/steered/tilted, and raised/rotated/suspension poses",
+    "limits": [
+      "The filtered reference uses posed triangles and inverse light projection; it never reads GPU depth values and includes partial PCF edges",
+      "Masked-only ray hits are excluded from the opaque triangle oracle; alpha masks have separate GPU fixtures",
+      "This tests receiver conformity and car shadow projection, not vehicle collision clearance or world geometry casting onto the car"
+    ]
+  },
+  "triangle_reference_samples": {
+    "path": "docs/porsche-world-car-shadow-samples.csv",
+    "sha256": "678884dd2d1af60fa884b0c07d7904d4e62ed313ce0e8abb46bc222f2430f8d2",
+    "ground_points": 126,
+    "triangle_rays_at_filter_texel_centres": 1134
+  },
+  "new_checks": [
+    {
+      "name": "world-sun-shadow-receivers-match-analytic-occlusion-and-filtering",
+      "passed": true
+    },
+    {
+      "name": "actual-road-and-terrain-car-shadows-match-posed-triangle-rays",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "directional-shadow-replaces-only-the-Porsche-placeholder-blob",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    }
+  ],
+  "images": [
+    {
+      "path": "screenshots/porsche-world-shadow-closed-off.png",
+      "sha256": "fa740949e55cb3020fc7a3cefd5bc22192fcf175e9888b65bd1cf4a0c78101fc",
+      "view": "closed",
+      "world_receivers_enabled": false,
+      "self_shadows_enabled": true,
+      "placeholder_blob_suppressed": true
+    },
+    {
+      "path": "screenshots/porsche-world-shadow-closed-on.png",
+      "sha256": "6ea6e7c3bfe5ddf96d4008234c34ac6a3554e940cbde7d8bf93879934b53bd89",
+      "view": "closed",
+      "world_receivers_enabled": true,
+      "self_shadows_enabled": true,
+      "placeholder_blob_suppressed": true
+    },
+    {
+      "path": "screenshots/porsche-world-shadow-open-off.png",
+      "sha256": "989ba9d55f4a80156333eb6fe22052ad24271bd41e452bdf1ef7e2bf613c80b8",
+      "view": "open",
+      "world_receivers_enabled": false,
+      "self_shadows_enabled": true,
+      "placeholder_blob_suppressed": true
+    },
+    {
+      "path": "screenshots/porsche-world-shadow-open-on.png",
+      "sha256": "c324d8da02b9292f989e291c8265d7ba1b9caaea56f512732531d1157bffbaaa",
+      "view": "open",
+      "world_receivers_enabled": true,
+      "self_shadows_enabled": true,
+      "placeholder_blob_suppressed": true
+    },
+    {
+      "path": "screenshots/porsche-world-shadow-raised-off.png",
+      "sha256": "06335613e5568ed5c1bf921518c7f7727e451ecd1ba6c3251eb0e4fb3215c9ca",
+      "view": "raised",
+      "world_receivers_enabled": false,
+      "self_shadows_enabled": true,
+      "placeholder_blob_suppressed": true
+    },
+    {
+      "path": "screenshots/porsche-world-shadow-raised-on.png",
+      "sha256": "db43911e7066938686b4a085a86a23a0e1452a2ea41fb0737faf44fa02e680eb",
+      "view": "raised",
+      "world_receivers_enabled": true,
+      "self_shadows_enabled": true,
+      "placeholder_blob_suppressed": true
+    }
+  ],
+  "matched_image_differences": [
+    {
+      "view": "closed",
+      "changed_pixels_over_2_levels": 10532,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 197,
+      "maximum_brighten": 1
+    },
+    {
+      "view": "open",
+      "changed_pixels_over_2_levels": 11962,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 197,
+      "maximum_brighten": 1
+    },
+    {
+      "view": "raised",
+      "changed_pixels_over_2_levels": 32825,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 183,
+      "maximum_brighten": 1
+    }
+  ],
+  "render_policy": {
+    "maps": "Reuse posed, car-relative R32F caster maps; no additional shadow-map draw for world receivers",
+    "samplers": [
+      12,
+      13
+    ],
+    "overlap": "Minimum visibility, preserving partial PCF weights",
+    "lighting": "Direct world sun diffuse/specular/clearcoat, wet glint and foliage sun terms; environment, emission and local lamps retain prior contributions",
+    "caster_depth_range": "Occupied texels extrude along the light ray behind the far plane; clear texels and receivers before the near plane stay lit",
+    "placeholder": "Suppress Porsche oval when its directional map and shader bindings are available; retain existing fallback and other vehicle behavior",
+    "state": "Bind before world/mirror drawing, flush and clear after each pass; invalidate cached shader locations at shutdown"
+  },
+  "visual_observations": [
+    "Car-shaped shadows follow the runway and adjacent ground rather than a flattened oval mesh",
+    "Opened doors extend the ground footprint",
+    "The deliberately raised fixture produces a displaced shadow on the surface below",
+    "The white/red finish and corrected steering shaft remain intact"
+  ],
+  "legacy_regression": {
+    "passed": true,
+    "evidence": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.74,total-wear=0.00008251,peak-speed-mps=16.00"
+  },
+  "remaining": [
+    "World geometry casting onto the Porsche",
+    "Local ambient occlusion and glass/material/optical refinements",
+    "Full-game frame time, memory/loading policy and LOD transition review",
+    "Porsche-specific handling, full mechanical clearance and requested final fidelity"
+  ],
+  "complete": false,
+  "final_fidelity_verified": false
+}

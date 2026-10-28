@@ -15,7 +15,7 @@ def write(p,data):p.write_text(json.dumps(data,indent=2)+'\n',encoding='utf-8')
 qa=read(ROOT/'docs/porsche-native-qa.json')
 probes=read(ROOT/'docs/porsche-native-shadow-probes.json')
 state=read(ROOT/'docs/porsche-native-shadow-state.json')
-assert qa['passed'] and qa['checks']==103 and qa['failures']==0
+assert qa['passed'] and qa['checks']>=103 and qa['failures']==0
 assert probes['passed'] and probes['analytic_ray_box_probes']==48 and probes['self_shadow_plane_pixels']==320
 assert all(state[k] for k in ['targets_and_presets','camera_orbit_reuses_map','world_translation_reuses_local_map','moving_parts_and_body_rotation_update_depth','vehicle_slot_targets_are_separate','main_matrices_and_framebuffer_restored','posed_caster_bounds_inside_map'])
 assert state['coverage_poses']==72
@@ -52,7 +52,8 @@ report={'reviewed_at':stamp,'stage':'Native directional sun self-shadowing with 
     'render_policy':{'high_map':2048,'low_map':1024,'format':'R32F color depth plus depth renderbuffer','car_relative_span_m':7.2,'filter':'3x3 nearest comparisons, each evaluated at its actual texel centre and receiver-plane depth','normal_offset':'Small slope-aware geometric-normal offset plus constant depth epsilon','casters':'Posed source meshes and spring morphs; glazing, blended layers, fine grille wires, coplanar decals and live screens excluded; masked alpha retained','cache':'Quantized sun-local projection, caster transforms, spring weights, caster level and preset; unchanged world translation and camera orbit reuse the local map','order':'Before scene mirrors and main view','lighting':'Direct sun base and clearcoat only; existing environment and emission contributions retained'},
     'visual_observations':['Matched exterior and open-door views show recessed and overlapping parts shading one another','The door mirror casts a visible shadow onto the opened white door','Receiver-plane filtering removes the initial fine banding on broad hood and dashboard surfaces','Cockpit overlaps shade the dashboard without globally darkening the instrument emission','Source geometry, rig datums, material textures and the corrected horn-hub steering frame are unchanged'],
     'legacy_regression':{'passed':True,'evidence':thermal},
-    'remaining':['Directional cast shadows on ground/world receivers and world-to-car occlusion','Local ambient occlusion and further glass/material/optical refinement','Full-game frame time, loading policy and memory review','Porsche-specific vehicle tuning, whole-model clearance and requested final fidelity'],
+    'world_receivers_enabled_in_both_matched_views':True,
+    'remaining':['World geometry casting onto the car; car-to-world receivers have a separate review','Local ambient occlusion and further glass/material/optical refinement','Full-game frame time, loading policy and memory review','Porsche-specific vehicle tuning, whole-model clearance and requested final fidelity'],
     'complete':False,'final_fidelity_verified':False}
 write(ROOT/'docs/porsche-shadow-review.json',report)
 for name in ['porsche-native-review.json','porsche-native-displays-qa.json','porsche-lighting-review.json','porsche-mirrors-review.json','porsche-steering-hub-review.json']:
@@ -64,9 +65,9 @@ for name in ['porsche-native-review.json','porsche-native-displays-qa.json','por
     if 'native_qa'in d:d['native_qa']=qa
     if name=='porsche-native-review.json':
         d['stage']=report['stage'];d['source_hashes'].update(report['source_hashes']);d['native_self_shadows']={'review':'docs/porsche-shadow-review.json','analytic_gpu_probes':48,'sloped_plane_pixels':320,'posed_car_coverage_cases':72}
-        d['limitations']=[x.replace('self-shadowing and close surface detailing','local ambient occlusion, ground/world cast shadows and close surface detailing') for x in d['limitations']]
+        d['limitations']=[x.replace('self-shadowing and close surface detailing','local ambient occlusion, world-to-car occlusion and close surface detailing').replace('ground/world cast shadows','world-to-car occlusion') for x in d['limitations']]
         if 'native_lighting'in d:d['native_lighting']['limits']='Finite IBL probes and separate scene-mirror/self-shadow fixtures plus matched visual review; final fidelity and full-game performance remain unverified'
-    if name=='porsche-lighting-review.json':d['remaining']=[x.replace('Vehicle self-shadowing and local ambient occlusion','Ground/world cast shadows and local ambient occlusion') for x in d['remaining']]
+    if name=='porsche-lighting-review.json':d['remaining']=[x.replace('Vehicle self-shadowing and local ambient occlusion','World-to-car occlusion and local ambient occlusion').replace('Ground/world cast shadows','World-to-car occlusion') for x in d['remaining']]
     if name=='porsche-mirrors-review.json':
         d['source_projection_validation']=read(ROOT/'docs/porsche-native-mirror-projection-qa.json');d['native_scene_validation']=read(ROOT/'docs/porsche-native-mirrors-qa.json')
     write(p,d)
