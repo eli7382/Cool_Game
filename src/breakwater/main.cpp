@@ -379,11 +379,12 @@ void ShutdownAudioSystem(){
 
 int main(int argc,char **argv) {
     using namespace bw;
-    bool qaHidden=false,qaPorschePerformance=false,qaPorscheCulling=false,qaPorscheCullingPerformance=false,qaPorscheCylinderPerformance=false;
+    bool qaHidden=false,qaPorschePerformance=false,qaPorscheCulling=false,qaPorscheCullingPerformance=false,qaPorscheCylinderPerformance=false,porscheDemo=false;
     std::string qaCapture,qaTaskToken;double qaCaptureDeadline=0.0,qaHostileF16Deadline=0.0;bool qaHasRunMode=false,qaAudioEnabled=false,qaTaskTour=false,qaPlaneLanding=false,qaPlaneLandingLogged=false,qaPlaneTreeImpact=false,qaCarTreeImpactRun=false,qaCarTireThermal=false,qaCarLoadTransferPassed=false,qaCarNearLogged=false,qaAirCombat=false,qaAirGun=false,qaF16Gun=false,qaF16Missile=false,qaHostileF16=false,qaCombat=false,qaHostileRoadVehicle=false,qaBallistics=false,qaBallisticsPassed=true,qaSafehouse=false,qaSafehouseDescent=false,qaCaptureLow=false,qaHighPreset=false,qaMidTide=false;int qaTaskStage=0,qaTaskCaptureStage=-1;Vector3 qaCarTreeTarget{},qaHostileF16Start{};int qaCarTreeTargetSeed=-1;
     for(int i=1;i<argc;++i){
         const std::string_view arg(argv[i]);
         if(arg=="--qa-porsche")g.qaPorsche=true;
+        if(arg=="--demo-porsche")porscheDemo=true;
         if(arg=="--qa-porsche-performance")qaPorschePerformance=true;
         if(arg=="--qa-porsche-culling")qaPorscheCulling=true;
         if(arg=="--qa-porsche-culling-performance"){qaPorscheCullingPerformance=true;qaPorschePerformance=true;}
@@ -416,12 +417,41 @@ int main(int argc,char **argv) {
     const bool qaSilent=qaHasRunMode&&!qaAudioEnabled;
     SetConfigFlags(FLAG_WINDOW_RESIZABLE|FLAG_WINDOW_HIGHDPI|FLAG_VSYNC_HINT|FLAG_MSAA_4X_HINT);
     if(g.qaPorsche||qaPorschePerformance||qaPorscheCulling||qaHidden){SetConfigFlags(FLAG_WINDOW_HIDDEN);std::filesystem::create_directories(".tools");g.logPath=g.qaPorsche?".tools/porsche-qa-session.log":qaPorschePerformance?".tools/porsche-performance-session.log":qaPorscheCulling?".tools/porsche-culling-session.log":".tools/hidden-qa-session.log";}
+    if(porscheDemo){std::filesystem::create_directories(".tools");g.logPath=".tools/porsche-visible-demo-session.log";}
     InitWindow(1280,720,"BREAKWATER: HIGH WATER");
     SetTargetFPS(60);SetExitKey(KEY_NULL);if(qaSilent)g.muted=true;
     InitWorld();InitAudioSystem();if(qaSilent)LogEvent("qa-audio-output-muted");EnableCursor();
     if(g.qaPorsche){const bool passed=RunPorscheQA();ShutdownAudioSystem();ShutdownWorld();CloseWindow();return passed?0:2;}
     if(qaPorschePerformance){const bool passed=RunPorschePerformanceQA(qaPorscheCullingPerformance,qaPorscheCylinderPerformance);ShutdownAudioSystem();ShutdownWorld();CloseWindow();return passed?0:2;}
     if(qaPorscheCulling){const bool passed=RunPorscheCullingQA();ShutdownAudioSystem();ShutdownWorld();CloseWindow();return passed?0:2;}
+    if(porscheDemo){
+        StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;
+        g.player.p=Add(g.extraCar.p,V(0,1,0));g.qaTaskInteractPending=true;UpdateGameplay(1.f/120);
+        if(!g.car.isPorsche){ShutdownAudioSystem();ShutdownWorld();CloseWindow();return 2;}
+        for(auto& e:g.enemies)e.alive=false;for(auto& e:g.hostileRotorcraft)e.alive=false;for(auto& e:g.hostileFixedWings)e.alive=false;for(auto& e:g.hostileRoadVehicles)e.alive=false;
+        const Vehicle demoStart=g.car;g.qaPorsche=true;g.cameraDistance=g.cameraActualDistance=6.f;g.cameraInitialized=false;
+        double accumulator=0,phaseTime=0;int lap=0;const char* phase="ACCELERATE";
+        LogEvent("porsche-visible-demo-start");
+        while(!WindowShouldClose()&&!g.exitRequested){
+            if(IsKeyPressed(KEY_F8))break;
+            accumulator+=std::min(GetFrameTime(),.25f);
+            while(accumulator>=1.0/120){
+                phaseTime+=1.0/120;
+                if(phaseTime>=9){phaseTime=0;++lap;g.car=demoStart;g.cameraDistance=g.cameraActualDistance=(lap%2)?1.55f:6.f;g.cameraInitialized=false;LogEvent("porsche-visible-demo-route-reset");}
+                phase=phaseTime<4?"ACCELERATE":phaseTime<5?"STEER":phaseTime<7?"BRAKE":"HOLD / INSPECT";
+                g.qaPorscheThrottle=phaseTime<5?1.f:0;g.qaPorscheSteering=phaseTime>=4&&phaseTime<5?.6f:0;g.qaPorscheBrake=phaseTime>=5?1.f:0;
+                UpdateGameplay(1.f/120);accumulator-=1.0/120;
+            }
+            BeginDrawing();ClearBackground(Color{94,123,132,255});DrawWorld();
+            DrawRectangle(12,12,650,94,Fade(BLACK,.8f));
+            DrawText(TextFormat("VISIBLE PORSCHE TEST: %s",phase),24,23,22,WHITE);
+            DrawText(TextFormat("%.0f km/h | steering %.2f | pitch %.2f deg | roll %.2f deg",g.car.speed*3.6f,g.car.steer,g.car.pitch/DEG,g.car.roll/DEG),24,53,18,WHITE);
+            DrawText("Repeats chase / cockpit views. F8: take control. Close window: exit.",24,80,16,LIGHTGRAY);
+            EndDrawing();
+        }
+        g.qaPorsche=false;g.qaPorscheThrottle=g.qaPorscheSteering=g.qaPorscheBrake=0;LogEvent("porsche-visible-demo-end");
+        if(WindowShouldClose()||g.exitRequested){ShutdownAudioSystem();ShutdownWorld();CloseWindow();return 0;}
+    }
     if(qaBallistics){StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;qaBallisticsPassed=RunBallisticImpactQA();LogEvent(qaBallisticsPassed?"qa-ballistics-pass":"qa-ballistics-fail");g.exitRequested=true;}
     if(!qaCapture.empty()){
         StartMission();g.screen=Screen::Playing;g.clock=5.4f;g.graphics=qaCaptureLow?GraphicsMode::Low:GraphicsMode::High;
