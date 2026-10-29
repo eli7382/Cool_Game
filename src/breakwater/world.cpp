@@ -4308,14 +4308,33 @@ void UpdateCamera(){
         SetShaderValue(g.worldShader,g.locFog,fog,SHADER_UNIFORM_VEC4);SetShaderValue(g.worldShader,g.locFogRange,&range,SHADER_UNIFORM_VEC2);
     }
 }
-void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection){
+void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection,bool groupCull){
     // Draw the real building geometry, rather than collision-box proxies.
     // Caller owns the depth-enabled render target and clear operation.
     const Camera3D savedCamera=g.camera;const Matrix savedProjection=rlGetMatrixProjection(),savedView=rlGetMatrixModelview();
     const int location=GetShaderLocation(g.worldShader,"porscheWorldCasterDepth");
     const float on=1,off=0;g.camera=camera;SetShaderValue(g.worldShader,location,&on,SHADER_UNIFORM_FLOAT);
     BeginMode3D(camera);rlSetMatrixProjection(projection);BeginShaderMode(g.worldShader);
-    DrawHangar();DrawTower();DrawSafehouse();for(int i=0;i<3;++i)DrawSluice(i);
+    const Matrix clip=MatrixMultiply(MatrixLookAt(camera.position,camera.target,camera.up),projection);
+    auto visible=[&](BoundingBox box){return !groupCull||!MeshVisibilityEnabled()||MeshView::Intersects(box,clip);};
+    const float hangarY=TerrainHeight(-38,188),palletY=TerrainHeight(-23.5f,197);
+    if(visible({V(-51,std::min(hangarY,palletY)-1,171),V(-21,std::max(hangarY+14,palletY+3),205)}))DrawHangar();
+    const float towerY=TerrainHeight(8,8);
+    if(visible({V(1,towerY-1,1),V(15,towerY+31,15)}))DrawTower();
+    BoundingBox house{V(1e9f,1e9f,1e9f),V(-1e9f,-1e9f,-1e9f)};
+    auto include=[&](Vector3 p){house.min=Vector3Min(house.min,p);house.max=Vector3Max(house.max,p);};
+    // The authored door's complete swing, stairs/rails and lamps fit this
+    // local envelope. Imported shell/furniture bounds are added separately.
+    for(int bits=0;bits<8;++bits)include(SafehouseWorld(V(bits&1?7.f:-7.f,bits&2?10.f:-1.f,bits&4?8.f:-8.f)));
+    const Matrix houseFrame=MatrixMultiply(MatrixRotateY(g.safehouse.yaw),MatrixTranslate(g.safehouse.p.x,g.safehouse.p.y,g.safehouse.p.z));
+    for(int mesh=0;mesh<g.safehouseHero.meshCount;++mesh){const auto box=CachedRigidMeshBounds(g.safehouseHero.meshes[mesh]);
+        for(int bits=0;bits<8;++bits)include(Vector3Transform(V(bits&1?box.max.x:box.min.x,bits&2?box.max.y:box.min.y,bits&4?box.max.z:box.min.z),MatrixMultiply(g.safehouseHero.transform,houseFrame)));}
+    const Model* furniture[]{&g.safehouseSofa,&g.safehouseDesk,&g.safehouseBed};const Vector3 offsets[]{V(-1.55f,.30f,-2.50f),V(.40f,.30f,-3.85f),V(-1.65f,3.30f,-1.25f)};
+    for(int item=0;item<3;++item){float radius=0;const Model& model=*furniture[item];
+        for(int mesh=0;mesh<model.meshCount;++mesh){const auto box=CachedRigidMeshBounds(model.meshes[mesh]);for(int bits=0;bits<8;++bits)radius=std::max(radius,Vector3Length(Vector3Transform(V(bits&1?box.max.x:box.min.x,bits&2?box.max.y:box.min.y,bits&4?box.max.z:box.min.z),model.transform)));}
+        const auto centre=SafehouseWorld(offsets[item]);include(Sub(centre,V(radius,radius,radius)));include(Add(centre,V(radius,radius,radius)));}
+    if(visible(house))DrawSafehouse();
+    for(int i=0;i<3;++i){const auto p=g.gates[i];const float y=TerrainHeight(p.x,p.z);if(visible({V(p.x-14,y-1,p.z-10),V(p.x+14,y+10,p.z+10)}))DrawSluice(i);}
     rlDrawRenderBatchActive();EndShaderMode();EndMode3D();SetShaderValue(g.worldShader,location,&off,SHADER_UNIFORM_FLOAT);
     g.camera=savedCamera;rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedView);
 }

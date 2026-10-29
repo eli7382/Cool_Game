@@ -89,3 +89,32 @@ The direct stage cost is still material: reducing needless building
 submissions and map refreshes is required next. These base-route captures
 do not replace a near-hangar movement/performance test or uninstrumented
 normal-game timing.
+
+Whole-building depth culling
+---------------------------
+
+The depth callback now tests conservative building-group bounds against the
+actual light view/projection before submitting their component geometry.
+Hangar bounds include the service pallet; tower bounds include the mast;
+sluice bounds include the wheel and full gate position range. Safehouse
+bounds combine the imported shell's mesh bounds, furniture bounds and a
+procedural envelope for stairs, lamps and the door's full swing. Imported
+geometry uses cached rigid-mesh bounds rather than rescanning its vertices.
+
+Passing `groupCull=false`, or disabling mesh visibility, retains the original
+submission path for comparison. Native QA compares R32 buffers with group
+culling off/on in centred and cropped views of all six groups, using closed
+and open doors and two clock values. All 3145728 compared pixels match
+exactly; 1688441 are occupied. The complete suite passes 148 checks. This is
+finite render-preservation evidence, not exhaustive proof for all camera and
+world-state combinations. No geometry or caster category was removed.
+
+In the retained pre-culling ON run versus a later culled ON run, the four
+AO-on base-route cases reduce median building-stage CPU submission from
+3.8208–5.24345 ms to 0.126–0.1445 ms. Median stage GPU time becomes
+0.02304–0.04608 ms, versus 0.380416–0.958976 ms before. All eight recorded
+driving traces match exactly. This supports the optimization for the measured
+route, where buildings are usually outside the local shadow volume; it does
+not imply the same reduction beside a building or a 97% whole-frame gain.
+The runs are non-interleaved and instrumented. See the raw reports and
+`porsche-building-group-performance-review.json` for their scope and limits.

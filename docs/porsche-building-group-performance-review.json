@@ -1,0 +1,175 @@
+{
+  "source_reports": [
+    {
+      "path": "docs\\porsche-building-shadow-on-performance.json",
+      "sha256": "7749ca3075445b98ed4325b600074248efa91e7c9b0f48d71cdcccdde7af74ff"
+    },
+    {
+      "path": "docs\\porsche-building-group-cull-performance.json",
+      "sha256": "8cc160e8009240213636b0c6690bc719fe61e3bbe7917b11dd51e50d55b602f7"
+    }
+  ],
+  "identical_all_driving_traces": true,
+  "cases": [
+    {
+      "name": "low-chase-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "building_cpu_submit": {
+        "before_p50_ms": 4.8514,
+        "after_p50_ms": 0.1414,
+        "change_percent": -97.08537741682814
+      },
+      "building_gpu_elapsed": {
+        "before_p50_ms": 0.949248,
+        "after_p50_ms": 0.023552,
+        "change_percent": -97.51887810140236
+      },
+      "frame_wall_ms": {
+        "before_p50": 67.052,
+        "after_p50": 43.68245
+      }
+    },
+    {
+      "name": "low-chase-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "building_cpu_submit": {
+        "before_p50_ms": 5.24345,
+        "after_p50_ms": 0.1445,
+        "change_percent": -97.24418083513717
+      },
+      "building_gpu_elapsed": {
+        "before_p50_ms": 0.958976,
+        "after_p50_ms": 0.02304,
+        "change_percent": -97.59743726641751
+      },
+      "frame_wall_ms": {
+        "before_p50": 105.2931,
+        "after_p50": 66.58745
+      }
+    },
+    {
+      "name": "low-cockpit-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "building_cpu_submit": {
+        "before_p50_ms": 4.40495,
+        "after_p50_ms": 0.1383,
+        "change_percent": -96.86035028774447
+      },
+      "building_gpu_elapsed": {
+        "before_p50_ms": 0.403456,
+        "after_p50_ms": 0.023552,
+        "change_percent": -94.16243654822334
+      },
+      "frame_wall_ms": {
+        "before_p50": 59.9031,
+        "after_p50": 40.96345
+      }
+    },
+    {
+      "name": "low-cockpit-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "building_cpu_submit": {
+        "before_p50_ms": 5.0417,
+        "after_p50_ms": 0.1226,
+        "change_percent": -97.56828054029394
+      },
+      "building_gpu_elapsed": {
+        "before_p50_ms": 0.393216,
+        "after_p50_ms": 0.019456,
+        "change_percent": -95.05208333333333
+      },
+      "frame_wall_ms": {
+        "before_p50": 49.3586,
+        "after_p50": 21.9633
+      }
+    },
+    {
+      "name": "high-chase-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "building_cpu_submit": {
+        "before_p50_ms": 3.8208,
+        "after_p50_ms": 0.13165,
+        "change_percent": -96.5543865159129
+      },
+      "building_gpu_elapsed": {
+        "before_p50_ms": 0.380416,
+        "after_p50_ms": 0.04608,
+        "change_percent": -87.88694481830417
+      },
+      "frame_wall_ms": {
+        "before_p50": 71.58525,
+        "after_p50": 60.7898
+      }
+    },
+    {
+      "name": "high-chase-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "building_cpu_submit": {
+        "before_p50_ms": 4.9635,
+        "after_p50_ms": 0.12305,
+        "change_percent": -97.52090258889896
+      },
+      "building_gpu_elapsed": {
+        "before_p50_ms": 0.970752,
+        "after_p50_ms": 0.037376,
+        "change_percent": -96.14978902953587
+      },
+      "frame_wall_ms": {
+        "before_p50": 74.6086,
+        "after_p50": 40.3969
+      }
+    },
+    {
+      "name": "high-cockpit-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "building_cpu_submit": {
+        "before_p50_ms": 5.22455,
+        "after_p50_ms": 0.12605,
+        "change_percent": -97.5873520207482
+      },
+      "building_gpu_elapsed": {
+        "before_p50_ms": 0.415232,
+        "after_p50_ms": 0.034816,
+        "change_percent": -91.61528976572133
+      },
+      "frame_wall_ms": {
+        "before_p50": 61.22735,
+        "after_p50": 32.67555
+      }
+    },
+    {
+      "name": "high-cockpit-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "building_cpu_submit": {
+        "before_p50_ms": 4.6758,
+        "after_p50_ms": 0.126,
+        "change_percent": -97.30527396381368
+      },
+      "building_gpu_elapsed": {
+        "before_p50_ms": 0.401408,
+        "after_p50_ms": 0.032768,
+        "change_percent": -91.83673469387755
+      },
+      "frame_wall_ms": {
+        "before_p50": 71.54195,
+        "after_p50": 44.9617
+      }
+    }
+  ],
+  "scope": "Retained pre-culling ON run versus one later group-culling ON run, same eight-case hidden instrumented route",
+  "limits": [
+    "Non-interleaved runs can contain thermal and background-load differences",
+    "Dedicated stage submission cost is more informative here than assigning all frame-time change to culling",
+    "Base-area route does not replace near-building movement measurements",
+    "Not uninstrumented normal-game FPS or cross-device performance"
+  ],
+  "complete": false
+}

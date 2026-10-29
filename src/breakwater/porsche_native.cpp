@@ -892,6 +892,29 @@ bool RunPorscheCullingQA(){
     cylinderReport<<"{\n\"enabled\":"<<(WorldSpaceBatchCoordinatesFixed()?"true":"false")<<",\n\"passed\":"<<(passed?"true":"false")<<",\n\"camera_pose_cases\":"<<cases<<",\n\"cylinders_tested\":"<<cylinders.tested-c0.tested<<",\n\"cylinders_rejected\":"<<cylinders.rejected-c0.rejected<<",\n\"cap_and_ring_vertices_verified\":"<<cylinders.verifiedVertices-c0.verifiedVertices<<",\n\"oracle_failures\":"<<cylinders.oracleFailures-c0.oracleFailures<<",\n\"single_sample_color_differences\":"<<colorDifferences<<",\n\"normal_depth_differences\":"<<normalDifferences<<",\n\"AO_differences\":"<<aoDifferences<<",\n\"mirror_differences\":"<<mirrorDifferences<<",\n\"limits\":[\"Finite camera/pose scenes; equal-radius Between helper only\",\"Cap/ring oracle enumerates raylib DrawCylinderEx vertices, not bounding-box corners\",\"Shader-deformed foliage, stereo, invalid inputs and boundary cases retained\"],\n\"complete\":false\n}\n";
     return passed;
 }
+bool RunBuildingGroupCullingQA(){
+    PorscheSunShadow target;if(!target.Ensure(512))return false;
+    const float savedDoor=g.safehouse.doorAngle,savedClock=g.clock;const Matrix savedP=rlGetMatrixProjection(),savedV=rlGetMatrixModelview();
+    const std::array<Vector3,6> centres{V(-38,TerrainHeight(-38,188)+6,188),V(8,TerrainHeight(8,8)+12,8),Add(g.safehouse.p,V(0,4,0)),Add(g.gates[0],V(0,4,0)),Add(g.gates[1],V(0,4,0)),Add(g.gates[2],V(0,4,0))};
+    int compared=0,different=0,occupied=0;bool valid=true;
+    for(auto centre:centres)for(int crop=0;crop<2;++crop){
+        g.safehouse.doorAngle=crop?1.4f:0;g.clock=savedClock+crop*120;
+        centre=Add(centre,crop?V(9,0,7):V(0,0,0));const Camera3D camera{Add(centre,Mul(PorscheSunDirection(),40)),centre,V(0,1,0),16,CAMERA_ORTHOGRAPHIC};const Matrix projection=MatrixOrtho(-8,8,-8,8,.1,100);
+        std::vector<float> baseline;
+        for(int culled=0;culled<2;++culled){
+            BeginTextureMode(target.target);rlEnableDepthMask();ClearBackground(WHITE);rlDisableColorBlend();rlDisableBackfaceCulling();DrawStaticWorldSunDepth(camera,projection,culled!=0);rlEnableColorBlend();rlEnableBackfaceCulling();EndTextureMode();
+            Image image=LoadImageFromTexture(target.target.texture);valid=valid&&image.data&&image.format==PIXELFORMAT_UNCOMPRESSED_R32;
+            if(image.data&&image.format==PIXELFORMAT_UNCOMPRESSED_R32){const auto* values=static_cast<float*>(image.data);const int count=image.width*image.height;
+                if(!culled)baseline.assign(values,values+count);
+                else if(baseline.size()==static_cast<std::size_t>(count))for(int i=0;i<count;++i){if(baseline[i]!=values[i])++different;if(values[i]<.999f)++occupied;valid=valid&&std::isfinite(values[i]);++compared;}}
+            UnloadImage(image);
+        }
+    }
+    g.safehouse.doorAngle=savedDoor;g.clock=savedClock;target.Release();rlSetMatrixProjection(savedP);rlSetMatrixModelview(savedV);
+    const bool passed=valid&&compared==12*512*512&&different==0&&occupied>1000;
+    std::ofstream("docs/porsche-building-group-culling-qa.json")<<"{\"passed\":"<<(passed?"true":"false")<<",\"views\":12,\"depth_pixels_compared\":"<<compared<<",\"different_depth_pixels\":"<<different<<",\"occupied_pixels\":"<<occupied<<",\"scope\":\"R32 depth equality with group culling off/on: hangar, tower, safehouse and all three sluices, centred/cropped views with closed/open door and two clocks. Existing primitive culling remains enabled in both paths. Finite views, not exhaustive geometry containment proof.\"}\n";
+    return passed;
+}
 bool RunBuildingAppearanceQA(){
     const Vehicle savedCar=g.car;const Camera3D savedCamera=g.camera;const auto savedGraphics=g.graphics;
     g.graphics=GraphicsMode::High;g.car.p=V(-53,TerrainHeight(-53,190)+.72f,190);g.car.yaw=g.car.pitch=g.car.roll=g.car.suspension=0;g.car.steer=0;g.car.wheelTravel.fill(0);
@@ -985,6 +1008,7 @@ bool RunPorscheQA(){
     check(sunProbes.world,"world-sun-shadow-receivers-match-analytic-occlusion-and-filtering");
     check(RunMirrorProjectionReference(),"native-mirror-reflection-crop-and-oblique-clip-match-source-rig");
     StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;
+    check(RunBuildingGroupCullingQA(),"building-group-culling-preserves-centred-and-cropped-depth-buffers");
     // Drive the game's existing E-interaction path, including the parked-car
     // swap, instead of replacing the active car solely inside this fixture.
     const Vector3 pickup=g.car.p,parked=g.extraCar.p;g.player.p=Add(parked,V(0,1,0));g.qaTaskInteractPending=true;UpdateGameplay(1.0f/60);
