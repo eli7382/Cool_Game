@@ -1,5 +1,12 @@
 # Model attribution
 
+Steering adaptation: front wishbone closure and fixed-length tie rods now use
+one shared lateral rack, with geometric steering calibration, different inner
+and outer wheel angles, and travel-dependent bump steer. Rolling animation
+projects contact velocity onto the posed wheel directions. These are authored
+game mechanisms fitted to the retained source, not manufacturer CAD or an OEM
+steering-control model.
+
 Rear-detail adaptation: the centered red GT3 RS badge reuses the attributed
 Black Snow symbol-atlas contour described below. The fitted 520 x 110 mm rear
 plate, carrier, mounting feet, fasteners, stars and generic seals are authored

@@ -62,6 +62,10 @@ constexpr Color qaMirrorColors[]{{230,24,38,255},{24,230,38,255},{24,38,230,255}
 int MirrorKind(const char* name){const char* names[]{"Mirror | silvered glass L","Mirror | silvered glass R","Mirror | silvered glass Interior"};for(int i=0;i<3;++i)if(std::strcmp(name,names[i])==0)return i;return -1;}
 NativeMirror* MirrorFor(const Vehicle& vehicle,int kind){const int slot=&vehicle==&g.car?0:&vehicle==&g.extraCar?1:-1;return slot>=0&&kind>=0?&carMirrors[slot].panes[kind]:nullptr;}
 std::array<NativeLevel,3> levels;
+std::unique_ptr<PorscheRig> contactRig;
+std::array<float,6> contactInputs{};
+std::array<Vector2,4> contactDirections{};
+bool contactInputsValid{};
 Shader porscheShader{};
 Shader depthShader{};
 Material depthMaterial{};
@@ -230,7 +234,8 @@ struct SuspensionReferenceReader {
     Matrix Transform(){float m[16];for(float& v:m)v=Read<float>();return{m[0],m[4],m[8],m[12],m[1],m[5],m[9],m[13],m[2],m[6],m[10],m[14],m[3],m[7],m[11],m[15]};}
 };
 bool RunSuspensionReference(){
-    double maxPose=0,maxPoint=0,maxNormal=0,maxWeight=0,maxResidual=0,maxJoint=0,maxWheel=0,maxRigid=0,minDamper=100;
+    double maxPose=0,maxPoint=0,maxNormal=0,maxWeight=0,maxResidual=0,maxJoint=0,maxWheel=0,maxRigid=0,minDamper=100,maxRack=0,maxRackYZ=0,maxCenterRatioError=0;
+    std::vector<double> centerRatios;
     int poses=0,frames=0,vertices=0,badSolve=0,badEnvelope=0;bool passed=false;std::string error;
     try{
         SuspensionReferenceReader reader("tests/porsche_suspension_reference.bin");
@@ -246,6 +251,9 @@ bool RunSuspensionReference(){
                 for(unsigned int i=0;i<count;++i){const auto index=reader.Read<unsigned int>();if(index>=static_cast<unsigned int>(level.model.meshes[sample.mesh].vertexCount))throw std::runtime_error("Invalid spring sample vertex");sample.indices.push_back(index);}
             }
             for(unsigned int pose=0;pose<countPoses;++pose){PorscheControls c;c.steering=reader.Read<float>();c.rearSteering=reader.Read<float>();for(float& travel:c.travel)travel=reader.Read<float>();rig.Pose(c);UpdateSpringMorphs(level);++poses;
+                auto rackDelta=[&](const char* name){const Matrix rest=rig.Nodes()[rig.Find(name)].world;return Vector3Subtract(rig.Position(name),V(rest.m12,rest.m13,rest.m14));};
+                const Vector3 rackL=rackDelta("TieInner_FL"),rackR=rackDelta("TieInner_FR");maxRack=std::max(maxRack,static_cast<double>(Vector3Distance(rackL,rackR)));
+                maxRackYZ=std::max({maxRackYZ,static_cast<double>(fabsf(rackL.y)),static_cast<double>(fabsf(rackL.z)),static_cast<double>(fabsf(rackR.y)),static_cast<double>(fabsf(rackR.z))});
                 for(const auto& name:names){const Matrix expected=reader.Transform();const int node=rig.Find(name);if(node<0)throw std::runtime_error("Native suspension node absent: "+name);const Matrix actual=rig.World(node);
                     for(float value:MatrixToFloatV(actual).v)if(!std::isfinite(value))throw std::runtime_error("Nonfinite native suspension frame");
                     for(Vector3 probe:{V(0,0,0),V(.13f,.21f,.32f),V(-.11f,.35f,-.17f)})maxPose=std::max(maxPose,static_cast<double>(Vector3Distance(Vector3Transform(probe,expected),Vector3Transform(probe,actual))));++frames;
@@ -266,11 +274,15 @@ bool RunSuspensionReference(){
                     minDamper=std::min(minDamper,static_cast<double>(level.springs[corner].housingLength+level.springs[corner].rodLength-Vector3Distance(rig.Position("DamperTop_"+key),rig.Position("DamperBottom_"+key))));
                 }
             }
+            auto meanYaw=[&](float steering){PorscheControls c;c.steering=steering;rig.Pose(c);double value=0;for(const char* key:{"FL","FR"}){const Matrix wheel=rig.World(rig.Find(std::string("WheelSpin_")+key));value+=std::atan2(-wheel.m2,wheel.m0);}return value*.5;};
+            const double positive=meanYaw(.001f),negative=meanYaw(-.001f),gain=(positive-negative)/.002,ratio=14.1/gain;
+            if(!std::isfinite(ratio))throw std::runtime_error("Nonfinite native center steering ratio");centerRatios.push_back(ratio);maxCenterRatioError=std::max(maxCenterRatioError,std::abs(ratio-14.1));
             rig.Pose({});UpdateSpringMorphs(level);
         }
         if(reader.offset!=reader.bytes.size())throw std::runtime_error("Unconsumed suspension reference data");
-        passed=poses==195&&badSolve==0&&badEnvelope==0&&maxPose<2e-5&&maxPoint<5e-6&&maxNormal<3e-5&&maxWeight<5e-6&&maxResidual<1e-6&&maxJoint<3e-6&&maxWheel<3e-6&&maxRigid<3e-6&&minDamper>.01;
+        passed=poses==195&&badSolve==0&&badEnvelope==0&&maxPose<2e-5&&maxPoint<5e-6&&maxNormal<3e-5&&maxWeight<5e-6&&maxResidual<1e-6&&maxJoint<3e-6&&maxWheel<3e-6&&maxRigid<3e-6&&minDamper>.01&&maxRack<3e-6&&maxRackYZ<3e-6&&centerRatios.size()==3&&maxCenterRatioError<.05;
     }catch(const std::exception& e){error=e.what();TraceLog(LOG_ERROR,"Native suspension reference: %s",e.what());}
+    std::ofstream rackReport("docs/porsche-native-rack-qa.json");rackReport<<"{\"passed\":"<<(passed?"true":"false")<<",\"poses\":"<<poses<<",\"maximum_inner_joint_translation_mismatch_m\":"<<maxRack<<",\"maximum_inner_joint_yz_drift_m\":"<<maxRackYZ<<",\"maximum_center_ratio_error\":"<<maxCenterRatioError<<",\"center_ratios\":[";for(std::size_t i=0;i<centerRatios.size();++i){if(i)rackReport<<",";rackReport<<centerRatios[i];}rackReport<<"],\"scope\":\"Actual native inner-joint world positions across 65 poses per detail level and projected road-wheel yaw at +/-0.001 rad steering input\",\"limits\":[\"Source-fitted shared rack, not OEM hardpoints\",\"One-decimal nominal ratio check; not a full variable-ratio steering map or continuous clearance proof\"]}\n";
     std::ofstream report("docs/porsche-native-suspension-qa.json");report<<"{\n  \"passed\":"<<(passed?"true":"false")<<",\n  \"poses\":"<<poses<<",\n  \"node_frames_compared\":"<<frames<<",\n  \"spring_vertices_compared\":"<<vertices<<",\n  \"maximum_frame_probe_error_m\":"<<maxPose<<",\n  \"maximum_morphed_position_error_m\":"<<maxPoint<<",\n  \"maximum_morphed_normal_error\":"<<maxNormal<<",\n  \"maximum_spring_weight_error\":"<<maxWeight<<",\n  \"maximum_solver_residual_m\":"<<maxResidual<<",\n  \"maximum_joint_gap_m\":"<<maxJoint<<",\n  \"maximum_wheel_height_error_m\":"<<maxWheel<<",\n  \"maximum_rigid_link_error_m\":"<<maxRigid<<",\n  \"minimum_damper_overlap_m\":"<<minDamper<<",\n  \"unconverged_corners\":"<<badSolve<<",\n  \"spring_envelope_violations\":"<<badEnvelope<<",\n  \"fixture_error\":\""<<error<<"\",\n  \"limits\":[\"Source-fitted visual joints, not OEM CAD or tire-force validation\",\"Finite native pose and sampled spring comparison; full-vehicle swept clearance and frame rate are separate\"]\n}\n";
     TraceLog(passed?LOG_INFO:LOG_ERROR,"Native suspension: %d poses, frame %.9f, spring %.9f, joints %.9f, rigid %.9f",poses,maxPose,maxPoint,maxJoint,maxRigid);return passed;
 }
@@ -607,6 +619,7 @@ bool InitPorsche(){
     }catch(const std::exception& e){TraceLog(LOG_ERROR,"Porsche initialization: %s",e.what());LogEvent("porsche-initialization-failed");return false;}
 }
 void ShutdownPorsche(){
+    contactRig.reset();contactInputsValid=false;
     ambientOcclusion.Release();qaAODisabled=false;
     EndPorscheWorldSunShadows();worldShadowLocations={};qaWorldShadowsDisabled=qaShadowsDisabled=false;
     for(auto& shadow:sunShadows)shadow.Release();if(depthMaterial.maps)MemFree(depthMaterial.maps);depthMaterial={};if(IsShaderValid(depthShader))UnloadShader(depthShader);depthShader={};
@@ -656,11 +669,21 @@ void UpdatePorscheControls(Vehicle& v,float dt,bool occupied){
         constexpr std::array<int,4> contactForWheel{3,2,1,0}; // FL, FR, RL, RR
         const float lateral=Vector3DotProduct(v.velocity,Right(v.yaw));
         const auto controls=Controls(v,true);
+        const std::array<float,6> inputs{controls.steering,controls.rearSteering,controls.travel[0],controls.travel[1],controls.travel[2],controls.travel[3]};
+        if(!contactInputsValid||inputs!=contactInputs){
+            // CPU-only rig: wheel travel and rack geometry determine each
+            // rolling heading without loading a GPU model or changing a render pose.
+            if(!contactRig)contactRig=std::make_unique<PorscheRig>(porsche_data::HeroNodes,porsche_data::HeroSprings);
+            PorscheControls contact;contact.steering=controls.steering;contact.rearSteering=controls.rearSteering;contact.travel=controls.travel;contactRig->Pose(contact);
+            const char* keys[]{"FL","FR","RL","RR"};
+            for(int i=0;i<4;++i){const Matrix wheel=contactRig->World(contactRig->Find(std::string("WheelSpin_")+keys[i]));const float length=std::hypot(wheel.m0,wheel.m2);contactDirections[i]=length>1e-8f?Vector2{-wheel.m2/length,wheel.m0/length}:Vector2{0,1};}
+            contactInputs=inputs;contactInputsValid=true;
+        }
         for(int i=0;i<4;++i){
             const Vector2 contact=contacts[contactForWheel[i]];
-            const float angle=i<2?controls.steering:controls.rearSteering;
-            const float rolling=(v.speed-v.yawRate*contact.x)*cosf(angle)+
-                                (lateral+v.yawRate*contact.y)*sinf(angle);
+            const Vector2 direction=contactDirections[i];
+            const float rolling=(v.speed-v.yawRate*contact.x)*direction.y+
+                                (lateral+v.yawRate*contact.y)*direction.x;
             const float delta=rolling*std::max(0.0f,dt)/(i<2?.35025f:.3672f);
             if(std::isfinite(delta))v.porscheWheelAngles[i]=std::remainder(v.porscheWheelAngles[i]+delta,2*PI);
         }
@@ -935,7 +958,7 @@ bool RunPorscheQA(){
     Vehicle parkedTest=initial;parkedTest.speed=2;const auto parkedAngles=parkedTest.porscheWheelAngles;UpdatePorscheControls(parkedTest,.5f,false);check(parkedTest.porscheWheelAngles==parkedAngles,"parked-wheel-angles-remain-still");
     // Exercise the production animation update, with distances small enough
     // that angle wrapping cannot hide a wheel-order or direction error.
-    Vehicle rollingTest=initial;rollingTest.porscheWheelAngles.fill(0);rollingTest.steer=0;rollingTest.yaw=0;rollingTest.yawRate=0;rollingTest.speed=10;rollingTest.velocity=V(0,0,10);
+    Vehicle rollingTest=initial;rollingTest.porscheWheelAngles.fill(0);rollingTest.wheelTravel.fill(0);rollingTest.steer=0;rollingTest.yaw=0;rollingTest.yawRate=0;rollingTest.speed=10;rollingTest.velocity=V(0,0,10);
     UpdatePorscheControls(rollingTest,.01f,true);
     check(fabsf(rollingTest.porscheWheelAngles[0]*.35025f-.1f)<1e-6f&&fabsf(rollingTest.porscheWheelAngles[2]*.3672f-.1f)<1e-6f,"wheel-spin-matches-straight-contact-distance");
     rollingTest.porscheWheelAngles.fill(0);rollingTest.yawRate=1;
@@ -946,7 +969,12 @@ bool RunPorscheQA(){
     check(fabsf(rollingTest.porscheWheelAngles[0]*.35025f+.1f)<1e-6f&&fabsf(rollingTest.porscheWheelAngles[2]*.3672f+.1f)<1e-6f,"reverse-contact-distance-reverses-wheel-spin");
     rollingTest.porscheWheelAngles.fill(0);rollingTest.speed=10;rollingTest.velocity=V(4,0,10);rollingTest.steer=1;rollingTest.steeringHealth=1;
     UpdatePorscheControls(rollingTest,.01f,true);
-    check(fabsf(rollingTest.porscheWheelAngles[0]*.35025f-.01f*(10*cosf(.55f)+4*sinf(.55f)))<1e-6f,"steered-wheel-spin-projects-lateral-contact-velocity");
+    bool posedRolling=true;for(int i=0;i<2;++i){const auto direction=porsche_reference::RollingSteeredDirections[i];posedRolling=posedRolling&&fabsf(rollingTest.porscheWheelAngles[i]*.35025f-.01f*(10*direction.y+4*direction.x))<1e-6f;}
+    check(posedRolling,"steered-wheel-spin-projects-actual-posed-directions");
+    // Vehicle contact order is RR, RL, FR, FL; the independent reference uses FL, FR, RL, RR.
+    rollingTest.porscheWheelAngles.fill(0);rollingTest.wheelTravel={-.04f,.02f,-.03f,.04f};UpdatePorscheControls(rollingTest,.01f,true);
+    bool asymmetricRolling=true;for(int i=0;i<2;++i){const auto direction=porsche_reference::RollingAsymmetricDirections[i];asymmetricRolling=asymmetricRolling&&fabsf(rollingTest.porscheWheelAngles[i]*.35025f-.01f*(10*direction.y+4*direction.x))<1e-6f;}
+    check(asymmetricRolling,"wheel-spin-follows-asymmetric-suspension-heading");
     g.car=initial;g.car.speed=25;g.car.velocity=Mul(Forward(g.car.yaw),25);g.qaPorscheThrottle=1;g.qaPorscheBrake=g.qaPorscheSteering=0;
     UpdateGameplay(1.0f/120);check(g.car.porschePowertrain.gear==2&&g.car.porschePowertrain.shiftRemaining>0,"game-powertrain-upshifts-before-overrev");
     g.car.porschePowertrain.shiftCooldown=0;RequestPorscheShift(g.car.porschePowertrain,1);UpdateGameplay(1.0f/120);check(g.car.porschePowertrain.gear==3&&g.car.porschePowertrain.manualSeconds>7,"paddle-request-changes-the-driving-gear");

@@ -53,13 +53,28 @@ struct Pose {
     std::array<double,5> residual{};
 };
 double Error(const Pose& p,int n){double result=0;for(int i=0;i<n;++i){if(!std::isfinite(p.residual[i]))return std::numeric_limits<double>::infinity();result=std::max(result,std::abs(p.residual[i]));}return result;}
-Pose Evaluate(const Corner& e,const std::array<double,5>& x,double travel,double steering){
-    Pose p;p.steer=Q::Axis(e.upright.Unit(),steering);
+double RackForSteering(const std::array<Corner,4>& corners,double steering){
+    double result=0;int count=0;
+    for(const auto& e:corners)if(e.front){
+        const V3 axis=e.upright.Unit();
+        auto error=[&](double angle){const V3 n=Q::Axis(axis,angle).Rotate(e.restWheelNormal);return std::remainder(std::atan2(-n.z,n.x)-e.restToe-steering,2*3.14159265358979323846);};
+        double angle=steering;
+        for(int i=0;i<12&&std::abs(error(angle))>1e-11;++i){const double value=error(angle),derivative=(error(angle+1e-5)-value)/1e-5;if(std::abs(derivative)<1e-9)throw std::runtime_error("Singular rack steering calibration");angle-=std::clamp(value/derivative,-.2,.2);}
+        if(std::abs(angle)>.7||std::abs(error(angle))>1e-8)throw std::runtime_error("Requested wheel yaw exceeds rack calibration");
+        const V3 outer=Q::Axis(axis,angle).Rotate(e.tieB-e.C)+e.C;const double dy=outer.y-e.tieA.y,dz=outer.z-e.tieA.z,square=e.tieLength*e.tieLength-dy*dy-dz*dz;
+        if(square<0)throw std::runtime_error("Requested steering exceeds rack closure");
+        result+=outer.x-e.tieA.x-(e.tieB.x>e.tieA.x?1:-1)*std::sqrt(square);++count;
+    }
+    return result/count;
+}
+Pose Evaluate(const Corner& e,const std::array<double,5>& x,double travel,double steering,double rack){
+    Pose p;p.steer=Q::Axis(e.upright.Unit(),e.front?x[2]:steering);
     if(e.front){
         p.lower=Q::Axis(e.lowerAxis,x[0]);p.upper=Q::Axis(e.upperAxis,x[1]);
         p.C=p.lower.Rotate(e.C-e.A)+e.A;p.D=p.upper.Rotate(e.D-e.B)+e.B;
         p.camber=Q::FromTo(e.upright.Unit(),(p.D-p.C).Unit());p.hub=(p.camber*p.steer).Rotate(e.offset)+p.C;
         p.residual[0]=(p.D-p.C).Length()-e.uprightLength;p.residual[1]=p.hub.y-e.K.y-travel;
+        const V3 outer=(p.camber*p.steer).Rotate(e.tieB-e.C)+p.C,inner=e.tieA+V3{rack,0,0};p.residual[2]=(outer-inner).Length()-e.tieLength;
     }else{
         p.hub=e.K+V3{x[0],travel,x[1]};const Q total=Q::YXZ(x[2],x[3],x[4]);
         auto attach=[&](V3 rest){return total.Rotate(rest-e.K)+p.hub;};
@@ -72,11 +87,11 @@ Pose Evaluate(const Corner& e,const std::array<double,5>& x,double travel,double
     return p;
 }
 struct Solution {std::array<double,5> x;Pose pose;double error;};
-Solution Solve(const Corner& e,std::array<double,5> x,double travel,double steering){
-    const int n=e.front?2:5;Pose p=Evaluate(e,x,travel,steering);
+Solution Solve(const Corner& e,std::array<double,5> x,double travel,double steering,double rack){
+    const int n=e.front?3:5;Pose p=Evaluate(e,x,travel,steering,rack);
     for(int iteration=0;iteration<20&&Error(p,n)>1e-8;++iteration){
         double matrix[5][6]{};
-        for(int j=0;j<n;++j){auto probe=x;probe[j]+=1e-5;const Pose next=Evaluate(e,probe,travel,steering);for(int i=0;i<n;++i)matrix[i][j]=(next.residual[i]-p.residual[i])/1e-5;}
+        for(int j=0;j<n;++j){auto probe=x;probe[j]+=1e-5;const Pose next=Evaluate(e,probe,travel,steering,rack);for(int i=0;i<n;++i)matrix[i][j]=(next.residual[i]-p.residual[i])/1e-5;}
         for(int i=0;i<n;++i)matrix[i][n]=-p.residual[i];
         bool singular=false;
         for(int j=0;j<n;++j){int pivot=j;for(int i=j+1;i<n;++i)if(std::abs(matrix[i][j])>std::abs(matrix[pivot][j]))pivot=i;
@@ -85,7 +100,7 @@ Solution Solve(const Corner& e,std::array<double,5> x,double travel,double steer
             for(int i=0;i<n;++i)if(i!=j){const double multiple=matrix[i][j];for(int k=j;k<=n;++k)matrix[i][k]-=multiple*matrix[j][k];}
         }
         if(singular)break;bool improved=false;
-        for(double scale=1;scale>=1.0/128;scale*=.5){auto trial=x;for(int i=0;i<n;++i)trial[i]=std::clamp(x[i]+std::clamp(matrix[i][n],-.18,.18)*scale,-.7,.7);const Pose next=Evaluate(e,trial,travel,steering);
+        for(double scale=1;scale>=1.0/128;scale*=.5){auto trial=x;for(int i=0;i<n;++i)trial[i]=std::clamp(x[i]+std::clamp(matrix[i][n],-.18,.18)*scale,-.7,.7);const Pose next=Evaluate(e,trial,travel,steering,rack);
             if(Error(next,n)<Error(p,n)){x=trial;p=next;improved=true;break;}}
         if(!improved)break;
     }
@@ -119,11 +134,12 @@ PorscheSuspension::PorscheSuspension(PorscheRig& rig,std::span<const porsche_dat
 PorscheSuspension::~PorscheSuspension()=default;
 void PorscheSuspension::Update(const PorscheControls& controls){
     auto& r=state->rig;
+    const double rack=RackForSteering(state->corners,controls.steering);
     auto setPosition=[&](const std::string& name,V3 p){const int n=r.Find(name);r.local[n].m12=static_cast<float>(p.x);r.local[n].m13=static_cast<float>(p.y);r.local[n].m14=static_cast<float>(p.z);};
     auto setRotation=[&](const std::string& name,Q rotation){const int n=r.Find(name);const Matrix old=r.local[n];r.local[n]=MatrixMultiply(r.source[n].local,QuaternionToMatrix(rotation.Float()));r.local[n].m12=old.m12;r.local[n].m13=old.m13;r.local[n].m14=old.m14;};
     for(int i=0;i<4;++i){auto& e=state->corners[i];const double travel=std::clamp(static_cast<double>(controls.travel[i]),-.05,.05),steering=e.front?controls.steering:controls.rearSteering;
-        auto solution=Solve(e,e.angles,travel,steering);
-        if(solution.error>1e-6){std::array<double,5> initial{};if(!e.front)initial[3]=steering;const auto retry=Solve(e,initial,travel,steering);if(retry.error<solution.error)solution=retry;}
+        auto solution=Solve(e,e.angles,travel,steering,rack);
+        if(solution.error>1e-6){std::array<double,5> initial{};initial[e.front?2:3]=steering;const auto retry=Solve(e,initial,travel,steering,rack);if(retry.error<solution.error)solution=retry;}
         e.angles=solution.x;const auto& p=solution.pose;const auto& k=e.key;
         setRotation("LowerArm_"+k,p.lower);setRotation("UpperArm_"+k,p.upper);if(!e.front){setRotation("TrailingArm_"+k,p.trailing);setRotation("UpperTrailingArm_"+k,p.fourth);}
         setPosition("Suspension_"+k,p.camber.Rotate(e.offset)+p.C);setRotation("Suspension_"+k,p.camber);
@@ -137,7 +153,7 @@ void PorscheSuspension::Update(const PorscheControls& controls){
     auto point=[&](const std::string& name){return D(Vector3Transform(r.Position(name),inverse));};
     auto align=[&](const std::string& name,V3 start,V3 end,V3 direction){setPosition(name,start);setRotation(name,Q::FromTo(direction,(end-start).Unit()));};
     for(int i=0;i<4;++i){auto& e=state->corners[i];const auto& k=e.key;auto& d=r.diagnostics[i];
-        const V3 B=point("TieOuter_"+k);V3 A=e.tieA;const double dy=B.y-A.y,dz=B.z-A.z;A.x=B.x-(k[1]=='L'?1:-1)*std::sqrt(std::max(1e-8,e.tieLength*e.tieLength-dy*dy-dz*dz));
+        const V3 B=point("TieOuter_"+k);V3 A=e.tieA;const double dy=B.y-A.y,dz=B.z-A.z;A.x=e.front?e.tieA.x+rack:B.x-(k[1]=='L'?1:-1)*std::sqrt(std::max(1e-8,e.tieLength*e.tieLength-dy*dy-dz*dz));
         align("TieRod_"+k,A,B,e.tieDirection);setPosition("TieInner_"+k,A);d.tieLengthError=std::abs((B-A).Length()-e.tieLength);
         if(e.drive){const V3 end=point("DriveOuter_"+k);align("DriveShaft_"+k,e.driveA,end,e.driveDirection);const double scale=(end-e.driveA).Length()/e.driveLength;auto& matrix=r.local[r.Find("DriveShaft_"+k)];matrix.m4*=static_cast<float>(scale);matrix.m5*=static_cast<float>(scale);matrix.m6*=static_cast<float>(scale);}
         const V3 top=point("DamperTop_"+k),bottom=point("DamperBottom_"+k),direction=(top-bottom).Unit();align("DamperBody_"+k,bottom,top,e.damperDirection);align("DamperRod_"+k,top,bottom,e.damperDirection*-1);

@@ -1,0 +1,200 @@
+{
+  "production_changed": true,
+  "native_checks": 143,
+  "native_rack": {
+    "passed": true,
+    "poses": 195,
+    "maximum_inner_joint_translation_mismatch_m": 3.72529e-09,
+    "maximum_inner_joint_yz_drift_m": 0,
+    "maximum_center_ratio_error": 0.00511596,
+    "center_ratios": [
+      14.1051,
+      14.1051,
+      14.1051
+    ],
+    "scope": "Actual native inner-joint world positions across 65 poses per detail level and projected road-wheel yaw at +/-0.001 rad steering input",
+    "limits": [
+      "Source-fitted shared rack, not OEM hardpoints",
+      "One-decimal nominal ratio check; not a full variable-ratio steering map or continuous clearance proof"
+    ]
+  },
+  "native_suspension": {
+    "passed": true,
+    "poses": 195,
+    "node_frames_compared": 19110,
+    "spring_vertices_compared": 24960,
+    "maximum_frame_probe_error_m": 2.73143e-07,
+    "maximum_morphed_position_error_m": 5.17051e-07,
+    "maximum_morphed_normal_error": 4.00464e-07,
+    "maximum_spring_weight_error": 7.7486e-07,
+    "maximum_solver_residual_m": 9.53652e-09,
+    "maximum_joint_gap_m": 1.79434e-07,
+    "maximum_wheel_height_error_m": 2.79397e-08,
+    "maximum_rigid_link_error_m": 1.78814e-07,
+    "minimum_damper_overlap_m": 0.056305,
+    "unconverged_corners": 0,
+    "spring_envelope_violations": 0,
+    "fixture_error": "",
+    "limits": [
+      "Source-fitted visual joints, not OEM CAD or tire-force validation",
+      "Finite native pose and sampled spring comparison; full-vehicle swept clearance and frame rate are separate"
+    ]
+  },
+  "source_node_checks": {
+    "passed": true,
+    "source_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
+    "module_sha256": "fce60adc42b79b5d3b646b1851abb2964525f0eb0fe2283d250ba32d94b2af5b",
+    "checker_sha256": "e3d0762b455ffd07b7165c071e55d80be710eb01a36f5a390f8f485141c2a15a",
+    "poses": 729,
+    "maximum_errors_m_or_matrix_units": {
+      "armLength": 2.220446049250313e-16,
+      "uprightLength": 2.03349725946822e-10,
+      "tieLength": 7.69399188804698e-09,
+      "hubTravel": 8.043951199576682e-10,
+      "rackCoherence": 0,
+      "rackYZDrift": 0,
+      "tieScale": 0,
+      "restFrame": 5.96089671260181e-13
+    },
+    "center_yaw_gain": 0.9996368264153336,
+    "effective_center_steering_ratio": 14.105122607939684,
+    "production_changed": false,
+    "limits": [
+      "Finite 9x9x9 steering/asymmetric-travel node checks, not continuous whole-car clearance",
+      "Calibration and datums are source-fitted game geometry; not OEM rack reconstruction",
+      "Native runtime, neighboring hardware and tire/body intersections require separate checks"
+    ],
+    "complete": false,
+    "scope": "Experimental shared-rack solver; no production changes",
+    "rack_housing_axial_check": {
+      "minimum_joint_center_margin_m": 0.15033344392465214,
+      "box_min": [
+        -0.2541947921981773,
+        0.14887765784929163,
+        1.0004781409087091
+      ],
+      "box_max": [
+        0.2542484143505135,
+        0.20508257309804218,
+        1.0566829518493663
+      ],
+      "limit": "Joint centers against retained housing axial bounds; not a bore fit or whole-part collision proof"
+    },
+    "ratio_reference": {
+      "value": 14.1,
+      "decimal_places": 1,
+      "source": "https://download.newsroom.porsche.com/dam/jcr%3A1d390f77-93c3-49c0-89c7-634f5f02b26a/S22_3515_en.pdf"
+    }
+  },
+  "rear_scope": {
+    "passed": true,
+    "baseline_commit": "d251005ab7c81433b1fd9bcaf0c0bcf861459603",
+    "baseline_fixture_sha256": "bf76d4f8899949151eaaa44da69fcc9340201202920510040a42b339bb79a4ff",
+    "current_fixture_sha256": "4068166b7ab42ef8e8d212e05a2f982f2694f6d698f5d4b825defcb0c65cfaff",
+    "poses": 195,
+    "rear_node_frames_compared": 10920,
+    "rear_spring_vertices_and_normals_compared": 12480,
+    "poses_with_front_frame_changes": 195,
+    "rear_frames_spring_weights_positions_and_normals_numerically_exact": true,
+    "limits": [
+      "Reference fixture scope: 65 steering/travel/rear-steer poses per detail level",
+      "Native equivalence is checked separately by the game; this compares actual Three-generated reference data",
+      "Does not establish rear body clearance or OEM suspension behavior"
+    ]
+  },
+  "production_js_sha256": "db379f9dd97c03a6d753823fa8f8676b358936404d9ede3387eed40b9632c5bc",
+  "native_cpp_sha256": "a2a6fa4a696f66c379a21cb4c9ff45d23fc5743bab65e10cd196e1e8269889db",
+  "native_controller_sha256": "3d7b0ac2e5485bfb1e4df40173f22695162ee20a38ef76533af8b23508e96382",
+  "validation_executable_sha256": "5c84ef4d88d4d423631babca448db581b91ac0392bd2223ad968378aaff5f033",
+  "geometry_assets_unchanged_from_commit": "d251005",
+  "rolling_projection": "CPU-only posed rig, cached by front/rear steering and four travel values; actual wheel directions are checked against Three-generated neutral/steered/asymmetric reference directions",
+  "rolling_checks": [
+    "wheel-spin-matches-straight-contact-distance",
+    "outside-wheels-roll-the-extra-track-distance",
+    "reverse-contact-distance-reverses-wheel-spin",
+    "steered-wheel-spin-projects-actual-posed-directions",
+    "wheel-spin-follows-asymmetric-suspension-heading"
+  ],
+  "clearance": {
+    "intersection_poses": 87,
+    "poses": 165,
+    "report_sha256": "104b988d4e06eee8adbe922e67a626ea442eb6e4126dde27d52bcada2c580fa1",
+    "production_fixture_sha256": "9a23ac63de21a39417d5b5b24dbb7ab9703af42c0d9135fe825b2ee64f9c6215",
+    "tested_fixture_sha256": "47d6b0be688960dcccd843d29d4894f4c00c2c3e839703d6464b5782be6f84ba",
+    "body_tires_and_all_pose_matrices_exactly_equal": true
+  },
+  "performance": [
+    {
+      "case": "low-chase-ao-off",
+      "before_frame_median_ms": 56.4926,
+      "after_frame_median_ms": 45.63315,
+      "before_simulation_cpu_mean_ms": 0.865322917,
+      "after_simulation_cpu_mean_ms": 1.032225
+    },
+    {
+      "case": "low-chase-ao-on",
+      "before_frame_median_ms": 70.0036,
+      "after_frame_median_ms": 70.3297,
+      "before_simulation_cpu_mean_ms": 0.0772447917,
+      "after_simulation_cpu_mean_ms": 0.203442708
+    },
+    {
+      "case": "low-cockpit-ao-on",
+      "before_frame_median_ms": 38.7545,
+      "after_frame_median_ms": 41.94225,
+      "before_simulation_cpu_mean_ms": 0.0680604167,
+      "after_simulation_cpu_mean_ms": 0.182839583
+    },
+    {
+      "case": "low-cockpit-ao-off",
+      "before_frame_median_ms": 25.09585,
+      "after_frame_median_ms": 30.6562,
+      "before_simulation_cpu_mean_ms": 0.0671239583,
+      "after_simulation_cpu_mean_ms": 0.202704167
+    },
+    {
+      "case": "high-chase-ao-on",
+      "before_frame_median_ms": 59.3206,
+      "after_frame_median_ms": 74.82765,
+      "before_simulation_cpu_mean_ms": 0.0749479167,
+      "after_simulation_cpu_mean_ms": 0.329290625
+    },
+    {
+      "case": "high-chase-ao-off",
+      "before_frame_median_ms": 41.432,
+      "after_frame_median_ms": 42.90915,
+      "before_simulation_cpu_mean_ms": 0.0701875,
+      "after_simulation_cpu_mean_ms": 0.173767708
+    },
+    {
+      "case": "high-cockpit-ao-off",
+      "before_frame_median_ms": 35.47715,
+      "after_frame_median_ms": 32.92095,
+      "before_simulation_cpu_mean_ms": 0.0729729167,
+      "after_simulation_cpu_mean_ms": 0.175458333
+    },
+    {
+      "case": "high-cockpit-ao-on",
+      "before_frame_median_ms": 46.4737,
+      "after_frame_median_ms": 47.48565,
+      "before_simulation_cpu_mean_ms": 0.0773822917,
+      "after_simulation_cpu_mean_ms": 0.190985417
+    }
+  ],
+  "driving_motion_traces_exactly_equal_to_previous_run": true,
+  "captures": {
+    "porsche-shared-rack-rest.png": "6bfe328eae2bf6fc44edc281c1d3d638d908e5809a7e54126055b47aaa22d7eb",
+    "porsche-shared-rack-cross.png": "03854780bb7d082c1819b2c99f38051aacd17eba5b46bdc9ffa4e9f1758e60ab",
+    "porsche-shared-rack-front.png": "5447b6de55d81d40eb046d90c015309f942fd932cf04366e69800078b5c713f9"
+  },
+  "visual_review": "Inspected native cross-travel mechanism view: front arms, tie rods, spring/damper assemblies remain connected; fixed-length and shared-rack invariants have independent node checks.",
+  "limits": [
+    "Source-fitted game rack and link geometry; no OEM hardpoint or full variable-ratio calibration claim",
+    "Joint centers stay within the retained rack housing axial bounds; bore fit and all neighboring part collisions are not established",
+    "Front tire/painted-body contact remains in 87 of 165 source stress poses; this change is not a clearance fix",
+    "Additional CPU pose evaluation costs roughly 0.1 to 0.25 ms in the warm measured cases; frame timings vary and this is not a performance improvement claim",
+    "Native fixtures cover finite poses, not all continuous motions or all terrain states",
+    "Forza-level final fidelity, final clearance review and GitHub delivery remain incomplete"
+  ],
+  "complete": false
+}

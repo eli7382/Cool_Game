@@ -1,6 +1,7 @@
 {
   "adapter_sha256": "76f5529578b241437dd8caae428a8e8cbf80183f4bf3c9acd3ce2c9a501eba3f",
-  "generator_sha256": "8c232e73c951f17af74a2a8b9a100a6eefa1a4f079c086bf298bb8f869c85489",
+  "solver_sha256": "db379f9dd97c03a6d753823fa8f8676b358936404d9ede3387eed40b9632c5bc",
+  "generator_sha256": "8092fe9c5e7938c907ff3c2bce284574e47e8d3c16244971e11851816195d07b",
   "levels": [
     {
       "level": "Hero",
@@ -18,5 +19,5 @@
       "nodes": 500
     }
   ],
-  "scope": "Actual exported nodes under production Three adapter: zero, DRS, airbrake, independent doors/windows/pedals/paddles/needle/wheel-spin, three stopwatch hand and two interior-mirror joint fixtures"
+  "scope": "Actual exported nodes under production Three adapter: zero, DRS, airbrake, independent doors/windows/pedals/paddles/needle/wheel-spin, three stopwatch hand and two interior-mirror joint fixtures; neutral/steered/asymmetric rolling directions"
 }

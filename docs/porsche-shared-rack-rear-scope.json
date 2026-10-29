@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "baseline_commit": "d251005ab7c81433b1fd9bcaf0c0bcf861459603",
+  "baseline_fixture_sha256": "bf76d4f8899949151eaaa44da69fcc9340201202920510040a42b339bb79a4ff",
+  "current_fixture_sha256": "4068166b7ab42ef8e8d212e05a2f982f2694f6d698f5d4b825defcb0c65cfaff",
+  "poses": 195,
+  "rear_node_frames_compared": 10920,
+  "rear_spring_vertices_and_normals_compared": 12480,
+  "poses_with_front_frame_changes": 195,
+  "rear_frames_spring_weights_positions_and_normals_numerically_exact": true,
+  "limits": [
+    "Reference fixture scope: 65 steering/travel/rear-steer poses per detail level",
+    "Native equivalence is checked separately by the game; this compares actual Three-generated reference data",
+    "Does not establish rear body clearance or OEM suspension behavior"
+  ]
+}

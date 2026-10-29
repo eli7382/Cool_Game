@@ -60,14 +60,26 @@ rear shafts use the source's small plunge approximation, and four springs
 compress/extend through their exported morph targets. The physics contact
 positions now match the stock wheel centres, and each corner drives its own
 named wheel. The visual travel envelope is +/- 50 mm.
+The front solver now closes a single shared lateral rack, the two wishbones,
+upright and fixed-length tie rod at each corner. It produces different inner
+and outer steering angles and travel-dependent bump steer. Previously each
+inner tie-rod joint slid independently. A CPU-only rig supplies the actual
+posed wheel directions for rolling-distance projection, including asymmetric
+travel; GPU model loading is not required by this calculation.
 The rig supports authored carrier tilt and independently rebased steering-group
 origins. Rear steering preserves the authored toe and adds the requested steering
 change. Tilted candidate rigs have separate frame/joint tests; their geometry
 has not replaced the current production alignment.
 
 The steering wheel rotates about its fitted horn-hub axis at 14.1 times the
-front steering angle. This holds the published centre ratio constant; the OEM
-variable-ratio rack curve is not available and is not reproduced.
+virtual center steering request. Rack calibration gives a measured center
+ratio of about 14.105 in this fitted model, matching the one-decimal 14.1
+reference. The OEM variable-ratio rack curve is not reproduced. This remains
+source-fitted game geometry, not an OEM suspension reconstruction.
+The current native suite passes 143 checks. Shared-rack evidence is in
+`porsche-native-rack-qa.json` and `porsche-shared-rack-review.json`; the rear
+reference frames and spring data match the pre-change fixture exactly across
+195 sampled poses. Front tire/body intersections remain in the stress sweep.
 
 Doors, windows, pedals, paddles, tachometer needle and wing surfaces follow the
 articulated rig. The paddles also request a gear change in the driving model.

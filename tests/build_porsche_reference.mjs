@@ -8,6 +8,7 @@ const source=path.resolve(process.argv[2]),root=path.resolve(path.dirname(fileUR
 const url=p=>pathToFileURL(path.join(source,p)).href,sha=b=>createHash('sha256').update(b).digest('hex');
 const {loadRuntimeFixture}=await import(url('scripts/load_runtime_fixture.mjs'));
 const adapter=await fs.readFile(path.join(source,'viewer/GT3RSCar.js'),'utf8');
+const solver=await fs.readFile(path.join(source,'viewer/SuspensionKinematics.js'));
 const adapted=adapter.replace("import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';",'').replace("from 'three'",`from '${url('viewer/vendor/three.module.js')}'`).replace("from './SuspensionKinematics.js'",`from '${url('viewer/SuspensionKinematics.js')}'`);
 const {GT3RSCar}=await import('data:text/javascript;base64,'+Buffer.from(adapted).toString('base64'));
 const lines=['#pragma once','#include "raylib.h"','namespace bw::porsche_reference {','struct Node {const char* name;Matrix world;};'];
@@ -20,6 +21,15 @@ for(const [label,suffix] of [['Hero','Development'],['Near','LOD1'],['Far','LOD2
  lines.push(`inline constexpr Node ${label}Rest[]={`);
  for(const node of fixture.nodes)lines.push('{'+JSON.stringify(node.name)+','+matrix(node.matrixWorld)+'},');
  lines.push('};');outputs.push({level:label,export_sha256:sha(fixture.buffer),nodes:fixture.nodes.length});
+ if(label==='Hero'){
+  for(const [name,steering,travel] of [['RollingNeutral',0,[0,0,0,0]],['RollingSteered',.55,[0,0,0,0]],['RollingAsymmetric',.55,[.04,-.03,.02,-.04]]]){
+   car.setSuspension(Object.fromEntries(['FL','FR','RL','RR'].map((k,i)=>[k,travel[i]])));car.setSteering(steering,0);car.setWheelAngles({FL:0,FR:0,RL:0,RR:0});Object.assign(car.state,car.target);car.update(0,true);fixture.scene.updateMatrixWorld(true);
+   lines.push(`inline constexpr Vector2 ${name}Directions[]={`);
+   for(const key of ['FL','FR','RL','RR']){const m=car.nodes.get('WheelSpin_'+key).matrixWorld.elements,length=Math.hypot(m[0],m[2]);lines.push('{'+n(-m[2]/length)+','+n(m[0]/length)+'},');}
+   lines.push('};');
+  }
+  car.setSuspension({FL:0,FR:0,RL:0,RR:0});car.setSteering(0,0);Object.assign(car.state,car.target);car.update(0,true);fixture.scene.updateMatrixWorld(true);
+ }
  if(label==='Hero')for(const [name,state] of [['DRS',{drs:1}],['Airbrake',{drs:1,airbrake:1}],['Open',{doorL:1,doorR:.6,windowL:.8,windowR:.2,brake:.7,throttle:.5,paddleL:.4,paddleR:.2}]]){
   Object.assign(car.state,car.target,state);car.setInstruments({rpm:name==='Open'?5000:0});car.setWheelAngles({FL:name==='Open'?.3:0,FR:name==='Open'?1:0,RL:name==='Open'?-.5:0,RR:name==='Open'?1.3:0});car.update(0);fixture.scene.updateMatrixWorld(true);lines.push(`inline constexpr Node ${name}[]={`);
   for(const node of fixture.nodes)if(name==='Open'||node.name.startsWith('WingActuator_')||node.name==='WingUpper_Hinge'||node.name.startsWith('FrontAero_'))lines.push('{'+JSON.stringify(node.name)+','+matrix(node.matrixWorld)+'},');
@@ -38,5 +48,5 @@ for(const [label,suffix] of [['Hero','Development'],['Near','LOD1'],['Far','LOD2
  car.dispose();
 }
 lines.push('}');await fs.writeFile(path.join(root,'tests/porsche_reference.hpp'),lines.join('\n')+'\n');
-await fs.writeFile(path.join(root,'docs/porsche-pose-reference.json'),JSON.stringify({adapter_sha256:sha(adapter),generator_sha256:sha(await fs.readFile(fileURLToPath(import.meta.url))),levels:outputs,scope:'Actual exported nodes under production Three adapter: zero, DRS, airbrake, independent doors/windows/pedals/paddles/needle/wheel-spin, three stopwatch hand and two interior-mirror joint fixtures'},null,2));
+await fs.writeFile(path.join(root,'docs/porsche-pose-reference.json'),JSON.stringify({adapter_sha256:sha(adapter),solver_sha256:sha(solver),generator_sha256:sha(await fs.readFile(fileURLToPath(import.meta.url))),levels:outputs,scope:'Actual exported nodes under production Three adapter: zero, DRS, airbrake, independent doors/windows/pedals/paddles/needle/wheel-spin, three stopwatch hand and two interior-mirror joint fixtures; neutral/steered/asymmetric rolling directions'},null,2));
 console.log(JSON.stringify({levels:outputs,adapter_sha256:sha(adapter)}));
