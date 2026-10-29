@@ -166,7 +166,7 @@ void Surface(const porsche_data::Surface& s,const Vehicle& v,Vector2 detailRepea
     Vector3 emission=Mul(s.emission,s.emissiveStrength);
     const std::string name=s.name;
     if(name.find("Headlight")!=std::string::npos||name.find("Headlamp")!=std::string::npos)emission=Mul(emission,v.porscheLights?1.0f:0.0f);
-    if(name=="Rear LED light bar")emission=Mul(emission,v.porscheBrake>.03f?5.0f:1.0f);
+    if(name=="Rear LED light bar")emission=Mul(s.emission,v.porscheBrake>.03f?5.0f:1.0f); // Absolute preview intensity; do not multiply the authored 1.4 again.
     SetShaderValue(porscheShader,locations.emission,&emission,SHADER_UNIFORM_VEC3);
     const float pbr[]{s.metallic,s.roughness,s.coat,s.coatRoughness},optics[]{s.transmission,s.ior,s.alphaCutoff,static_cast<float>(s.alphaMode)},maps[]{s.albedo.path?1.0f:0.0f,s.orm.path?1.0f:0.0f,s.normal.path?1.0f:0.0f,s.coatNormal.path?1.0f:0.0f},channels[]{static_cast<float>(s.albedo.uv),static_cast<float>(s.orm.uv),static_cast<float>(s.normal.uv),static_cast<float>(s.coatNormal.uv)},strength[]{s.normal.strength,s.coatNormal.strength},emissiveMap[]{s.emissive.path?1.0f:0.0f,static_cast<float>(s.emissive.uv)};
     SetShaderValue(porscheShader,locations.pbr,pbr,SHADER_UNIFORM_VEC4);SetShaderValue(porscheShader,locations.optics,optics,SHADER_UNIFORM_VEC4);SetShaderValue(porscheShader,locations.maps,maps,SHADER_UNIFORM_VEC4);SetShaderValue(porscheShader,locations.channels,channels,SHADER_UNIFORM_VEC4);SetShaderValue(porscheShader,locations.normalStrength,strength,SHADER_UNIFORM_VEC2);SetShaderValue(porscheShader,locations.emissiveMap,emissiveMap,SHADER_UNIFORM_VEC2);
@@ -890,6 +890,10 @@ bool RunPorscheQA(){
         for(int frame=0;frame<2;++frame){BeginDrawing();ClearBackground({94,123,132,255});DrawWorld();rlDrawRenderBatchActive();if(frame==1){Image image=LoadImageFromScreen();check(image.data&&ExportImage(image,path),path);UnloadImage(image);}EndDrawing();}
     };
     capture("screenshots/porsche-native-front.png");
+    g.qaCaptureFront=false;g.cameraInitialized=false;g.car.porscheBrake=0;
+    capture("screenshots/porsche-tail-running.png");
+    g.car.porscheBrake=1;capture("screenshots/porsche-tail-braking.png");
+    g.car.porscheBrake=0;g.qaCaptureFront=true;g.cameraInitialized=false;
     check(!levels[0].detailedGrille&&levels[0].lastWireMeshes==0&&levels[0].lastFilteredMeshes>0,"unresolved-front-wire-renders-filtered-backing");
     g.car.porscheDoor={1,1};g.car.porscheWindow=1;g.car.porscheAero=1;capture("screenshots/porsche-native-open.png");g.car=initial;
     auto mechanism=[&](const char* path){const Matrix body=PorscheVehicleMatrix(g.car);g.camera.position=Vector3Transform(V(2.6f,1.65f,2.8f),body);g.camera.target=Vector3Transform(V(0,.36f,.10f),body);g.camera.up=V(0,1,0);g.camera.fovy=38;g.camera.projection=CAMERA_PERSPECTIVE;

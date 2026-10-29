@@ -1,0 +1,55 @@
+{
+  "reviewed_at": "2026-10-29T07:46:05.731727+00:00",
+  "change": "Rear LED emission now uses absolute preview strengths 1 running / 5 braking instead of multiplying the authored 1.4 strength again.",
+  "source_sha256": "5294ee71e2cebf43de98d102f0d654165a6359ff3ebd3f1a47f338f9a2bb5f75",
+  "executable_sha256": "6fa861dd64cca5668f033c399fb1bc9fd22b2eec84ffed215e254a460408b381",
+  "native_qa": {
+    "passed": true,
+    "checks": 131,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "rendered_comparison": {
+    "running_image": "screenshots/porsche-tail-running.png",
+    "running_sha256": "fbdd235a5a3aaed5b6e766f7577c8f461ef5a55afa82602b702bfcd3453b582a",
+    "braking_image": "screenshots/porsche-tail-braking.png",
+    "braking_sha256": "2354baab6116f7efe3532a6972e2bcbf99df3985ffeb0b04f777b4d9cbf68ce0",
+    "region_xyxy": [
+      690,
+      390,
+      875,
+      432
+    ],
+    "selection": "Running frame red > 140, red > 1.5 green, red > 1.4 blue, in the tail-bar region",
+    "selected_pixels": 1039,
+    "mean_running_rgb": [
+      214.4177093358999,
+      71.04619826756496,
+      82.10490856592878
+    ],
+    "mean_braking_rgb": [
+      221.5033686236766,
+      78.89316650625601,
+      95.80173243503368
+    ],
+    "mean_display_luma_increase": 8.10747353224254
+  },
+  "limits": [
+    "Display RGB comparison verifies visible change, not calibrated lamp luminance or OEM photometry",
+    "Running-light behavior remains the existing preview design",
+    "Final surface appearance and world lighting remain in development"
+  ],
+  "complete": false
+}
