@@ -7,7 +7,7 @@
   "main_matrices_and_framebuffer_restored":true,
   "posed_caster_bounds_inside_map":true,
   "coverage_poses":72,
-  "caster_box_corners_checked":157440,
+  "caster_box_corners_checked":162624,
   "maximum_absolute_ndc_extent":0.695476,
   "scope":"Actual production car depth targets and cache; 3 detail levels, 6 body orientations, 4 combinations of open doors/aero/steering/suspension, including morphed spring bounds",
   "limits":["Conservative transformed mesh boxes for these finite poses; not swept mechanical clearance or frame-rate validation"]

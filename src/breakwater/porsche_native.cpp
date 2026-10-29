@@ -976,6 +976,16 @@ bool RunPorscheQA(){
         BeginDrawing();ClearBackground({24,29,36,255});BeginMode3D(g.camera);DrawPorsche(g.car);EndMode3D();rlDrawRenderBatchActive();Image image=LoadImageFromScreen();check(image.data&&ExportImage(image,"screenshots/porsche-native-grille-close.png"),"screenshots/porsche-native-grille-close.png");UnloadImage(image);EndDrawing();
         check(levels[0].detailedGrille&&levels[0].lastWireMeshes>0&&levels[0].lastFilteredMeshes==0,"resolved-front-wire-renders-physical-screen");
     }
+    // Review the fitted rear additions through the actual native material path.
+    // Distance variants are captured at their intended viewing scales.
+    for(int detail=0;detail<3;++detail){
+        qaDetailLevel=detail;const Matrix body=PorscheVehicleMatrix(g.car);
+        const Vector3 eye=detail==0?V(.60f,.78f,-3.35f):detail==1?V(3,1.5f,-4.8f):V(12,6,-19.2f);
+        const Vector3 target=detail==0?V(0,.57f,-2.26f):V(0,.65f,-.7f);
+        g.camera.position=Vector3Transform(eye,body);g.camera.target=Vector3Transform(target,body);g.camera.up=V(0,1,0);g.camera.fovy=detail==0?38:45;g.camera.projection=CAMERA_PERSPECTIVE;
+        BeginDrawing();ClearBackground({24,29,36,255});BeginMode3D(g.camera);DrawPorsche(g.car);EndMode3D();rlDrawRenderBatchActive();
+        Image image=LoadImageFromScreen();const char* path=TextFormat("screenshots/porsche-rear-finish-%d.png",detail);check(image.data&&ExportImage(image,path),path);UnloadImage(image);EndDrawing();
+    }qaDetailLevel=-1;
     g.cameraDistance=g.cameraActualDistance=1.8f;
     for(int i=-1;i<=1;++i){g.car.steer=i*.6f;g.cameraInitialized=false;const char* path=i<0?"screenshots/porsche-native-steering-negative.png":i>0?"screenshots/porsche-native-steering-positive.png":"screenshots/porsche-native-steering-centre.png";capture(path);}
     g.car=initial;PreparePorscheDisplays(true);const unsigned int revision=PorscheDisplayRevision(g.car);PreparePorscheDisplays();check(PorscheDisplayRevision(g.car)==revision,"unchanged-screen-state-reuses-render-targets");

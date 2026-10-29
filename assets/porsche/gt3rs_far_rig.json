@@ -1,9 +1,9 @@
 {
   "level": "far",
-  "source_sha256": "2dcd89249f436ba0cde9e04c3cd06828baac44930051f05591e81fa85f810580",
-  "runtime_sha256": "ed75dc983136a5adf22f17014856b8b36bbb84755f82f2664f80ec607a315e67",
-  "triangles": 158608,
-  "raylib_meshes": 303,
+  "source_sha256": "0ddf51ef62b1989c6cb3e81c69a8043114c571cee6c5736c599b042bcc863c22",
+  "runtime_sha256": "bb60bb2c11529ae46ebc83cc346411de20ee9fed9ca7057929f8051df1e9ccfc",
+  "triangles": 163440,
+  "raylib_meshes": 312,
   "additional_primitives": 0,
   "maximum_vertices_per_primitive": 15567,
   "nodes": [
@@ -20852,9 +20852,471 @@
         "exterior_carbon_revision": "Bounded physical twill projection; smooth independent resin above the buried weave",
         "front_cooling_revision": "Fitted diamond protective screen and metre-scaled recessed radiator fins",
         "runtime_lod": 2,
-        "derived_from_export_sha256": "3764ff64439df649449f8dc0cde923dc22c8281c13679fa880dff6fa9e198957",
+        "derived_from_export_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
         "lod_purpose": "Distant gameplay",
         "wheelwell_revision": "Reviewed full-resolution underbody retained for consistent front tire clearance across distance variants"
+      }
+    },
+    {
+      "name": "PlateDetail_Conformal_red_GT3RS",
+      "parent": 490,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "extras": {
+        "source_wordmark_sha256": "a3070c65a7373570fefa59a0c0653119c23c4c61f547930a378db7b1adba8b29",
+        "surface_offset_metres": 0.00025
+      }
+    },
+    {
+      "name": "PlateDetail_RearBadge",
+      "parent": 488,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "extras": {}
+    },
+    {
+      "name": "PlateDetail_Blue_band",
+      "parent": 499,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "world": [
+        -1.0000000942878984,
+        4.2817361008626625e-08,
+        5.250676910867625e-08,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -5.250676910867625e-08,
+        -0.9795471583501509,
+        -0.20121500398375503,
+        0.0,
+        0.0,
+        0.47999998927116394,
+        -2.2771027088165283,
+        1.0
+      ],
+      "extras": {}
+    },
+    {
+      "name": "PlateDetail_RearPlate_embossed_black_ink",
+      "parent": 499,
+      "local": [
+        0.12883828580379486,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.13879191875457764,
+        0.0,
+        0.0729999989271164,
+        0.0019999805372208357,
+        0.03666204586625099,
+        1.0
+      ],
+      "world": [
+        -0.12883829795168605,
+        5.5165153949936995e-09,
+        6.764882125057498e-09,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -7.287515232196761e-09,
+        -0.13595322961801154,
+        -0.027927016485115343,
+        0.0,
+        -0.07300000782077233,
+        0.44449021545243256,
+        -2.286438733940555,
+        1.0
+      ],
+      "extras": {}
+    },
+    {
+      "name": "PlateDetail_RearPlate_EU_yellow_print",
+      "parent": 499,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "world": [
+        -1.0000000942878984,
+        4.2817361008626625e-08,
+        5.250676910867625e-08,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -5.250676910867625e-08,
+        -0.9795471583501509,
+        -0.20121500398375503,
+        0.0,
+        0.0,
+        0.47999998927116394,
+        -2.2771027088165283,
+        1.0
+      ],
+      "extras": {}
+    },
+    {
+      "name": "PlateDetail_RearPlate_fastener_steel",
+      "parent": 499,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "world": [
+        -1.0000000942878984,
+        4.2817361008626625e-08,
+        5.250676910867625e-08,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -5.250676910867625e-08,
+        -0.9795471583501509,
+        -0.20121500398375503,
+        0.0,
+        0.0,
+        0.47999998927116394,
+        -2.2771027088165283,
+        1.0
+      ],
+      "extras": {}
+    },
+    {
+      "name": "PlateDetail_RearPlate_molded_black_carrier",
+      "parent": 499,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "world": [
+        -1.0000000942878984,
+        4.2817361008626625e-08,
+        5.250676910867625e-08,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -5.250676910867625e-08,
+        -0.9795471583501509,
+        -0.20121500398375503,
+        0.0,
+        0.0,
+        0.47999998927116394,
+        -2.2771027088165283,
+        1.0
+      ],
+      "extras": {}
+    },
+    {
+      "name": "PlateDetail_RearPlate_white_enamel",
+      "parent": 499,
+      "local": [
+        0.037857141345739365,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.03785714507102966,
+        0.0,
+        -0.23499999940395355,
+        0.0018999375170096755,
+        0.04000001773238182,
+        1.0
+      ],
+      "world": [
+        -0.03785714491520966,
+        1.6209428877551276e-09,
+        1.987756179755258e-09,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -1.9877563753582158e-09,
+        -0.03708285887757653,
+        -0.007617425596280826,
+        0.0,
+        0.2350000193799876,
+        0.44120037126128675,
+        -2.2870124032788204,
+        1.0
+      ],
+      "extras": {}
+    },
+    {
+      "name": "PlateDetail_Seal_-0.024",
+      "parent": 499,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "world": [
+        -1.0000000942878984,
+        4.2817361008626625e-08,
+        5.250676910867625e-08,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -5.250676910867625e-08,
+        -0.9795471583501509,
+        -0.20121500398375503,
+        0.0,
+        0.0,
+        0.47999998927116394,
+        -2.2771027088165283,
+        1.0
+      ],
+      "extras": {}
+    },
+    {
+      "name": "PlateDetail_Seal_0.024",
+      "parent": 499,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "world": [
+        -1.0000000942878984,
+        4.2817361008626625e-08,
+        5.250676910867625e-08,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -5.250676910867625e-08,
+        -0.9795471583501509,
+        -0.20121500398375503,
+        0.0,
+        0.0,
+        0.47999998927116394,
+        -2.2771027088165283,
+        1.0
+      ],
+      "extras": {}
+    },
+    {
+      "name": "PlateDetail_RearPlate",
+      "parent": 488,
+      "local": [
+        -1.0000000942878984,
+        4.2817361008626625e-08,
+        5.250676910867625e-08,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -5.250676910867625e-08,
+        -0.9795471583501509,
+        -0.20121500398375503,
+        0.0,
+        0.0,
+        0.47999998927116394,
+        -2.2771027088165283,
+        1.0
+      ],
+      "world": [
+        -1.0000000942878984,
+        4.2817361008626625e-08,
+        5.250676910867625e-08,
+        0.0,
+        -4.2817361008626625e-08,
+        0.20121490969585665,
+        -0.9795471583501509,
+        0.0,
+        -5.250676910867625e-08,
+        -0.9795471583501509,
+        -0.20121500398375503,
+        0.0,
+        0.0,
+        0.47999998927116394,
+        -2.2771027088165283,
+        1.0
+      ],
+      "extras": {
+        "registration": "S GT 992",
+        "registration_is_fictional": true,
+        "plate_size_metres": [
+          0.52,
+          0.11
+        ],
+        "typography": "Barlow Bold, SIL OFL; visual approximation, not FE-Schrift master"
       }
     }
   ],
@@ -22373,6 +22835,51 @@
       "node": 484,
       "material": 61,
       "vertices": 80
+    },
+    {
+      "node": 489,
+      "material": 99,
+      "vertices": 2636
+    },
+    {
+      "node": 491,
+      "material": 100,
+      "vertices": 12
+    },
+    {
+      "node": 492,
+      "material": 101,
+      "vertices": 1281
+    },
+    {
+      "node": 493,
+      "material": 102,
+      "vertices": 120
+    },
+    {
+      "node": 494,
+      "material": 103,
+      "vertices": 288
+    },
+    {
+      "node": 495,
+      "material": 104,
+      "vertices": 2127
+    },
+    {
+      "node": 496,
+      "material": 105,
+      "vertices": 2583
+    },
+    {
+      "node": 497,
+      "material": 106,
+      "vertices": 144
+    },
+    {
+      "node": 498,
+      "material": 107,
+      "vertices": 144
     }
   ],
   "materials": [
@@ -24167,6 +24674,169 @@
         ],
         "metallicFactor": 0.10000000149011612,
         "roughnessFactor": 0.7893537282943726
+      }
+    },
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_clearcoat": {
+          "clearcoatFactor": 0.44999998807907104
+        }
+      },
+      "extras": {
+        "authored_detail": "Rear plate and red wordmark"
+      },
+      "name": "Rear finish | red GT3 RS marking",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.47999998927116394,
+          0.005499999970197678,
+          0.008999999612569809,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.30000001192092896
+      }
+    },
+    {
+      "doubleSided": true,
+      "extras": {
+        "authored_detail": "Rear plate and red wordmark"
+      },
+      "name": "Rear finish | EU blue print",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.008999999612569809,
+          0.04500000178813934,
+          0.3199999928474426,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.4000000059604645
+      }
+    },
+    {
+      "doubleSided": true,
+      "extras": {
+        "authored_detail": "Rear plate and red wordmark"
+      },
+      "name": "Rear finish | embossed black ink",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.004000000189989805,
+          0.004999999888241291,
+          0.006000000052154064,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.41999998688697815
+      }
+    },
+    {
+      "doubleSided": true,
+      "extras": {
+        "authored_detail": "Rear plate and red wordmark"
+      },
+      "name": "Rear finish | EU yellow print",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.9200000166893005,
+          0.6399999856948853,
+          0.012000000104308128,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.4000000059604645
+      }
+    },
+    {
+      "doubleSided": true,
+      "extras": {
+        "authored_detail": "Rear plate and red wordmark"
+      },
+      "name": "Rear finish | fastener steel",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.20000000298023224,
+          0.2199999988079071,
+          0.23999999463558197,
+          1
+        ],
+        "metallicFactor": 0.8500000238418579,
+        "roughnessFactor": 0.3400000035762787
+      }
+    },
+    {
+      "doubleSided": true,
+      "extras": {
+        "authored_detail": "Rear plate and red wordmark"
+      },
+      "name": "Rear finish | molded black carrier",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.006000000052154064,
+          0.007000000216066837,
+          0.008999999612569809,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.5299999713897705
+      }
+    },
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_clearcoat": {
+          "clearcoatFactor": 0.25
+        }
+      },
+      "extras": {
+        "authored_detail": "Rear plate and red wordmark"
+      },
+      "name": "Rear finish | white enamel",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.800000011920929,
+          0.8100000023841858,
+          0.800000011920929,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.3100000023841858
+      }
+    },
+    {
+      "doubleSided": true,
+      "extras": {
+        "authored_detail": "Rear plate and red wordmark"
+      },
+      "name": "Rear finish | fictional silver seal",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.3499999940395355,
+          0.36000001430511475,
+          0.3499999940395355,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.6000000238418579
+      }
+    },
+    {
+      "doubleSided": true,
+      "extras": {
+        "authored_detail": "Rear plate and red wordmark"
+      },
+      "name": "Rear finish | fictional green seal",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.2199999988079071,
+          0.36000001430511475,
+          0.1599999964237213,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.6499999761581421
       }
     }
   ],

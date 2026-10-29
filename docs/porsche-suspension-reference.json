@@ -6,19 +6,19 @@
   "levels": [
     {
       "level": "hero",
-      "runtime_sha256": "442b2abe53a69da49e7111df3ac43fbe6afb3b7cc48853dff5b21000d1f3b499",
+      "runtime_sha256": "65199bb6bfc5159152078b101d1e3d0beb5f367e7637cbc2ad12ccc99d4dba47",
       "poses": 65,
       "spring_samples_per_pose": 128
     },
     {
       "level": "near",
-      "runtime_sha256": "3311b16d2aa5e2f52e597f5db21824cb79a3f29e81077e0e524f7020cc498441",
+      "runtime_sha256": "3cd1de2b07e3472d7e092f99ef6681b39fb1a0aa79da749baec230a631f0dca4",
       "poses": 65,
       "spring_samples_per_pose": 128
     },
     {
       "level": "far",
-      "runtime_sha256": "ed75dc983136a5adf22f17014856b8b36bbb84755f82f2664f80ec607a315e67",
+      "runtime_sha256": "bb60bb2c11529ae46ebc83cc346411de20ee9fed9ca7057929f8051df1e9ccfc",
       "poses": 65,
       "spring_samples_per_pose": 128
     }

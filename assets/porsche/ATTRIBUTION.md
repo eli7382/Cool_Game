@@ -1,5 +1,14 @@
 # Model attribution
 
+Rear-detail adaptation: the centered red GT3 RS badge reuses the attributed
+Black Snow symbol-atlas contour described below. The fitted 520 x 110 mm rear
+plate, carrier, mounting feet, fasteners, stars and generic seals are authored
+additions. The fictional registration S GT 992 and country letter use Barlow
+Bold outlines under the SIL Open Font License bundled in `fonts/OFL.txt`.
+These are visual game details, not a valid registration or official seals.
+Porsche reference photographs were used for observation; their pixels are not
+included in these additions.
+
 The detailed body and original interior geometry are adapted from **“Porsche GT3
 RS” by Black Snow** (https://sketchfab.com/BlackSnow02).
 

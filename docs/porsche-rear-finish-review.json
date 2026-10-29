@@ -1,0 +1,753 @@
+{
+  "production_changed": true,
+  "native_review_passed": true,
+  "native_checks": 142,
+  "native_check_failures": 0,
+  "native_qa_report_sha256": "9aedc525e7194dccb0b724b4158ac0005163f8ea127a2523ea338a85cf2b0070",
+  "executable_sha256": "94c38e57242d883bcd37ca0c3b809121b091a32a207c18ce6307ab7b30f4c854",
+  "levels": [
+    {
+      "label": "Development",
+      "authoring": {
+        "source": "Porsche_911\\Porsche_911_GT3RS_Development.blend",
+        "source_sha256": "c540f79245ecb125ec6e58cd68e2144bd9d4d063e8bc41bf92ed6830eda1dbfe",
+        "candidate": "Porsche_911/studies/rear-finish/Development.blend",
+        "candidate_sha256": "55afa3797cb57443fb0f75e9940a1406c82148132198e55030850e7b6d261381",
+        "parts_export": "Porsche_911/studies/rear-finish/Parts.glb",
+        "parts_sha256": "81223135e8778692cefd0c98f9c4ccbfa84137add1ee069c1910b203579c0f49",
+        "plate_size_m": [
+          0.52,
+          0.11
+        ],
+        "registration": "S GT 992",
+        "registration_is_fictional": true,
+        "bumper_fit_coefficients_z_x2_y": [
+          -2.2751805651153028,
+          0.10094954359253422,
+          0.18110446652246384
+        ],
+        "fit_maximum_error_m": 0.00033594489446286957,
+        "badge_width_m": 0.28,
+        "badge_height_m": 0.02953031596925705,
+        "badge_offset_m": 0.00025,
+        "badge_faces": 989,
+        "wordmark_source_sha256": "e1cf7d3e04aaaf27cfec6363de5f6427b87c997993f9de0f54ec5549b68b8f96",
+        "production_changed": false,
+        "complete": false,
+        "limits": [
+          "Plate text uses OFL Barlow Bold as a game approximation; not an FE-Schrift master or a valid registration",
+          "Generic authored seals; no official seal pixels copied",
+          "Placement and carrier are fitted to the retained source, not manufacturer CAD",
+          "Requires visual, attachment, export-preservation and native review"
+        ],
+        "detail_level": "hero",
+        "carrier_surface_fit": [
+          {
+            "object": "PlateDetail_Carrier_mount_-0.18_-0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 4.403800964336568e-05
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_-0.18_0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.00010698051452617818
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_0.18_-0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 4.403800964336568e-05
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_0.18_0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.00010698051452617818
+          }
+        ]
+      },
+      "scope": {
+        "source": "Porsche_911/Porsche_911_GT3RS_Development.blend",
+        "candidate": "Porsche_911/studies/rear-finish/Development.blend",
+        "original_objects_preserved": 1827,
+        "added_objects": [
+          "PlateDetail_Blue_band",
+          "PlateDetail_Conformal_red_GT3RS",
+          "PlateDetail_RearBadge",
+          "PlateDetail_RearPlate",
+          "PlateDetail_RearPlate_EU_yellow_print",
+          "PlateDetail_RearPlate_embossed_black_ink",
+          "PlateDetail_RearPlate_fastener_steel",
+          "PlateDetail_RearPlate_molded_black_carrier",
+          "PlateDetail_RearPlate_white_enamel",
+          "PlateDetail_Seal_-0.024",
+          "PlateDetail_Seal_0.024"
+        ],
+        "original_transforms_geometry_corner_normals_uv_topology_material_assignments_and_morphs_preserved": true,
+        "limits": [
+          "Material node values are independently preserved by the append-only GLB merger; this authoring check compares material assignments",
+          "Does not establish body clearance"
+        ]
+      },
+      "clearance": {
+        "candidate": "Porsche_911/studies/rear-finish/Development.blend",
+        "rows": [
+          {
+            "name": "PlateDetail_Blue_band",
+            "samples": 32,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0060596466064453125,
+            "maximum_visible_gap_m": 0.0064814090728759766,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Conformal_red_GT3RS",
+            "samples": 6509,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.00024890899658203125,
+            "maximum_visible_gap_m": 0.000263214111328125,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_embossed_black_ink",
+            "samples": 55736,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.005957603454589844,
+            "maximum_visible_gap_m": 0.006802082061767578,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_EU_yellow_print",
+            "samples": 504,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006124019622802734,
+            "maximum_visible_gap_m": 0.006387233734130859,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_fastener_steel",
+            "samples": 832,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006453514099121094,
+            "maximum_visible_gap_m": 0.006785154342651367,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_molded_black_carrier",
+            "samples": 5376,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0018944740295410156,
+            "maximum_visible_gap_m": 0.007691860198974609,
+            "minimum_mount_gap_m": -0.0003006458282470703
+          },
+          {
+            "name": "PlateDetail_RearPlate_white_enamel",
+            "samples": 11500,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.004738569259643555,
+            "maximum_visible_gap_m": 0.006818294525146484,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Seal_-0.024",
+            "samples": 416,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006234884262084961,
+            "maximum_visible_gap_m": 0.006520509719848633,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Seal_0.024",
+            "samples": 416,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006136417388916016,
+            "maximum_visible_gap_m": 0.006470918655395508,
+            "minimum_mount_gap_m": null
+          }
+        ],
+        "failures": [],
+        "passed": true,
+        "limits": [
+          "Vertex, edge midpoint, and triangle centroid ray sampling; not a watertight continuous collision proof",
+          "Hidden carrier mount backs permit up to 1 mm embed for contact; other samples permit 0.05 mm numeric tolerance"
+        ]
+      },
+      "append_only_export_proof": {
+        "source_sha256": "3764ff64439df649449f8dc0cde923dc22c8281c13679fa880dff6fa9e198957",
+        "parts_sha256": "81223135e8778692cefd0c98f9c4ccbfa84137add1ee069c1910b203579c0f49",
+        "candidate_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
+        "new_nodes": 11,
+        "new_meshes": 9,
+        "new_materials": 9,
+        "added_binary_bytes": 689380,
+        "original_geometry_accessors_materials_and_binary_prefix_preserved": true,
+        "original_images_textures_preserved": true,
+        "production_changed": false,
+        "complete": false
+      },
+      "runtime_sha256": "65199bb6bfc5159152078b101d1e3d0beb5f367e7637cbc2ad12ccc99d4dba47"
+    },
+    {
+      "label": "DetailCandidate",
+      "authoring": {
+        "source": "Porsche_911\\Porsche_911_GT3RS_DetailCandidate.blend",
+        "source_sha256": "190767cbc1dbfb3ee080a1fef74455bb5a9f0a823526459c57e27229efba8b30",
+        "candidate": "Porsche_911/studies/rear-finish/DetailCandidate.blend",
+        "candidate_sha256": "45500cd07ff1a9e1e740ae644b181c93ec2f2b18f90f73888dfed8322f8648e8",
+        "parts_export": "Porsche_911/studies/rear-finish/Parts-detail.glb",
+        "parts_sha256": "81223135e8778692cefd0c98f9c4ccbfa84137add1ee069c1910b203579c0f49",
+        "plate_size_m": [
+          0.52,
+          0.11
+        ],
+        "registration": "S GT 992",
+        "registration_is_fictional": true,
+        "bumper_fit_coefficients_z_x2_y": [
+          -2.2751805651153028,
+          0.10094954359253422,
+          0.18110446652246384
+        ],
+        "fit_maximum_error_m": 0.00033594489446286957,
+        "badge_width_m": 0.28,
+        "badge_height_m": 0.02953031596925705,
+        "badge_offset_m": 0.00025,
+        "badge_faces": 989,
+        "wordmark_source_sha256": "e1cf7d3e04aaaf27cfec6363de5f6427b87c997993f9de0f54ec5549b68b8f96",
+        "production_changed": false,
+        "complete": false,
+        "limits": [
+          "Plate text uses OFL Barlow Bold as a game approximation; not an FE-Schrift master or a valid registration",
+          "Generic authored seals; no official seal pixels copied",
+          "Placement and carrier are fitted to the retained source, not manufacturer CAD",
+          "Requires visual, attachment, export-preservation and native review"
+        ],
+        "detail_level": "hero",
+        "carrier_surface_fit": [
+          {
+            "object": "PlateDetail_Carrier_mount_-0.18_-0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 4.403800964336568e-05
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_-0.18_0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.00010698051452617818
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_0.18_-0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 4.403800964336568e-05
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_0.18_0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.00010698051452617818
+          }
+        ]
+      },
+      "scope": {
+        "source": "Porsche_911/Porsche_911_GT3RS_DetailCandidate.blend",
+        "candidate": "Porsche_911/studies/rear-finish/DetailCandidate.blend",
+        "original_objects_preserved": 1827,
+        "added_objects": [
+          "PlateDetail_Blue_band",
+          "PlateDetail_Conformal_red_GT3RS",
+          "PlateDetail_RearBadge",
+          "PlateDetail_RearPlate",
+          "PlateDetail_RearPlate_EU_yellow_print",
+          "PlateDetail_RearPlate_embossed_black_ink",
+          "PlateDetail_RearPlate_fastener_steel",
+          "PlateDetail_RearPlate_molded_black_carrier",
+          "PlateDetail_RearPlate_white_enamel",
+          "PlateDetail_Seal_-0.024",
+          "PlateDetail_Seal_0.024"
+        ],
+        "original_transforms_geometry_corner_normals_uv_topology_material_assignments_and_morphs_preserved": true,
+        "limits": [
+          "Material node values are independently preserved by the append-only GLB merger; this authoring check compares material assignments",
+          "Does not establish body clearance"
+        ]
+      },
+      "clearance": {
+        "candidate": "Porsche_911/studies/rear-finish/DetailCandidate.blend",
+        "rows": [
+          {
+            "name": "PlateDetail_Blue_band",
+            "samples": 32,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0060596466064453125,
+            "maximum_visible_gap_m": 0.0064814090728759766,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Conformal_red_GT3RS",
+            "samples": 6509,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.00024890899658203125,
+            "maximum_visible_gap_m": 0.000263214111328125,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_embossed_black_ink",
+            "samples": 55736,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.005957603454589844,
+            "maximum_visible_gap_m": 0.006802082061767578,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_EU_yellow_print",
+            "samples": 504,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006124019622802734,
+            "maximum_visible_gap_m": 0.006387233734130859,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_fastener_steel",
+            "samples": 832,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006453514099121094,
+            "maximum_visible_gap_m": 0.006785154342651367,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_molded_black_carrier",
+            "samples": 5376,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0018944740295410156,
+            "maximum_visible_gap_m": 0.007691860198974609,
+            "minimum_mount_gap_m": -0.0003006458282470703
+          },
+          {
+            "name": "PlateDetail_RearPlate_white_enamel",
+            "samples": 11500,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.004738569259643555,
+            "maximum_visible_gap_m": 0.006818294525146484,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Seal_-0.024",
+            "samples": 416,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006234884262084961,
+            "maximum_visible_gap_m": 0.006520509719848633,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Seal_0.024",
+            "samples": 416,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006136417388916016,
+            "maximum_visible_gap_m": 0.006470918655395508,
+            "minimum_mount_gap_m": null
+          }
+        ],
+        "failures": [],
+        "passed": true,
+        "limits": [
+          "Vertex, edge midpoint, and triangle centroid ray sampling; not a watertight continuous collision proof",
+          "Hidden carrier mount backs permit up to 1 mm embed for contact; other samples permit 0.05 mm numeric tolerance"
+        ]
+      },
+      "append_only_export_proof": {
+        "source_sha256": "3764ff64439df649449f8dc0cde923dc22c8281c13679fa880dff6fa9e198957",
+        "parts_sha256": "81223135e8778692cefd0c98f9c4ccbfa84137add1ee069c1910b203579c0f49",
+        "candidate_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
+        "new_nodes": 11,
+        "new_meshes": 9,
+        "new_materials": 9,
+        "added_binary_bytes": 689380,
+        "original_geometry_accessors_materials_and_binary_prefix_preserved": true,
+        "original_images_textures_preserved": true,
+        "production_changed": false,
+        "complete": false
+      }
+    },
+    {
+      "label": "LOD1",
+      "authoring": {
+        "source": "Porsche_911\\studies\\runtime-lods\\Porsche_911_GT3RS_LOD1.blend",
+        "source_sha256": "849445d2999741cc7c46c2f7aaaf38a8eff51cbb3f4a5b848934bc73ecbbb68e",
+        "candidate": "Porsche_911/studies/rear-finish/LOD1.blend",
+        "candidate_sha256": "2155aecaa7cc98c5e0ed92562f603da26abe93484d3016e7d11dbe8baa22d9bf",
+        "parts_export": "Porsche_911/studies/rear-finish/Parts-lod1.glb",
+        "parts_sha256": "91b13c4f21bbd803aefe5fb46b9f4e9073eaf3d2db9472321e8f3da93ba5fee2",
+        "plate_size_m": [
+          0.52,
+          0.11
+        ],
+        "registration": "S GT 992",
+        "registration_is_fictional": true,
+        "bumper_fit_coefficients_z_x2_y": [
+          -2.275004508840704,
+          0.09427640454796729,
+          0.18599122301679746
+        ],
+        "fit_maximum_error_m": 0.0002589172430327302,
+        "badge_width_m": 0.28,
+        "badge_height_m": 0.02953031596925705,
+        "badge_offset_m": 0.00025,
+        "badge_faces": 989,
+        "wordmark_source_sha256": "e1cf7d3e04aaaf27cfec6363de5f6427b87c997993f9de0f54ec5549b68b8f96",
+        "production_changed": false,
+        "complete": false,
+        "limits": [
+          "Plate text uses OFL Barlow Bold as a game approximation; not an FE-Schrift master or a valid registration",
+          "Generic authored seals; no official seal pixels copied",
+          "Placement and carrier are fitted to the retained source, not manufacturer CAD",
+          "Requires visual, attachment, export-preservation and native review"
+        ],
+        "detail_level": "near",
+        "carrier_surface_fit": [
+          {
+            "object": "PlateDetail_Carrier_mount_-0.18_-0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 6.478042602520162e-05
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_-0.18_0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.0002283355712888735
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_0.18_-0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.0002016326904294985
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_0.18_0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 6.454200744610006e-05
+          }
+        ]
+      },
+      "scope": {
+        "source": "Porsche_911/studies/runtime-lods/Porsche_911_GT3RS_LOD1.blend",
+        "candidate": "Porsche_911/studies/rear-finish/LOD1.blend",
+        "original_objects_preserved": 878,
+        "added_objects": [
+          "PlateDetail_Blue_band",
+          "PlateDetail_Conformal_red_GT3RS",
+          "PlateDetail_RearBadge",
+          "PlateDetail_RearPlate",
+          "PlateDetail_RearPlate_EU_yellow_print",
+          "PlateDetail_RearPlate_embossed_black_ink",
+          "PlateDetail_RearPlate_fastener_steel",
+          "PlateDetail_RearPlate_molded_black_carrier",
+          "PlateDetail_RearPlate_white_enamel",
+          "PlateDetail_Seal_-0.024",
+          "PlateDetail_Seal_0.024"
+        ],
+        "original_transforms_geometry_corner_normals_uv_topology_material_assignments_and_morphs_preserved": true,
+        "limits": [
+          "Material node values are independently preserved by the append-only GLB merger; this authoring check compares material assignments",
+          "Does not establish body clearance"
+        ]
+      },
+      "clearance": {
+        "candidate": "Porsche_911/studies/rear-finish/LOD1.blend",
+        "rows": [
+          {
+            "name": "PlateDetail_Blue_band",
+            "samples": 32,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006110191345214844,
+            "maximum_visible_gap_m": 0.006432294845581055,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Conformal_red_GT3RS",
+            "samples": 6509,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.00024890899658203125,
+            "maximum_visible_gap_m": 0.000263214111328125,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_embossed_black_ink",
+            "samples": 10304,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006198406219482422,
+            "maximum_visible_gap_m": 0.006871223449707031,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_EU_yellow_print",
+            "samples": 504,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0062944889068603516,
+            "maximum_visible_gap_m": 0.006413936614990234,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_fastener_steel",
+            "samples": 832,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006227731704711914,
+            "maximum_visible_gap_m": 0.006785392761230469,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_molded_black_carrier",
+            "samples": 5376,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0018703937530517578,
+            "maximum_visible_gap_m": 0.0076999664306640625,
+            "minimum_mount_gap_m": -0.00030040740966796875
+          },
+          {
+            "name": "PlateDetail_RearPlate_white_enamel",
+            "samples": 7372,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.004784584045410156,
+            "maximum_visible_gap_m": 0.006930351257324219,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Seal_-0.024",
+            "samples": 416,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.00618290901184082,
+            "maximum_visible_gap_m": 0.0063991546630859375,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Seal_0.024",
+            "samples": 416,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0062901973724365234,
+            "maximum_visible_gap_m": 0.006506443023681641,
+            "minimum_mount_gap_m": null
+          }
+        ],
+        "failures": [],
+        "passed": true,
+        "limits": [
+          "Vertex, edge midpoint, and triangle centroid ray sampling; not a watertight continuous collision proof",
+          "Hidden carrier mount backs permit up to 1 mm embed for contact; other samples permit 0.05 mm numeric tolerance"
+        ]
+      },
+      "append_only_export_proof": {
+        "source_sha256": "8994c8271e92a44bcb42701f0369c5cf3b7b034efd0b810b51dc921c08eab017",
+        "parts_sha256": "91b13c4f21bbd803aefe5fb46b9f4e9073eaf3d2db9472321e8f3da93ba5fee2",
+        "candidate_sha256": "3f220f0a220132f922dfde8de198a936e4d52795bc92c214241fd9043edc529e",
+        "new_nodes": 11,
+        "new_meshes": 9,
+        "new_materials": 9,
+        "added_binary_bytes": 372996,
+        "original_geometry_accessors_materials_and_binary_prefix_preserved": true,
+        "original_images_textures_preserved": true,
+        "production_changed": false,
+        "complete": false
+      },
+      "runtime_sha256": "3cd1de2b07e3472d7e092f99ef6681b39fb1a0aa79da749baec230a631f0dca4"
+    },
+    {
+      "label": "LOD2",
+      "authoring": {
+        "source": "Porsche_911\\studies\\runtime-lods\\Porsche_911_GT3RS_LOD2.blend",
+        "source_sha256": "36078eb6f73c9cf71df03dc241d26218879c7dd5aabd698c495227d92a614dd5",
+        "candidate": "Porsche_911/studies/rear-finish/LOD2.blend",
+        "candidate_sha256": "61f3e572ac4f58e0dbbfe5ed85a021798ccf3b3f9a2f6a1088761a3736e7bfb3",
+        "parts_export": "Porsche_911/studies/rear-finish/Parts-LOD2.glb",
+        "parts_sha256": "24b0fe9dea0be9dc1f796df8542e4d80daf3bcc0efc70b6589ad85399deb4d20",
+        "plate_size_m": [
+          0.52,
+          0.11
+        ],
+        "registration": "S GT 992",
+        "registration_is_fictional": true,
+        "bumper_fit_coefficients_z_x2_y": [
+          -2.27260265191969,
+          0.017248336674663634,
+          0.20541637132556
+        ],
+        "fit_maximum_error_m": 0.001903334542347146,
+        "badge_width_m": 0.28,
+        "badge_height_m": 0.02953031596925705,
+        "badge_offset_m": 0.00025,
+        "badge_faces": 989,
+        "wordmark_source_sha256": "e1cf7d3e04aaaf27cfec6363de5f6427b87c997993f9de0f54ec5549b68b8f96",
+        "production_changed": false,
+        "complete": false,
+        "limits": [
+          "Plate text uses OFL Barlow Bold as a game approximation; not an FE-Schrift master or a valid registration",
+          "Generic authored seals; no official seal pixels copied",
+          "Placement and carrier are fitted to the retained source, not manufacturer CAD",
+          "Requires visual, attachment, export-preservation and native review"
+        ],
+        "detail_level": "far",
+        "carrier_surface_fit": [
+          {
+            "object": "PlateDetail_Carrier_mount_-0.18_-0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.0011864402770997984
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_-0.18_0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.00046198577880840475
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_0.18_-0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.001096179199218561
+          },
+          {
+            "object": "PlateDetail_Carrier_mount_0.18_0.035",
+            "moved_vertices": 24,
+            "maximum_adjustment_m": 0.0002817413330076235
+          }
+        ]
+      },
+      "scope": {
+        "source": "Porsche_911/studies/runtime-lods/Porsche_911_GT3RS_LOD2.blend",
+        "candidate": "Porsche_911/studies/rear-finish/LOD2.blend",
+        "original_objects_preserved": 878,
+        "added_objects": [
+          "PlateDetail_Blue_band",
+          "PlateDetail_Conformal_red_GT3RS",
+          "PlateDetail_RearBadge",
+          "PlateDetail_RearPlate",
+          "PlateDetail_RearPlate_EU_yellow_print",
+          "PlateDetail_RearPlate_embossed_black_ink",
+          "PlateDetail_RearPlate_fastener_steel",
+          "PlateDetail_RearPlate_molded_black_carrier",
+          "PlateDetail_RearPlate_white_enamel",
+          "PlateDetail_Seal_-0.024",
+          "PlateDetail_Seal_0.024"
+        ],
+        "original_transforms_geometry_corner_normals_uv_topology_material_assignments_and_morphs_preserved": true,
+        "limits": [
+          "Material node values are independently preserved by the append-only GLB merger; this authoring check compares material assignments",
+          "Does not establish body clearance"
+        ]
+      },
+      "clearance": {
+        "candidate": "Porsche_911/studies/rear-finish/LOD2.blend",
+        "rows": [
+          {
+            "name": "PlateDetail_Blue_band",
+            "samples": 32,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.005983829498291016,
+            "maximum_visible_gap_m": 0.008261442184448242,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Conformal_red_GT3RS",
+            "samples": 6509,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.00024890899658203125,
+            "maximum_visible_gap_m": 0.000263214111328125,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_embossed_black_ink",
+            "samples": 3301,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.005472421646118164,
+            "maximum_visible_gap_m": 0.007717609405517578,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_EU_yellow_print",
+            "samples": 504,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.006494998931884766,
+            "maximum_visible_gap_m": 0.00710749626159668,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_fastener_steel",
+            "samples": 832,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0059642791748046875,
+            "maximum_visible_gap_m": 0.006683349609375,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_RearPlate_molded_black_carrier",
+            "samples": 5376,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0006494522094726562,
+            "maximum_visible_gap_m": 0.009455442428588867,
+            "minimum_mount_gap_m": -0.0003001689910888672
+          },
+          {
+            "name": "PlateDetail_RearPlate_white_enamel",
+            "samples": 6692,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0036230087280273438,
+            "maximum_visible_gap_m": 0.008470296859741211,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Seal_-0.024",
+            "samples": 416,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.00668787956237793,
+            "maximum_visible_gap_m": 0.007261514663696289,
+            "minimum_mount_gap_m": null
+          },
+          {
+            "name": "PlateDetail_Seal_0.024",
+            "samples": 416,
+            "missed_bumper_rays": 0,
+            "minimum_visible_gap_m": 0.0060329437255859375,
+            "maximum_visible_gap_m": 0.006342649459838867,
+            "minimum_mount_gap_m": null
+          }
+        ],
+        "failures": [],
+        "passed": true,
+        "limits": [
+          "Vertex, edge midpoint, and triangle centroid ray sampling; not a watertight continuous collision proof",
+          "Hidden carrier mount backs permit up to 1 mm embed for contact; other samples permit 0.05 mm numeric tolerance"
+        ]
+      },
+      "append_only_export_proof": {
+        "source_sha256": "2dcd89249f436ba0cde9e04c3cd06828baac44930051f05591e81fa85f810580",
+        "parts_sha256": "24b0fe9dea0be9dc1f796df8542e4d80daf3bcc0efc70b6589ad85399deb4d20",
+        "candidate_sha256": "0ddf51ef62b1989c6cb3e81c69a8043114c571cee6c5736c599b042bcc863c22",
+        "new_nodes": 11,
+        "new_meshes": 9,
+        "new_materials": 9,
+        "added_binary_bytes": 283396,
+        "original_geometry_accessors_materials_and_binary_prefix_preserved": true,
+        "original_images_textures_preserved": true,
+        "production_changed": false,
+        "complete": false
+      },
+      "runtime_sha256": "bb60bb2c11529ae46ebc83cc346411de20ee9fed9ca7057929f8051df1e9ccfc"
+    }
+  ],
+  "captures": [
+    {
+      "file": "screenshots/porsche-rear-finish-0.png",
+      "sha256": "df98e23c2965e12dba17ef269a90a32bebe7b3072c24079c8dc7b53b90b0f540"
+    },
+    {
+      "file": "screenshots/porsche-rear-finish-1.png",
+      "sha256": "879a5cf9c503c1fef1a5e2884a023754769a745168804dddb0f12ead465e6e17"
+    },
+    {
+      "file": "screenshots/porsche-rear-finish-2.png",
+      "sha256": "00c8843354cf34a9733a19ac948c2b5218c27939102da40286e7fde232ae00ac"
+    }
+  ],
+  "visual_review": "Inspected actual native hero rear close-up, near rear three-quarter and far rear view. Plate face is visible without bumper breakthrough; red GT3 RS badge follows rear paint. Far lettering is intentionally simplified.",
+  "authoring_scripts": {
+    "build_rear_finish_candidate.py": "9d87e6079bdbd9a9170cabb75db6fdec3c346972d42ebbdc24118132eddf7d26",
+    "merge_rear_finish_parts.py": "15d9a855b0ef86195187443604931576b4ad62477687ffc8c63cd9743c9601b6",
+    "check_rear_finish_scope.py": "8763052ca7f1f6c64cbb7affae7d62194166ad66fcee92ab3ed3d503e02f1c27",
+    "check_rear_finish_clearance.py": "d9a625d687cd80d2fe8b79f360f2ca27e2ab85f90bdc060a02e2f49054f339ec",
+    "promote_rear_finish.py": "f82f5a0d2d39db43a4f2c8372f3c2a51880d0122dfa6427410d0b521ee117a88"
+  },
+  "limits": [
+    "Finite attachment ray samples and original-data comparisons do not prove continuous whole-vehicle clearance",
+    "This change does not resolve existing front tire/fender contact or establish 60 FPS",
+    "Current rear typography is Barlow Bold, not an OEM registration master; registration and seals are fictional",
+    "Full game quality goal and GitHub delivery remain incomplete"
+  ]
+}

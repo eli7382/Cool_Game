@@ -1,5 +1,13 @@
 # Porsche integration in progress
 
+Rear finish now includes a curved enamel plate with the fictional registration
+S GT 992, a black carrier with fitted contact feet, fasteners, an EU band and
+generic seals, plus the centered red GT3 RS marking. New parts are separate
+static children of CarRoot. The original source geometry, material definitions,
+texture bytes and moving assemblies are preserved. Near and far variants use
+lighter letter geometry; total triangle counts are 699,758 / 226,176 / 163,440.
+The plate uses an approximate Barlow typeface, not an OEM registration font.
+
 The white/red 992 GT3 RS now loads and drives in this native C++20/raylib 5.5
 game, alongside the existing pickup. Start a mission and walk to the white/red
 car beside the pickup at the base. Press E nearby to enter; E exits at low speed.
