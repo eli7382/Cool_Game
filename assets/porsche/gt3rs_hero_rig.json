@@ -1,7 +1,7 @@
 {
   "level": "hero",
-  "source_sha256": "024324e72af6090d49503aad05bd4f0a7a319c751bc4237b0b292720006cc421",
-  "runtime_sha256": "5b2b48e826edb8b999e83c2b23f0dff500551ff1b1b7548092cf78bc510318c9",
+  "source_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+  "runtime_sha256": "8120e8c16bc11ae676a472ac58fd7f69a98f6ffebb181c6e1b46db8b25e591a7",
   "triangles": 682643,
   "raylib_meshes": 302,
   "additional_primitives": 1,

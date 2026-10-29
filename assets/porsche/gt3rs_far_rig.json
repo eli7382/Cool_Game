@@ -1,7 +1,7 @@
 {
   "level": "far",
-  "source_sha256": "765598e0f325ec62c88f0170ead5955d525c00ef938b58874da3243270646e3d",
-  "runtime_sha256": "2baad2a79999410c3d67b75535c5f742edd7d44463316e5d7d5a9c1010293276",
+  "source_sha256": "6f1d55c15c7db677907f04e360f2bc5c80a0210839a4c2fcb63ea15a5482723e",
+  "runtime_sha256": "f34f86820d44e5b4cbddea3fa9d14d2103708bf2d2720ddacf30fc94bf3a16c3",
   "triangles": 158608,
   "raylib_meshes": 303,
   "additional_primitives": 0,

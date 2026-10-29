@@ -1,0 +1,663 @@
+{
+  "reviewed_at": "2026-10-29T11:38:31.451890+00:00",
+  "change": "Conform molded tire lettering to the actual sidewall and shift it radially 2.5 mm clear of the boundary ring, retaining its shallow extrusion.",
+  "production_integrated": true,
+  "scope": "Four wheels in all three detail levels; editable sources and game exports updated; tire carcasses, body panels, brakes, rig frames, materials, UVs and textures retained.",
+  "previous_gap_range_m": [
+    0.00231224326011209,
+    0.006658927169360562
+  ],
+  "target_base_relief_m": 8e-05,
+  "target_molding_depth_scope": "Visual approximation, not OEM metrology",
+  "fit_measurements": [
+    {
+      "report": "tire-lettering-candidate-fit.json",
+      "sha256": "0baa384803456ac155005351b93ac8408f0f9d419f2b5cc7b17d6772dbadec99",
+      "export_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+      "corners": [
+        {
+          "surface_samples": 98432,
+          "minimum_sampled_face_gap_m": 6.182093639192643e-05,
+          "maximum_sampled_face_gap_m": 0.00048013218450049244,
+          "corner": "FL",
+          "vertices": 14741,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.994078643525082e-05,
+          "maximum_gap_m": 0.00048013077100622636,
+          "median_gap_m": 0.00016012522747890778,
+          "p95_gap_m": 0.0004800498217893412
+        },
+        {
+          "surface_samples": 98432,
+          "minimum_sampled_face_gap_m": 6.174392329727496e-05,
+          "maximum_sampled_face_gap_m": 0.00048007579911163445,
+          "corner": "FR",
+          "vertices": 14755,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.994059171287371e-05,
+          "maximum_gap_m": 0.00048009247666000454,
+          "median_gap_m": 0.00039994030957679616,
+          "p95_gap_m": 0.0004800024748114057
+        },
+        {
+          "surface_samples": 98432,
+          "minimum_sampled_face_gap_m": 5.793962440150957e-05,
+          "maximum_sampled_face_gap_m": 0.00048013022799375804,
+          "corner": "RL",
+          "vertices": 14743,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.99409366272763e-05,
+          "maximum_gap_m": 0.00048012861919968786,
+          "median_gap_m": 0.00039995330152606257,
+          "p95_gap_m": 0.0004800523250613753
+        },
+        {
+          "surface_samples": 98432,
+          "minimum_sampled_face_gap_m": 5.788951797630615e-05,
+          "maximum_sampled_face_gap_m": 0.0004800824405187254,
+          "corner": "RR",
+          "vertices": 14749,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.994034808281314e-05,
+          "maximum_gap_m": 0.0004800750151398858,
+          "median_gap_m": 0.0003999412004780656,
+          "p95_gap_m": 0.00048000258426281195
+        }
+      ]
+    },
+    {
+      "report": "tire-lettering-near-fit.json",
+      "sha256": "9df355bce3dce5396878baccad519ec2f20a3874c533856a272a0ed2133acab3",
+      "export_sha256": "494bfb22107d188b7211e10af46cf3a7867c23f9eabd9af90d202abd52dbad90",
+      "corners": [
+        {
+          "surface_samples": 1024,
+          "minimum_sampled_face_gap_m": 6.054766182095328e-05,
+          "maximum_sampled_face_gap_m": 8.011507969085674e-05,
+          "corner": "FL",
+          "vertices": 294,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.994458275606409e-05,
+          "maximum_gap_m": 8.00951988471077e-05,
+          "median_gap_m": 8.004058932295499e-05,
+          "p95_gap_m": 8.006664408562319e-05
+        },
+        {
+          "surface_samples": 1024,
+          "minimum_sampled_face_gap_m": 6.046513387564234e-05,
+          "maximum_sampled_face_gap_m": 8.006260679432886e-05,
+          "corner": "FR",
+          "vertices": 297,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.994074525496941e-05,
+          "maximum_gap_m": 8.006283904599121e-05,
+          "median_gap_m": 8.000206775948815e-05,
+          "p95_gap_m": 8.00322608663917e-05
+        },
+        {
+          "surface_samples": 1024,
+          "minimum_sampled_face_gap_m": 5.669833672497515e-05,
+          "maximum_sampled_face_gap_m": 8.009207388071093e-05,
+          "corner": "RL",
+          "vertices": 291,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.99809170128063e-05,
+          "maximum_gap_m": 8.009884310833382e-05,
+          "median_gap_m": 8.004224551116934e-05,
+          "p95_gap_m": 8.00784448162506e-05
+        },
+        {
+          "surface_samples": 1024,
+          "minimum_sampled_face_gap_m": 5.665047130992695e-05,
+          "maximum_sampled_face_gap_m": 8.005353758819278e-05,
+          "corner": "RR",
+          "vertices": 291,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.995775812597028e-05,
+          "maximum_gap_m": 8.004820175516736e-05,
+          "median_gap_m": 8.000211621581044e-05,
+          "p95_gap_m": 8.003117680747962e-05
+        }
+      ]
+    },
+    {
+      "report": "tire-lettering-far-fit.json",
+      "sha256": "67e8b155c32c37607e5e8b49df8b728c9ae6180d5c082d66cefda45e0190cebe",
+      "export_sha256": "6f1d55c15c7db677907f04e360f2bc5c80a0210839a4c2fcb63ea15a5482723e",
+      "corners": [
+        {
+          "surface_samples": 728,
+          "minimum_sampled_face_gap_m": 6.416675425816032e-05,
+          "maximum_sampled_face_gap_m": 8.012473884247417e-05,
+          "corner": "FL",
+          "vertices": 220,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.997020388844645e-05,
+          "maximum_gap_m": 8.009490490701321e-05,
+          "median_gap_m": 8.004054930786653e-05,
+          "p95_gap_m": 8.007865889385484e-05
+        },
+        {
+          "surface_samples": 728,
+          "minimum_sampled_face_gap_m": 6.414741539925717e-05,
+          "maximum_sampled_face_gap_m": 8.007539471582836e-05,
+          "corner": "FR",
+          "vertices": 223,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.997003654447443e-05,
+          "maximum_gap_m": 8.00614917232656e-05,
+          "median_gap_m": 8.000227663376713e-05,
+          "p95_gap_m": 8.003221677780337e-05
+        },
+        {
+          "surface_samples": 728,
+          "minimum_sampled_face_gap_m": 5.967731346770422e-05,
+          "maximum_sampled_face_gap_m": 8.010603260763527e-05,
+          "corner": "RL",
+          "vertices": 217,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.997076130256131e-05,
+          "maximum_gap_m": 8.009050799587247e-05,
+          "median_gap_m": 8.003882784207716e-05,
+          "p95_gap_m": 8.007247226031744e-05
+        },
+        {
+          "surface_samples": 728,
+          "minimum_sampled_face_gap_m": 5.9652560753326034e-05,
+          "maximum_sampled_face_gap_m": 8.004748581535992e-05,
+          "corner": "RR",
+          "vertices": 217,
+          "ray_misses": 0,
+          "minimum_gap_m": 7.995699522445054e-05,
+          "maximum_gap_m": 8.004719821980144e-05,
+          "median_gap_m": 8.000242879901975e-05,
+          "p95_gap_m": 8.003201673955628e-05
+        }
+      ]
+    }
+  ],
+  "export_preservation": {
+    "passed": true,
+    "levels": [
+      {
+        "file": "Porsche_911_GT3RS_Development.glb",
+        "sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+        "unrelated_buffer_bytes_and_metadata_unchanged": true,
+        "updated_letter_bounds": 4,
+        "maximum_normal_unit_error": 5.960464477539063e-08,
+        "maximum_normal_tangent_dot": 8.940696716308594e-08,
+        "meaningful_triangles_checked": 98232,
+        "inverted_triangles_above_1e_9_m2": 0,
+        "microscopic_legacy_sliver_orientation_changes": 18,
+        "maximum_original_sliver_area_m2": 7.212008767965017e-11
+      },
+      {
+        "file": "Porsche_911_GT3RS_LOD1.glb",
+        "sha256": "494bfb22107d188b7211e10af46cf3a7867c23f9eabd9af90d202abd52dbad90",
+        "unrelated_buffer_bytes_and_metadata_unchanged": true,
+        "updated_letter_bounds": 4,
+        "maximum_normal_unit_error": 5.960464477539063e-08,
+        "maximum_normal_tangent_dot": 2.3981556296348572e-08,
+        "meaningful_triangles_checked": 1008,
+        "inverted_triangles_above_1e_9_m2": 0,
+        "microscopic_legacy_sliver_orientation_changes": 9,
+        "maximum_original_sliver_area_m2": 7.212008767965017e-11
+      },
+      {
+        "file": "Porsche_911_GT3RS_LOD2.glb",
+        "sha256": "6f1d55c15c7db677907f04e360f2bc5c80a0210839a4c2fcb63ea15a5482723e",
+        "unrelated_buffer_bytes_and_metadata_unchanged": true,
+        "updated_letter_bounds": 4,
+        "maximum_normal_unit_error": 5.960464477539063e-08,
+        "maximum_normal_tangent_dot": 2.223532646894455e-08,
+        "meaningful_triangles_checked": 712,
+        "inverted_triangles_above_1e_9_m2": 0,
+        "microscopic_legacy_sliver_orientation_changes": 9,
+        "maximum_original_sliver_area_m2": 7.212008767965017e-11
+      }
+    ],
+    "limits": [
+      "Scoped export preservation and local face orientation above 1e-9 square metres; microscopic legacy font slivers are counted separately",
+      "Not full-vehicle clearance or visual approval"
+    ]
+  },
+  "editable_source_parity": {
+    "passed": true,
+    "sources": [
+      {
+        "source": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies\\tire-lettering-authoring\\Porsche_911_GT3RS_Development.blend",
+        "source_sha256": "4ab40d6bea7818827d96451f8b41d616c6442478586cd4652d0a79db1fd331be",
+        "export": "Porsche_911\\studies\\tire-lettering-candidates\\Porsche_911_GT3RS_Development.glb",
+        "export_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+        "corners": [
+          {
+            "corner": "FL",
+            "maximum_bidirectional_point_error_m": 3.322946965304893e-07,
+            "source_vertices": 14392,
+            "export_vertices": 14741
+          },
+          {
+            "corner": "FR",
+            "maximum_bidirectional_point_error_m": 2.2522062568553544e-07,
+            "source_vertices": 14392,
+            "export_vertices": 14755
+          },
+          {
+            "corner": "RL",
+            "maximum_bidirectional_point_error_m": 3.8662421713817463e-07,
+            "source_vertices": 14392,
+            "export_vertices": 14743
+          },
+          {
+            "corner": "RR",
+            "maximum_bidirectional_point_error_m": 2.0199624638966133e-07,
+            "source_vertices": 14392,
+            "export_vertices": 14749
+          }
+        ]
+      },
+      {
+        "source": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies\\tire-lettering-authoring\\Porsche_911_GT3RS_DetailCandidate.blend",
+        "source_sha256": "1f10f1c0ea7929aa97e06a6d8c8f7ec355a3df9d9d6da05030116b844f4f74c4",
+        "export": "Porsche_911\\studies\\tire-lettering-candidates\\Porsche_911_GT3RS_DetailCandidate.glb",
+        "export_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+        "corners": [
+          {
+            "corner": "FL",
+            "maximum_bidirectional_point_error_m": 3.322946965304893e-07,
+            "source_vertices": 14392,
+            "export_vertices": 14741
+          },
+          {
+            "corner": "FR",
+            "maximum_bidirectional_point_error_m": 2.2522062568553544e-07,
+            "source_vertices": 14392,
+            "export_vertices": 14755
+          },
+          {
+            "corner": "RL",
+            "maximum_bidirectional_point_error_m": 3.8662421713817463e-07,
+            "source_vertices": 14392,
+            "export_vertices": 14743
+          },
+          {
+            "corner": "RR",
+            "maximum_bidirectional_point_error_m": 2.0199624638966133e-07,
+            "source_vertices": 14392,
+            "export_vertices": 14749
+          }
+        ]
+      },
+      {
+        "source": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies\\tire-lettering-authoring\\Porsche_911_GT3RS_LOD1.blend",
+        "source_sha256": "b52eb200a50cb064d5a0765e07a4ced74f8c9cb2de60e5e33892048f301bfc57",
+        "export": "Porsche_911\\studies\\tire-lettering-candidates\\Porsche_911_GT3RS_LOD1.glb",
+        "export_sha256": "494bfb22107d188b7211e10af46cf3a7867c23f9eabd9af90d202abd52dbad90",
+        "corners": [
+          {
+            "corner": "FL",
+            "maximum_bidirectional_point_error_m": 3.0593273129216215e-07,
+            "source_vertices": 288,
+            "export_vertices": 294
+          },
+          {
+            "corner": "FR",
+            "maximum_bidirectional_point_error_m": 2.0833098641604407e-07,
+            "source_vertices": 288,
+            "export_vertices": 297
+          },
+          {
+            "corner": "RL",
+            "maximum_bidirectional_point_error_m": 3.5429335662800084e-07,
+            "source_vertices": 288,
+            "export_vertices": 291
+          },
+          {
+            "corner": "RR",
+            "maximum_bidirectional_point_error_m": 1.7861630653906293e-07,
+            "source_vertices": 288,
+            "export_vertices": 291
+          }
+        ]
+      },
+      {
+        "source": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies\\tire-lettering-authoring\\Porsche_911_GT3RS_LOD2.blend",
+        "source_sha256": "be3ebf4a01e3159a291068a19dc67f88a2bbbe882c8f443041a66c910697c2ae",
+        "export": "Porsche_911\\studies\\tire-lettering-candidates\\Porsche_911_GT3RS_LOD2.glb",
+        "export_sha256": "6f1d55c15c7db677907f04e360f2bc5c80a0210839a4c2fcb63ea15a5482723e",
+        "corners": [
+          {
+            "corner": "FL",
+            "maximum_bidirectional_point_error_m": 2.8667379170894895e-07,
+            "source_vertices": 214,
+            "export_vertices": 220
+          },
+          {
+            "corner": "FR",
+            "maximum_bidirectional_point_error_m": 1.9988962901078175e-07,
+            "source_vertices": 214,
+            "export_vertices": 223
+          },
+          {
+            "corner": "RL",
+            "maximum_bidirectional_point_error_m": 3.5171867444868085e-07,
+            "source_vertices": 214,
+            "export_vertices": 217
+          },
+          {
+            "corner": "RR",
+            "maximum_bidirectional_point_error_m": 1.7957735749962195e-07,
+            "source_vertices": 214,
+            "export_vertices": 217
+          }
+        ]
+      }
+    ],
+    "scope": "Bidirectional resting lettering position clouds between editable candidates and scoped exports; not topology or split-normal equivalence",
+    "complete": false
+  },
+  "native_asset_equivalence": {
+    "passed": true,
+    "checker_sha256": "3d6a0d42b05ee555843e7ec872f24f17068f2d10b824b768f0a07dd0b02a6103",
+    "levels": [
+      {
+        "source_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+        "runtime_sha256": "8120e8c16bc11ae676a472ac58fd7f69a98f6ffebb181c6e1b46db8b25e591a7",
+        "triangles_compared": 682643,
+        "primitives_checked": 302,
+        "morph_targets_checked": 8,
+        "embedded_images_verified": 52,
+        "maximum_vertices_per_primitive": 60000,
+        "attributes_targets_winding_hierarchy_materials_images_retained": true,
+        "level": "hero"
+      },
+      {
+        "source_sha256": "494bfb22107d188b7211e10af46cf3a7867c23f9eabd9af90d202abd52dbad90",
+        "runtime_sha256": "630c95bec69029188ce94704ec5efe9b1ca1b988a5482f0efb0eedcc7c86b744",
+        "triangles_compared": 219809,
+        "primitives_checked": 304,
+        "morph_targets_checked": 8,
+        "embedded_images_verified": 27,
+        "maximum_vertices_per_primitive": 27961,
+        "attributes_targets_winding_hierarchy_materials_images_retained": true,
+        "level": "near"
+      },
+      {
+        "source_sha256": "6f1d55c15c7db677907f04e360f2bc5c80a0210839a4c2fcb63ea15a5482723e",
+        "runtime_sha256": "f34f86820d44e5b4cbddea3fa9d14d2103708bf2d2720ddacf30fc94bf3a16c3",
+        "triangles_compared": 158608,
+        "primitives_checked": 303,
+        "morph_targets_checked": 8,
+        "embedded_images_verified": 27,
+        "maximum_vertices_per_primitive": 15567,
+        "attributes_targets_winding_hierarchy_materials_images_retained": true,
+        "level": "far"
+      }
+    ],
+    "limits": [
+      "Exact source triangle-corner data comparison; native renderer, animation, collision and performance need separate tests"
+    ]
+  },
+  "native_qa": {
+    "passed": true,
+    "checks": 138,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 1.72295e-07,
+    "maximum_radial_drift_m": 4.98954e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 12.0373,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "native_qa_log_sha256": "c97aea129954feeada8be3f198a190977e8ffd71610537a17ae5bfab7e6e93ea",
+  "exe_sha256": "bec3a8757afa2dc89f6eeecb9f7a75b5b5e7920cd8343012a33a37c9b00fe626",
+  "images": [
+    {
+      "path": "screenshots/porsche-tire-lettering-before.png",
+      "sha256": "e43894292cac430c27a12a07a0c2c3adfec5d55a10fd185866101992b85bf332",
+      "scope": "Matched Cycles close-up of actual exported model, not native framebuffer"
+    },
+    {
+      "path": "screenshots/porsche-tire-lettering-after.png",
+      "sha256": "3c9937bee9199249f66251db5fa05161944996ed3a094741eb67e91d242c53d4",
+      "scope": "Matched Cycles close-up of actual exported model, not native framebuffer"
+    },
+    {
+      "path": "screenshots/porsche-lettering-integrated-front.png",
+      "sha256": "883b454eb32223eeaf5c814d36ad8a35d3eadccd01073f1b42c0424898fb717e",
+      "scope": "Current native game QA framebuffer; broad integration view"
+    }
+  ],
+  "promotion": {
+    "promoted_at": "2026-10-29T11:33:40.986203+00:00",
+    "backup": "Porsche_911\\studies\\baseline-before-tire-lettering",
+    "levels": [
+      {
+        "file": "Porsche_911_GT3RS_Development.glb",
+        "before_sha256": "024324e72af6090d49503aad05bd4f0a7a319c751bc4237b0b292720006cc421",
+        "after_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+        "changed_bytes": 1740868,
+        "only_letter_position_normal_tangent_buffer_bytes_changed": true,
+        "metadata_changes": "Letter POSITION accessor min/max updated to fitted bounds; all other parsed JSON retained",
+        "corners": [
+          {
+            "corner": "FL",
+            "vertices": 14741,
+            "before_gap_range_m": [
+              0.0028006080134991562,
+              0.006658889021380954
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              0.0004800656472076781
+            ],
+            "maximum_reposition_m": 0.007433000151093269
+          },
+          {
+            "corner": "FR",
+            "vertices": 14755,
+            "before_gap_range_m": [
+              0.002800645482810865,
+              0.006658927169360562
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              0.00048000376085569063
+            ],
+            "maximum_reposition_m": 0.007433024839669662
+          },
+          {
+            "corner": "RL",
+            "vertices": 14743,
+            "before_gap_range_m": [
+              0.002312263833750633,
+              0.006541810152629529
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              0.0004800691714972327
+            ],
+            "maximum_reposition_m": 0.007490631066069846
+          },
+          {
+            "corner": "RR",
+            "vertices": 14749,
+            "before_gap_range_m": [
+              0.00231224326011209,
+              0.006541804063898121
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              0.00048000395136940655
+            ],
+            "maximum_reposition_m": 0.007490658635486433
+          }
+        ]
+      },
+      {
+        "file": "Porsche_911_GT3RS_LOD1.glb",
+        "before_sha256": "9ebcc19692aa700fafa2ccb5bff647498964bc11a35e6fbaaa361a857d10ed28",
+        "after_sha256": "494bfb22107d188b7211e10af46cf3a7867c23f9eabd9af90d202abd52dbad90",
+        "changed_bytes": 37262,
+        "only_letter_position_normal_tangent_buffer_bytes_changed": true,
+        "metadata_changes": "Letter POSITION accessor min/max updated to fitted bounds; all other parsed JSON retained",
+        "corners": [
+          {
+            "corner": "FL",
+            "vertices": 294,
+            "before_gap_range_m": [
+              0.003019655623121814,
+              0.006475649263814803
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              8.006555039846708e-05
+            ],
+            "maximum_reposition_m": 0.00761719722391096
+          },
+          {
+            "corner": "FR",
+            "vertices": 297,
+            "before_gap_range_m": [
+              0.002982646274370143,
+              0.006475657646499239
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              8.000376031935819e-05
+            ],
+            "maximum_reposition_m": 0.007617250099389858
+          },
+          {
+            "corner": "RL",
+            "vertices": 291,
+            "before_gap_range_m": [
+              0.0025211450770307176,
+              0.0063634877782573485
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              8.006907468804947e-05
+            ],
+            "maximum_reposition_m": 0.007676029867075855
+          },
+          {
+            "corner": "RR",
+            "vertices": 291,
+            "before_gap_range_m": [
+              0.0025211267409391003,
+              0.0063634668253919335
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              8.000395083304634e-05
+            ],
+            "maximum_reposition_m": 0.007676071567804467
+          }
+        ]
+      },
+      {
+        "file": "Porsche_911_GT3RS_LOD2.glb",
+        "before_sha256": "765598e0f325ec62c88f0170ead5955d525c00ef938b58874da3243270646e3d",
+        "after_sha256": "6f1d55c15c7db677907f04e360f2bc5c80a0210839a4c2fcb63ea15a5482723e",
+        "changed_bytes": 27886,
+        "only_letter_position_normal_tangent_buffer_bytes_changed": true,
+        "metadata_changes": "Letter POSITION accessor min/max updated to fitted bounds; all other parsed JSON retained",
+        "corners": [
+          {
+            "corner": "FL",
+            "vertices": 220,
+            "before_gap_range_m": [
+              0.0030459485793355723,
+              0.006662003185705062
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              8.006555039846708e-05
+            ],
+            "maximum_reposition_m": 0.007794795072339167
+          },
+          {
+            "corner": "FR",
+            "vertices": 223,
+            "before_gap_range_m": [
+              0.003045499987099798,
+              0.006661951963744722
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              8.000376031935819e-05
+            ],
+            "maximum_reposition_m": 0.007794876319347001
+          },
+          {
+            "corner": "RL",
+            "vertices": 217,
+            "before_gap_range_m": [
+              0.002521472902576982,
+              0.006601921258520105
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              8.006907468804947e-05
+            ],
+            "maximum_reposition_m": 0.007903541105166823
+          },
+          {
+            "corner": "RR",
+            "vertices": 217,
+            "before_gap_range_m": [
+              0.002521439665324171,
+              0.006601915206815884
+            ],
+            "new_gap_range_m": [
+              7.999999999999674e-05,
+              8.000395083304634e-05
+            ],
+            "maximum_reposition_m": 0.007903597082112373
+          }
+        ]
+      }
+    ],
+    "editable_sources": [
+      {
+        "path": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\Porsche_911_GT3RS_Development.blend",
+        "sha256": "4ab40d6bea7818827d96451f8b41d616c6442478586cd4652d0a79db1fd331be"
+      },
+      {
+        "path": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\Porsche_911_GT3RS_DetailCandidate.blend",
+        "sha256": "1f10f1c0ea7929aa97e06a6d8c8f7ec355a3df9d9d6da05030116b844f4f74c4"
+      },
+      {
+        "path": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies\\runtime-lods\\Porsche_911_GT3RS_LOD1.blend",
+        "sha256": "b52eb200a50cb064d5a0765e07a4ced74f8c9cb2de60e5e33892048f301bfc57"
+      },
+      {
+        "path": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies\\runtime-lods\\Porsche_911_GT3RS_LOD2.blend",
+        "sha256": "be3ebf4a01e3159a291068a19dc67f88a2bbbe882c8f443041a66c910697c2ae"
+      }
+    ],
+    "scope": "Tire lettering only; body, tire carcass, suspension and moving rig unchanged",
+    "complete": false
+  },
+  "visual_observations": [
+    "Previously raised words cast a detached shadow and looked like separate cutout letters",
+    "Fitted words follow the rubber curvature and sit just above the molded boundary ring",
+    "Matched white paint, red enamel wheel and gold brake finish are retained"
+  ],
+  "limits": [
+    "Surface checks sample vertices, edge midpoints and triangle centroids; not a continuous contact proof.",
+    "The source font contains microscopic sliver triangles; orientation changes below 1e-9 square metres are recorded separately in the preservation evidence.",
+    "Editable-source parity compares resting point clouds, not topology or split-normal identity.",
+    "Front tire/fender contact under steered compression remains unresolved.",
+    "Requested final visual fidelity, full-game frame rate and GitHub publication remain incomplete."
+  ],
+  "complete": false
+}
