@@ -9,6 +9,14 @@
 namespace bw {
 PorscheRig::PorscheRig(std::span<const porsche_data::RigNode> nodes,std::span<const porsche_data::SpringSpec> springs):source(nodes),local(nodes.size()),world(nodes.size()),restInverse(nodes.size()) {
     for(std::size_t i=0;i<nodes.size();++i){names.emplace(nodes[i].name,static_cast<int>(i));local[i]=nodes[i].local;world[i]=nodes[i].world;restInverse[i]=MatrixInvert(nodes[i].world);}
+    std::vector<unsigned char> state(nodes.size(),0);
+    std::function<void(int)> visit=[&](int i){
+        if(i<0||static_cast<std::size_t>(i)>=source.size())throw std::runtime_error("Porsche rig parent outside hierarchy");
+        if(state[i]==2)return;if(state[i]==1)throw std::runtime_error("Porsche rig hierarchy cycle");
+        state[i]=1;const int parent=source[i].parent;if(parent>=0)visit(parent);
+        hierarchyOrder.push_back(i);state[i]=2;
+    };
+    for(std::size_t i=0;i<nodes.size();++i)visit(static_cast<int>(i));
     suspension=std::make_unique<PorscheSuspension>(*this,springs);
     Pose({});
 }
@@ -27,9 +35,9 @@ void PorscheRig::Rotate(const std::string& name,Vector3 axis,float angle){
 }
 void PorscheRig::Translate(const std::string& name,Vector3 delta){const int i=Find(name);if(i>=0){local[i].m12+=delta.x;local[i].m13+=delta.y;local[i].m14+=delta.z;}}
 void PorscheRig::Refresh(){
-    std::vector<unsigned char> state(source.size(),0);
-    std::function<void(int)> visit=[&](int i){if(state[i]==2)return;if(state[i]==1)throw std::runtime_error("Porsche rig hierarchy cycle");state[i]=1;const int p=source[i].parent;if(p>=0){visit(p);world[i]=MatrixMultiply(local[i],world[p]);}else world[i]=local[i];state[i]=2;};
-    for(std::size_t i=0;i<source.size();++i)visit(static_cast<int>(i));
+    // The parent graph is immutable. Validate and sort it once at load time;
+    // every pose then follows the same parent-before-child multiplication order.
+    for(int i:hierarchyOrder){const int parent=source[i].parent;world[i]=parent>=0?MatrixMultiply(local[i],world[parent]):local[i];}
 }
 void PorscheRig::WingLinkages(){
     for(const char* side:{"L","R"}){

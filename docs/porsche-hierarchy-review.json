@@ -1,0 +1,538 @@
+{
+  "reviewed_at": "2026-10-29T06:47:43.240906+00:00",
+  "stage": "Cached immutable rig hierarchy traversal",
+  "baseline_commit": "84baa8810e76eefb6de1e40e95cb77f16064fc15",
+  "source_hashes": {
+    "src/breakwater/porsche_rig.cpp": "a4adca5c141cef34a81d5e0b397735f535fc9e7075bde0cbd178014e9b8af933",
+    "src/breakwater/porsche_native.hpp": "f93421c6c3cee2e3fecd490b919e7899257f36790f6958a98082a744b92379a3"
+  },
+  "executable_sha256": "4f65b6162f60f04972cd72ac170189895c835561ea3e4fd5c7b834a320029608",
+  "native_qa": {
+    "passed": true,
+    "checks": 125,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "checks": [
+    {
+      "name": "dedicated-native-shader-and-linear-environment-ready",
+      "passed": true
+    },
+    {
+      "name": "native-GGX-atlas-DFG-and-diffuse-irradiance-match-independent-GPU-probes",
+      "passed": true
+    },
+    {
+      "name": "floating-AO-depth-normal-plane-and-contact-fixtures",
+      "passed": true
+    },
+    {
+      "name": "native-sun-shadow-depth-and-lookup-match-analytic-occluders",
+      "passed": true
+    },
+    {
+      "name": "world-sun-shadow-receivers-match-analytic-occlusion-and-filtering",
+      "passed": true
+    },
+    {
+      "name": "native-mirror-reflection-crop-and-oblique-clip-match-source-rig",
+      "passed": true
+    },
+    {
+      "name": "enter-parked-porsche",
+      "passed": true
+    },
+    {
+      "name": "pickup-retained-after-swap",
+      "passed": true
+    },
+    {
+      "name": "native-level-load",
+      "passed": true
+    },
+    {
+      "name": "native-zero-pose-matches-production-Three-rig",
+      "passed": true
+    },
+    {
+      "name": "column-centre-matches-circular-horn-hub-fit",
+      "passed": true
+    },
+    {
+      "name": "column-axis-matches-authored-fit",
+      "passed": true
+    },
+    {
+      "name": "all-wheel-surfaces-bound",
+      "passed": true
+    },
+    {
+      "name": "native-level-load",
+      "passed": true
+    },
+    {
+      "name": "native-zero-pose-matches-production-Three-rig",
+      "passed": true
+    },
+    {
+      "name": "column-centre-matches-circular-horn-hub-fit",
+      "passed": true
+    },
+    {
+      "name": "column-axis-matches-authored-fit",
+      "passed": true
+    },
+    {
+      "name": "all-wheel-surfaces-bound",
+      "passed": true
+    },
+    {
+      "name": "native-level-load",
+      "passed": true
+    },
+    {
+      "name": "native-zero-pose-matches-production-Three-rig",
+      "passed": true
+    },
+    {
+      "name": "column-centre-matches-circular-horn-hub-fit",
+      "passed": true
+    },
+    {
+      "name": "column-axis-matches-authored-fit",
+      "passed": true
+    },
+    {
+      "name": "all-wheel-surfaces-bound",
+      "passed": true
+    },
+    {
+      "name": "native-wheel-plane-invariant",
+      "passed": true
+    },
+    {
+      "name": "native-wheel-radius-invariant",
+      "passed": true
+    },
+    {
+      "name": "native-DRS-linkages-match-production-rig",
+      "passed": true
+    },
+    {
+      "name": "native-airbrake-linkages-match-production-rig",
+      "passed": true
+    },
+    {
+      "name": "native-independent-controls-match-production-rig",
+      "passed": true
+    },
+    {
+      "name": "native-suspension-and-spring-reference-sweep",
+      "passed": true
+    },
+    {
+      "name": "each-game-contact-drives-its-matching-physical-wheel",
+      "passed": true
+    },
+    {
+      "name": "nonfinite-telemetry-recovers-to-finite-neutral-pose",
+      "passed": true
+    },
+    {
+      "name": "native-stopwatch-hands-match-production-rig-all-detail-levels",
+      "passed": true
+    },
+    {
+      "name": "rearview-shell-and-optic-adjustment-match-source-and-angle-limits",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-start-pause-retains-elapsed-simulation-time",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-retains-full-elapsed-time-across-a-long-frame",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-resumes-while-parked",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-reset",
+      "passed": true
+    },
+    {
+      "name": "stopwatch-upper-limit-stops",
+      "passed": true
+    },
+    {
+      "name": "displays-use-signed-game-speed-rpm-and-correct-corner-temperatures",
+      "passed": true
+    },
+    {
+      "name": "invalid-display-telemetry-stays-finite",
+      "passed": true
+    },
+    {
+      "name": "native-shadow-high-and-low-targets-ready",
+      "passed": true
+    },
+    {
+      "name": "parked-shadow-cache-reuses-map-under-camera-and-world-translation",
+      "passed": true
+    },
+    {
+      "name": "moving-parts-and-body-orientation-refresh-shadow-depth",
+      "passed": true
+    },
+    {
+      "name": "shadow-targets-follow-independent-vehicle-slots",
+      "passed": true
+    },
+    {
+      "name": "shadow-pass-restores-main-camera-matrices-and-framebuffer",
+      "passed": true
+    },
+    {
+      "name": "all-posed-car-caster-bounds-fit-shadow-map",
+      "passed": true
+    },
+    {
+      "name": "actual-road-and-terrain-car-shadows-match-posed-triangle-rays",
+      "passed": true
+    },
+    {
+      "name": "porsche-drives-under-game-physics",
+      "passed": true
+    },
+    {
+      "name": "game-steering-turns-car-toward-front-tyres",
+      "passed": true
+    },
+    {
+      "name": "game-brake-reduces-speed",
+      "passed": true
+    },
+    {
+      "name": "finite-game-pose",
+      "passed": true
+    },
+    {
+      "name": "parked-wheel-angles-remain-still",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-front.png",
+      "passed": true
+    },
+    {
+      "name": "unresolved-front-wire-renders-filtered-backing",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-open.png",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-suspension-rest.png",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-suspension-cross.png",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-grille-close.png",
+      "passed": true
+    },
+    {
+      "name": "resolved-front-wire-renders-physical-screen",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-steering-negative.png",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-steering-centre.png",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-steering-positive.png",
+      "passed": true
+    },
+    {
+      "name": "unchanged-screen-state-reuses-render-targets",
+      "passed": true
+    },
+    {
+      "name": "export-rest-live-display",
+      "passed": true
+    },
+    {
+      "name": "export-rest-live-display",
+      "passed": true
+    },
+    {
+      "name": "export-rest-live-display",
+      "passed": true
+    },
+    {
+      "name": "export-rest-live-display",
+      "passed": true
+    },
+    {
+      "name": "GPU-display-pixels-change-with-driving-telemetry",
+      "passed": true
+    },
+    {
+      "name": "export-driving-live-display",
+      "passed": true
+    },
+    {
+      "name": "GPU-display-pixels-change-with-driving-telemetry",
+      "passed": true
+    },
+    {
+      "name": "export-driving-live-display",
+      "passed": true
+    },
+    {
+      "name": "GPU-display-pixels-change-with-driving-telemetry",
+      "passed": true
+    },
+    {
+      "name": "export-driving-live-display",
+      "passed": true
+    },
+    {
+      "name": "GPU-display-pixels-change-with-driving-telemetry",
+      "passed": true
+    },
+    {
+      "name": "export-driving-live-display",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-live-cockpit.png",
+      "passed": true
+    },
+    {
+      "name": "all-four-live-displays-bound-after-actual-detail-level-draws",
+      "passed": true
+    },
+    {
+      "name": "changed-telemetry-is-throttled-within-one-display-tick",
+      "passed": true
+    },
+    {
+      "name": "changed-telemetry-refreshes-on-next-display-tick",
+      "passed": true
+    },
+    {
+      "name": "parked-and-occupied-cars-have-independent-display-targets",
+      "passed": true
+    },
+    {
+      "name": "vehicle-swap-keeps-each-stopwatch-with-its-car",
+      "passed": true
+    },
+    {
+      "name": "offscreen-displays-and-mirrors-restore-main-camera-and-UI-matrices",
+      "passed": true
+    },
+    {
+      "name": "three-native-scene-mirror-targets-ready",
+      "passed": true
+    },
+    {
+      "name": "actual-scene-reflection-textures-bind-on-all-three-detail-levels",
+      "passed": true
+    },
+    {
+      "name": "export-native-scene-mirror-marker-view",
+      "passed": true
+    },
+    {
+      "name": "export-native-scene-mirror-marker-view",
+      "passed": true
+    },
+    {
+      "name": "export-native-scene-mirror-marker-view",
+      "passed": true
+    },
+    {
+      "name": "all-three-mirrors-show-real-scene-markers-at-projected-positions",
+      "passed": true
+    },
+    {
+      "name": "moving-world-geometry-updates-all-three-scene-mirrors",
+      "passed": true
+    },
+    {
+      "name": "GPU-oblique-plane-rejects-geometry-behind-silvered-face",
+      "passed": true
+    },
+    {
+      "name": "export-main-cockpit-with-live-mirror-marker-geometry",
+      "passed": true
+    },
+    {
+      "name": "visible-mirrors-composite-scene-markers-at-physical-reflection-positions",
+      "passed": true
+    },
+    {
+      "name": "mirror-scheduler-caps-normal-updates-and-prevents-recursion",
+      "passed": true
+    },
+    {
+      "name": "opening-door-moves-real-optical-plane-and-reflection-camera",
+      "passed": true
+    },
+    {
+      "name": "low-preset-reallocates-and-renders-all-mirror-targets",
+      "passed": true
+    },
+    {
+      "name": "vehicle-swap-keeps-parked-car-mirrors-separate-from-occupied-slot",
+      "passed": true
+    },
+    {
+      "name": "screenshots/porsche-native-scene-mirrors.png",
+      "passed": true
+    },
+    {
+      "name": "HUD-pixel-coordinates-survive-reflection-and-display-passes",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-shadow-review-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "directional-shadow-replaces-only-the-Porsche-placeholder-blob",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-world-shadow-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "main-view-floating-normal-depth-and-AO-targets-ready",
+      "passed": true
+    },
+    {
+      "name": "moving-only-the-glazing-does-not-create-AO-occluders",
+      "passed": true
+    },
+    {
+      "name": "posed-steering-updates-visible-depth-and-contact-shading",
+      "passed": true
+    },
+    {
+      "name": "actual-scene-AO-buffers-have-finite-unit-normals-and-visibility",
+      "passed": true
+    },
+    {
+      "name": "low-preset-computes-contact-shading-at-half-resolution",
+      "passed": true
+    },
+    {
+      "name": "AO-depth-compute-and-blur-restore-main-UI-matrices",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    }
+  ],
+  "change": "Validate and topologically order immutable parent graph once in constructor; reuse parent-before-child order on pose refresh without per-refresh allocations or recursive traversal",
+  "performance_gain_measured": false,
+  "previous_performance_baseline": "docs/porsche-culling-performance-review.json",
+  "limits": [
+    "Native reference/pose regression only; no new frame-time claim",
+    "Earlier image and performance receipts remain historical at their recorded executable hashes"
+  ],
+  "complete": false
+}
