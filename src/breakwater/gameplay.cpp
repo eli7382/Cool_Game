@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "porsche_native.hpp"
 #include "porsche_rear_steering.hpp"
+#include "porsche_front_steering.hpp"
 #include "porsche_pedals.hpp"
 
 namespace bw {
@@ -1164,7 +1165,7 @@ void UpdateCar(float dt){
     const float estimatedLongitudinal=tireLongitudinalDemand+externalLongitudinal;
     g.car.steer=Lerp(g.car.steer,steerInput,Clamp(dt*Lerp(2.0f,7.5f,g.car.steeringHealth),0,1));
     const float forwardSpeed=Vector3DotProduct(g.car.velocity,f),lateral=Vector3DotProduct(g.car.velocity,r);
-    const float steerAngle=g.car.steer*.57f*Lerp(.24f,1.0f,g.car.steeringHealth)*(forwardSpeed>=0?1.0f:-1.0f);
+    const float steerAngle=(g.car.isPorsche?PorscheFrontSteeringAngle(g.car.steer,g.car.steeringHealth):g.car.steer*.57f*Lerp(.24f,1.0f,g.car.steeringHealth))*(forwardSpeed>=0?1.0f:-1.0f);
     const float frontSlip=atan2f(lateral+g.car.yawRate*1.34f,std::max(1.0f,fabsf(forwardSpeed)))-steerAngle;
     const float rearSteer=g.car.isPorsche?PorscheRearSteeringAngle(g.car.steer*Lerp(.24f,1.0f,g.car.steeringHealth),forwardSpeed)*(forwardSpeed>=0?1.0f:-1.0f):0.0f;
     const float rearSlip=atan2f(lateral-g.car.yawRate*1.42f,std::max(1.0f,fabsf(forwardSpeed)))-rearSteer;
