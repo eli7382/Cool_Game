@@ -34,6 +34,7 @@ uniform vec4 channels; // UV set for albedo, ORM, base normal, coat normal
 uniform vec2 normalStrength;
 uniform vec2 emissiveMap; // has map, UV set
 uniform vec2 detailRepeat;
+uniform float specularAA = 1.0; // bounded screen-space normal-variance filtering
 uniform float liveDisplay; // render targets have the opposite V origin to PNG maps
 const float PI=3.14159265359;
 vec2 uv(float channel){return channel>.5?uv1*detailRepeat:uv0;}
@@ -47,6 +48,14 @@ vec3 surfaceNormal(vec3 n,sampler2D map,float channel,float strength){
     tangent=normalize(tangent)*sign(det);bitangent=normalize(bitangent)*sign(det);
     vec3 detail=texture(map,t).xyz*2.0-1.0;detail.xy*=strength;
     return normalize(tangent*detail.x+bitangent*detail.y+n*detail.z);
+}
+// Broaden the GGX alpha-squared footprint where normals change within a
+// pixel. Convert back to perceptual roughness for the shared direct/IBL path.
+float filteredRoughness(float perceptual,vec3 normal){
+    vec3 dx=dFdx(normal),dy=dFdy(normal);
+    float variance=.15*(dot(dx,dx)+dot(dy,dy));
+    float kernel=min(2.0*variance,.2)*clamp(specularAA,0.0,1.0);
+    return sqrt(sqrt(min(1.0,pow(perceptual,4.0)+kernel)));
 }
 vec3 fresnel(float cosine,vec3 f0){return f0+(1.0-f0)*pow(1.0-clamp(cosine,0.0,1.0),5.0);}
 float distribution(float nh,float rough){float a=max(.002,rough*rough),a2=a*a,d=nh*nh*(a2-1.0)+1.0;return a2/max(PI*d*d,1e-12);}
@@ -98,12 +107,16 @@ void main(){
     vec4 color=baseFactor;
     vec2 displayUV=vec2(uv0.x,1.0-uv0.y);
     if(maps.x>.5||liveDisplay>.5){vec4 texel=texture(texture0,liveDisplay>.5?displayUV:uv(channels.x));color*=vec4(srgb(texel.rgb),texel.a);}
-    if(optics.w>.5&&optics.w<1.5&&color.a<optics.z)discard;
+
     vec3 ormSample=maps.y>.5?texture(texture1,uv(channels.y)).rgb:vec3(1);
     float metallic=clamp(pbr.x*ormSample.b,0.0,1.0),rough=clamp(pbr.y*ormSample.g,.045,1.0);
     vec3 geometric=normalize(worldNormal)*(gl_FrontFacing?1.0:-1.0),n=geometric;
     if(maps.z>.5)n=surfaceNormal(geometric,texture2,channels.z,normalStrength.x);
     vec3 coatN=geometric;if(maps.w>.5)coatN=surfaceNormal(geometric,texture3,channels.w,normalStrength.y);
+    rough=filteredRoughness(rough,n);
+    float coatRough=filteredRoughness(clamp(pbr.w,.04,1.0),coatN);
+    // Evaluate derivatives before alpha-mask discard.
+    if(optics.w>.5&&optics.w<1.5&&color.a<optics.z)discard;
     // Same incoming sun direction as the game's world shader.
     vec3 v=normalize(eyePosition-worldPosition),l=normalize(vec3(.42,.88,-.28)),h=normalize(v+l);
     float nv=max(dot(n,v),.001),nl=max(dot(n,l),0.0),nh=max(dot(n,h),0.0),vh=max(dot(v,h),0.0);
@@ -115,7 +128,7 @@ void main(){
     float ambientVisibility=porscheAmbientVisibility(worldPosition,geometric);
     vec3 ambientDiffuse=irradiance(n)*color.rgb*(1.0-metallic)*(1.0-clamp(specularEnergy,0.0,1.0))*ambientVisibility;
     vec3 ambientSpecular=environment(reflect(-v,n),rough)*specularEnergy*porscheSpecularVisibility(nv,ambientVisibility,rough);
-    float cv=max(dot(coatN,v),.001),cl=max(dot(coatN,l),0.0),ch=max(dot(coatN,h),0.0),cr=max(pbr.w,.04);
+    float cv=max(dot(coatN,v),.001),cl=max(dot(coatN,l),0.0),ch=max(dot(coatN,h),0.0),cr=coatRough;
     float cf=.04+.96*pow(1.0-cv,5.0),coatSpec=distribution(ch,cr)*visibility(cv,cl,cr)*(.04+.96*pow(1.0-vh,5.0));
     float coatEnergy=integratedSpecular(vec3(.04),dfg(cv,cr)).r;
     radiance=radiance*(1.0-pbr.z*cf)*(1.0-pbr.z*(.04+.96*pow(1.0-cl,5.0)))+(ambientDiffuse+ambientSpecular)*(1.0-pbr.z*coatEnergy)+pbr.z*(coatSpec*cl*vec3(2.7,2.55,2.35)*sunlight+environment(reflect(-v,coatN),cr)*coatEnergy*porscheSpecularVisibility(cv,ambientVisibility,cr));

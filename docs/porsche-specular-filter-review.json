@@ -1,0 +1,52 @@
+{
+  "reviewed_at": "2026-10-29T07:50:57.691193+00:00",
+  "change": "Bounded screen-space normal variance broadens GGX alpha squared for base and clearcoat, then returns perceptual roughness shared by direct light, DFG and environment lookup. Derivatives precede alpha-mask discard.",
+  "reference": "https://google.github.io/filament/Materials.md.html",
+  "parameters": {
+    "variance": 0.15,
+    "maximum_alpha_squared_kernel": 0.2
+  },
+  "source_hashes": {
+    "assets/porsche/shaders/porsche.fs": "3e9d1afc28f298ea95a6b96220b2208f394fc63a3a2a87832f59588c4b1ce33c",
+    "src/breakwater/porsche_native.cpp": "2205d08937a58009d5577d84928bdde9d691d4a6e2ddbe0aa7bbcd585d4a300e"
+  },
+  "executable_sha256": "90a6fcb649fca99d98025bb9ed7b906edc386ec16d5c3034b610278a818d5d16",
+  "native_qa": {
+    "passed": true,
+    "checks": 133,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "comparison": {
+    "off": "screenshots/porsche-specular-filter-off.png",
+    "off_sha256": "e8f5d8b26162fb0a96759926990ec74d13cbd6b80ff2f49f6dc8badff8acf2b0",
+    "on": "screenshots/porsche-specular-filter-on.png",
+    "on_sha256": "c1677a85843cd1c41015c55a6bb15ce94ec7322e70915e53db14d1a8401603c7",
+    "region_xyxy": [
+      360,
+      270,
+      820,
+      550
+    ],
+    "mean_absolute_rgb_change": 0.5951190476190477,
+    "visual_review": "Broader, less speckled highlights on wing, carbon details and wheels; white/red paint design retained."
+  },
+  "limits": [
+    "Static A/B frame evidence; temporal shimmer and rendering cost have not been measured",
+    "Screen-space derivatives cannot recover all normal-map variance lost during mip reduction",
+    "World lighting, full visual fidelity and game performance remain unfinished"
+  ],
+  "complete": false
+}

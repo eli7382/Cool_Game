@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "checks": 131,
+  "checks": 133,
   "failures": 0,
   "native_steering_poses": 69,
   "maximum_axial_drift_m": 2.03028e-07,

@@ -889,6 +889,12 @@ bool RunPorscheQA(){
     auto capture=[&](const char* path){
         for(int frame=0;frame<2;++frame){BeginDrawing();ClearBackground({94,123,132,255});DrawWorld();rlDrawRenderBatchActive();if(frame==1){Image image=LoadImageFromScreen();check(image.data&&ExportImage(image,path),path);UnloadImage(image);}EndDrawing();}
     };
+    const int specularAALocation=GetShaderLocation(porscheShader,"specularAA");
+    const float aaOff=0,aaOn=1;
+    SetShaderValue(porscheShader,specularAALocation,&aaOff,SHADER_UNIFORM_FLOAT);
+    capture("screenshots/porsche-specular-filter-off.png");
+    SetShaderValue(porscheShader,specularAALocation,&aaOn,SHADER_UNIFORM_FLOAT);
+    capture("screenshots/porsche-specular-filter-on.png");
     capture("screenshots/porsche-native-front.png");
     g.qaCaptureFront=false;g.cameraInitialized=false;g.car.porscheBrake=0;
     capture("screenshots/porsche-tail-running.png");
