@@ -5,6 +5,21 @@
 
 namespace bw {
 Vector3 PorscheSunDirection(){return Vector3Normalize({.42f,.88f,-.28f});}
+bool SetPorscheBuildingSunFrame(PorscheSunShadow& shadow,Vector3 centre,float span,int resolution){
+    if(resolution<=0||!std::isfinite(span)||span<=0||!std::isfinite(centre.x)||!std::isfinite(centre.y)||!std::isfinite(centre.z))return false;
+    const Vector3 sun=PorscheSunDirection();
+    // Derive orientation at the origin, avoiding cancellation from subtracting
+    // a translated camera eye/target every frame. Render with this exact view.
+    Matrix view=MatrixLookAt(Vector3Scale(sun,40),{0,0,0},{0,1,0});
+    const Vector3 right{view.m0,view.m4,view.m8},up{view.m1,view.m5,view.m9},depth{view.m2,view.m6,view.m10};
+    const double pitch=static_cast<double>(span)/resolution;
+    auto snap=[&](Vector3 axis){const double dot=static_cast<double>(axis.x)*centre.x+static_cast<double>(axis.y)*centre.y+static_cast<double>(axis.z)*centre.z;return static_cast<float>(std::round(dot/pitch)*pitch);};
+    const float x=snap(right),y=snap(up),z=snap(depth);
+    view.m12=-x;view.m13=-y;view.m14=-z-40;
+    const Vector3 target=Vector3Add(Vector3Add(Vector3Scale(right,x),Vector3Scale(up,y)),Vector3Scale(depth,z));
+    shadow.camera={Vector3Add(target,Vector3Scale(depth,40)),target,{0,1,0},span,CAMERA_ORTHOGRAPHIC};
+    shadow.view=view;shadow.projection=MatrixOrtho(-span*.5,span*.5,-span*.5,span*.5,.1,100);shadow.localClip=MatrixMultiply(shadow.view,shadow.projection);return true;
+}
 void PorscheSunShadow::Release(){if(IsRenderTextureValid(target))UnloadRenderTexture(target);target={};ready=false;poseKey=0;casterLevel=-1;casterPoses.clear();}
 bool PorscheSunShadow::Ensure(int size){
     if(IsRenderTextureValid(target)&&target.texture.width==size)return true;

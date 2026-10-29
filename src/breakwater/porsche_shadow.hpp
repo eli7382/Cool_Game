@@ -20,4 +20,6 @@ struct PorscheSunShadow {
     void Release();
 };
 Vector3 PorscheSunDirection();
+// World-space building map aligned to a fixed light-space voxel grid.
+bool SetPorscheBuildingSunFrame(PorscheSunShadow& shadow,Vector3 centre,float span,int resolution);
 }

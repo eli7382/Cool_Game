@@ -1,0 +1,1 @@
+{"passed":true,"resolutions":[512,1024],"subcell_depth_pixels_compared":7864320,"different_depth_pixels":0,"occupied_pixels":2902476,"grid_projection_checks":36,"maximum_integer_step_error_pixels":0,"scope":"Actual hangar depth at seven within-cell centres per resolution plus integer-grid projection checks. Not complete moving-game shadow stability or all map boundaries."}

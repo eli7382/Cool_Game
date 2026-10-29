@@ -794,13 +794,9 @@ void PreparePorscheShadows(bool force){
     for(int slot=0;slot<2;++slot){
         const Vehicle& v=*cars[slot];auto& map=buildingShadows[slot];map.ready=false;
         if(!buildingEnabled||!v.isPorsche||Vector3Distance(v.p,g.camera.position)>65||!map.Ensure(g.graphics==GraphicsMode::High?1024:512))continue;
-        const Vector3 centre=Add(v.p,V(0,.7f,0));const auto sun=PorscheSunDirection();
-        map.camera={Add(centre,Mul(sun,40)),centre,V(0,1,0),BuildingShadowSpan,CAMERA_ORTHOGRAPHIC};
-        map.view=MatrixLookAt(map.camera.position,map.camera.target,map.camera.up);
-        map.projection=MatrixOrtho(-BuildingShadowSpan*.5,BuildingShadowSpan*.5,-BuildingShadowSpan*.5,BuildingShadowSpan*.5,.1,100);
-        map.localClip=MatrixMultiply(map.view,map.projection);
+        if(!SetPorscheBuildingSunFrame(map,Add(v.p,V(0,.7f,0)),BuildingShadowSpan,map.target.texture.width))continue;
         BeginTextureMode(map.target);rlEnableDepthMask();ClearBackground(WHITE);rlDisableBackfaceCulling();rlDisableColorBlend();
-        DrawStaticWorldSunDepth(map.camera,map.projection,groupEnabled);
+        DrawStaticWorldSunDepth(map.camera,map.projection,groupEnabled,&map.view);
         rlEnableColorBlend();rlEnableBackfaceCulling();EndTextureMode();map.ready=true;++map.updates;
     }
     }
@@ -912,6 +908,35 @@ bool RunPorscheCullingQA(){
     std::ofstream cylinderReport("docs/porsche-cylinder-culling-qa.json");
     cylinderReport<<"{\n\"enabled\":"<<(WorldSpaceBatchCoordinatesFixed()?"true":"false")<<",\n\"passed\":"<<(passed?"true":"false")<<",\n\"camera_pose_cases\":"<<cases<<",\n\"cylinders_tested\":"<<cylinders.tested-c0.tested<<",\n\"cylinders_rejected\":"<<cylinders.rejected-c0.rejected<<",\n\"cap_and_ring_vertices_verified\":"<<cylinders.verifiedVertices-c0.verifiedVertices<<",\n\"oracle_failures\":"<<cylinders.oracleFailures-c0.oracleFailures<<",\n\"single_sample_color_differences\":"<<colorDifferences<<",\n\"normal_depth_differences\":"<<normalDifferences<<",\n\"AO_differences\":"<<aoDifferences<<",\n\"mirror_differences\":"<<mirrorDifferences<<",\n\"limits\":[\"Finite camera/pose scenes; equal-radius Between helper only\",\"Cap/ring oracle enumerates raylib DrawCylinderEx vertices, not bounding-box corners\",\"Shader-deformed foliage, stereo, invalid inputs and boundary cases retained\"],\n\"complete\":false\n}\n";
     return passed;
+}
+bool RunBuildingShadowStabilityQA(){
+    const Matrix savedP=rlGetMatrixProjection(),savedV=rlGetMatrixModelview();bool valid=true;int pixels=0,different=0,occupied=0,gridChecks=0;float maximumGridError=0;
+    for(int size:{512,1024}){
+        PorscheSunShadow map;if(!map.Ensure(size)){valid=false;continue;}
+        valid=SetPorscheBuildingSunFrame(map,V(-53,TerrainHeight(-53,190)+2,190),BuildingShadowSpan,size)&&valid;
+        const Vector3 anchor=map.camera.target,right=V(map.view.m0,map.view.m4,map.view.m8),up=V(map.view.m1,map.view.m5,map.view.m9),depth=V(map.view.m2,map.view.m6,map.view.m10);const float pitch=BuildingShadowSpan/size;
+        const Matrix baselineClip=map.localClip;std::vector<float> baseline;
+        const std::array<Vector3,7> moves{V(0,0,0),Mul(right,pitch*.2f),Mul(right,-pitch*.2f),Mul(up,pitch*.2f),Mul(up,-pitch*.2f),Mul(depth,pitch*.2f),Mul(depth,-pitch*.2f)};
+        for(int pose=0;pose<7;++pose){
+            valid=SetPorscheBuildingSunFrame(map,Add(anchor,moves[pose]),BuildingShadowSpan,size)&&valid;
+            for(int i=0;i<16;++i)valid=valid&&MatrixToFloatV(map.localClip).v[i]==MatrixToFloatV(baselineClip).v[i];
+            BeginTextureMode(map.target);rlEnableDepthMask();ClearBackground(WHITE);rlDisableBackfaceCulling();rlDisableColorBlend();DrawStaticWorldSunDepth(map.camera,map.projection,true,&map.view);rlEnableColorBlend();rlEnableBackfaceCulling();EndTextureMode();
+            Image image=LoadImageFromTexture(map.target.texture);valid=valid&&image.data&&image.format==PIXELFORMAT_UNCOMPRESSED_R32;
+            if(image.data&&image.format==PIXELFORMAT_UNCOMPRESSED_R32){const auto* values=static_cast<float*>(image.data);const int count=image.width*image.height;
+                if(!pose)baseline.assign(values,values+count);
+                else if(baseline.size()==static_cast<std::size_t>(count))for(int i=0;i<count;++i){valid=valid&&std::isfinite(values[i]);if(values[i]!=baseline[i])++different;if(values[i]<.999f)++occupied;++pixels;}}
+            UnloadImage(image);
+        }
+        const std::array<Vector3,3> points{V(-53,7,190),V(-50,12,188),V(-57,5,196)};
+        for(int axis=0;axis<2;++axis)for(int step:{-3,1,4}){
+            valid=SetPorscheBuildingSunFrame(map,Add(anchor,Mul(axis?up:right,pitch*step)),BuildingShadowSpan,size)&&valid;
+            for(auto point:points){const auto a=Vector3Transform(point,baselineClip),b=Vector3Transform(point,map.localClip);const float dx=(b.x-a.x)*size*.5f,dy=(b.y-a.y)*size*.5f;maximumGridError=std::max({maximumGridError,std::abs(dx-(axis?0.f:-float(step))),std::abs(dy-(axis?-float(step):0.f))});++gridChecks;}
+        }
+        map.Release();
+    }
+    rlSetMatrixProjection(savedP);rlSetMatrixModelview(savedV);
+    const bool passed=valid&&different==0&&occupied>1000&&pixels==6*(512*512+1024*1024)&&gridChecks==36&&maximumGridError<.001f;
+    std::ofstream("docs/porsche-building-shadow-stability-qa.json")<<"{\"passed\":"<<(passed?"true":"false")<<",\"resolutions\":[512,1024],\"subcell_depth_pixels_compared\":"<<pixels<<",\"different_depth_pixels\":"<<different<<",\"occupied_pixels\":"<<occupied<<",\"grid_projection_checks\":"<<gridChecks<<",\"maximum_integer_step_error_pixels\":"<<maximumGridError<<",\"scope\":\"Actual hangar depth at seven within-cell centres per resolution plus integer-grid projection checks. Not complete moving-game shadow stability or all map boundaries.\"}\n";return passed;
 }
 bool RunBuildingGroupCullingQA(){
     PorscheSunShadow target;if(!target.Ensure(512))return false;
@@ -1047,6 +1072,7 @@ bool RunPorscheQA(){
     check(RunMirrorProjectionReference(),"native-mirror-reflection-crop-and-oblique-clip-match-source-rig");
     StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;
     check(RunBuildingGroupCullingQA(),"building-group-culling-preserves-centred-and-cropped-depth-buffers");
+    check(RunBuildingShadowStabilityQA(),"building-shadow-grid-preserves-subcell-depth-and-integer-texel-motion");
     // Drive the game's existing E-interaction path, including the parked-car
     // swap, instead of replacing the active car solely inside this fixture.
     const Vector3 pickup=g.car.p,parked=g.extraCar.p;g.player.p=Add(parked,V(0,1,0));g.qaTaskInteractPending=true;UpdateGameplay(1.0f/60);

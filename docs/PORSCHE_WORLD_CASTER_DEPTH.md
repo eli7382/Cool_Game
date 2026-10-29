@@ -184,3 +184,30 @@ Earlier performance comparisons in this document used the smaller car-only
 map. They are not measurements of the new 48 m world-receiver workload.
 Updated performance, wider appearance review and moving-map boundary
 stability remain open.
+
+World-grid stabilization
+------------------------
+
+Building-map orientation is now derived at the origin from the fixed sun
+direction. Its centre is snapped in light-space right/up/depth coordinates
+to a grid with pitch `48 / resolution` metres. This keeps the view matrix
+identical while the requested centre stays within one grid cell. Right/up
+cell changes translate the projected world by whole texels. The depth axis
+is also snapped to avoid needless normalized-depth drift for stationary
+world geometry. Maximum centre displacement is half a cell per axis.
+
+The depth callback accepts the exact stored view matrix. Both drawing and
+group culling use it; rebuilding a look-at matrix from translated eye/target
+coordinates could otherwise reintroduce floating-point orientation drift.
+
+Native QA renders actual hangar depth at seven within-cell centres for both
+512 and 1024 resolutions: all 7864320 compared depth pixels are identical,
+including 2902476 occupied pixels. Thirty-six fixed-point projection checks
+match integer texel steps with zero measured pixel error. The complete suite
+passes 149 checks. The evidence is in
+`porsche-building-shadow-stability-qa.json`.
+
+This verifies finite subcell and grid-step behavior. It does not establish
+all moving-game shadow edges, fade-band perceptual quality or the frame cost
+of the wider world-receiver pass. Animated building parts still regenerate
+on each preparation call, and environment illumination remains separate.

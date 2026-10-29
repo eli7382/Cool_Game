@@ -271,7 +271,7 @@ bool RunBallisticImpactQA();
 void ShutdownWorld();
 void DrawWorld();
 void DrawWorldScene(const Matrix* projection=nullptr);
-void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection,bool groupCull=true);
+void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection,bool groupCull=true,const Matrix* view=nullptr);
 void DrawActors();
 void UpdateCamera();
 void DrawUI();
