@@ -1,0 +1,939 @@
+{
+  "current_source_commit": "18a5c2444ff6cc05cfdc5c43acbcacb1e735eba6",
+  "current_source_sha256": {
+    "src/breakwater/porsche_native.cpp": "65a9f080ed666fc565e9d61bea12d6e032c718d0bc68a51e1857e43689dc6888",
+    "src/breakwater/porsche_shadow.cpp": "6c573cebded454597945372b566ed454ba66815879c3e045b77e769eea0c90b8",
+    "src/breakwater/world.cpp": "ff9f8bf48d17350253bc038a8fef29c356b4c88adaececbcbeca050ca0d5d271"
+  },
+  "source_reports": [
+    {
+      "path": "docs\\porsche-building-group-cull-performance.json",
+      "sha256": "8cc160e8009240213636b0c6690bc719fe61e3bbe7917b11dd51e50d55b602f7"
+    },
+    {
+      "path": "docs\\porsche-world-grid-base-performance.json",
+      "sha256": "eeededc960cb0a5014a7a77c087e6f27c7f024763b6264caa9fffda0a24d4ee1"
+    },
+    {
+      "path": "docs\\porsche-hangar-group-on-performance.json",
+      "sha256": "fe188be9904eea6aaa8229d55278f208e3adc5a25e16c4e39a60a2c367b8ee31"
+    },
+    {
+      "path": "docs\\porsche-world-grid-hangar-performance.json",
+      "sha256": "81387350fac190ea4698759d1c48a12ec4c286d64cf38cf8e36faa82899eee12"
+    }
+  ],
+  "identical_all_driving_traces": true,
+  "current_configuration": {
+    "building_span_m": 48,
+    "world_receivers": true,
+    "light_space_grid": true,
+    "group_culling": true
+  },
+  "cases": [
+    {
+      "route": "base",
+      "name": "low-chase-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 43.68245,
+        "current_p50": 34.4684
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 22.490112,
+        "current_p50": 22.0544
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.1414,
+            "current_p50": 0.143
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.023552,
+            "current_p50": 0.02048
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 20.75085,
+            "current_p50": 17.4064
+          },
+          "gpu_elapsed": {
+            "historical_p50": 16.564224,
+            "current_p50": 12.42624
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 16.7404,
+            "current_p50": 13.93535
+          },
+          "gpu_elapsed": {
+            "historical_p50": 11.074048,
+            "current_p50": 8.812544
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 0.0057,
+            "current_p50": 0.0055
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.001024,
+            "current_p50": 0.001024
+          }
+        }
+      }
+    },
+    {
+      "route": "base",
+      "name": "low-chase-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 66.58745,
+        "current_p50": 52.2461
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 49.430016,
+        "current_p50": 41.458176
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.1445,
+            "current_p50": 0.12115
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.02304,
+            "current_p50": 0.024576
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 21.2399,
+            "current_p50": 17.81835
+          },
+          "gpu_elapsed": {
+            "historical_p50": 13.12768,
+            "current_p50": 11.790336
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 17.5398,
+            "current_p50": 14.07355
+          },
+          "gpu_elapsed": {
+            "historical_p50": 14.094848,
+            "current_p50": 13.977088
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 20.4773,
+            "current_p50": 17.28355
+          },
+          "gpu_elapsed": {
+            "historical_p50": 20.853248,
+            "current_p50": 13.837312
+          }
+        }
+      }
+    },
+    {
+      "route": "base",
+      "name": "low-cockpit-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 40.96345,
+        "current_p50": 34.15405
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 32.925184,
+        "current_p50": 27.258368
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.1383,
+            "current_p50": 0.11815
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.023552,
+            "current_p50": 0.021504
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 13.94615,
+            "current_p50": 11.82135
+          },
+          "gpu_elapsed": {
+            "historical_p50": 11.584,
+            "current_p50": 10.804736
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 3.2799,
+            "current_p50": 2.56215
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.741888,
+            "current_p50": 0.67328
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 13.20345,
+            "current_p50": 10.9959
+          },
+          "gpu_elapsed": {
+            "historical_p50": 15.349248,
+            "current_p50": 12.325376
+          }
+        }
+      }
+    },
+    {
+      "route": "base",
+      "name": "low-cockpit-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 21.9633,
+        "current_p50": 23.8606
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 14.337536,
+        "current_p50": 13.929472
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.1226,
+            "current_p50": 0.12015
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.019456,
+            "current_p50": 0.021504
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 11.7524,
+            "current_p50": 11.5932
+          },
+          "gpu_elapsed": {
+            "historical_p50": 9.86112,
+            "current_p50": 11.16416
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 2.3551,
+            "current_p50": 2.46175
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.63488,
+            "current_p50": 0.650752
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 0.0049,
+            "current_p50": 0.0048
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.001024,
+            "current_p50": 0.001024
+          }
+        }
+      }
+    },
+    {
+      "route": "base",
+      "name": "high-chase-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 60.7898,
+        "current_p50": 62.4819
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 47.063552,
+        "current_p50": 48.2432
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.13165,
+            "current_p50": 0.1312
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.04608,
+            "current_p50": 0.037888
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 19.198,
+            "current_p50": 19.9843
+          },
+          "gpu_elapsed": {
+            "historical_p50": 11.695616,
+            "current_p50": 14.523904
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 15.8874,
+            "current_p50": 16.24265
+          },
+          "gpu_elapsed": {
+            "historical_p50": 12.494336,
+            "current_p50": 17.452032
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 18.48685,
+            "current_p50": 19.26855
+          },
+          "gpu_elapsed": {
+            "historical_p50": 20.122624,
+            "current_p50": 12.381696
+          }
+        }
+      }
+    },
+    {
+      "route": "base",
+      "name": "high-chase-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 40.3969,
+        "current_p50": 44.20875
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 21.172224,
+        "current_p50": 24.574976
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.12305,
+            "current_p50": 0.1355
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.037376,
+            "current_p50": 0.039424
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 18.76575,
+            "current_p50": 20.97135
+          },
+          "gpu_elapsed": {
+            "historical_p50": 14.162944,
+            "current_p50": 18.609152
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 15.79055,
+            "current_p50": 17.0228
+          },
+          "gpu_elapsed": {
+            "historical_p50": 6.192128,
+            "current_p50": 3.211264
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 0.0051,
+            "current_p50": 0.0055
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.001024,
+            "current_p50": 0.001024
+          }
+        }
+      }
+    },
+    {
+      "route": "base",
+      "name": "high-cockpit-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 32.67555,
+        "current_p50": 33.1164
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 23.422976,
+        "current_p50": 25.314304
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.12605,
+            "current_p50": 0.12565
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.034816,
+            "current_p50": 0.03072
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 12.80405,
+            "current_p50": 13.03275
+          },
+          "gpu_elapsed": {
+            "historical_p50": 13.094912,
+            "current_p50": 11.353088
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 11.9743,
+            "current_p50": 12.37825
+          },
+          "gpu_elapsed": {
+            "historical_p50": 9.844224,
+            "current_p50": 12.114944
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 0.0053,
+            "current_p50": 0.0051
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.001024,
+            "current_p50": 0.001024
+          }
+        }
+      }
+    },
+    {
+      "route": "base",
+      "name": "high-cockpit-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 44.9617,
+        "current_p50": 47.49195
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 34.991104,
+        "current_p50": 39.0656
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.126,
+            "current_p50": 0.12755
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.032768,
+            "current_p50": 0.037888
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 12.5044,
+            "current_p50": 13.197
+          },
+          "gpu_elapsed": {
+            "historical_p50": 11.410432,
+            "current_p50": 13.71648
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 11.6835,
+            "current_p50": 12.41635
+          },
+          "gpu_elapsed": {
+            "historical_p50": 9.368064,
+            "current_p50": 11.15648
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 11.8958,
+            "current_p50": 12.51415
+          },
+          "gpu_elapsed": {
+            "historical_p50": 14.16192,
+            "current_p50": 13.652992
+          }
+        }
+      }
+    },
+    {
+      "route": "hangar",
+      "name": "low-chase-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 57.2737,
+        "current_p50": 50.36295
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 37.43232,
+        "current_p50": 40.441344
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.7155,
+            "current_p50": 0.8947
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.075264,
+            "current_p50": 0.116736
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 27.67465,
+            "current_p50": 24.96665
+          },
+          "gpu_elapsed": {
+            "historical_p50": 18.064896,
+            "current_p50": 18.302464
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 22.6608,
+            "current_p50": 20.6537
+          },
+          "gpu_elapsed": {
+            "historical_p50": 18.4576,
+            "current_p50": 21.300736
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 0.0074,
+            "current_p50": 0.0069
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.001024,
+            "current_p50": 0.001024
+          }
+        }
+      }
+    },
+    {
+      "route": "hangar",
+      "name": "low-chase-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 67.31855,
+        "current_p50": 65.88595
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 54.521856,
+        "current_p50": 58.735104
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.5884,
+            "current_p50": 0.8278
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.072704,
+            "current_p50": 0.146432
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 22.64145,
+            "current_p50": 22.61105
+          },
+          "gpu_elapsed": {
+            "historical_p50": 13.878784,
+            "current_p50": 14.17984
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 19.5366,
+            "current_p50": 18.9202
+          },
+          "gpu_elapsed": {
+            "historical_p50": 13.536768,
+            "current_p50": 19.090432
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 21.42,
+            "current_p50": 21.357
+          },
+          "gpu_elapsed": {
+            "historical_p50": 24.827392,
+            "current_p50": 24.878592
+          }
+        }
+      }
+    },
+    {
+      "route": "hangar",
+      "name": "low-cockpit-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 48.1609,
+        "current_p50": 53.3424
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 39.23712,
+        "current_p50": 45.659648
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.59595,
+            "current_p50": 0.8576
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.070656,
+            "current_p50": 0.102912
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 15.729,
+            "current_p50": 17.04585
+          },
+          "gpu_elapsed": {
+            "historical_p50": 12.480512,
+            "current_p50": 16.7168
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 5.9087,
+            "current_p50": 4.65485
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.851968,
+            "current_p50": 1.506816
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 15.5357,
+            "current_p50": 16.24775
+          },
+          "gpu_elapsed": {
+            "historical_p50": 19.739648,
+            "current_p50": 19.803648
+          }
+        }
+      }
+    },
+    {
+      "route": "hangar",
+      "name": "low-cockpit-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 41.1629,
+        "current_p50": 33.57815
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 32.011264,
+        "current_p50": 24.732672
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.60675,
+            "current_p50": 0.85565
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.191488,
+            "current_p50": 0.100352
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 15.61465,
+            "current_p50": 16.45465
+          },
+          "gpu_elapsed": {
+            "historical_p50": 22.660608,
+            "current_p50": 18.9056
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 4.5642,
+            "current_p50": 3.2467
+          },
+          "gpu_elapsed": {
+            "historical_p50": 1.120256,
+            "current_p50": 3.46368
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 0.0054,
+            "current_p50": 0.0054
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.001024,
+            "current_p50": 0.001024
+          }
+        }
+      }
+    },
+    {
+      "route": "hangar",
+      "name": "high-chase-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 64.36275,
+        "current_p50": 59.91695
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 54.848,
+        "current_p50": 53.159424
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.58495,
+            "current_p50": 0.72795
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.202752,
+            "current_p50": 0.1792
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 19.76445,
+            "current_p50": 18.58815
+          },
+          "gpu_elapsed": {
+            "historical_p50": 12.02432,
+            "current_p50": 14.413312
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 17.2906,
+            "current_p50": 16.33
+          },
+          "gpu_elapsed": {
+            "historical_p50": 16.006656,
+            "current_p50": 15.921152
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 19.00595,
+            "current_p50": 17.66845
+          },
+          "gpu_elapsed": {
+            "historical_p50": 23.147008,
+            "current_p50": 20.344832
+          }
+        }
+      }
+    },
+    {
+      "route": "hangar",
+      "name": "high-chase-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 46.17655,
+        "current_p50": 42.1651
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 29.313536,
+        "current_p50": 30.209536
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.57755,
+            "current_p50": 0.72495
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.197632,
+            "current_p50": 0.18944
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 20.62065,
+            "current_p50": 18.34405
+          },
+          "gpu_elapsed": {
+            "historical_p50": 14.725632,
+            "current_p50": 10.22208
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 17.79045,
+            "current_p50": 16.1931
+          },
+          "gpu_elapsed": {
+            "historical_p50": 16.306176,
+            "current_p50": 16.388096
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 0.00555,
+            "current_p50": 0.00495
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.001024,
+            "current_p50": 0.001024
+          }
+        }
+      }
+    },
+    {
+      "route": "hangar",
+      "name": "high-cockpit-ao-off",
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 55.2192,
+        "current_p50": 33.5864
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 45.085696,
+        "current_p50": 26.625024
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.607,
+            "current_p50": 0.7628
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.48128,
+            "current_p50": 0.140288
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 14.137,
+            "current_p50": 12.28355
+          },
+          "gpu_elapsed": {
+            "historical_p50": 29.389824,
+            "current_p50": 13.319168
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 13.2207,
+            "current_p50": 11.4416
+          },
+          "gpu_elapsed": {
+            "historical_p50": 13.63456,
+            "current_p50": 11.874304
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 0.0056,
+            "current_p50": 0.005
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.001024,
+            "current_p50": 0.001024
+          }
+        }
+      }
+    },
+    {
+      "route": "hangar",
+      "name": "high-cockpit-ao-on",
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "historical_p50": 77.9375,
+        "current_p50": 65.91095
+      },
+      "gpu_frame_ms": {
+        "historical_p50": 68.966912,
+        "current_p50": 58.482176
+      },
+      "stages": {
+        "building_shadows": {
+          "cpu_submit": {
+            "historical_p50": 0.61535,
+            "current_p50": 0.8273
+          },
+          "gpu_elapsed": {
+            "historical_p50": 0.48128,
+            "current_p50": 0.509952
+          }
+        },
+        "scene_color": {
+          "cpu_submit": {
+            "historical_p50": 15.229,
+            "current_p50": 14.0551
+          },
+          "gpu_elapsed": {
+            "historical_p50": 34.67264,
+            "current_p50": 29.01504
+          }
+        },
+        "mirrors": {
+          "cpu_submit": {
+            "historical_p50": 13.52495,
+            "current_p50": 12.8513
+          },
+          "gpu_elapsed": {
+            "historical_p50": 6.718976,
+            "current_p50": 7.046144
+          }
+        },
+        "ambient_total": {
+          "cpu_submit": {
+            "historical_p50": 13.8509,
+            "current_p50": 12.99795
+          },
+          "gpu_elapsed": {
+            "historical_p50": 22.490624,
+            "current_p50": 18.828288
+          }
+        }
+      }
+    }
+  ],
+  "scope": "Two current hidden instrumented routes, compared to retained earlier 16 m car-only building-map runs. Difference includes world receivers, wider coverage and grid stabilization, not one isolated change.",
+  "limits": [
+    "Historical versus current non-interleaved runs can include thermal/background variation",
+    "Nested stages and forced batch flushes include instrumentation overhead; GPU intervals can include CPU submission gaps",
+    "No claim that every frame-time difference is caused by the shadow changes",
+    "Not uninstrumented visible-game FPS, all-world workloads or cross-device performance"
+  ],
+  "complete": false
+}

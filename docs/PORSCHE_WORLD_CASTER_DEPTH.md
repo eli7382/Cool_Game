@@ -211,3 +211,30 @@ This verifies finite subcell and grid-step behavior. It does not establish
 all moving-game shadow edges, fade-band perceptual quality or the frame cost
 of the wider world-receiver pass. Animated building parts still regenerate
 on each preparation call, and environment illumination remains separate.
+
+Current 48 m/grid workload measurements
+--------------------------------------
+
+The current executable completed eight hidden instrumented cases on each of
+the base and hangar routes. Every case passed its motion/render-state checks;
+all speed, steering and position samples exactly match the retained earlier
+route traces. In the AO-on cases, median building-map CPU submission is
+0.11815–0.1312 ms at base and 0.72795–0.8576 ms beside the hangar.
+
+Whole-frame AO-on medians range from 34.1541 to 65.9110 ms across these
+instrumented cases. Changes versus retained car-only runs are mixed: some
+cases improve and others regress. The comparison is historical and
+non-interleaved; it includes wider map coverage, world receivers and grid
+stabilization together. It cannot isolate each feature's cost or establish
+uninstrumented gameplay FPS. The added world-shader lookups also occur in
+scene, mirror and related passes, outside the building-map generation timer.
+
+Raw current reports are `porsche-world-grid-base-performance.json` and
+`porsche-world-grid-hangar-performance.json`. The source hashes, comparison
+settings, per-case stage data and limits are retained in
+`porsche-world-grid-performance-review.json`. The high-preset chase captures
+for both routes are saved as `screenshots/porsche-world-grid-*-high-chase.png`.
+The base capture was copied before the hangar run overwrote routine captures;
+its timestamp was checked against the completed base report. Both saved
+views were inspected. These are finite route measurements, not a full
+performance or visual-completion audit.
