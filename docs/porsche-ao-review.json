@@ -1,14 +1,14 @@
 {
-  "reviewed_at": "2026-10-29T00:08:14.996353+00:00",
+  "reviewed_at": "2026-10-29T00:51:52.217656+00:00",
   "stage": "Main-view dynamic screen-space contact shading",
   "baseline_commit": "0d74f38d98b2a8af2f7743dfd112bd9d5ff67169",
-  "executable_sha256": "4890094004d6e14485b956af5742591930fe3e24d1087361c5d5bacf33679c65",
+  "executable_sha256": "7aadc94fcb48121c5fb1360b96d6d983aaa0e79123c46bbe999d9e3bb6a79d49",
   "source_hashes": {
-    "src/breakwater/porsche_ao.cpp": "f88052ea278d13b7518b907ddcde1570bf4d593398b27d27798fc7e7aacb0774",
+    "src/breakwater/porsche_ao.cpp": "b3b4c1e34c77800536654819a188ee9ef7d1429b58e49fc81a9bf83e48f6cce3",
     "src/breakwater/porsche_ao.hpp": "c37377ec905ad686339fa23f2c2ad41c174bac8fdeebf16e542f46fb394cff5b",
-    "src/breakwater/porsche_native.cpp": "70634cbf3a02ccdac37f7d8c8ae0015b34129bee42a085a62fc45a9ec3702aaf",
-    "src/breakwater/porsche_native.hpp": "10a55f7a764c711567393714ed9371680586b34dc93c1e797fb05ae896116020",
-    "src/breakwater/world.cpp": "d2d74e236c5bb968214c801f235a8df74bd1c76257e33620e794c83e37637883",
+    "src/breakwater/porsche_native.cpp": "22e0256ceaaeedf85e23e190f995ccdf6fcfe86094de158d6fd1a1fc7363d459",
+    "src/breakwater/porsche_native.hpp": "50ffbe49e07c053a507f8fa0e40285f4e8ad7409832e47c173dad1f5a6c7d54b",
+    "src/breakwater/world.cpp": "4aed7146d3f7beffdf8723bd34118e2eb8248aa9b40c1868026d06aa851aecfb",
     "assets/porsche/shaders/porsche.fs": "c2722f666adbabecfd0a86f811c17a44a368749f2c23e3c7420897a26ffe9a09",
     "assets/porsche/shaders/porsche_depth.vs": "aeb5398b9ef7da4e72b99cc31006a203199ae61c52705e598daf288fff1fe5cd",
     "assets/porsche/shaders/porsche_depth.fs": "710cb06b53a6c1c961e120130e30d7d8e31476c9728432acbec17c1f9222c34f",
@@ -70,42 +70,42 @@
   "images": [
     {
       "path": "screenshots/porsche-ao-exterior-off.png",
-      "sha256": "72af348b74423c0813feeffd8522bab40d106058030b60808d398f517aa74630",
+      "sha256": "0819dc064990d9aa9ace49a7048cfab10ad152c1674a9a0a0b5a0abec2078783",
       "view": "exterior",
       "contact_shading_enabled": false,
       "directional_shadows_enabled": true
     },
     {
       "path": "screenshots/porsche-ao-exterior-on.png",
-      "sha256": "0355f58e6f1189dae38f891757b1d8797afcda1f86fe48918441f407d4085730",
+      "sha256": "61ccb2ddb2f9bde5087e3a9374a8e58f349c6bde647c29695c2df3b9fbcae0fa",
       "view": "exterior",
       "contact_shading_enabled": true,
       "directional_shadows_enabled": true
     },
     {
       "path": "screenshots/porsche-ao-cockpit-off.png",
-      "sha256": "53551d0955e1bc5d7dd4b4358a6944551d668ff19a547175628d2a79509c7c04",
+      "sha256": "f507d16202159be6ffd53ecfbbf6e9dbfce26dc4bc9b0196dc5e8e4980e6d8a5",
       "view": "cockpit",
       "contact_shading_enabled": false,
       "directional_shadows_enabled": true
     },
     {
       "path": "screenshots/porsche-ao-cockpit-on.png",
-      "sha256": "f3587dfc9f67a9497d55a87c34f1bf867438d9bf32aba1f19272c1e7ed2cd0fc",
+      "sha256": "520405060504bf9415c7c333b015f2b71f6b0ccd95f1f9f9fd4cefabd31c322c",
       "view": "cockpit",
       "contact_shading_enabled": true,
       "directional_shadows_enabled": true
     },
     {
       "path": "screenshots/porsche-ao-open-off.png",
-      "sha256": "f0ac05c7151717de60e9b5ea783dee707bcc2bee1e8aae03e1f2cbd4bf42a771",
+      "sha256": "ef6cadeb2e4da83e9250d3e7baa50f73e8a5f373a2cd5c738be2fce41954ec7b",
       "view": "open",
       "contact_shading_enabled": false,
       "directional_shadows_enabled": true
     },
     {
       "path": "screenshots/porsche-ao-open-on.png",
-      "sha256": "ba26cff457454f97a810f6165251978ded7c0e814ff30b214b72e87973532700",
+      "sha256": "9b8f5059ec94fdd94964a6823f5b43420bab3b3fa7d145043f0cbf53a9cc36c1",
       "view": "open",
       "contact_shading_enabled": true,
       "directional_shadows_enabled": true
@@ -134,24 +134,24 @@
   "matched_image_differences": [
     {
       "view": "exterior",
-      "changed_pixels_over_2_levels": 35322,
-      "brightened_pixels_over_2_levels": 0,
-      "maximum_darken": 52,
-      "maximum_brighten": 2
-    },
-    {
-      "view": "cockpit",
-      "changed_pixels_over_2_levels": 169852,
-      "brightened_pixels_over_2_levels": 0,
-      "maximum_darken": 59,
-      "maximum_brighten": 2
-    },
-    {
-      "view": "open",
-      "changed_pixels_over_2_levels": 32136,
+      "changed_pixels_over_2_levels": 35326,
       "brightened_pixels_over_2_levels": 0,
       "maximum_darken": 52,
       "maximum_brighten": 1
+    },
+    {
+      "view": "cockpit",
+      "changed_pixels_over_2_levels": 169876,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 59,
+      "maximum_brighten": 1
+    },
+    {
+      "view": "open",
+      "changed_pixels_over_2_levels": 32146,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 52,
+      "maximum_brighten": 2
     }
   ],
   "new_checks": [

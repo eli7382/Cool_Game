@@ -276,6 +276,48 @@ Ground shadows now sit near the rendered ground and do not write depth. The
 previous raised shadow ellipsoid cut through the Porsche's low body. The
 existing pickup capture was repeated after that correction.
 
+## Native driving performance measurements
+
+Run `build-native/ninja/bin/game.exe --qa-porsche-performance`, then
+`python scripts/review_porsche_performance.py` from the repository root.
+The command runs eight cases: High/Low, cockpit/chase, and contact shading
+enabled/disabled. Each case warms 24 frames, measures 96 driving frames, and
+saves its final native game/HUD image. It uses real fixed-step game physics,
+the normal camera placement and ordinary distance-based render detail.
+Each case restores the same simulation/world snapshot and wind clock.
+Camera smoothing is disabled to keep paired views consistent. Combat and
+audio remain idle. The window is hidden, VSync is requested off, and no FPS
+cap is applied.
+
+`docs/porsche-native-performance.json` contains raw per-frame values and
+mean/p50/p95/p99/max summaries. Optional OpenGL 3.3 timestamp queries time
+displays, sun shadows, normal/depth, AO evaluation/filtering, mirrors, the
+color scene and HUD. Query results are collected after each case, outside
+the measured loop. Source-based static raylib builds expose the GLAD entry
+points; other packages retain CPU measurements and explicitly report GPU
+timings as unavailable. The review script requires actual GPU evidence.
+
+CPU submission can wait on the driver, and GPU timestamp spans can contain
+idle gaps waiting on CPU commands. Batch flushes and queries add profiling
+overhead. Ambient substage times are included in the ambient total. This is
+a local instrumented workload, not a visible-window or cross-device FPS
+guarantee. Loading, cold start, combat load and broad game performance still
+need separate verification. The review records the exact executable,
+source and capture hashes and verifies identical paired driving paths.
+
+The first verified baseline at 1280x720 on the RTX 3050 Laptop GPU measures
+768 frames. Paired input, position, speed and mirror update schedules agree.
+High cockpit with contact shading has a 216.06 ms median frame wall time and
+371.46 ms p95. Its GPU timestamp means are 44.38 ms for normal/depth scene
+submission, 4.51 ms for AO evaluation, 1.72 ms for filtering, 58.57 ms for
+mirrors, and 60.59 ms for the color scene. These elapsed spans include idle
+gaps described above; they are not GPU active-execution counters. The local
+instrumented 60 FPS target **fails**. Scene submission, mirrored views and
+the repeated normal/depth scene pass need substantial optimization before
+the vehicle can be considered game-ready. Retain this baseline when
+comparing future optimizations; do not infer an FPS improvement from a
+successful correctness check.
+
 ## Asset regeneration and checks
 
 With Python and numpy installed and the Porsche authoring project beside this

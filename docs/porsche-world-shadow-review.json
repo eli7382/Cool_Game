@@ -1,12 +1,12 @@
 {
-  "reviewed_at": "2026-10-29T00:08:17.853567+00:00",
+  "reviewed_at": "2026-10-29T00:51:55.065062+00:00",
   "stage": "Porsche directional shadows on native world receivers",
   "baseline_commit": "38a9f9535e37eb62000f2c1b2982b1b21210e0c2",
-  "executable_sha256": "4890094004d6e14485b956af5742591930fe3e24d1087361c5d5bacf33679c65",
+  "executable_sha256": "7aadc94fcb48121c5fb1360b96d6d983aaa0e79123c46bbe999d9e3bb6a79d49",
   "source_hashes": {
-    "src/breakwater/world.cpp": "d2d74e236c5bb968214c801f235a8df74bd1c76257e33620e794c83e37637883",
-    "src/breakwater/porsche_native.cpp": "70634cbf3a02ccdac37f7d8c8ae0015b34129bee42a085a62fc45a9ec3702aaf",
-    "src/breakwater/porsche_native.hpp": "10a55f7a764c711567393714ed9371680586b34dc93c1e797fb05ae896116020",
+    "src/breakwater/world.cpp": "4aed7146d3f7beffdf8723bd34118e2eb8248aa9b40c1868026d06aa851aecfb",
+    "src/breakwater/porsche_native.cpp": "22e0256ceaaeedf85e23e190f995ccdf6fcfe86094de158d6fd1a1fc7363d459",
+    "src/breakwater/porsche_native.hpp": "50ffbe49e07c053a507f8fa0e40285f4e8ad7409832e47c173dad1f5a6c7d54b",
     "src/breakwater/porsche_shadow.cpp": "f9e5d461a92b5cd7bb790be1945d4e49ee10f565487c04f7e2ac37f1dea5a8c4",
     "src/breakwater/porsche_shadow.hpp": "90571e07773674abb9c0556a4d80e337d0f1f129e561a3ed8ce2aa233b59bf77"
   },
@@ -113,7 +113,7 @@
   "images": [
     {
       "path": "screenshots/porsche-world-shadow-closed-off.png",
-      "sha256": "29d88bb28bdb2d5366dc719cadbe6ceb85c1747f852ec1ad5eb60e349928a83f",
+      "sha256": "60f72aa6d62d29d296a30b59e3afb4d198db1165d3f2da3255ae88bb32eed81f",
       "view": "closed",
       "world_receivers_enabled": false,
       "self_shadows_enabled": true,
@@ -121,7 +121,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-closed-on.png",
-      "sha256": "f2c1e238d58b67c334bba6aacaab600ce08e538f205d88e6e7416183f8dc52db",
+      "sha256": "18f440edbb9b6d9bcbcb6603200091ae6696cfdf190652e3b0b10224be2e2dc8",
       "view": "closed",
       "world_receivers_enabled": true,
       "self_shadows_enabled": true,
@@ -129,7 +129,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-open-off.png",
-      "sha256": "ec39956531809ce2a0308496e1e8e433dbe5bea361fa5388a93161e08f199d1c",
+      "sha256": "1fe06f7b797d141c5990f1d6bae646831f71030ecc6814b54207713b6dcfbe05",
       "view": "open",
       "world_receivers_enabled": false,
       "self_shadows_enabled": true,
@@ -137,7 +137,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-open-on.png",
-      "sha256": "de30494f3f9bc5902430c026d82d1071a7759e8ffc26f7a1c57e7f467d4d3039",
+      "sha256": "2a474de6a43b49bc37d725a0eb0bdb6ae8147856539c38ea03a8db04798f434e",
       "view": "open",
       "world_receivers_enabled": true,
       "self_shadows_enabled": true,
@@ -145,7 +145,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-raised-off.png",
-      "sha256": "3e43e94d653867c1d52f800859aba1a483256220a481027042fb7f16dcc335c6",
+      "sha256": "78906f03077abebd21a3dd1b644149c7fee666cc192722eccef3922abe7001cb",
       "view": "raised",
       "world_receivers_enabled": false,
       "self_shadows_enabled": true,
@@ -153,7 +153,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-raised-on.png",
-      "sha256": "dd3d26f590e9ac45da0c897f6271fc5a4b532d95eccd73d52f2236b7718a774e",
+      "sha256": "5a38ff9c127c5f2c4683153b5d14e46ae177322f57af8956a38f656e0c46ce4b",
       "view": "raised",
       "world_receivers_enabled": true,
       "self_shadows_enabled": true,

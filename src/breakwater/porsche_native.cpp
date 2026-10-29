@@ -65,6 +65,7 @@ bool qaShadowsDisabled{};
 bool qaWorldShadowsDisabled{};
 PorscheAmbientOcclusion ambientOcclusion;
 bool qaAODisabled{};
+bool contactShadingEnabled{true};
 struct ShadowLocations {int matrix,info,ready,probeNormal,depthAlpha,depthMasked;} shadowLocations;
 struct WorldShadowLocations {unsigned int shader{};bool valid{};std::array<int,2> matrix{},info{},sampler{};int ready{-1},probe{-1},probeNormal{-1};} worldShadowLocations;
 Texture2D environment{},dfgTexture{};
@@ -634,10 +635,13 @@ void PreparePorscheMirrors(bool force){
     rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedModelview);if(IsShaderValid(g.worldShader))SetShaderValue(g.worldShader,g.locEye,&eye.position,SHADER_UNIFORM_VEC3);SetShaderValue(porscheShader,locations.eye,&eye.position,SHADER_UNIFORM_VEC3);
 }
 bool PorscheAODepthPass(){return ambientOcclusion.IsDepthPass();}
-void BindPorscheAmbientOcclusion(Shader shader){ambientOcclusion.Bind(shader,g.camera,!mirrorPass&&!qaAODisabled);}
+void BindPorscheAmbientOcclusion(Shader shader){ambientOcclusion.Bind(shader,g.camera,contactShadingEnabled&&!mirrorPass&&!qaAODisabled);}
+void SetPorscheContactShadingEnabled(bool enabled){contactShadingEnabled=enabled;if(!enabled)ambientOcclusion.Invalidate();}
+int PorscheAmbientOcclusionUpdates(){return ambientOcclusion.Updates();}
 void EndPorscheAmbientOcclusion(){ambientOcclusion.Unbind();}
 void PreparePorscheAmbientOcclusion(){
     if(!porscheReady||mirrorPass||ambientOcclusion.IsDepthPass()||rlGetActiveFramebuffer()!=0)return;
+    if(!contactShadingEnabled){ambientOcclusion.Invalidate();return;}
     if((!g.car.isPorsche||Vector3Distance(g.car.p,g.camera.position)>24)&&(!g.extraCar.isPorsche||Vector3Distance(g.extraCar.p,g.camera.position)>24)){ambientOcclusion.Invalidate();return;}
     ambientOcclusion.Prepare(g.camera,g.graphics==GraphicsMode::High?32:16,[]{DrawWorldScene();});
 }

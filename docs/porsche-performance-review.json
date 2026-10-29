@@ -1,0 +1,209 @@
+{
+  "reviewed_at": "2026-10-29T00:53:13.350167+00:00",
+  "stage": "Instrumented native driving performance",
+  "baseline_commit": "4ac0749c871371caf95840305654aafb1e31dfd3",
+  "executable_sha256": "7aadc94fcb48121c5fb1360b96d6d983aaa0e79123c46bbe999d9e3bb6a79d49",
+  "source_hashes": {
+    "src/breakwater/porsche_profile.cpp": "bb0c6334e1d0284d07b2041e7f885f5f162f348fc4f9edaa7b767cda2b9f16e4",
+    "src/breakwater/porsche_profile.hpp": "31b1e5e11046662d5863d3b0cc345008f983233bcf2242feca93e5a64725493f",
+    "src/breakwater/main.cpp": "20b7c88187e67fb75dc0f4afa8285f5168039b061a8203b279ceab4846fb2065",
+    "src/breakwater/world.cpp": "4aed7146d3f7beffdf8723bd34118e2eb8248aa9b40c1868026d06aa851aecfb",
+    "src/breakwater/porsche_ao.cpp": "b3b4c1e34c77800536654819a188ee9ef7d1429b58e49fc81a9bf83e48f6cce3",
+    "src/breakwater/porsche_native.cpp": "22e0256ceaaeedf85e23e190f995ccdf6fcfe86094de158d6fd1a1fc7363d459",
+    "src/breakwater/porsche_native.hpp": "50ffbe49e07c053a507f8fa0e40285f4e8ad7409832e47c173dad1f5a6c7d54b"
+  },
+  "reviewer_sha256": "200f609d4dc1d2a28eda47c7a565acf99868b5fa08b5acfe9af2a76b7987e343",
+  "runtime_evidence_sha256": "7b52c07755e9c924feb351c3a94175860c99c737479922cc2bd0f8ccd134241c",
+  "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU/PCIe/SSE2",
+  "resolution": [
+    1280,
+    720
+  ],
+  "native_qa": {
+    "passed": true,
+    "checks": 125,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "legacy_thermal_regression": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.74,total-wear=0.00008251,peak-speed-mps=16.00",
+  "measured_frames": 768,
+  "ordinary_distance_LOD_selection": true,
+  "fixed_step_driving_physics": true,
+  "summary": [
+    {
+      "case": "low-chase-ao-off",
+      "frame_wall_p50_ms": 135.6072,
+      "frame_wall_p95_ms": 251.058125,
+      "gpu_p50_ms": 103.43424,
+      "ambient_mean_ms": 0.00186666667,
+      "normal_depth_mean_ms": 0,
+      "evaluation_mean_ms": 0,
+      "filter_mean_ms": 0
+    },
+    {
+      "case": "low-chase-ao-on",
+      "frame_wall_p50_ms": 188.7,
+      "frame_wall_p95_ms": 321.9509,
+      "gpu_p50_ms": 158.134784,
+      "ambient_mean_ms": 61.1596693,
+      "normal_depth_mean_ms": 55.8056747,
+      "evaluation_mean_ms": 3.59659733,
+      "filter_mean_ms": 1.749056
+    },
+    {
+      "case": "low-cockpit-ao-on",
+      "frame_wall_p50_ms": 190.07295,
+      "frame_wall_p95_ms": 408.772475,
+      "gpu_p50_ms": 137.411584,
+      "ambient_mean_ms": 46.9569813,
+      "normal_depth_mean_ms": 41.8124267,
+      "evaluation_mean_ms": 3.48551467,
+      "filter_mean_ms": 1.65058133
+    },
+    {
+      "case": "low-cockpit-ao-off",
+      "frame_wall_p50_ms": 154.44795,
+      "frame_wall_p95_ms": 272.078375,
+      "gpu_p50_ms": 94.620672,
+      "ambient_mean_ms": 0.00190933333,
+      "normal_depth_mean_ms": 0,
+      "evaluation_mean_ms": 0,
+      "filter_mean_ms": 0
+    },
+    {
+      "case": "high-chase-ao-on",
+      "frame_wall_p50_ms": 264.36405,
+      "frame_wall_p95_ms": 446.072675,
+      "gpu_p50_ms": 223.397376,
+      "ambient_mean_ms": 80.986272,
+      "normal_depth_mean_ms": 75.257408,
+      "evaluation_mean_ms": 4.158112,
+      "filter_mean_ms": 1.56072533
+    },
+    {
+      "case": "high-chase-ao-off",
+      "frame_wall_p50_ms": 180.67625,
+      "frame_wall_p95_ms": 334.9405,
+      "gpu_p50_ms": 139.963904,
+      "ambient_mean_ms": 0.00244266667,
+      "normal_depth_mean_ms": 0,
+      "evaluation_mean_ms": 0,
+      "filter_mean_ms": 0
+    },
+    {
+      "case": "high-cockpit-ao-off",
+      "frame_wall_p50_ms": 201.32215,
+      "frame_wall_p95_ms": 378.278,
+      "gpu_p50_ms": 135.463424,
+      "ambient_mean_ms": 0.00187733333,
+      "normal_depth_mean_ms": 0,
+      "evaluation_mean_ms": 0,
+      "filter_mean_ms": 0
+    },
+    {
+      "case": "high-cockpit-ao-on",
+      "frame_wall_p50_ms": 216.0592,
+      "frame_wall_p95_ms": 371.45865,
+      "gpu_p50_ms": 160.572416,
+      "ambient_mean_ms": 50.6193067,
+      "normal_depth_mean_ms": 44.380032,
+      "evaluation_mean_ms": 4.50983467,
+      "filter_mean_ms": 1.72039467
+    }
+  ],
+  "matched_driving_paths": [
+    {
+      "high": false,
+      "cockpit": false,
+      "maximum_position_error_m": 0.0,
+      "maximum_speed_error_mps": 0.0,
+      "maximum_steering_control_error": 0.0,
+      "matched_mirror_update_schedule": true,
+      "gpu_p50_on_minus_off_ms": 54.700543999999994
+    },
+    {
+      "high": false,
+      "cockpit": true,
+      "maximum_position_error_m": 0.0,
+      "maximum_speed_error_mps": 0.0,
+      "maximum_steering_control_error": 0.0,
+      "matched_mirror_update_schedule": true,
+      "gpu_p50_on_minus_off_ms": 42.790912000000006
+    },
+    {
+      "high": true,
+      "cockpit": false,
+      "maximum_position_error_m": 0.0,
+      "maximum_speed_error_mps": 0.0,
+      "maximum_steering_control_error": 0.0,
+      "matched_mirror_update_schedule": true,
+      "gpu_p50_on_minus_off_ms": 83.433472
+    },
+    {
+      "high": true,
+      "cockpit": true,
+      "maximum_position_error_m": 0.0,
+      "maximum_speed_error_mps": 0.0,
+      "maximum_steering_control_error": 0.0,
+      "matched_mirror_update_schedule": true,
+      "gpu_p50_on_minus_off_ms": 25.108992
+    }
+  ],
+  "images": [
+    {
+      "path": "screenshots/porsche-perf-low-chase-ao-off.png",
+      "sha256": "582ee22da4e0af52486e07b8cf21392a7721a86cbe786f6c2bbaabe199c8ebc2"
+    },
+    {
+      "path": "screenshots/porsche-perf-low-chase-ao-on.png",
+      "sha256": "9edc13a19960c13f1c0c32524a092aba707a9b865d6c0e72504303ab929380cf"
+    },
+    {
+      "path": "screenshots/porsche-perf-low-cockpit-ao-on.png",
+      "sha256": "9310bd288653a275e7ca8eb729eedb3fc309687165d1d5a7c3c8cceeca162b6d"
+    },
+    {
+      "path": "screenshots/porsche-perf-low-cockpit-ao-off.png",
+      "sha256": "ca54d602f83bfff0cf4cdb2613546eb32172f874755250850cb718b5b39a041d"
+    },
+    {
+      "path": "screenshots/porsche-perf-high-chase-ao-on.png",
+      "sha256": "73e982124eca8c1519d7dbc54ef3bfa11f0614e1d2011d0a4cd20a96cba44bb7"
+    },
+    {
+      "path": "screenshots/porsche-perf-high-chase-ao-off.png",
+      "sha256": "f53d6899f834dd849fc5c8663387111541a28bbc739b8e4297d7876e7454d155"
+    },
+    {
+      "path": "screenshots/porsche-perf-high-cockpit-ao-off.png",
+      "sha256": "08bc5de1e6b4174d5c7c01e0be2ae6de3dcf215a8d7b3ba3eec85a0113cbb843"
+    },
+    {
+      "path": "screenshots/porsche-perf-high-cockpit-ao-on.png",
+      "sha256": "ccf716d48440a22fdc2c074edf2725369e003b6566371103e8621df7ee8c40d1"
+    }
+  ],
+  "local_instrumented_60fps_p95_target_met": false,
+  "limits": [
+    "Local instrumented native renderer/physics/HUD run on this machine; not a cross-device FPS guarantee",
+    "Per-stage batch flushes and timestamp commands add instrumentation overhead; nested ambient stages are included in ambient_total",
+    "GPU elapsed spans may include GPU idle gaps waiting for CPU commands; CPU submit is not CPU-only execution time",
+    "Hidden-window workload; presentation/compositor scheduling and visible-window performance need separate verification",
+    "Fixed simulation step and repeated input sequence; camera smoothing disabled so matched cases use identical views",
+    "Combat and audio held idle; shader/asset loading and cold-start latency excluded by warmup"
+  ],
+  "complete": false,
+  "final_fidelity_verified": false
+}

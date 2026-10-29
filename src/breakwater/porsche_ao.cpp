@@ -1,4 +1,5 @@
 #include "porsche_ao.hpp"
+#include "porsche_profile.hpp"
 #include "raymath.h"
 #include "rlgl.h"
 #include <cmath>
@@ -47,14 +48,16 @@ bool PorscheAmbientOcclusion::Prepare(const Camera3D& camera,int samples,const s
     if(!Ensure(GetRenderWidth(),GetRenderHeight()))return false;
     captured=camera;view=MatrixLookAt(camera.position,camera.target,camera.up);const float aspect=static_cast<float>(normalDepth.texture.width)/normalDepth.texture.height;
     projection=camera.projection==CAMERA_PERSPECTIVE?MatrixPerspective(camera.fovy*DEG2RAD,aspect,rlGetCullDistanceNear(),rlGetCullDistanceFar()):MatrixOrtho(-camera.fovy*aspect*.5f,camera.fovy*aspect*.5f,-camera.fovy*.5f,camera.fovy*.5f,rlGetCullDistanceNear(),rlGetCullDistanceFar());
+    {PorscheProfileScope stage(PorscheProfileStage::NormalDepth);
     depthPass=true;BeginTextureMode(normalDepth);rlEnableDepthMask();rlDisableColorBlend();ClearBackground(BLANK);
     try{drawGeometry();}catch(...){EndTextureMode();rlEnableColorBlend();depthPass=false;rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedView);throw;}
-    EndTextureMode();rlEnableColorBlend();depthPass=false;
+    EndTextureMode();rlEnableColorBlend();depthPass=false;}
     const Matrix inverse=MatrixInvert(projection);const Vector2 resolution{static_cast<float>(raw.texture.width),static_cast<float>(raw.texture.height)};const Vector2 parameters{.28f,.004f};
     SetShaderValueMatrix(compute,GetShaderLocation(compute,"projection"),projection);SetShaderValueMatrix(compute,GetShaderLocation(compute,"inverseProjection"),inverse);SetShaderValueMatrix(compute,GetShaderLocation(compute,"view"),view);SetShaderValue(compute,GetShaderLocation(compute,"resolution"),&resolution,SHADER_UNIFORM_VEC2);SetShaderValue(compute,GetShaderLocation(compute,"parameters"),&parameters,SHADER_UNIFORM_VEC2);SetShaderValue(compute,GetShaderLocation(compute,"sampleCount"),&samples,SHADER_UNIFORM_INT);
-    TextureUnit(7,normalDepth.texture);Quad(raw,compute);
+    {PorscheProfileScope stage(PorscheProfileStage::AOEvaluation);TextureUnit(7,normalDepth.texture);Quad(raw,compute);}
     SetShaderValue(blur,GetShaderLocation(blur,"resolution"),&resolution,SHADER_UNIFORM_VEC2);
-    for(int axis=0;axis<2;++axis){const Vector2 direction=axis==0?Vector2{1,0}:Vector2{0,1};SetShaderValue(blur,GetShaderLocation(blur,"direction"),&direction,SHADER_UNIFORM_VEC2);TextureUnit(7,normalDepth.texture);TextureUnit(8,axis==0?raw.texture:temporary.texture);Quad(axis==0?temporary:filtered,blur);}
+    {PorscheProfileScope stage(PorscheProfileStage::AOFilter);
+    for(int axis=0;axis<2;++axis){const Vector2 direction=axis==0?Vector2{1,0}:Vector2{0,1};SetShaderValue(blur,GetShaderLocation(blur,"direction"),&direction,SHADER_UNIFORM_VEC2);TextureUnit(7,normalDepth.texture);TextureUnit(8,axis==0?raw.texture:temporary.texture);Quad(axis==0?temporary:filtered,blur);}}
     Unbind();rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedView);ready=true;++updates;return true;
 }
 void PorscheAmbientOcclusion::Bind(Shader shader,const Camera3D& camera,bool enabled){

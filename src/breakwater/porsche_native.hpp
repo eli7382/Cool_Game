@@ -70,6 +70,8 @@ void BindPorscheWorldSunShadows();
 void EndPorscheWorldSunShadows();
 bool PorscheHasWorldSunShadow(const Vehicle& vehicle);
 void PreparePorscheAmbientOcclusion();
+void SetPorscheContactShadingEnabled(bool enabled);
+int PorscheAmbientOcclusionUpdates();
 bool PorscheAODepthPass();
 void BindPorscheAmbientOcclusion(Shader shader);
 void EndPorscheAmbientOcclusion();
