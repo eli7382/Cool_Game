@@ -1,0 +1,15 @@
+{
+"enabled":true,
+"passed":true,
+"camera_pose_cases":36,
+"cylinders_tested":113490,
+"cylinders_rejected":91104,
+"cap_and_ring_vertices_verified":1651344,
+"oracle_failures":0,
+"single_sample_color_differences":0,
+"normal_depth_differences":0,
+"AO_differences":0,
+"mirror_differences":0,
+"limits":["Finite camera/pose scenes; equal-radius Between helper only","Cap/ring oracle enumerates raylib DrawCylinderEx vertices, not bounding-box corners","Shader-deformed foliage, stereo, invalid inputs and boundary cases retained"],
+"complete":false
+}

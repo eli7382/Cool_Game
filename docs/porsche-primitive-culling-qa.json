@@ -1,9 +1,9 @@
 {
 "passed":true,
 "camera_pose_cases":36,
-"primitives_tested":127080,
-"primitives_rejected":50688,
-"actual_rejected_vertices_verified":124631946,
+"primitives_tested":177912,
+"primitives_rejected":72018,
+"actual_rejected_vertices_verified":174510126,
 "oracle_failures":0,
 "single_sample_color_differences":0,
 "normal_depth_differences":0,

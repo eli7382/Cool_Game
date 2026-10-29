@@ -1,0 +1,1 @@
+{"enabled":true,"passed":true,"floating_point_GPU_probes":18,"maximum_world_position_error_m":1.43051e-06,"maximum_normal_error":2.32764e-07,"scope":"Three geometry frames crossed with three flush frames; known plane-center world position and normal, measured independently in an RGBA32F target"}

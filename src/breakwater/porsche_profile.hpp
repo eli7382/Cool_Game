@@ -14,5 +14,5 @@ private:
     int stage{-1};
     double started{};
 };
-bool RunPorschePerformanceQA(bool compareCulling=false);
+bool RunPorschePerformanceQA(bool compareCulling=false,bool compareCylinders=false);
 }

@@ -1,0 +1,303 @@
+{
+  "reviewed_at": "2026-10-29T15:25:10.952653+00:00",
+  "parent_commit": "6b6f82c45d30acb2448596eae3dac5bd678b6bb7",
+  "change": "Correct model/normal uniforms for CPU-transformed rlgl primitive batches; stage a marked raylib copy during standalone configuration; keep DrawMesh untouched",
+  "build_patch": {
+    "upstream_rlgl_sha256": "9f75d03a522eae6d517d6193b29dd29dcad9f00316b587f4324732b0d20f6b3d",
+    "staged_rlgl_sha256": "f1edc21b9909d256631d647b6e689a450efe3c048c854f8618162f9481d529d8",
+    "upstream_modified": false,
+    "batch_model_and_normal_are_identity": true
+  },
+  "per_mesh_rmodels_source_unchanged": true,
+  "source_sha256": {
+    "cmake/StageRaylibWorldBatches.cmake": "5f7105d2404eaab9d6be15928ebca0fdd1f8df5bfb410cbb37776aeca3ebd47d",
+    "cmake/standalone/CMakeLists.txt": "fa11c523d3d69af6ee78f3fd902d481976b6ff0424c098c98de2347c15dc35ed",
+    "src/breakwater/main.cpp": "0692c6335c4dc0b18fa60ff60d8d9fe45a766bb65c0bd3f09264a34ad26b6ad2",
+    "src/breakwater/mesh_visibility.cpp": "5345ad2a1c55f5fa6a8b867ad96793265a40a1d3e9f02cd9dcfd3ed9dc72a796",
+    "src/breakwater/mesh_visibility.hpp": "a92c9583646595cbf892e769a939a4044f12b90e2b3b9568eb42a64f63b701da",
+    "src/breakwater/porsche_native.cpp": "d338296ef7a239abce164ec59a3adaaa11bf3ca48ba19ce7996476880614ce27",
+    "src/breakwater/porsche_profile.cpp": "fe364c1f5b92c4df8b14dbc5331707ea50a9d6e78a2d465f83d74ca23fa55616",
+    "src/breakwater/porsche_profile.hpp": "f98540a843ebb0e0d684923cbb8cc2beffae1bfc2f7f1cc60a96666749581fd1",
+    "src/breakwater/world.cpp": "74c75ef1b079b568edcbb28fe0fd26451187aff07a2ef9f8f82e2eb2c27858c2"
+  },
+  "executable_sha256": "290a6e088d3b0b68e6f0599c5a78c7d939850bb080b300fb6a107fd2fb6f7536",
+  "GPU_coordinate_oracle": {
+    "enabled": true,
+    "passed": true,
+    "floating_point_GPU_probes": 18,
+    "maximum_world_position_error_m": 1.43051e-06,
+    "maximum_normal_error": 2.32764e-07,
+    "scope": "Three geometry frames crossed with three flush frames; known plane-center world position and normal, measured independently in an RGBA32F target"
+  },
+  "native_qa": {
+    "checks": 139,
+    "failures": 0,
+    "exit_code": 0,
+    "session_start_line": 7643,
+    "log_sha256": "ea0792cdce77e53e0d6f16cc6c580833c40e20b75d4945b24783acc97a42a8b7"
+  },
+  "pixel_equivalence": {
+    "passed": true,
+    "image_pairs": 36,
+    "perspective_and_orthographic_views": true,
+    "detail_levels": 3,
+    "poses": 3,
+    "analytic_projection_fixtures": 600,
+    "analytic_and_nonfinite_cases_passed": true,
+    "color_differing_pairs": 0,
+    "normal_depth_differing_pairs": 0,
+    "ambient_visibility_differing_pairs": 0,
+    "mirror_target_pairs": 54,
+    "mirror_target_differing_pairs": 0,
+    "porsche_meshes_tested": 151332,
+    "porsche_meshes_rejected": 19644,
+    "hero_meshes_tested": 294336,
+    "hero_meshes_rejected": 103731,
+    "rejected_vertices_verified": 81625505,
+    "rejected_vertex_oracle_failures": 0,
+    "representative_images_exported": true,
+    "MSAA_unchanged_repeat_maximum_code_delta": 2,
+    "MSAA_culling_maximum_code_delta": 2,
+    "MSAA_unchanged_repeat_changed_pixels": 89923,
+    "MSAA_culling_changed_pixels": 87291,
+    "MSAA_control_comparisons_per_case": 3,
+    "MSAA_culling_comparisons_per_case": 3,
+    "scope": "Same-process culling off/on exact single-sample main color with AO, floating normal/depth, AO and reflected target comparisons; all three LODs; front, rear, cockpit and overhead orthographic cameras; doors, windows, steering, wheels, aero, paddles, mirrors and spring travel",
+    "limits": [
+      "Finite camera/pose coverage, not exhaustive whole-game validation",
+      "Rigid hero-vehicle meshes, posed Porsche meshes and rigid generated box/sphere parts are culled; shader-deformed foliage/water are unchanged",
+      "Conservative rejection retains uncertain/boundary cases; stereo bypasses culling"
+    ],
+    "complete": false
+  },
+  "cylinder_geometry_oracle": {
+    "enabled": true,
+    "passed": true,
+    "camera_pose_cases": 36,
+    "cylinders_tested": 113490,
+    "cylinders_rejected": 91104,
+    "cap_and_ring_vertices_verified": 1651344,
+    "oracle_failures": 0,
+    "single_sample_color_differences": 0,
+    "normal_depth_differences": 0,
+    "AO_differences": 0,
+    "mirror_differences": 0,
+    "limits": [
+      "Finite camera/pose scenes; equal-radius Between helper only",
+      "Cap/ring oracle enumerates raylib DrawCylinderEx vertices, not bounding-box corners",
+      "Shader-deformed foliage, stereo, invalid inputs and boundary cases retained"
+    ],
+    "complete": false
+  },
+  "exploratory_original_library_negative_control": {
+    "cases": 36,
+    "color_differing_pairs": 18,
+    "normal_depth_differing_pairs": 18,
+    "AO_differing_pairs": 18,
+    "mirror_differing_pairs": 0,
+    "log_sha256": "1fd3dda1b32a4445e3efea40eb8ca75cd7e3ad4fddb52da61085ca9865b29c77",
+    "upstream_header_sha256": "9f75d03a522eae6d517d6193b29dd29dcad9f00316b587f4324732b0d20f6b3d",
+    "scope": "Exploratory cylinder-culling variant before the batch-coordinate correction; not the production configuration"
+  },
+  "cylinder_experiment": {
+    "production_enabled": false,
+    "decision": "Leave disabled: balanced timing evidence does not show a consistent gain in every view",
+    "comparison": "ABBA/BAAB on/off order per view; the coordinate correction is active for both states",
+    "measured_variant_source_sha256": {
+      "src/breakwater/world.cpp": "640268f2470eeacf792f7f1d91ca077d6419a7a9083e5ea98fc8edfc04742c5d",
+      "src/breakwater/mesh_visibility.cpp": "3b1f2ef2b7ad019bb85c1c7699391a234b9e003361d7942792044f705f8166f0",
+      "src/breakwater/porsche_profile.cpp": "bad14b0a994d0de60fe61e25eb4e975ef61762a504a5125bdcb343edc90b4aad",
+      "src/breakwater/porsche_native.cpp": "da46eae75506a356bfc7726144d19d5a8102b5a8e6f68023f0436e15dabafc80",
+      "src/breakwater/main.cpp": "0692c6335c4dc0b18fa60ff60d8d9fe45a766bb65c0bd3f09264a34ad26b6ad2",
+      "cmake/StageRaylibWorldBatches.cmake": "5f7105d2404eaab9d6be15928ebca0fdd1f8df5bfb410cbb37776aeca3ebd47d",
+      "cmake/standalone/CMakeLists.txt": "fa11c523d3d69af6ee78f3fd902d481976b6ff0424c098c98de2347c15dc35ed"
+    },
+    "scope": "Diagnostic variant before the final disabled-default and fast-bypass policy; timings do not describe the production default",
+    "views": [
+      {
+        "view": "low-chase",
+        "off": {
+          "run_medians_ms": [
+            76.9925,
+            83.8569
+          ],
+          "samples": 192,
+          "pooled_median_ms": 80.10845,
+          "pooled_p95_ms": 101.8107
+        },
+        "on": {
+          "run_medians_ms": [
+            69.9575,
+            79.16925
+          ],
+          "samples": 192,
+          "pooled_median_ms": 73.53295,
+          "pooled_p95_ms": 94.339635
+        },
+        "median_reduction_percent": 8.208247694219528
+      },
+      {
+        "view": "low-cockpit",
+        "off": {
+          "run_medians_ms": [
+            42.26275,
+            40.89375
+          ],
+          "samples": 192,
+          "pooled_median_ms": 41.26815,
+          "pooled_p95_ms": 52.897774999999996
+        },
+        "on": {
+          "run_medians_ms": [
+            41.83025,
+            48.2732
+          ],
+          "samples": 192,
+          "pooled_median_ms": 44.660650000000004,
+          "pooled_p95_ms": 58.98890999999997
+        },
+        "median_reduction_percent": -8.220625349088827
+      },
+      {
+        "view": "high-chase",
+        "off": {
+          "run_medians_ms": [
+            98.72295,
+            165.0914
+          ],
+          "samples": 192,
+          "pooled_median_ms": 116.99695,
+          "pooled_p95_ms": 220.61935499999998
+        },
+        "on": {
+          "run_medians_ms": [
+            91.0369,
+            84.48395
+          ],
+          "samples": 192,
+          "pooled_median_ms": 89.11885000000001,
+          "pooled_p95_ms": 116.16848999999999
+        },
+        "median_reduction_percent": 23.82805705618821
+      },
+      {
+        "view": "high-cockpit",
+        "off": {
+          "run_medians_ms": [
+            46.1822,
+            52.33585
+          ],
+          "samples": 192,
+          "pooled_median_ms": 48.307900000000004,
+          "pooled_p95_ms": 62.19074499999999
+        },
+        "on": {
+          "run_medians_ms": [
+            46.8877,
+            45.0308
+          ],
+          "samples": 192,
+          "pooled_median_ms": 46.0497,
+          "pooled_p95_ms": 53.295725
+        },
+        "median_reduction_percent": 4.674597736602093
+      }
+    ]
+  },
+  "production_default_performance": {
+    "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU/PCIe/SSE2",
+    "resolution": [
+      1280,
+      720
+    ],
+    "cylinder_checks_in_all_cases": 0,
+    "AO_enabled_views": [
+      {
+        "view": "low-chase-ao-on",
+        "frame_wall_ms": {
+          "mean": 89.4463823,
+          "p50": 92.7045,
+          "p95": 108.543,
+          "p99": 113.398655,
+          "max": 123.1144
+        },
+        "gpu_frame_ms": {
+          "mean": 70.8918933,
+          "p50": 70.661632,
+          "p95": 94.831872,
+          "p99": 97.1800064,
+          "max": 98.52928
+        }
+      },
+      {
+        "view": "low-cockpit-ao-on",
+        "frame_wall_ms": {
+          "mean": 45.1088063,
+          "p50": 44.37,
+          "p95": 57.900025,
+          "p99": 62.095225,
+          "max": 68.1339
+        },
+        "gpu_frame_ms": {
+          "mean": 33.976352,
+          "p50": 34.11968,
+          "p95": 46.360832,
+          "p99": 52.1229824,
+          "max": 52.810752
+        }
+      },
+      {
+        "view": "high-chase-ao-on",
+        "frame_wall_ms": {
+          "mean": 92.924175,
+          "p50": 92.71415,
+          "p95": 107.859375,
+          "p99": 116.66663,
+          "max": 117.8927
+        },
+        "gpu_frame_ms": {
+          "mean": 72.9365333,
+          "p50": 73.287168,
+          "p95": 86.175232,
+          "p99": 91.4025472,
+          "max": 92.186624
+        }
+      },
+      {
+        "view": "high-cockpit-ao-on",
+        "frame_wall_ms": {
+          "mean": 47.6283729,
+          "p50": 47.67045,
+          "p95": 54.42545,
+          "p99": 57.269395,
+          "max": 58.0578
+        },
+        "gpu_frame_ms": {
+          "mean": 36.864032,
+          "p50": 36.529152,
+          "p95": 45.097984,
+          "p99": 47.7574144,
+          "max": 48.673792
+        }
+      }
+    ]
+  },
+  "unchanged_Porsche_asset_manifest_sha256": "dbb3e33cdb77a19cf4a1232372f544004c77cd767676596cbb1e12901d3ba8a7",
+  "evidence_sha256": {
+    "docs/porsche-native-performance.json": "a52aa6ff7635727cd8fb929d4100373ecce23c67c823e2888e1178f9641d07f2",
+    "docs/porsche-native-cylinder-performance.json": "23d1c5c5badedfe8676a6627c4b73aca569c0bad5c9eebc1195e20388464b4f4",
+    "docs/porsche-native-culling-qa.json": "5692fb305b8bdd2a5434cee70dede562b07b862d2748a90f9566064a44cd737f",
+    "docs/porsche-cylinder-culling-qa.json": "a7f38b18610228fceccc29f67eae53d34f36c250f292a9ab37f2cdd5c3c490ae",
+    "docs/porsche-batch-world-coordinate-qa.json": "bd925e3d443164c1ca80178224d90cf83db05393f3cf085c580185ad6def29cf"
+  },
+  "incremental_staging_did_not_recompile_or_link": true,
+  "complete": false,
+  "sixty_fps_target_achieved": false,
+  "limits": [
+    "The library correction is supplied by the standalone source build; unpatched installed-raylib targets retain their prior batch path and bypass experimental cylinder culling",
+    "GPU coordinate oracle covers known planes under uniform-scale/rotation/translation and varied flush contexts; not every primitive surface-normal construction",
+    "Finite pixel and motion fixtures are not full vehicle swept clearance",
+    "Hidden-window instrumented timings on this machine; thermal, scheduling and adaptive refresh work can vary between runs",
+    "Front tire/arch contact, final visual fidelity, performance target and GitHub publication remain unfinished"
+  ]
+}

@@ -1,6 +1,7 @@
 #include "mesh_visibility.hpp"
 #include "raymath.h"
 #include "rlgl.h"
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <limits>
@@ -8,7 +9,8 @@
 
 namespace bw {
 namespace {
-bool enabled=true,verify=false;
+// Cylinder culling is an opt-in experiment until timings improve consistently.
+bool enabled=true,verify=false,cylinderEnabled=false;
 std::array<MeshVisibilityStats,static_cast<int>(MeshVisibilityKind::Count)> statistics;
 struct CachedBounds {const float* vertices{};int count{};BoundingBox bounds{};};
 std::unordered_map<unsigned int,CachedBounds> rigidBounds;
@@ -49,6 +51,42 @@ bool MeshView::Visible(const Mesh& mesh,BoundingBox bounds,Matrix model,MeshVisi
     }
     return false;
 }
+bool MeshView::VisibleCylinder(Vector3 start,Vector3 end,float radius,int sides)const{
+    auto& stats=statistics[static_cast<int>(MeshVisibilityKind::WorldCylinder)];++stats.tested;
+    // Installed/unpatched raylib targets retain their prior rendering path.
+    // Cylinder batching is safe only with the matching world-coordinate fix.
+    if(!WorldSpaceBatchCoordinatesFixed())return true;
+    if(!enabled||!cylinderEnabled||rlIsStereoRenderEnabled())return true;
+    for(float v:{start.x,start.y,start.z,end.x,end.y,end.z,radius})if(!std::isfinite(v))return true;
+    if(radius<0||sides<3||sides>4096)return true;
+    const BoundingBox box{{std::min(start.x,end.x)-radius,std::min(start.y,end.y)-radius,std::min(start.z,end.z)-radius},
+                          {std::max(start.x,end.x)+radius,std::max(start.y,end.y)+radius,std::max(start.z,end.z)+radius}};
+    int plane=-1;if(Intersects(box,stackViewProjection,&plane))return true;
+    ++stats.rejected;
+    if(verify){
+        // Independently enumerate the cap centers and the same ring vertices
+        // raylib 5.5 DrawCylinderEx emits. Do not use AABB corners as the oracle.
+        const Vector3 direction=Vector3Subtract(end,start);
+        if(Vector3LengthSqr(direction)==0)return false;
+        const Vector3 b1=Vector3Normalize(Vector3Perpendicular(direction)),b2=Vector3Normalize(Vector3CrossProduct(b1,direction));
+        const Matrix clip=stackViewProjection;
+        auto outside=[&](Vector3 p){
+            const double w=static_cast<double>(clip.m3)*p.x+static_cast<double>(clip.m7)*p.y+static_cast<double>(clip.m11)*p.z+clip.m15;
+            const int axis=plane/2;const double c=axis==0?static_cast<double>(clip.m0)*p.x+static_cast<double>(clip.m4)*p.y+static_cast<double>(clip.m8)*p.z+clip.m12:axis==1?static_cast<double>(clip.m1)*p.x+static_cast<double>(clip.m5)*p.y+static_cast<double>(clip.m9)*p.z+clip.m13:static_cast<double>(clip.m2)*p.x+static_cast<double>(clip.m6)*p.y+static_cast<double>(clip.m10)*p.z+clip.m14;
+            ++stats.verifiedVertices;return std::isfinite(w+c)&&w+(plane%2?-c:c)<0;
+        };
+        const float step=(2.0f*PI)/sides;
+        for(Vector3 center:{start,end}){
+            if(!outside(center)){++stats.oracleFailures;return true;}
+            for(int i=0;i<=sides;++i){
+                const float s=sinf(step*i)*radius,c=cosf(step*i)*radius;
+                const Vector3 p{center.x+s*b1.x+c*b2.x,center.y+s*b1.y+c*b2.y,center.z+s*b1.z+c*b2.z};
+                if(!outside(p)){++stats.oracleFailures;return true;}
+            }
+        }
+    }
+    return false;
+}
 BoundingBox CachedRigidMeshBounds(const Mesh& mesh){
     auto found=rigidBounds.find(mesh.vaoId);
     if(found==rigidBounds.end()||found->second.vertices!=mesh.vertices||found->second.count!=mesh.vertexCount){const auto box=GetMeshBoundingBox(mesh);found=rigidBounds.insert_or_assign(mesh.vaoId,CachedBounds{mesh.vertices,mesh.vertexCount,box}).first;}
@@ -57,6 +95,15 @@ BoundingBox CachedRigidMeshBounds(const Mesh& mesh){
 void ClearMeshVisibilityCache(){rigidBounds.clear();}
 void SetMeshVisibilityEnabled(bool value){enabled=value;}
 bool MeshVisibilityEnabled(){return enabled;}
+void SetCylinderVisibilityEnabled(bool value){cylinderEnabled=value;}
+bool CylinderVisibilityEnabled(){return cylinderEnabled;}
+bool WorldSpaceBatchCoordinatesFixed(){
+#ifdef BW_WORLD_SPACE_BATCHES_FIXED
+    return true;
+#else
+    return false;
+#endif
+}
 void VerifyRejectedMeshVertices(bool value){verify=value;}
 MeshVisibilityStats GetMeshVisibilityStats(MeshVisibilityKind kind){return statistics[static_cast<int>(kind)];}
 }

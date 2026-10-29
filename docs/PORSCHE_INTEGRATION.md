@@ -266,6 +266,15 @@ The game compiles and links with the Porsche implementation through this build
 path. Existing benchmark/MSVC entry points are retained; they need their
 external benchmark dependencies as before.
 
+The standalone configuration stages the raylib build inputs under
+`build-native/ninja/raylib-world-batches/`, leaving the supplied checkout
+unchanged. `cmake/StageRaylibWorldBatches.cmake` marks and corrects two batch
+uniform uploads: immediate vertices already contain CPU stack transforms,
+so their model and normal uniforms must be identity when the batch flushes.
+The ordinary `DrawMesh` implementation is unchanged. Installed-raylib targets
+retain their existing batch implementation and bypass experimental cylinder
+culling. Use the standalone source build for the verified coordinate fix.
+
 ## Native checks
 
 ```powershell
@@ -452,18 +461,38 @@ front arch remains in 87 of 165 sampled clearance poses and is still unresolved.
 
 Rigid box and sphere parts now use the current render-stack frustum before
 submission, including parts belonging to other vehicles. Their material-state
-updates still run when a draw is rejected. In 36 camera/pose comparisons this
+updates still run when a draw is rejected. In the earlier 36 camera/pose comparisons this
 removed 50,688 draws with zero differing single-sample color, normal/depth, AO
-or mirror target pairs. See `docs/porsche-primitive-culling-qa.json`.
+or mirror target pairs. That result is recorded in
+`docs/porsche-primitive-performance-review.json`.
 
-The sequential local performance comparison recorded median frame times with
+The earlier sequential local performance comparison recorded median frame times with
 AO enabled of 119.67 to 51.75 ms (low chase), 55.82 to 31.64 ms (low cockpit),
 122.89 to 69.53 ms (high chase), and 52.84 to 37.68 ms (high cockpit).
 These are instrumented 1280x720 hidden-window measurements on the recorded
 RTX 3050 Laptop GPU, with 24 warmup and 96 sampled frames per case. They do
-not establish 60 FPS or visible-window presentation performance. Current
+not establish 60 FPS or visible-window presentation performance. Those
 timings, baseline samples, source hashes and limitations are recorded in
 `docs/porsche-primitive-performance-review.json`. The explicit performance
 mode also separates main-color static scenery, vegetation, actors, props,
 vehicles and the player Porsche; those nested intervals are already included
 in their parent stage timings.
+
+The current renderer also fixes world-position and normal changes caused by
+flushing an immediate batch under a different transform. Eighteen independent
+RGBA32F GPU probes checked known plane positions/normals across geometry and
+flush frames; maximum world-position error was 0.00000144 m. The native suite
+passed 139 checks. Thirty-six culling comparisons matched single-sample color,
+normal/depth, AO and reflected targets exactly; antialiased output stayed within
+the measured unchanged-frame rounding envelope. See
+`docs/porsche-world-batch-review.json` and
+`docs/porsche-batch-world-coordinate-qa.json`.
+
+Cylinder culling is disabled in normal gameplay. The opt-in
+`--qa-porsche-cylinder-performance` mode uses ABBA/BAAB repetitions to compare
+it with the coordinate fix active in both states. The exploratory timing data
+did not show a consistent gain across views, so it is retained as a diagnostic
+and batch-invariance stress test. Current default timings are in
+`docs/porsche-native-performance.json`; that run recorded zero cylinder-culling
+checks in all eight cases. Neither this change nor the earlier optimization
+establishes the 60 FPS target or resolves tire/arch clearance.

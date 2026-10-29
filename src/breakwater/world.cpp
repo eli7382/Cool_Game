@@ -2142,7 +2142,12 @@ void Box(Vector3 p,Vector3 size,Color color,float yaw,bool concrete){
     const Model& model=concrete?g.concreteCube:g.cube;
     if(PrimitiveModelVisible(model,p,V(0,1,0),yaw/DEG,size))DrawModelEx(model,p,V(0,1,0),yaw/DEG,size,color);
 }
-void Between(Vector3 a,Vector3 b,float r,Color c,int sides){if(sides<3)sides=g.graphics==GraphicsMode::High?20:12;DrawCylinderEx(a,b,r,r,sides,c);}
+void Between(Vector3 a,Vector3 b,float r,Color c,int sides){
+    if(sides<3)sides=g.graphics==GraphicsMode::High?20:12;
+    if(a.x==b.x&&a.y==b.y&&a.z==b.z)return;
+    if(!CylinderVisibilityEnabled()||!MeshVisibilityEnabled()||!WorldSpaceBatchCoordinatesFixed()||g.activeFoliageSurface>.001f||MeshView{}.VisibleCylinder(a,b,r,sides))DrawCylinderEx(a,b,r,r,sides,c);
+    else{rlBegin(RL_TRIANGLES);rlColor4ub(c.r,c.g,c.b,c.a);rlEnd();} // Retain DrawCylinderEx's batch mode/color/depth state.
+}
 void Ellipsoid(Vector3 p,Vector3 radii,Color c,float yaw){
     if(IsModelValid(g.detailSphere)){UsePaintBlend(0.0f);if(PrimitiveModelVisible(g.detailSphere,p,V(0,1,0),yaw/DEG,radii))DrawModelEx(g.detailSphere,p,V(0,1,0),yaw/DEG,radii,c);}
     else DrawSphere(p,std::max(radii.x,std::max(radii.y,radii.z)),c);
