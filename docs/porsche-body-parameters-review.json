@@ -1,0 +1,69 @@
+{
+  "reviewed_at": "2026-10-29T08:58:44.506406+00:00",
+  "change": "Separate Porsche body/load properties from pickup: DIN baseline mass, exported axle datums and track widths, rear-wheel-drive force distribution, published drag area, estimated rearward CG and yaw inertia. Integrate CG velocity and recover authored model-origin motion; use active mass in translational vehicle/debris impulses.",
+  "published_values": {
+    "reference": "https://newsroom.porsche.com/dam/jcr%3A1d390f77-93c3-49c0-89c7-634f5f02b26a/S22_3515_en.pdf",
+    "mass_kg_DIN": 1450,
+    "wheelbase_m": 2.457,
+    "front_track_m": 1.63,
+    "rear_track_m": 1.582,
+    "drag_area_m2": 0.862,
+    "drive": "rear-wheel drive"
+  },
+  "explicit_game_estimates": {
+    "cg_height_m": 0.48,
+    "static_front_fraction": 0.39,
+    "front_roll_stiffness_fraction": 0.48,
+    "yaw_inertia_kg_m2": 2350,
+    "cg_z_relative_to_model_origin_m": -0.29876999999999987
+  },
+  "source_hashes": {
+    "src/breakwater/car_corner_loads.hpp": "444f5bf819cec411e461931569ce8430dcd7dee1e61eed8155ed33566e10e3e2",
+    "src/breakwater/car_body_motion.hpp": "c407a701ac2429379b0b1d4c294981a32e699d86d29b403cbfc9e699bf1b4d8a",
+    "src/breakwater/gameplay.cpp": "81dbe415484d59d308a01ab7372f11f53be7b73539baa27158bc5ea81b5e4790",
+    "src/breakwater/game.hpp": "c5185c8b803beed9b7e8e5c8b3fb328c662e8f05a65bb5d93cf537ec51b31ec7",
+    "tests/porsche_body_parameters.cpp": "825f55bf54b81850d2909ab500a303270d642426b5dcc1f51074ea9d8f514cc4",
+    "tests/car_corner_loads.cpp": "d79a59112308f19d3f654e094f6d4757edd5a88e404b9b9d15fa302bfc25ead3"
+  },
+  "cpu_checks": {
+    "porsche": "porsche-body-invariants,checks=16012,failures=0",
+    "existing_pickup": "corner-load-invariants,checks=18388,failures=0",
+    "total": 34400,
+    "scope": [
+      "Vertical-force conservation and positive loads across acceleration grids",
+      "Left/right load mirror symmetry",
+      "Unsaturated roll and pitch moment balance at different normal loads",
+      "RWD drive goes to rear while passive braking/rolling forces retain axle shares",
+      "CG/origin velocity inverse and fixed-CG rotation transport"
+    ]
+  },
+  "native_executable_sha256": "68dc523d541d79c3b9eb19d05f5cfc4256d1ac2f63833ae4e58283cf20906af9",
+  "native_qa": {
+    "passed": true,
+    "checks": 133,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.9707,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "thermal_result": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=21.00,total-wear=0.00008308,peak-speed-mps=16.00",
+  "thermal_log_sha256": "1867717f3e2912863d733c7f0486e03d3a25f75c56b8d79d27adf1ec1f72936c",
+  "limits": [
+    "DIN mass is used as a game baseline; occupant, payload and fuel-mass variation are not modeled",
+    "CG height, static distribution, roll split and inertia are provisional, not measured 992 GT3 RS calibration",
+    "Existing simplified engine acceleration/RPM, gearbox behavior, speed limit, tire curve, suspension rates and aero/downforce still need development",
+    "Collision update changes translational mass weighting; contact-point rotational collision impulses are not implemented",
+    "No verified OEM acceleration, stopping distance, cornering envelope, lap time or final visual fidelity claim"
+  ],
+  "complete": false
+}

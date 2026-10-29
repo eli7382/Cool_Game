@@ -3,6 +3,7 @@
 #include "porsche_rear_steering.hpp"
 #include "porsche_front_steering.hpp"
 #include "car_corner_loads.hpp"
+#include "car_body_motion.hpp"
 #include "porsche_pedals.hpp"
 
 namespace bw {
@@ -859,7 +860,7 @@ void UpdateHostileRoadVehicles(float dt){
             const Vector3 separation=Sub(g.car.p,vehicle.p);const float distance=DistXZ(g.car.p,vehicle.p),minimum=3.45f;
             if(distance<minimum&&distance>.01f){const Vector3 normal=V(separation.x/distance,0,separation.z/distance);const float closing=-Vector3DotProduct(Sub(g.car.velocity,vehicle.velocity),normal);
                 g.car.p.x+=normal.x*(minimum-distance)*.52f;g.car.p.z+=normal.z*(minimum-distance)*.52f;vehicle.p.x-=normal.x*(minimum-distance)*.48f;vehicle.p.z-=normal.z*(minimum-distance)*.48f;
-                if(closing>0.0f){const float impulse=-(1.0f+.12f)*(-closing)/(1.0f/1900.0f+1.0f/1900.0f);g.car.velocity=Add(g.car.velocity,Mul(normal,impulse/1900.0f));vehicle.velocity=Sub(vehicle.velocity,Mul(normal,impulse/1900.0f));
+                if(closing>0.0f){const float playerMass=CarBody(g.car.isPorsche).massKg,otherMass=CarBody(vehicle.isPorsche).massKg;const float impulse=-(1.0f+.12f)*(-closing)/(1.0f/playerMass+1.0f/otherMass);g.car.velocity=Add(g.car.velocity,Mul(normal,impulse/playerMass));vehicle.velocity=Sub(vehicle.velocity,Mul(normal,impulse/otherMass));
                     const float impact=Clamp(closing,0.0f,35.0f);g.car.damage=Clamp(g.car.damage+impact*impact*.00010f,0.0f,1.0f);ApplyHostileRoadVehicleDamage(target,impact*4.2f,Add(vehicle.p,V(0,.8f,0)));
                     SpawnParticles(Add(vehicle.p,V(0,.5f,0)),Color{174,145,107,205},7,1.9f,.075f);PlaySpatial(g.impactSfx,vehicle.p,.78f,.45f,82.0f);LogEvent(TextFormat("player-car-hostile-car-impact,speed-ms=%.1f",impact));}
                 g.car.speed=Vector3DotProduct(g.car.velocity,Forward(g.car.yaw));vehicle.speed=Vector3DotProduct(vehicle.velocity,Forward(vehicle.yaw));
@@ -1097,14 +1098,15 @@ std::array<Vector2,4> CarWheelContactOffsets(const Vehicle& vehicle){
     if(vehicle.isPorsche)return {{{-.791f,-1.257f},{.791f,-1.257f},{-.815f,1.2f},{.815f,1.2f}}};
     return {{{-.86f,-1.38f},{.86f,-1.38f},{-.86f,1.38f},{.86f,1.38f}}};
 }
-std::array<float,4> CarCornerNormalLoads(float longitudinalAcceleration,float lateralAcceleration,float normalG){
-    return CalculateCarCornerLoads(longitudinalAcceleration,lateralAcceleration,normalG);
+std::array<float,4> CarCornerNormalLoads(float longitudinalAcceleration,float lateralAcceleration,float normalG,bool porsche){
+    return CalculateCarCornerLoads(longitudinalAcceleration,lateralAcceleration,normalG,porsche);
 }
 
 namespace {
 void UpdateCar(float dt){
     if(g.vehicle!=VehicleKind::Car)return;
     const Vector3 carPreviousPosition=g.car.p;
+    const auto body=CarBody(g.car.isPorsche);const float vehicleMassKg=body.massKg;
     float throttle=g.qaPorsche?g.qaPorscheThrottle:(IsKeyDown(KEY_W)||IsKeyDown(KEY_UP)?1.0f:0.0f)-(IsKeyDown(KEY_S)||IsKeyDown(KEY_DOWN)?1.0f:0.0f);
     const float keyboardSteer=(IsKeyDown(KEY_D)?1.0f:0.0f)-(IsKeyDown(KEY_A)?1.0f:0.0f);
     const float steerInput=g.qaPorsche?g.qaPorscheSteering:(g.car.isPorsche?-keyboardSteer:keyboardSteer);
@@ -1134,7 +1136,7 @@ void UpdateCar(float dt){
     else if(throttle<0)drive=-.52f;
     if(g.car.isPorsche){g.car.porscheThrottle=PorscheThrottlePedal(throttle,drive);g.car.porscheBrake=brake;}
     const Vector3 airRelative=Sub(V(g.car.velocity.x,0,g.car.velocity.z),V(weather.windVelocity.x,0,weather.windVelocity.z));
-    const float airspeed=Vector3Length(airRelative),airDragScale=.5f*weather.airDensity*.95f/1900.0f*airspeed;
+    const float airspeed=Vector3Length(airRelative),airDragScale=.5f*weather.airDensity*body.dragAreaM2/vehicleMassKg*airspeed;
     const Vector3 aerodynamicAcceleration=Mul(airRelative,-airDragScale);
     const float gradeX=(TerrainHeight(g.car.p.x+1,g.car.p.z)-TerrainHeight(g.car.p.x-1,g.car.p.z))*.5f;
     const float gradeZ=(TerrainHeight(g.car.p.x,g.car.p.z+1)-TerrainHeight(g.car.p.x,g.car.p.z-1))*.5f;
@@ -1142,24 +1144,24 @@ void UpdateCar(float dt){
     const float rollingDeceleration=meanRollingResistance*9.80665f;
     const float forwardSign=fabsf(oldForward)>.18f?copysignf(1.0f,oldForward):0.0f;
     const float brakeDeceleration=std::min(8.6f*brake,grip*9.80665f);
-    const float tireLongitudinalDemand=drive*5.2f*Lerp(.08f,1.0f,g.car.powerplantHealth)-
-        brakeDeceleration*forwardSign-rollingDeceleration*forwardSign;
+    const float driveAcceleration=drive*5.2f*Lerp(.08f,1.0f,g.car.powerplantHealth);
+    const float passiveTireAcceleration=-brakeDeceleration*forwardSign-rollingDeceleration*forwardSign;
+    const float tireLongitudinalDemand=driveAcceleration+passiveTireAcceleration;
     const float externalLongitudinal=Vector3DotProduct(aerodynamicAcceleration,f)+gravityAlong;
     const float estimatedLongitudinal=tireLongitudinalDemand+externalLongitudinal;
     g.car.steer=Lerp(g.car.steer,steerInput,Clamp(dt*Lerp(2.0f,7.5f,g.car.steeringHealth),0,1));
     const float forwardSpeed=Vector3DotProduct(g.car.velocity,f),lateral=Vector3DotProduct(g.car.velocity,r);
     const float steerAngle=(g.car.isPorsche?PorscheFrontSteeringAngle(g.car.steer,g.car.steeringHealth):g.car.steer*.57f*Lerp(.24f,1.0f,g.car.steeringHealth))*(forwardSpeed>=0?1.0f:-1.0f);
-    const float frontSlip=atan2f(lateral+g.car.yawRate*1.34f,std::max(1.0f,fabsf(forwardSpeed)))-steerAngle;
+    const float frontSlip=atan2f(lateral+g.car.yawRate*body.frontAxleZ,std::max(1.0f,fabsf(forwardSpeed)))-steerAngle;
     const float rearSteer=g.car.isPorsche?PorscheRearSteeringAngle(g.car.steer*Lerp(.24f,1.0f,g.car.steeringHealth),forwardSpeed)*(forwardSpeed>=0?1.0f:-1.0f):0.0f;
-    const float rearSlip=atan2f(lateral-g.car.yawRate*1.42f,std::max(1.0f,fabsf(forwardSpeed)))-rearSteer;
+    const float rearSlip=atan2f(lateral+g.car.yawRate*body.rearAxleZ,std::max(1.0f,fabsf(forwardSpeed)))-rearSteer;
     // Solve each wheel's approximate normal load, then apply a combined-slip
     // friction circle independently at the four contact patches.
-    constexpr float vehicleMassKg=1900.0f;
-    const float frontLoadFraction=Clamp(.56f-estimatedLongitudinal*.55f/(2.76f*9.80665f),.36f,.74f);
+    const float frontLoadFraction=CarFrontLoadFraction(body,estimatedLongitudinal,g.car.normalG);
     const float gravityLateral=-9.80665f*(gradeX*r.x+gradeZ*r.z);
     const float predictedLateral=Clamp((-frontSlip*36500.0f-rearSlip*31500.0f)/vehicleMassKg+
                                       Vector3DotProduct(aerodynamicAcceleration,r)+gravityLateral,-12.0f,12.0f);
-    const std::array<float,4> normalLoad=CarCornerNormalLoads(estimatedLongitudinal,predictedLateral,g.car.normalG);
+    const std::array<float,4> normalLoad=CarCornerNormalLoads(estimatedLongitudinal,predictedLateral,g.car.normalG,g.car.isPorsche);
     std::array<float,4> tireCapacity{},tireLongitudinalForce{},tireLateralForce{};
     float frontCapacity=0.0f,rearCapacity=0.0f,frontNormalLoad=0.0f,rearNormalLoad=0.0f;
     for(std::size_t wheel=0;wheel<4;++wheel){
@@ -1172,8 +1174,9 @@ void UpdateCar(float dt){
         if(front){frontCapacity+=tireCapacity[wheel];frontNormalLoad+=normalLoad[wheel];}
         else{rearCapacity+=tireCapacity[wheel];rearNormalLoad+=normalLoad[wheel];}
     }
-    const float frontAxleDemand=Clamp(tireLongitudinalDemand*vehicleMassKg*frontLoadFraction,-frontCapacity,frontCapacity);
-    const float rearAxleDemand=Clamp(tireLongitudinalDemand*vehicleMassKg*(1.0f-frontLoadFraction),-rearCapacity,rearCapacity);
+    const auto axleDemand=CarAxleLongitudinalDemand(g.car.isPorsche,driveAcceleration,passiveTireAcceleration,vehicleMassKg,frontLoadFraction);
+    const float frontAxleDemand=Clamp(axleDemand[0],-frontCapacity,frontCapacity);
+    const float rearAxleDemand=Clamp(axleDemand[1],-rearCapacity,rearCapacity);
     for(std::size_t wheel=0;wheel<4;++wheel){
         const bool front=wheel>=2;
         const float axleLoad=front?frontNormalLoad:rearNormalLoad;
@@ -1210,17 +1213,23 @@ void UpdateCar(float dt){
         g.car.tireWear[wheel]=Clamp(g.car.tireWear[wheel]+axleShearPower*dt*9.0e-10f*abrasion,0.0f,1.0f);
     }
     const float lateralAcceleration=(frontForce+rearForce)/vehicleMassKg+Vector3DotProduct(aerodynamicAcceleration,r)+gravityLateral;
-    const float yawAcceleration=(frontForce*1.34f-rearForce*1.42f)/4300.0f;
-    g.car.velocity.x+=(f.x*longitudinal+r.x*lateralAcceleration)*dt;
-    g.car.velocity.z+=(f.z*longitudinal+r.z*lateralAcceleration)*dt;
+    const float yawAcceleration=(frontForce*(body.frontAxleZ-body.cgOffsetZ)+rearForce*(body.rearAxleZ-body.cgOffsetZ))/body.yawInertia;
+    // Vehicle::p/velocity refer to the authored model origin. Integrate force
+    // at the CG, then recover origin motion after the yaw update.
+    const float oldYaw=g.car.yaw;
+    Vector3 cgVelocity=CarCGVelocity(g.car.velocity,g.car.yaw,g.car.yawRate,body.cgOffsetZ);
+    cgVelocity.x+=(f.x*longitudinal+r.x*lateralAcceleration)*dt;
+    cgVelocity.z+=(f.z*longitudinal+r.z*lateralAcceleration)*dt;
     g.car.yawRate+=yawAcceleration*dt;g.car.yawRate*=std::max(0.0f,1.0f-dt*(.72f+grip*.24f));g.car.yawRate=Clamp(g.car.yawRate,-1.15f,1.15f);
     g.car.yaw+=g.car.yawRate*dt;
+    g.car.velocity=CarOriginVelocity(cgVelocity,g.car.yaw,g.car.yawRate,body.cgOffsetZ);
     g.car.longitudinalG=longitudinal/9.80665f;g.car.lateralG=lateralAcceleration/9.80665f;
     g.car.speed=Clamp(Vector3DotProduct(g.car.velocity,Forward(g.car.yaw)),-13,42);
     g.car.lateralSpeed=Vector3DotProduct(g.car.velocity,Right(g.car.yaw));
     const float rpmTarget=Clamp(.20f+.55f*Clamp(fabsf(g.car.speed)/42.0f,0,1)+.28f*std::max(0.0f,drive),.18f,1.0f);
     g.car.engineRpm=Lerp(g.car.engineRpm,rpmTarget,Clamp(dt*2.8f,0,1));
-    g.car.p.x+=g.car.velocity.x*dt;g.car.p.z+=g.car.velocity.z*dt;
+    const Vector3 originStep=CarOriginStep(cgVelocity,oldYaw,g.car.yaw,body.cgOffsetZ,dt);
+    g.car.p.x+=originStep.x;g.car.p.z+=originStep.z;
     g.car.wheelAngle+=g.car.speed*dt/.48f;
     std::array<float,4> wheelGround{};float frontGround=0,rearGround=0,leftGround=0,rightGround=0,meanGround=0;
     for(std::size_t i=0;i<wheelOffset.size();++i){
@@ -1358,8 +1367,8 @@ void UpdateCar(float dt){
         g.car.p.x=debris.p.x+normal.x*minimum;g.car.p.z=debris.p.z+normal.z*minimum;
         if(closing<0){
             constexpr float debrisMass=45.0f;const float restitution=Clamp(.5f*(contactSurface.restitution+.12f),0,.22f);
-            const float impulse=-(1.0f+restitution)*closing/(1.0f/1900.0f+1.0f/debrisMass);
-            g.car.velocity=Add(g.car.velocity,Mul(normal,impulse/1900.0f));debris.velocity=Sub(debris.velocity,Mul(normal,impulse/debrisMass));
+            const float impulse=-(1.0f+restitution)*closing/(1.0f/vehicleMassKg+1.0f/debrisMass);
+            g.car.velocity=Add(g.car.velocity,Mul(normal,impulse/vehicleMassKg));debris.velocity=Sub(debris.velocity,Mul(normal,impulse/debrisMass));
             const float impact=-closing;g.car.damage=Clamp(g.car.damage+impact*impact*.00008f,0,1);
             if(impact>5.0f)SpawnParticles(V(debris.p.x,debris.p.y+.25f,debris.p.z),Color{153,124,87,205},5,1.3f,.07f);
         }
