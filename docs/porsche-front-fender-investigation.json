@@ -1,0 +1,381 @@
+{
+  "reviewed_at": "2026-10-29T11:52:32.234398+00:00",
+  "production_changed": false,
+  "promoted": false,
+  "studies": [
+    {
+      "study": "track-linkage-arch10",
+      "report_sha256": "b4fec6bf8828998b5e4ff74c3deba1c05ee9d1ebb4707776cc06a2c3feb7fb8b",
+      "fixture_sha256": "8b8d200bca643bd5692c2bb466e2fdce764084367e7788651a68a00097294825",
+      "source_export_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+      "scope": "Diagnostic fixture geometry modified from the referenced export as specified in geometry_studies; not an actual exported model or native validation",
+      "upper_pivot_y_offset_m": -0.11,
+      "rest_alignment_study": {
+        "camber_degrees": 2.75,
+        "caster_change_degrees": 0
+      },
+      "geometry_studies": {
+        "arch_opening_study": {
+          "input_fixture_sha256": "77e9ed990d052c6375d4f544a8034344cbcd10343aa70102707c3dd969dd27bf",
+          "maximum_radial_offset_m": 0.01,
+          "changed_vertices": 1860,
+          "centre_yz_m": [
+            0.35025,
+            1.2
+          ],
+          "full_weight_to_radius_m": 0.36,
+          "zero_weight_at_radius_m": 0.48,
+          "scope": "Main white shell only, diagnostic position-only radial opening expansion. No source, shading or trim changes. No tire, track, suspension or outer width changes."
+        }
+      },
+      "pose_count": 165,
+      "intersection_poses": 72,
+      "contact_triangle_pairs_by_body": {
+        "Runtime__CarRoot__Carrara white | physical clearcoat": 3133,
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 471
+      },
+      "maximum_solver_residual_m": 9.151943480834035e-09
+    },
+    {
+      "study": "track-caster-arch10",
+      "report_sha256": "28ca14ebbaa2926247df0692c4f9d6748aa4ec8072338f80b070b04f9630e360",
+      "fixture_sha256": "9c406649da18212538802a0005f3bfed9d59a51ab969a2af0ef3e33a1ed7a9fc",
+      "source_export_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+      "scope": "Diagnostic fixture geometry modified from the referenced export as specified in geometry_studies; not an actual exported model or native validation",
+      "upper_pivot_y_offset_m": -0.11,
+      "rest_alignment_study": {
+        "camber_degrees": 2.75,
+        "caster_change_degrees": 5.4
+      },
+      "geometry_studies": {
+        "arch_opening_study": {
+          "input_fixture_sha256": "7318304a6d6c7eda7b89795afd8d62c722a08626e6d66fa309b91a77ac7928f7",
+          "maximum_radial_offset_m": 0.01,
+          "changed_vertices": 1860,
+          "centre_yz_m": [
+            0.35025,
+            1.2
+          ],
+          "full_weight_to_radius_m": 0.36,
+          "zero_weight_at_radius_m": 0.48,
+          "scope": "Main white shell only, diagnostic position-only radial opening expansion. No source, shading or trim changes. No tire, track, suspension or outer width changes."
+        }
+      },
+      "pose_count": 165,
+      "intersection_poses": 72,
+      "contact_triangle_pairs_by_body": {
+        "Runtime__CarRoot__Carrara white | physical clearcoat": 3173,
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 378
+      },
+      "maximum_solver_residual_m": 8.907900084231812e-09
+    }
+  ],
+  "source_contact_mapping": {
+    "source_sha256": "4ab40d6bea7818827d96451f8b41d616c6442478586cd4652d0a79db1fd331be",
+    "contact_report_sha256": "7e78ad74a55283e6af81cc61709c4e60fc686b89d4da985732745cd0a6706ae8",
+    "samples_mapped": 2130,
+    "maximum_nearest_surface_error_m": 1.4600097131278744e-07,
+    "source_objects": {
+      "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0": 660,
+      "TwiXeR_992_gt3rs_fender_L_TwiXeR_992_carPaint.003_0": 1470
+    },
+    "examples": [
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9393834471702576,
+          0.6961812973022461,
+          1.173776626586914
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9377074837684631,
+          0.6953543424606323,
+          1.1873269081115723
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9409002065658569,
+          0.6956055760383606,
+          1.1333597898483276
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9395466446876526,
+          0.6962257027626038,
+          1.1717795133590698
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 5.960464477539063e-08,
+        "point_gltf_m": [
+          -0.9404350519180298,
+          0.6961910128593445,
+          1.1611586809158325
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9407505989074707,
+          0.6961521506309509,
+          1.1587319374084473
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9393834471702576,
+          0.6961812973022461,
+          1.173776626586914
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9377074837684631,
+          0.6953543424606323,
+          1.1873269081115723
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9409224987030029,
+          0.6954004764556885,
+          1.1293871402740479
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9409492611885071,
+          0.6951170563697815,
+          1.123876929283142
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9394883513450623,
+          0.6962151527404785,
+          1.1726008653640747
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 5.960464477539063e-08,
+        "point_gltf_m": [
+          -0.9408605098724365,
+          0.6959381699562073,
+          1.1397881507873535
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9393834471702576,
+          0.6961812973022461,
+          1.173776626586914
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.937731921672821,
+          0.6953664422035217,
+          1.1871280670166016
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.937731921672821,
+          0.6953664422035217,
+          1.1871280670166016
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9409002065658569,
+          0.6956055760383606,
+          1.1333597898483276
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9409672021865845,
+          0.6948176026344299,
+          1.12040114402771
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9394883513450623,
+          0.6962151527404785,
+          1.1726008653640747
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 1.1920928955078125e-07,
+        "point_gltf_m": [
+          -0.937731921672821,
+          0.6953665018081665,
+          1.1871280670166016
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9393834471702576,
+          0.6961812973022461,
+          1.173776626586914
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 1.1920928955078125e-07,
+        "point_gltf_m": [
+          -0.937731921672821,
+          0.6953665018081665,
+          1.1871280670166016
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9409224987030029,
+          0.6954004764556885,
+          1.1293870210647583
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 0.0,
+        "point_gltf_m": [
+          -0.9409492611885071,
+          0.6951170563697815,
+          1.1238768100738525
+        ]
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "reference_part": "TwiXeR_992_gt3rs_fender_R",
+        "reference_object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "distance_m": 5.960464477539063e-08,
+        "point_gltf_m": [
+          -0.9408605098724365,
+          0.6959381699562073,
+          1.1397881507873535
+        ]
+      }
+    ],
+    "scope": "Map recorded production painted-body contact examples onto current editable white meshes; tire-lettering-only update leaves these body surfaces unchanged",
+    "limits": [
+      "Reported contact examples are capped per pose, so counts are not whole-surface area or penetration depth",
+      "This identifies editable source surfaces; it does not solve or clear contact"
+    ],
+    "complete": false
+  },
+  "section_figure": {
+    "path": "screenshots/porsche-front-fender-sections.png",
+    "sha256": "ddf81db479e039f3734b11018efab56228ccf2dbd771e03246b22c47dad6b16b",
+    "generator_sha256": "cbf3b25712badfbc7e443d59b8b6884c6730a9f92b8ce03dec5bb6557e353f9c",
+    "fixture_sha256": "8db99c5334ddf75dacd45f39bbf5f1e9df8167bcab7ba1baecfdad9b2776c768",
+    "source_export_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+    "planes_z_m": [
+      1.2,
+      1.35
+    ],
+    "scope": "Actual front-left paint and tire triangle/plane intersections at rest and +50 mm bump, with straight and -0.55 rad steering; not a volume proof"
+  },
+  "findings": [
+    "Both combined alignment/linkage/10 mm opening studies retain contact in 72 of 165 sampled poses.",
+    "All 2130 capped painted-body contact examples from the earlier broad production sweep map to the two retained front fender source meshes, within 0.15 micrometres.",
+    "Planar sections show the tire crossing the near-vertical painted arch-edge band during bump; the section above the wheel remains clear in the shown planes."
+  ],
+  "decision": "Do not promote these combined studies. Target the named fender/rig relationship in subsequent authored geometry work, rather than broad shell deformation.",
+  "limits": [
+    "Linkage and rest alignment are analytic fixture overrides, not fully authored or native-validated hardware. Caster study rotation is not an OEM datum.",
+    "Arch opening edits change diagnostic fixture positions only; shape, normals and trim have not been authored or visually approved.",
+    "Contact examples are capped per pose; mapping counts are not full contact areas or penetration depths.",
+    "The figure includes two planes and one steering direction; it does not characterize the whole swept envelope.",
+    "Requested final visual fidelity, full-game performance, broad clearance and GitHub publication remain incomplete."
+  ],
+  "complete": false
+}
