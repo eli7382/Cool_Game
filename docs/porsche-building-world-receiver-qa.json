@@ -1,0 +1,1 @@
+{"passed":true,"world_probes":6,"blocked":3,"lit":3,"maximum_visibility_error":0,"scope":"World shader building-map lookup at six exterior points against independent hangar rays; finite interior-of-map samples, not full receiver edge/coverage or appearance validation"}

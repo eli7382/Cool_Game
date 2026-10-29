@@ -25,7 +25,7 @@ Production integration
 ----------------------
 
 The callback now feeds a separate world-space building map for each visible
-Porsche. It uses a 16 m orthographic span, 0.1–100 m depth range, and a camera
+Porsche. It now uses a 48 m orthographic span, 0.1–100 m depth range, and a camera
 40 m along the shared sun direction. High/low maps are 1024/512 square. The
 car shader samples the map on explicit texture unit 7, applies receiver-plane
 PCF using the existing self-shadow algorithm, and combines the two visibility
@@ -47,8 +47,8 @@ Native appearance review near buildings and performance measurement remain
 required before considering this lighting work finished. Terrain, vegetation,
 debris and other vehicles are still outside this caster callback's scope.
 
-Native appearance follow-up
---------------------------
+Native car-only appearance follow-up (historical)
+------------------------------------------------
 
 `porsche-building-hangar-off.png` and `porsche-building-hangar-on.png` are
 matched native captures of the closed Porsche outside the hangar's west wall.
@@ -58,8 +58,8 @@ native suite passes 147 checks. Visual inspection finds a subtle darkening
 of affected car surfaces, while the backdrop remains fixed. This is one
 camera and location; it does not establish all shadow edges or temporal quality.
 Environment reflections and diffuse sky illumination remain present in shade;
-the building map modulates direct sun only. The ground does not yet receive
-this building map. Appearance under other buildings, moving-shadow stability,
+the building map modulates direct sun only. At this earlier stage the ground
+did not receive the building map. Appearance under other buildings, moving-shadow stability,
 caster-volume boundaries and performance still need review.
 
 Performance diagnostics
@@ -153,3 +153,34 @@ For AO-on cases, median building-stage CPU submission decreases from
 reduction while the hangar remains nearby, rather than only on the open base
 route. The sequential instrumented comparison does not establish normal-game
 FPS, all building workloads, repeated-run variance or cross-device gains.
+
+Shared car/world building receivers
+----------------------------------
+
+The world shader now samples the same building maps on separate texture
+units 8/9, alongside the existing car-caster maps on 12/13. Direct-sun
+visibility uses the minimum of these maps, avoiding double-darkening overlap.
+Bindings are cleared after scene passes and before map generation. Map span
+increased from 16 m to 48 m for surrounding ground coverage. The outer 8%
+of the projected window fades smoothly to lit visibility. Car receivers stay
+well inside it. This is local coverage around visible Porsches, not a complete
+scene-wide shadow system.
+
+Six world-shader receiver probes (three lit/three blocked) match independent
+hangar rays with zero visibility error. Four additional probes outside,
+within and beyond one map boundary match analytic smoothstep visibility to
+within 0.000613 in the byte output target. The full hidden suite passes 148
+checks. These finite probes do not prove every edge or temporal stability.
+
+Matched scene captures are `screenshots/porsche-building-world-hangar-off.png`
+and `-on.png`. Both car and world building-shadow bindings are toggled;
+the full-viewport image difference is not an isolated-car measurement.
+Inspection confirms ground shade beside the car. Environment illumination
+remains present: this map modulates direct sun only. The raw evidence is in
+`porsche-building-world-receiver-qa.json`, `porsche-building-world-fade-qa.json`
+and `porsche-building-world-appearance-qa.json`.
+
+Earlier performance comparisons in this document used the smaller car-only
+map. They are not measurements of the new 48 m world-receiver workload.
+Updated performance, wider appearance review and moving-map boundary
+stability remain open.

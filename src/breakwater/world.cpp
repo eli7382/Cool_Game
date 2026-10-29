@@ -763,6 +763,10 @@ uniform vec2 porscheWorldReady;
 uniform vec4 porscheWorldProbe;
 uniform vec3 porscheWorldProbeNormal;
 uniform float porscheWorldCasterDepth;
+uniform sampler2D porscheBuildingWorldDepth0,porscheBuildingWorldDepth1;
+uniform mat4 porscheBuildingWorldMatrix0,porscheBuildingWorldMatrix1;
+uniform vec3 porscheBuildingWorldInfo0,porscheBuildingWorldInfo1;
+uniform vec2 porscheBuildingWorldReady;
 float porscheWorldVisibility(sampler2D depthMap,mat4 worldToClip,vec3 info,float enabled,vec3 position,vec3 normal){
     if(enabled<.5)return 1.0;
     vec3 light=normalize(vec3(.42,.88,-.28));
@@ -783,9 +787,21 @@ float porscheWorldVisibility(sampler2D depthMap,mat4 worldToClip,vec3 info,float
         visible+=casterDepth>=.999999||receiverDepth<=casterDepth?1.0:0.0;
     }return visible/9.0;
 }
+float porscheBuildingWorldVisibility(sampler2D map,mat4 matrix,vec3 info,float ready,vec3 position,vec3 normal){
+    if(ready<.5)return 1.0;
+    vec4 projected=matrix*vec4(position,1);vec2 uv=projected.xy/projected.w*.5+.5;
+    float edge=min(min(uv.x,uv.y),min(1.0-uv.x,1.0-uv.y));
+    // Local shadow coverage fades at its outer boundary instead of ending
+    // in a hard rectangle as the vehicle moves through the scene.
+    float visibility=porscheWorldVisibility(map,matrix,info,ready,position,normal);
+    return mix(1.0,visibility,smoothstep(0.0,.08,edge));
+}
 float porscheWorldSun(vec3 position,vec3 normal){
-    return min(porscheWorldVisibility(porscheWorldDepth0,porscheWorldMatrix0,porscheWorldInfo0,porscheWorldReady.x,position,normal),
-               porscheWorldVisibility(porscheWorldDepth1,porscheWorldMatrix1,porscheWorldInfo1,porscheWorldReady.y,position,normal));
+    float car=min(porscheWorldVisibility(porscheWorldDepth0,porscheWorldMatrix0,porscheWorldInfo0,porscheWorldReady.x,position,normal),
+                  porscheWorldVisibility(porscheWorldDepth1,porscheWorldMatrix1,porscheWorldInfo1,porscheWorldReady.y,position,normal));
+    float building=min(porscheBuildingWorldVisibility(porscheBuildingWorldDepth0,porscheBuildingWorldMatrix0,porscheBuildingWorldInfo0,porscheBuildingWorldReady.x,position,normal),
+                       porscheBuildingWorldVisibility(porscheBuildingWorldDepth1,porscheBuildingWorldMatrix1,porscheBuildingWorldInfo1,porscheBuildingWorldReady.y,position,normal));
+    return min(car,building);
 }
 float terrainHeightAt(vec2 p){
     float radius=length(p),edge=7.0-max(0.0,radius-170.0)*.073;

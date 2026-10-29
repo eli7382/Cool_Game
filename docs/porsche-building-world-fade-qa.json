@@ -1,0 +1,1 @@
+{"passed":true,"probes":4,"maximum_visibility_error":0.000612751,"scope":"Known shadowed hangar receiver outside, within and beyond the map fade band, compared with analytic smoothstep visibility. One boundary direction, not temporal or all-edge validation."}
