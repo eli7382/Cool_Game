@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "porsche_native.hpp"
+#include "porsche_rear_steering.hpp"
 
 namespace bw {
 // Gameplay proxy for the transonic drag rise and the supersonic wave-drag floor.
@@ -1164,7 +1165,8 @@ void UpdateCar(float dt){
     const float forwardSpeed=Vector3DotProduct(g.car.velocity,f),lateral=Vector3DotProduct(g.car.velocity,r);
     const float steerAngle=g.car.steer*.57f*Lerp(.24f,1.0f,g.car.steeringHealth)*(forwardSpeed>=0?1.0f:-1.0f);
     const float frontSlip=atan2f(lateral+g.car.yawRate*1.34f,std::max(1.0f,fabsf(forwardSpeed)))-steerAngle;
-    const float rearSlip=atan2f(lateral-g.car.yawRate*1.42f,std::max(1.0f,fabsf(forwardSpeed)));
+    const float rearSteer=g.car.isPorsche?PorscheRearSteeringAngle(g.car.steer*Lerp(.24f,1.0f,g.car.steeringHealth),forwardSpeed)*(forwardSpeed>=0?1.0f:-1.0f):0.0f;
+    const float rearSlip=atan2f(lateral-g.car.yawRate*1.42f,std::max(1.0f,fabsf(forwardSpeed)))-rearSteer;
     // Solve each wheel's approximate normal load, then apply a combined-slip
     // friction circle independently at the four contact patches.
     constexpr float vehicleMassKg=1900.0f;

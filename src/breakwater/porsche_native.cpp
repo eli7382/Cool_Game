@@ -6,6 +6,7 @@
 #include "porsche_shadow.hpp"
 #include "porsche_ao.hpp"
 #include "mesh_visibility.hpp"
+#include "porsche_rear_steering.hpp"
 #include <cstring>
 #include <memory>
 #include <stdexcept>
@@ -171,7 +172,7 @@ void Surface(const porsche_data::Surface& s,const Vehicle& v,Vector2 detailRepea
     SetShaderValue(porscheShader,locations.detailRepeat,&detailRepeat,SHADER_UNIFORM_VEC2);
 }
 PorscheControls Controls(const Vehicle& v,bool occupied){
-    PorscheControls c;c.steering=Clamp(v.steer*.55f,-.55f,.55f);c.doorL=v.porscheDoor[0];c.doorR=v.porscheDoor[1];c.windowL=c.windowR=v.porscheWindow;c.drs=v.porscheAero;c.airbrake=v.porscheAirbrake;c.brake=v.porscheBrake;c.throttle=v.porscheThrottle;c.paddleL=v.porschePaddleL;c.paddleR=v.porschePaddleR;c.wheelAngles=v.porscheWheelAngles;c.rpm=occupied?900+Clamp((v.engineRpm-.18f)/.82f,0,1)*8100:0;
+    PorscheControls c;c.steering=Clamp(v.steer*.55f,-.55f,.55f);c.rearSteering=PorscheRearSteeringAngle(v.steer*Lerp(.24f,1.0f,v.steeringHealth),v.speed);c.doorL=v.porscheDoor[0];c.doorR=v.porscheDoor[1];c.windowL=c.windowR=v.porscheWindow;c.drs=v.porscheAero;c.airbrake=v.porscheAirbrake;c.brake=v.porscheBrake;c.throttle=v.porscheThrottle;c.paddleL=v.porschePaddleL;c.paddleR=v.porschePaddleR;c.wheelAngles=v.porscheWheelAngles;c.rpm=occupied?900+Clamp((v.engineRpm-.18f)/.82f,0,1)*8100:0;
     // Physics contact slots are -X rear, +X rear, -X front, +X front;
     // the model's named left side is +X. Keep each corner on its own sample.
     c.travel={Clamp(v.wheelTravel[3],-.05f,.05f),Clamp(v.wheelTravel[2],-.05f,.05f),Clamp(v.wheelTravel[1],-.05f,.05f),Clamp(v.wheelTravel[0],-.05f,.05f)};c.chronoSeconds=v.porscheChronoSeconds;c.mirrorYaw=v.porscheMirrorYaw;c.mirrorPitch=v.porscheMirrorPitch;return c;

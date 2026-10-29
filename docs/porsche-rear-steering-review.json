@@ -1,0 +1,49 @@
+{
+  "reviewed_at": "2026-10-29T06:59:37.446564+00:00",
+  "stage": "Shared visual and tire-force rear-steering control",
+  "source_hashes": {
+    "src/breakwater/porsche_rear_steering.hpp": "b7cec64e4aad3a08ed07855061d3d0a89d5f1dd510b2af251ece42a7d73305a8",
+    "src/breakwater/porsche_native.cpp": "e83bf0d264b5fcf3df322fe78ba3c81ee2f98cfa64c9f9a2669aa009d010a5ad",
+    "src/breakwater/gameplay.cpp": "66169ec094bb40fc984707a67b8b2a5f1407253007f357dcd2a5912e6b2ecb27",
+    "tests/porsche_rear_steering.cpp": "44114eb70d8489381440a44fb9a186400f72be1718664392b7f5a2ca43a2aaae"
+  },
+  "executable_sha256": "5d446eaf789a254607981bdcf6390376c22e1f42e2900a8fb74e76073be4ee9f",
+  "native_qa": {
+    "passed": true,
+    "checks": 125,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "policy_checks": "rear-steering-policy,cases=4870,failures=0",
+  "legacy_thermal_regression": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.74,total-wear=0.00008251,peak-speed-mps=16.00",
+  "strategy_reference": "https://newsroom.porsche.com/en_AU/2021/products/porsche-911-gt3-product-highlights-25719.html",
+  "control": "Opposite phase through 50 km/h, smoothstep transition to same phase at 80 km/h, maximum magnitude two degrees at full healthy steering; speed magnitude handles reverse; invalid inputs return neutral",
+  "connections": [
+    "PorscheControls.rearSteering feeds the existing closed-link rear suspension rig",
+    "The same policy enters rear tire slip, with reverse-travel convention matching the front slip calculation",
+    "Pickup rear steering remains zero"
+  ],
+  "image": {
+    "path": "screenshots/porsche-rear-steering-suspension.png",
+    "sha256": "afce91a059110ac6be2bb64108b994f4088f3d04fa4697f66958c5d7868d63a8"
+  },
+  "limits": [
+    "Game approximation inspired by published GT3 strategy, not a calibrated GT3 RS OEM controller",
+    "Intermediate-speed blend is an explicit approximation",
+    "Existing inherited mass, axle geometry, drive-force distribution and gearing still need Porsche-specific tuning",
+    "Full swept vehicle clearance remains unverified"
+  ],
+  "complete": false
+}
