@@ -2,6 +2,7 @@
 #include "porsche_native.hpp"
 #include "porsche_rear_steering.hpp"
 #include "porsche_front_steering.hpp"
+#include "car_corner_loads.hpp"
 #include "porsche_pedals.hpp"
 
 namespace bw {
@@ -1097,27 +1098,9 @@ std::array<Vector2,4> CarWheelContactOffsets(const Vehicle& vehicle){
     return {{{-.86f,-1.38f},{.86f,-1.38f},{-.86f,1.38f},{.86f,1.38f}}};
 }
 std::array<float,4> CarCornerNormalLoads(float longitudinalAcceleration,float lateralAcceleration,float normalG){
-    // Wheel order is rear-left, rear-right, front-left, front-right. The
-    // simplified sprung-mass model conserves total normal load while moving
-    // load between axles and across each axle under acceleration and cornering.
-    constexpr float massKg=1900.0f,wheelbaseM=2.76f,trackM=1.72f,cgHeightM=.55f;
-    const float verticalLoad=massKg*9.80665f*Clamp(normalG,.15f,3.0f);
-    const float frontFraction=Clamp(.56f-longitudinalAcceleration*cgHeightM/(wheelbaseM*9.80665f),.36f,.74f);
-    const float rearSideLoad=verticalLoad*(1.0f-frontFraction)*.5f;
-    const float frontSideLoad=verticalLoad*frontFraction*.5f;
-    const float totalSideTransfer=massKg*Clamp(lateralAcceleration,-12.0f,12.0f)*cgHeightM/trackM;
-    const float transferDirection=lateralAcceleration>=0.0f?1.0f:-1.0f;
-    const float rearTransfer=Clamp(totalSideTransfer*.5f*.44f,-rearSideLoad*.90f,rearSideLoad*.90f);
-    const float frontTransfer=Clamp(totalSideTransfer*.5f*.56f,-frontSideLoad*.90f,frontSideLoad*.90f);
-    std::array<float,4> loads{};
-    for(std::size_t wheel=0;wheel<loads.size();++wheel){
-        const bool front=wheel>=2,left=(wheel%2)==0;
-        const float sideLoad=front?frontSideLoad:rearSideLoad;
-        const float transfer=front?frontTransfer:rearTransfer;
-        loads[wheel]=std::max(sideLoad*.10f,sideLoad+(left?1.0f:-1.0f)*transferDirection*transfer);
-    }
-    return loads;
+    return CalculateCarCornerLoads(longitudinalAcceleration,lateralAcceleration,normalG);
 }
+
 namespace {
 void UpdateCar(float dt){
     if(g.vehicle!=VehicleKind::Car)return;

@@ -1,0 +1,52 @@
+{
+  "reviewed_at": "2026-10-29T08:43:03.485767+00:00",
+  "change": "Correct signed lateral load transfer: remove the second sign multiplication and the erroneous half factor so opposite turns swap loaded sides and moderate unsaturated loads balance mass times lateral acceleration times CG height.",
+  "source_hashes": {
+    "src/breakwater/car_corner_loads.hpp": "5e7b61890ae426422122f94445312f7e9db5d5c5e8bf119b2de56e2276dbc70b",
+    "src/breakwater/gameplay.cpp": "a2ad8721a51fc41e3bcf3e402084dd3a1c34dada20e8f4e1078f9f1726f6c362",
+    "tests/car_corner_loads.cpp": "d79a59112308f19d3f654e094f6d4757edd5a88e404b9b9d15fa302bfc25ead3"
+  },
+  "cpu_invariants": {
+    "result": "corner-load-invariants,checks=18388,failures=0",
+    "grid_cases": 2625,
+    "properties": [
+      "Finite positive wheel loads",
+      "Total vertical force conservation",
+      "Mirror symmetry for opposite lateral acceleration",
+      "Outside side gains load in either turn direction",
+      "Eleven unsaturated roll-moment balance fixtures",
+      "Acceleration unloads front; braking loads front"
+    ],
+    "test_executable_sha256": "89739738cbf9ec21aa039cc5141d1f82127169b0c23f4134023e159a822a28bb"
+  },
+  "native_executable_sha256": "2d9d82d1f2125edb10df4e7b52129d25c574c12f363c6e8d4f3f55c2c8b5664f",
+  "native_qa": {
+    "passed": true,
+    "checks": 133,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "current_thermal_result": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=21.00,total-wear=0.00008308,peak-speed-mps=16.00",
+  "thermal_log": ".tools/hidden-qa-session.log",
+  "thermal_log_sha256": "218443de7993a5f971bfb7da16c5960cd53d4c14d3b78089dc6869affc4557a9",
+  "thermal_stdout_sha256": "c03283ec69814659aee62c7ef0de606115dd5b88e99e8cc09b73bfed2c6675a3",
+  "evidence_correction": "Two previous thermal receipts read the inactive logs/breakwater-session.log. Their stale values are withdrawn in the corresponding review files; current validation uses the actual hidden QA log with a timestamp after this executable.",
+  "limits": [
+    "Existing pickup mass, CG, roll-stiffness split and geometry parameters remain; Porsche-specific calibration is still required",
+    "At extreme inputs axle transfer saturates to retain positive wheel loads, so exact roll-moment balance is intentionally limited to the unsaturated envelope",
+    "Finite CPU and game fixtures do not prove OEM handling or final visual fidelity"
+  ],
+  "complete": false
+}

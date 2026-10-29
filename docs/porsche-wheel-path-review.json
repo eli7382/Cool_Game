@@ -27,11 +27,15 @@
     "Reverse motion reverses wheel rotation",
     "Steered rolling direction includes projected lateral velocity"
   ],
-  "legacy_thermal_regression": "1.54,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.73,total-wear=0.00008172,peak-speed-mps=16.00",
   "limits": [
     "Kinematic rolling animation, not wheel inertia, wheelspin or lockup simulation",
     "Uses planar game body motion and current approximate axle steering",
     "Finite fixtures do not prove whole-model clearance or final visual quality"
   ],
-  "complete": false
+  "complete": false,
+  "thermal_receipt_correction": {
+    "withdrawn_value": "1.54,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.73,total-wear=0.00008172,peak-speed-mps=16.00",
+    "reason": "Read from an inactive stale log, not the hidden QA session log. This value is not evidence for the executable recorded in this historical review.",
+    "current_branch_validation": "docs/porsche-load-transfer-review.json"
+  }
 }
