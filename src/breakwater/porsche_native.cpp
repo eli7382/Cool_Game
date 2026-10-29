@@ -73,8 +73,9 @@ std::array<PorscheSunShadow,2> sunShadows;
 std::array<PorscheSunShadow,2> buildingShadows;
 constexpr float BuildingShadowSpan=16.f;
 bool qaShadowsDisabled{};
+bool qaBuildingShadowsDisabled{};
 void BindBuildingShadow(const PorscheSunShadow* map){
-    const float ready=map&&map->ready&&!qaShadowsDisabled?1.f:0.f;
+    const float ready=map&&map->ready&&!qaShadowsDisabled&&!qaBuildingShadowsDisabled?1.f:0.f;
     SetShaderValue(porscheShader,GetShaderLocation(porscheShader,"buildingShadowReady"),&ready,SHADER_UNIFORM_FLOAT);
     const int unit=7;SetShaderValue(porscheShader,GetShaderLocation(porscheShader,"buildingShadow"),&unit,SHADER_UNIFORM_INT);
     if(ready>.5f){
@@ -887,6 +888,29 @@ bool RunPorscheCullingQA(){
     cylinderReport<<"{\n\"enabled\":"<<(WorldSpaceBatchCoordinatesFixed()?"true":"false")<<",\n\"passed\":"<<(passed?"true":"false")<<",\n\"camera_pose_cases\":"<<cases<<",\n\"cylinders_tested\":"<<cylinders.tested-c0.tested<<",\n\"cylinders_rejected\":"<<cylinders.rejected-c0.rejected<<",\n\"cap_and_ring_vertices_verified\":"<<cylinders.verifiedVertices-c0.verifiedVertices<<",\n\"oracle_failures\":"<<cylinders.oracleFailures-c0.oracleFailures<<",\n\"single_sample_color_differences\":"<<colorDifferences<<",\n\"normal_depth_differences\":"<<normalDifferences<<",\n\"AO_differences\":"<<aoDifferences<<",\n\"mirror_differences\":"<<mirrorDifferences<<",\n\"limits\":[\"Finite camera/pose scenes; equal-radius Between helper only\",\"Cap/ring oracle enumerates raylib DrawCylinderEx vertices, not bounding-box corners\",\"Shader-deformed foliage, stereo, invalid inputs and boundary cases retained\"],\n\"complete\":false\n}\n";
     return passed;
 }
+bool RunBuildingAppearanceQA(){
+    const Vehicle savedCar=g.car;const Camera3D savedCamera=g.camera;const auto savedGraphics=g.graphics;
+    g.graphics=GraphicsMode::High;g.car.p=V(-53,TerrainHeight(-53,190)+.72f,190);g.car.yaw=g.car.pitch=g.car.roll=g.car.suspension=0;g.car.steer=0;g.car.wheelTravel.fill(0);
+    g.car.porscheDoor={0,0};g.car.porscheWindow=0;
+    g.camera={Add(g.car.p,V(-7,3,5)),Add(g.car.p,V(0,.7f,0)),V(0,1,0),40,CAMERA_PERSPECTIVE};
+    PreparePorscheDisplays(true);PreparePorscheShadows(true);PreparePorscheAmbientOcclusion();
+    std::array<Image,2> images{};bool valid=true;
+    for(int enabled=0;enabled<2;++enabled){
+        qaBuildingShadowsDisabled=enabled==0;PreparePorscheMirrors(true);
+        BeginDrawing();ClearBackground({94,123,132,255});DrawWorldScene();rlDrawRenderBatchActive();images[enabled]=LoadImageFromScreen();
+        valid=valid&&images[enabled].data&&ExportImage(images[enabled],enabled?"screenshots/porsche-building-hangar-on.png":"screenshots/porsche-building-hangar-off.png");EndDrawing();
+    }
+    int changed=0,maximum=0;long long total=0;
+    if(valid&&images[0].width==images[1].width&&images[0].height==images[1].height){
+        ImageFormat(&images[0],PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);ImageFormat(&images[1],PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+        auto* a=static_cast<unsigned char*>(images[0].data);auto* b=static_cast<unsigned char*>(images[1].data);
+        for(int i=0;i<images[0].width*images[0].height;++i){int difference=0;for(int c=0;c<3;++c)difference=std::max(difference,std::abs(int(a[i*4+c])-int(b[i*4+c])));if(difference>3)++changed;maximum=std::max(maximum,difference);total+=difference;}
+    }else valid=false;
+    for(auto image:images)if(image.data)UnloadImage(image);
+    qaBuildingShadowsDisabled=false;g.car=savedCar;g.camera=savedCamera;g.graphics=savedGraphics;
+    std::ofstream("docs/porsche-building-appearance-qa.json")<<"{\"captures_valid\":"<<(valid?"true":"false")<<",\"pixels_changed_above_3_codes\":"<<changed<<",\"maximum_channel_difference\":"<<maximum<<",\"summed_max_channel_difference\":"<<total<<",\"scope\":\"Camera-matched native car beside hangar with only building shadow binding toggled. Pixel change proves a visible effect, not appearance quality, accuracy or frame rate.\"}\n";
+    return valid&&changed>500;
+}
 bool RunBuildingReceiverQA(){
     PorscheSunShadow map;RenderTexture2D pixel=LoadRenderTexture(16,16);Mesh plane=GenMeshPlane(2,2,1,1);Material material=LoadMaterialDefault();material.shader=porscheShader;
     bool valid=map.Ensure(1024)&&IsRenderTextureValid(pixel);const Matrix savedP=rlGetMatrixProjection(),savedV=rlGetMatrixModelview();
@@ -1226,6 +1250,7 @@ bool RunPorscheQA(){
     g.car=initial;g.car.porscheDoor={1,1};aoCamera(V(3.3f,2.1f,4.3f),V(0,.7f,.3f),42);aoPair("open");
     std::ofstream aoReport("docs/porsche-native-ao-scene.json");aoReport<<"{\n  \"glazing_excluded\":"<<(glazing?"true":"false")<<",\n  \"visible_steering_changes_depth_and_AO\":"<<(moving?"true":"false")<<",\n  \"finite_visibility_and_normals\":"<<(aoFinite?"true":"false")<<",\n  \"maximum_unit_normal_error\":"<<aoNormalError<<",\n  \"surface_pixels\":"<<aoSurfacePixels<<",\n  \"pixels_below_095_visibility\":"<<aoPixels<<",\n  \"minimum_visibility\":"<<aoMinimum<<",\n  \"UI_matrices_restored\":"<<(aoRestored?"true":"false")<<",\n  \"scope\":\"Actual game depth/normal and filtered contact buffers; camera-matched paired exterior/cockpit/open views, windows-only invariance, visible steering motion and preset/state checks\",\n  \"limits\":[\"Main-view screen-space approximation; off-screen occluders and AO in planar reflections are not implemented\",\"Temporal stability, halo control and full-game frame time need further review\"]\n}\n";
     g.car=aoReviewCar;g.camera=aoReviewCamera;g.graphics=aoReviewGraphics;
+    check(RunBuildingAppearanceQA(),"native-hangar-building-shadows-change-visible-car-pixels");
     std::ofstream report("docs/porsche-native-qa.json");report<<"{\n  \"passed\": "<<(failures==0?"true":"false")<<",\n  \"checks\": "<<checks<<",\n  \"failures\": "<<failures<<",\n  \"native_steering_poses\": "<<poses<<",\n  \"maximum_axial_drift_m\": "<<maximumAxial<<",\n  \"maximum_radial_drift_m\": "<<maximumRadial<<",\n  \"maximum_raw_rest_adjustment_m\": "<<maximumRest<<",\n  \"maximum_reference_pose_error_m\": "<<maximumReferenceError<<",\n  \"reference_nodes_compared\": "<<referenceNodes<<",\n  \"accelerated_speed_mps\": "<<acceleratedSpeed<<",\n  \"suspension_evidence\":\"docs/porsche-native-suspension-qa.json\",\n  \"limits\": [\"Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics\",\"Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames\",\"Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development\"]\n}\n";
     return failures==0;
 }

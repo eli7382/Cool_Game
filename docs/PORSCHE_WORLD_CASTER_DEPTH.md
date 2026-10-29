@@ -46,3 +46,18 @@ edge, all building details, vehicle body coverage or whole-scene appearance.
 Native appearance review near buildings and performance measurement remain
 required before considering this lighting work finished. Terrain, vegetation,
 debris and other vehicles are still outside this caster callback's scope.
+
+Native appearance follow-up
+--------------------------
+
+`porsche-building-hangar-off.png` and `porsche-building-hangar-on.png` are
+matched native captures of the closed Porsche outside the hangar's west wall.
+Only the building-shadow binding is toggled. The pair changes 27842 pixels
+by more than three channel codes, with maximum difference 92. The complete
+native suite passes 147 checks. Visual inspection finds a subtle darkening
+of affected car surfaces, while the backdrop remains fixed. This is one
+camera and location; it does not establish all shadow edges or temporal quality.
+Environment reflections and diffuse sky illumination remain present in shade;
+the building map modulates direct sun only. The ground does not yet receive
+this building map. Appearance under other buildings, moving-shadow stability,
+caster-volume boundaries and performance still need review.
