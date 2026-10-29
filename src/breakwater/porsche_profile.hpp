@@ -1,7 +1,7 @@
 #pragma once
 
 namespace bw {
-enum class PorscheProfileStage { Simulation, Camera, Displays, Shadows, Ambient, NormalDepth, AOEvaluation, AOFilter, Mirrors, Scene, SceneStatic, SceneVegetation, SceneActors, SceneProps, SceneVehicles, PlayerPorsche, UI, Count };
+enum class PorscheProfileStage { Simulation, Camera, Displays, Shadows, Ambient, NormalDepth, AOEvaluation, AOFilter, Mirrors, Scene, SceneStatic, SceneVegetation, SceneActors, SceneProps, SceneVehicles, PlayerPorsche, UI, ExtraCar, PlayerCar, Plane, Helicopter, Count };
 // Inactive outside the explicit performance run. GPU timestamps are collected
 // after a case, never synchronously read inside the measured frame loop.
 class PorscheProfileScope {

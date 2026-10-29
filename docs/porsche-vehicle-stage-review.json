@@ -1,0 +1,193 @@
+{
+  "performance_report_sha256": "47851873f4f305c3119818fa27474de358ffd17b14fc1a13b9388e55e855abe4",
+  "executable_sha256": "1bc725bda42123931c915075285b91e0f9448c08728fbf25eabe70af639c1d0b",
+  "matched_cases": 8,
+  "all_motion_and_render_state_checks_passed": true,
+  "rows": [
+    {
+      "case": "low-chase-ao-off",
+      "frame_median_ms": 97.6764,
+      "vehicles": {
+        "scene_extra_car": {
+          "cpu_submit_mean_ms": 20.8787792,
+          "gpu_elapsed_mean_ms": 18.849376
+        },
+        "scene_player_car": {
+          "cpu_submit_mean_ms": 5.37898854,
+          "gpu_elapsed_mean_ms": 3.86181333
+        },
+        "scene_plane": {
+          "cpu_submit_mean_ms": 3.73656458,
+          "gpu_elapsed_mean_ms": 1.120608
+        },
+        "scene_helicopter": {
+          "cpu_submit_mean_ms": 6.16760625,
+          "gpu_elapsed_mean_ms": 3.74928
+        }
+      }
+    },
+    {
+      "case": "low-chase-ao-on",
+      "frame_median_ms": 104.78295,
+      "vehicles": {
+        "scene_extra_car": {
+          "cpu_submit_mean_ms": 16.9963708,
+          "gpu_elapsed_mean_ms": 16.0659093
+        },
+        "scene_player_car": {
+          "cpu_submit_mean_ms": 3.94288958,
+          "gpu_elapsed_mean_ms": 2.07018667
+        },
+        "scene_plane": {
+          "cpu_submit_mean_ms": 2.410375,
+          "gpu_elapsed_mean_ms": 0.816085333
+        },
+        "scene_helicopter": {
+          "cpu_submit_mean_ms": 4.14629688,
+          "gpu_elapsed_mean_ms": 1.50237867
+        }
+      }
+    },
+    {
+      "case": "low-cockpit-ao-on",
+      "frame_median_ms": 55.4313,
+      "vehicles": {
+        "scene_extra_car": {
+          "cpu_submit_mean_ms": 0.266367708,
+          "gpu_elapsed_mean_ms": 0.0248426667
+        },
+        "scene_player_car": {
+          "cpu_submit_mean_ms": 2.85229271,
+          "gpu_elapsed_mean_ms": 6.44690133
+        },
+        "scene_plane": {
+          "cpu_submit_mean_ms": 2.60244063,
+          "gpu_elapsed_mean_ms": 0.179136
+        },
+        "scene_helicopter": {
+          "cpu_submit_mean_ms": 4.17322604,
+          "gpu_elapsed_mean_ms": 0.812832
+        }
+      }
+    },
+    {
+      "case": "low-cockpit-ao-off",
+      "frame_median_ms": 33.0032,
+      "vehicles": {
+        "scene_extra_car": {
+          "cpu_submit_mean_ms": 0.2056,
+          "gpu_elapsed_mean_ms": 0.012064
+        },
+        "scene_player_car": {
+          "cpu_submit_mean_ms": 2.74300104,
+          "gpu_elapsed_mean_ms": 6.112896
+        },
+        "scene_plane": {
+          "cpu_submit_mean_ms": 2.35234479,
+          "gpu_elapsed_mean_ms": 0.211690667
+        },
+        "scene_helicopter": {
+          "cpu_submit_mean_ms": 3.75192396,
+          "gpu_elapsed_mean_ms": 0.770197333
+        }
+      }
+    },
+    {
+      "case": "high-chase-ao-on",
+      "frame_median_ms": 105.0006,
+      "vehicles": {
+        "scene_extra_car": {
+          "cpu_submit_mean_ms": 16.3811875,
+          "gpu_elapsed_mean_ms": 17.7999253
+        },
+        "scene_player_car": {
+          "cpu_submit_mean_ms": 3.63103646,
+          "gpu_elapsed_mean_ms": 1.757824
+        },
+        "scene_plane": {
+          "cpu_submit_mean_ms": 0.126477083,
+          "gpu_elapsed_mean_ms": 0.000992
+        },
+        "scene_helicopter": {
+          "cpu_submit_mean_ms": 4.21135521,
+          "gpu_elapsed_mean_ms": 1.30997333
+        }
+      }
+    },
+    {
+      "case": "high-chase-ao-off",
+      "frame_median_ms": 71.384,
+      "vehicles": {
+        "scene_extra_car": {
+          "cpu_submit_mean_ms": 17.409076,
+          "gpu_elapsed_mean_ms": 14.4696107
+        },
+        "scene_player_car": {
+          "cpu_submit_mean_ms": 3.6445375,
+          "gpu_elapsed_mean_ms": 1.88946133
+        },
+        "scene_plane": {
+          "cpu_submit_mean_ms": 0.119436458,
+          "gpu_elapsed_mean_ms": 0.000981333333
+        },
+        "scene_helicopter": {
+          "cpu_submit_mean_ms": 4.01922187,
+          "gpu_elapsed_mean_ms": 1.397344
+        }
+      }
+    },
+    {
+      "case": "high-cockpit-ao-off",
+      "frame_median_ms": 33.68305,
+      "vehicles": {
+        "scene_extra_car": {
+          "cpu_submit_mean_ms": 0.222967708,
+          "gpu_elapsed_mean_ms": 0.009728
+        },
+        "scene_player_car": {
+          "cpu_submit_mean_ms": 2.48671771,
+          "gpu_elapsed_mean_ms": 3.660768
+        },
+        "scene_plane": {
+          "cpu_submit_mean_ms": 0.105795833,
+          "gpu_elapsed_mean_ms": 0.00109866667
+        },
+        "scene_helicopter": {
+          "cpu_submit_mean_ms": 3.66125,
+          "gpu_elapsed_mean_ms": 0.889909333
+        }
+      }
+    },
+    {
+      "case": "high-cockpit-ao-on",
+      "frame_median_ms": 52.82325,
+      "vehicles": {
+        "scene_extra_car": {
+          "cpu_submit_mean_ms": 0.184441667,
+          "gpu_elapsed_mean_ms": 0.011392
+        },
+        "scene_player_car": {
+          "cpu_submit_mean_ms": 2.46214375,
+          "gpu_elapsed_mean_ms": 6.303712
+        },
+        "scene_plane": {
+          "cpu_submit_mean_ms": 0.108003125,
+          "gpu_elapsed_mean_ms": 0.00096
+        },
+        "scene_helicopter": {
+          "cpu_submit_mean_ms": 3.66764167,
+          "gpu_elapsed_mean_ms": 0.84128
+        }
+      }
+    }
+  ],
+  "finding": "The extra parked pickup dominates vehicle submission cost in all four chase cases. Investigate batching its procedural tire tread, brake details and springs while preserving their geometry and articulation.",
+  "normal_game_behavior_changed": false,
+  "limits": [
+    "Instrumented local timings on the recorded RTX 3050 Laptop GPU; not an improvement comparison or 60 FPS evidence",
+    "New child-stage flush boundaries change measurement instrumentation; old timing runs are historical and not directly comparable",
+    "The extra-car category includes its ground shadow; the player-car category includes its impact overlay",
+    "Scene-only category timers exclude mirror and AO geometry passes; those retain their aggregate timers",
+    "This run locates a bottleneck but does not implement its optimization"
+  ]
+}

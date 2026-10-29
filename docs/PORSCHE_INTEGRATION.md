@@ -1,5 +1,12 @@
 # Porsche integration in progress
 
+The explicit performance run now separates the extra parked car, player car,
+plane and helicopter within the main scene pass. These scopes are inactive
+outside that run. The eight-case review in `porsche-vehicle-stage-review.json`
+identifies the parked pickup as the largest vehicle submission cost in chase
+views. This is diagnostic evidence, not a speed improvement. Added timing flush
+boundaries mean earlier aggregate timing runs are historical comparisons only.
+
 Rear finish now includes a curved enamel plate with the fictional registration
 S GT 992, a black carrier with fitted contact feet, fasteners, an EU band and
 generic seals, plus the centered red GT3 RS marking. New parts are separate

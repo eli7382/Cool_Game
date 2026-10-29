@@ -2959,10 +2959,15 @@ void DrawVehicles(){
         return;
     }
     DrawVehicleShadows();
-    if(g.missionStarted){if(!PorscheHasWorldSunShadow(g.extraCar))DrawGroundShadow(g.extraCar.p,1.35f,2.4f,25.0f,g.extraCar.yaw);DrawCar(g.extraCar);}
-    if(g.vehicle==VehicleKind::Car&&g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else DrawCar(g.car);DrawVehicleImpactOverlay(g.car,0);
-    if(g.vehicle==VehicleKind::Plane&&g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else DrawPlane(g.plane);DrawVehicleImpactOverlay(g.plane,1);DrawF16BreakawayParts();
-    if(g.vehicle==VehicleKind::Helicopter&&g.cameraActualDistance<=3.5f)DrawHeliCockpit(g.heli);else DrawHeli(g.heli);DrawVehicleImpactOverlay(g.heli,2);
+    const bool profileColor=!PorscheAODepthPass()&&!PorscheMirrorPass();
+    {PorscheProfileScope stage(PorscheProfileStage::ExtraCar,profileColor);
+    if(g.missionStarted){if(!PorscheHasWorldSunShadow(g.extraCar))DrawGroundShadow(g.extraCar.p,1.35f,2.4f,25.0f,g.extraCar.yaw);DrawCar(g.extraCar);}}
+    {PorscheProfileScope stage(PorscheProfileStage::PlayerCar,profileColor);
+    if(g.vehicle==VehicleKind::Car&&g.cameraActualDistance<=3.5f)DrawCarCockpit(g.car);else DrawCar(g.car);DrawVehicleImpactOverlay(g.car,0);}
+    {PorscheProfileScope stage(PorscheProfileStage::Plane,profileColor);
+    if(g.vehicle==VehicleKind::Plane&&g.cameraActualDistance<=3.5f)DrawPlaneCockpit(g.plane);else DrawPlane(g.plane);DrawVehicleImpactOverlay(g.plane,1);DrawF16BreakawayParts();}
+    {PorscheProfileScope stage(PorscheProfileStage::Helicopter,profileColor);
+    if(g.vehicle==VehicleKind::Helicopter&&g.cameraActualDistance<=3.5f)DrawHeliCockpit(g.heli);else DrawHeli(g.heli);DrawVehicleImpactOverlay(g.heli,2);}
     for(const HostileFixedWing &contact:g.hostileFixedWings)if(contact.alive||contact.downed){
         const float h=Clamp(contact.vehicle.p.y-TerrainHeight(contact.vehicle.p.x,contact.vehicle.p.z),0,80);
         if(h<55.0f)DrawGroundShadow(contact.vehicle.p,2.0f+h*.10f,3.0f+h*.08f,26.0f,contact.vehicle.yaw);
