@@ -1,0 +1,136 @@
+{
+  "reviewed_at": "2026-10-29T12:24:04.644838+00:00",
+  "decision": "Reject for production: larger arch opening weakens the reference GT3 RS stance and still does not clear the full sampled envelope. Retain as an editable study only.",
+  "production_changed": false,
+  "promoted": false,
+  "candidate_source": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies\\arch-edge-camber15-candidate.blend",
+  "candidate_source_sha256": "de2b07e439dacb7ee6d169c6c8f11e11e3426e9e1aa24fb869974adec46bf623",
+  "candidate_export_sha256": "79ceb55ea0b68fb1b3f742756b0da6c84c8e5c9747ef75962b8e3190381aea6a",
+  "authoring": {
+    "input_source_sha256": "71ecc5c186734c7e0dad5ecc3776921a8538a8b4a2c58d0a7a7378888ec049cc",
+    "candidate": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies\\arch-edge-camber15-candidate.blend",
+    "candidate_sha256": "de2b07e439dacb7ee6d169c6c8f11e11e3426e9e1aa24fb869974adec46bf623",
+    "fenders": [
+      {
+        "object": "TwiXeR_992_gt3rs_fender_L_TwiXeR_992_carPaint.003_0",
+        "vertices": 1554,
+        "changed_vertices": 461,
+        "maximum_offset_m": 0.021540692430216193,
+        "meaningful_triangles": 2516,
+        "inverted_triangles": 0,
+        "minimum_triangle_area_m2": 4.086937645223441e-07,
+        "split_normals_rotated_with_geometric_frame": true
+      },
+      {
+        "object": "TwiXeR_992_gt3rs_fender_R_TwiXeR_992_carPaint.003_0",
+        "vertices": 1722,
+        "changed_vertices": 466,
+        "maximum_offset_m": 0.021540692430216193,
+        "meaningful_triangles": 2684,
+        "inverted_triangles": 0,
+        "minimum_triangle_area_m2": 4.086937645223441e-07,
+        "split_normals_rotated_with_geometric_frame": true
+      }
+    ],
+    "production_changed": false,
+    "limits": [
+      "Unpromoted visual/clearance candidate; diagnostic sweep still has known contact",
+      "Only the two identified fender meshes were reshaped; not manufacturer CAD",
+      "Includes separate front 1.5-degree camber study; native rest-frame support and rear alignment are unfinished"
+    ],
+    "complete": false
+  },
+  "roll_parameters": {
+    "maximum_radial_roll_m": 0.02,
+    "maximum_outward_flare_m": 0.008,
+    "half_width_cap_m": 0.95,
+    "radial_roll_zero_above_radius_m": 0.39,
+    "outward_flare_zero_above_radius_m": 0.46
+  },
+  "clearance": {
+    "poses": 165,
+    "intersection_poses": 48,
+    "contacts_by_body": {
+      "Runtime__CarRoot__Carrara white | physical clearcoat": 2820
+    },
+    "maximum_solver_residual_m": 9.47931516614986e-09,
+    "unconverged_corners": 0,
+    "report_sha256": "1777d9aee90e3d411decd553fbbb4e1cee64f8f38428e3d0ba87aa13ec2831bb"
+  },
+  "experimental_joint_check": {
+    "passed": true,
+    "experimental_front_carrier_rest_correction": {
+      "poses": 45,
+      "max_joint_gap_m": 1.2223073999440811e-07,
+      "max_travel_error_m": 9.209004850352365e-09,
+      "max_residual_m": 9.479315221661011e-09,
+      "max_tie_error_m": 1.1102230246251565e-16,
+      "helper_sha256": "0fb39b5a1492d44384e117c30807c4944e03b1ed3a46c10f9b4d318e455c740b",
+      "export_sha256": "79ceb55ea0b68fb1b3f742756b0da6c84c8e5c9747ef75962b8e3190381aea6a"
+    },
+    "unmodified_runtime_negative_control": {
+      "poses": 45,
+      "max_joint_gap_m": 0.0021326643965728985,
+      "max_travel_error_m": 0.00023751128525369147,
+      "max_residual_m": 9.479315221661011e-09,
+      "max_tie_error_m": 1.1102230246251565e-16,
+      "helper_sha256": "6e1f8db3e6964e8d651a19994dfb24cf038487fdb32de846d07ccb14d2cfe366",
+      "export_sha256": "79ceb55ea0b68fb1b3f742756b0da6c84c8e5c9747ef75962b8e3190381aea6a"
+    },
+    "limits": [
+      "Candidate source and experimental JS solver only; native implementation unchanged",
+      "Finite joint tests do not prove geometry clearance or OEM alignment accuracy"
+    ],
+    "complete": false
+  },
+  "export_audit": {
+    "checks": 64,
+    "failures": 0,
+    "published_height_tolerance_check_included": true,
+    "report_sha256": "113957873f0a6a6c2dadcfc79d1b51db6a75c08008b4cfb91c6743015e8ed022"
+  },
+  "diagnostic_comparison": {
+    "whole_main_paint_cloud_matches_diagnostic_within_2um": false,
+    "maximum_bidirectional_point_distance_m": 0.006791708610162883,
+    "diagnostic_points_beyond_2um": 86,
+    "authored_points_beyond_2um": 96,
+    "maximum_tire_pose_matrix_element_error": 0.0,
+    "explanation": "Diagnostic deformation selected the whole main-white batch by coordinates. Authored edit intentionally targets only the two mapped fender source objects, leaving adjacent white pieces unchanged. Full main-paint geometry equivalence is therefore not established.",
+    "scope": "Point clouds do not measure panel seam clearance or certify surface topology."
+  },
+  "images": [
+    {
+      "path": "screenshots/porsche-arch-edge-study-production-whole.png",
+      "sha256": "0a24159b5af08c6020a058b534c51a1817dac79350574e6ba2d72d4abeb258fd",
+      "scope": "Matched resting Cycles studio render from exported model, not native gameplay or compression proof"
+    },
+    {
+      "path": "screenshots/porsche-arch-edge-study-production-arch.png",
+      "sha256": "675fdb9a471acf703f3ab582c47885479a9ccc7ea810319e38623decd66bf6be",
+      "scope": "Matched resting Cycles studio render from exported model, not native gameplay or compression proof"
+    },
+    {
+      "path": "screenshots/porsche-arch-edge-study-candidate-whole.png",
+      "sha256": "bb47c7b0670400be5ed185517218dbc43a7349908942ddd788d6a6b7e82afa2f",
+      "scope": "Matched resting Cycles studio render from exported model, not native gameplay or compression proof"
+    },
+    {
+      "path": "screenshots/porsche-arch-edge-study-candidate-arch.png",
+      "sha256": "8badfb3a7044f316e1b754c4876e77e083ac67c25fefe72feb7b9b905b61616a",
+      "scope": "Matched resting Cycles studio render from exported model, not native gameplay or compression proof"
+    }
+  ],
+  "visual_observations": [
+    "The candidate increases the dark gap above the front tire and makes the painted arch edge look thinner.",
+    "The current production fender keeps the tighter reference stance.",
+    "The test lighting was reduced equally for both views to preserve red-wheel saturation and visible dark trim."
+  ],
+  "limits": [
+    "Front-only 1.5-degree camber and experimental JS rest-frame correction; native support and rear alignment are unfinished.",
+    "Whole source re-export removes legacy degenerate triangles; no broad preservation or production promotion is implied.",
+    "Adjacent trim/panel seam, full neighboring hardware and continuous clearance remain unverified.",
+    "Normals were refitted to edited source surfaces; point-cloud comparison is not normal or topology equivalence.",
+    "Final Forza-level fidelity, broad motion clearance, frame rate and GitHub publication remain incomplete."
+  ],
+  "complete": false
+}
