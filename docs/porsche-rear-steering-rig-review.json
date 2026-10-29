@@ -1,0 +1,26 @@
+{
+  "poses": 585,
+  "rear_carrier_frames": 1170,
+  "failures": 0,
+  "maximum_toe_error_rad": 1.30385160446e-08,
+  "maximum_solver_residual_m": 9.93497550894e-09,
+  "maximum_tie_length_error_m": 1.11022302463e-16,
+  "maximum_antiroll_length_error_m": 9.76008762699e-09,
+  "reviewed_at": "2026-10-29T07:07:19.944408+00:00",
+  "stage": "Rear-steering policy through production rig",
+  "source_hashes": {
+    "src/breakwater/porsche_rear_steering.hpp": "b7cec64e4aad3a08ed07855061d3d0a89d5f1dd510b2af251ece42a7d73305a8",
+    "src/breakwater/porsche_rig.cpp": "a4adca5c141cef34a81d5e0b397735f535fc9e7075bde0cbd178014e9b8af933",
+    "src/breakwater/porsche_suspension.cpp": "f1a4fc408a5c10da91096ef1c8d05119a146674013f84d21fa367bacedbf850b",
+    "src/breakwater/porsche_native.hpp": "f93421c6c3cee2e3fecd490b919e7899257f36790f6958a98082a744b92379a3",
+    "src/breakwater/porsche_asset_data.hpp": "4bd0b92f1496fc788ed59c4345585435d480f5f377806d6d1551d436e07ea01a",
+    "tests/porsche_rear_steering_rig.cpp": "13534155b6c38864b79f6c78e822f73b385c6a26c732135cec2aab2dfba783da"
+  },
+  "compiler_flags": "g++ -std=c++20 -O2 -static; bundled raylib 5.5 headers",
+  "scope": "Thirteen speeds, five steering demands, three suspension-travel patterns and all three LOD rigs. Independent toe extraction from actual rear carrier matrices in the CarRoot frame; closure, tie length, antiroll length and spring envelope checked.",
+  "limits": [
+    "Finite pose coverage; not swept triangle clearance or OEM handling validation",
+    "Policy-to-rig integration; gameplay Vehicle-to-controls adapter is separately covered by code wiring and native regression"
+  ],
+  "complete": false
+}
