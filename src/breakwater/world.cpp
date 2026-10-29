@@ -762,6 +762,7 @@ uniform vec3 porscheWorldInfo0,porscheWorldInfo1;
 uniform vec2 porscheWorldReady;
 uniform vec4 porscheWorldProbe;
 uniform vec3 porscheWorldProbeNormal;
+uniform float porscheWorldCasterDepth;
 float porscheWorldVisibility(sampler2D depthMap,mat4 worldToClip,vec3 info,float enabled,vec3 position,vec3 normal){
     if(enabled<.5)return 1.0;
     vec3 light=normalize(vec3(.42,.88,-.28));
@@ -799,6 +800,12 @@ float terrainHeightAt(vec2 p){
     return mix(h,6.0+.08*sin(p.y*.025),runway);
 }
 void main(){
+    if(porscheWorldCasterDepth>.5){
+        if(waterSurface>.5||heroGlassAlpha>.5||colDiffuse.a*tint.a<.99)discard;
+        vec2 source=mix(uv,uv*heroUvScale+heroUvOffset,clamp(heroMaterialPbr,0,1));
+        if(foliageSurface>.5&&texture(texture0,source*customTextureScale).a<.48)discard;
+        finalColor=vec4(vec3(gl_FragCoord.z),1);return;
+    }
     if(porscheAODepthPass>.5){
         if(waterSurface>.5||heroGlassAlpha>.5||colDiffuse.a*tint.a<.99)discard;
         vec2 source=mix(uv,uv*heroUvScale+heroUvOffset,clamp(heroMaterialPbr,0,1));
@@ -4300,6 +4307,17 @@ void UpdateCamera(){
         SetShaderValue(g.worldShader,g.locLight,&light,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locEye,&g.camera.position,SHADER_UNIFORM_VEC3);
         SetShaderValue(g.worldShader,g.locFog,fog,SHADER_UNIFORM_VEC4);SetShaderValue(g.worldShader,g.locFogRange,&range,SHADER_UNIFORM_VEC2);
     }
+}
+void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection){
+    // Draw the real building geometry, rather than collision-box proxies.
+    // Caller owns the depth-enabled render target and clear operation.
+    const Camera3D savedCamera=g.camera;const Matrix savedProjection=rlGetMatrixProjection(),savedView=rlGetMatrixModelview();
+    const int location=GetShaderLocation(g.worldShader,"porscheWorldCasterDepth");
+    const float on=1,off=0;g.camera=camera;SetShaderValue(g.worldShader,location,&on,SHADER_UNIFORM_FLOAT);
+    BeginMode3D(camera);rlSetMatrixProjection(projection);BeginShaderMode(g.worldShader);
+    DrawHangar();DrawTower();DrawSafehouse();for(int i=0;i<3;++i)DrawSluice(i);
+    rlDrawRenderBatchActive();EndShaderMode();EndMode3D();SetShaderValue(g.worldShader,location,&off,SHADER_UNIFORM_FLOAT);
+    g.camera=savedCamera;rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedView);
 }
 void DrawWorld(){
     {PorscheProfileScope stage(PorscheProfileStage::Camera);UpdateCamera();}

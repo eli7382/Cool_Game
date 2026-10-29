@@ -858,11 +858,45 @@ bool RunPorscheCullingQA(){
     cylinderReport<<"{\n\"enabled\":"<<(WorldSpaceBatchCoordinatesFixed()?"true":"false")<<",\n\"passed\":"<<(passed?"true":"false")<<",\n\"camera_pose_cases\":"<<cases<<",\n\"cylinders_tested\":"<<cylinders.tested-c0.tested<<",\n\"cylinders_rejected\":"<<cylinders.rejected-c0.rejected<<",\n\"cap_and_ring_vertices_verified\":"<<cylinders.verifiedVertices-c0.verifiedVertices<<",\n\"oracle_failures\":"<<cylinders.oracleFailures-c0.oracleFailures<<",\n\"single_sample_color_differences\":"<<colorDifferences<<",\n\"normal_depth_differences\":"<<normalDifferences<<",\n\"AO_differences\":"<<aoDifferences<<",\n\"mirror_differences\":"<<mirrorDifferences<<",\n\"limits\":[\"Finite camera/pose scenes; equal-radius Between helper only\",\"Cap/ring oracle enumerates raylib DrawCylinderEx vertices, not bounding-box corners\",\"Shader-deformed foliage, stereo, invalid inputs and boundary cases retained\"],\n\"complete\":false\n}\n";
     return passed;
 }
+bool RunStaticWorldCasterDepthQA(){
+    PorscheSunShadow target;if(!target.Ensure(512))return false;
+    const Matrix savedProjection=rlGetMatrixProjection(),savedView=rlGetMatrixModelview();const Camera3D savedCamera=g.camera;
+    bool finite=GetShaderLocation(g.worldShader,"porscheWorldCasterDepth")>=0;int occupied[2]{};float roofDepthError=1;
+    for(int fixture=0;fixture<2;++fixture){
+        const Vector3 centre=fixture?V(10000,0,10000):V(-38,TerrainHeight(-38,188)+6,188);
+        Camera3D camera{Add(centre,V(0,40,0)),centre,V(0,0,-1),36,CAMERA_ORTHOGRAPHIC};
+        const Matrix projection=MatrixOrtho(-18,18,-18,18,.1,100);
+        BeginTextureMode(target.target);rlEnableDepthMask();ClearBackground(WHITE);rlDisableColorBlend();rlDisableBackfaceCulling();
+        DrawStaticWorldSunDepth(camera,projection);
+        rlEnableColorBlend();rlEnableBackfaceCulling();EndTextureMode();
+        Image image=LoadImageFromTexture(target.target.texture);
+        if(image.format!=PIXELFORMAT_UNCOMPRESSED_R32||!image.data)finite=false;
+        else{
+            const auto* pixels=static_cast<float*>(image.data);
+            for(int i=0;i<image.width*image.height;++i){const float z=pixels[i];finite=finite&&std::isfinite(z)&&z>=0&&z<=1;if(z<.999f)++occupied[fixture];}
+            if(!fixture){
+                // Interior roof point away from its seams and vent covers.
+                // The real roof box spans y +11.8 +/-0.6 metres.
+                const Vector3 roof=V(-32,TerrainHeight(-38,188)+12.4f,185);
+                const Vector3 ndc=Vector3Transform(roof,MatrixMultiply(MatrixLookAt(camera.position,camera.target,camera.up),projection));
+                const int x=static_cast<int>((ndc.x*.5f+.5f)*image.width),y=static_cast<int>((ndc.y*.5f+.5f)*image.height);
+                if(x>=0&&y>=0&&x<image.width&&y<image.height)roofDepthError=std::abs(pixels[y*image.width+x]-(ndc.z*.5f+.5f));
+            }
+        }
+        UnloadImage(image);
+    }
+    bool restored=rlGetActiveFramebuffer()==0&&Vector3Distance(g.camera.position,savedCamera.position)==0&&Vector3Distance(g.camera.target,savedCamera.target)==0;
+    const auto p=MatrixToFloatV(savedProjection),v=MatrixToFloatV(savedView),actualP=MatrixToFloatV(rlGetMatrixProjection()),actualV=MatrixToFloatV(rlGetMatrixModelview());for(int i=0;i<16;++i)restored=restored&&p.v[i]==actualP.v[i]&&v.v[i]==actualV.v[i];
+    const bool passed=finite&&restored&&occupied[0]>1000&&occupied[1]==0&&roofDepthError<.0001f;
+    std::ofstream("docs/porsche-static-world-depth-qa.json")<<"{\"passed\":"<<(passed?"true":"false")<<",\"hangar_occupied_pixels\":"<<occupied[0]<<",\"empty_view_occupied_pixels\":"<<occupied[1]<<",\"roof_projected_depth_error\":"<<roofDepthError<<",\"finite_unit_depth\":"<<(finite?"true":"false")<<",\"camera_and_render_state_restored\":"<<(restored?"true":"false")<<",\"scope\":\"Actual static building depth callback, occupied hangar and empty views with analytic roof-depth sample; not shadow receiver accuracy or appearance. Not yet enabled in production shadow preparation.\"}\n";
+    target.Release();return passed;
+}
 bool RunPorscheQA(){
     std::filesystem::create_directories("screenshots");std::filesystem::create_directories("docs");
     int checks=0,failures=0;auto check=[&](bool ok,const char* name){++checks;if(!ok){++failures;TraceLog(LOG_ERROR,"PORSCHE QA: %s",name);}LogEvent(TextFormat("porsche-qa-check,name=%s,pass=%d",name,ok?1:0));};
     const bool shaderReady=porscheReady&&IsShaderValid(porscheShader)&&porscheShader.id!=rlGetShaderIdDefault();check(shaderReady,"dedicated-native-shader-and-linear-environment-ready");
     if(!shaderReady){std::ofstream("docs/porsche-native-qa.json")<<"{\"passed\":false,\"failure\":\"Native Porsche shader unavailable\"}";return false;}
+    check(RunStaticWorldCasterDepthQA(),"static-world-buildings-produce-finite-depth-and-restore-camera");
     check(RunLightingProbes(),"native-GGX-atlas-DFG-and-diffuse-irradiance-match-independent-GPU-probes");
     check(RunWorldBatchCoordinateQA(),"batched-world-positions-and-normals-ignore-later-flush-transform");
     check(RunAmbientOcclusionFixtures(),"floating-AO-depth-normal-plane-and-contact-fixtures");

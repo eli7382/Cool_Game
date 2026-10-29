@@ -271,6 +271,7 @@ bool RunBallisticImpactQA();
 void ShutdownWorld();
 void DrawWorld();
 void DrawWorldScene(const Matrix* projection=nullptr);
+void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection);
 void DrawActors();
 void UpdateCamera();
 void DrawUI();
