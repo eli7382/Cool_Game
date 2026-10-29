@@ -1,0 +1,32 @@
+{
+  "source_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+  "candidate_sha256": "8b4c92606411e02dc55cee66b27ed16afcd40a1dc520d94ba0a7db50f78656bf",
+  "changes": [
+    {
+      "node": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+      "moved_vertices": 160,
+      "maximum_displacement_m": 0.0990235137850167,
+      "normals": "Pending study review; original shading normals retained in this geometry-only clearance candidate"
+    }
+  ],
+  "production_assets_changed": false,
+  "complete": false,
+  "reviewed_at": "2026-10-29T08:00:37.282697+00:00",
+  "dense_clearance": {
+    "poses": 405,
+    "poses_with_triangle_crossings": 0,
+    "report": "Porsche_911/reports/front-tire-candidate-dense-clearance.json"
+  },
+  "preservation": {
+    "binary_changes_only_underbody_positions": true,
+    "changed_binary_bytes": 1390,
+    "indices_uvs_materials_rig_tires_and_painted_body_bytes_unchanged": true
+  },
+  "limitations": [
+    "Candidate only; source Blender project and game assets have not been updated",
+    "Shading normals still require repair and visual review",
+    "Nearby underbody/body and suspension clearances remain to be checked",
+    "Finite sampled triangle crossings, not continuous or whole-vehicle clearance"
+  ],
+  "next_action": "Repair candidate normals and review wheel-well surfaces visually, then check neighboring surfaces before propagating to authoring and LODs"
+}
