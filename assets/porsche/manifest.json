@@ -5,8 +5,8 @@
   "levels": [
     {
       "level": "hero",
-      "source_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
-      "runtime_sha256": "f5a939d09bcc2b5c4f5a52d60dbdf9a9665d7541038ebce3dceba71ad850e8f7",
+      "source_sha256": "024324e72af6090d49503aad05bd4f0a7a319c751bc4237b0b292720006cc421",
+      "runtime_sha256": "5b2b48e826edb8b999e83c2b23f0dff500551ff1b1b7548092cf78bc510318c9",
       "triangles": 682643,
       "raylib_meshes": 302,
       "additional_primitives": 1,
@@ -14,18 +14,18 @@
     },
     {
       "level": "near",
-      "source_sha256": "516f02ea0b47bfac113fa29c5327be39cad0110f00663d449901e17449cc712a",
-      "runtime_sha256": "a0c6f3fddeb792c2949d97446bb6ed6fbd06c3973be8a35a34163093256ed704",
-      "triangles": 218113,
+      "source_sha256": "9ebcc19692aa700fafa2ccb5bff647498964bc11a35e6fbaaa361a857d10ed28",
+      "runtime_sha256": "4a5e034d98a0dfaa0d58bfc1a0015d027c7d01d647dd41a85ad551256b1155e8",
+      "triangles": 219809,
       "raylib_meshes": 304,
       "additional_primitives": 0,
       "maximum_vertices_per_primitive": 27961
     },
     {
       "level": "far",
-      "source_sha256": "63c51db9d5715b33cf522ec8d2df9b0563b132930f878b246333fdf9a4c64f0d",
-      "runtime_sha256": "90c7ef825db7ee9aff918440770527fa30027080164efdddd979a481cf2e5604",
-      "triangles": 156234,
+      "source_sha256": "765598e0f325ec62c88f0170ead5955d525c00ef938b58874da3243270646e3d",
+      "runtime_sha256": "2baad2a79999410c3d67b75535c5f742edd7d44463316e5d7d5a9c1010293276",
+      "triangles": 158608,
       "raylib_meshes": 303,
       "additional_primitives": 0,
       "maximum_vertices_per_primitive": 15567

@@ -1,8 +1,8 @@
 {
   "level": "near",
-  "source_sha256": "516f02ea0b47bfac113fa29c5327be39cad0110f00663d449901e17449cc712a",
-  "runtime_sha256": "a0c6f3fddeb792c2949d97446bb6ed6fbd06c3973be8a35a34163093256ed704",
-  "triangles": 218113,
+  "source_sha256": "9ebcc19692aa700fafa2ccb5bff647498964bc11a35e6fbaaa361a857d10ed28",
+  "runtime_sha256": "4a5e034d98a0dfaa0d58bfc1a0015d027c7d01d647dd41a85ad551256b1155e8",
+  "triangles": 219809,
   "raylib_meshes": 304,
   "additional_primitives": 0,
   "maximum_vertices_per_primitive": 27961,
@@ -20846,8 +20846,9 @@
         "exterior_carbon_revision": "Bounded physical twill projection; smooth independent resin above the buried weave",
         "front_cooling_revision": "Fitted diamond protective screen and metre-scaled recessed radiator fins",
         "runtime_lod": 1,
-        "derived_from_export_sha256": "173cc59885999649838b545146acc9bb3024f3b62c08ed5dc595f54da3f37e2b",
-        "lod_purpose": "Near gameplay"
+        "derived_from_export_sha256": "024324e72af6090d49503aad05bd4f0a7a319c751bc4237b0b292720006cc421",
+        "lod_purpose": "Near gameplay",
+        "wheelwell_revision": "Reviewed full-resolution underbody retained for consistent front tire clearance across distance variants"
       }
     }
   ],
@@ -22255,7 +22256,7 @@
     {
       "node": 425,
       "material": 98,
-      "vertices": 1611
+      "vertices": 3091
     },
     {
       "node": 426,
