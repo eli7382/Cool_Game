@@ -1,0 +1,32 @@
+{
+  "reviewed_at": "2026-10-29T07:03:13.656664+00:00",
+  "stage": "Reverse accelerator pedal follows demand",
+  "source_hashes": {
+    "src/breakwater/porsche_pedals.hpp": "967794f974321eb9061e0ad4ba1a843bbaf48a9397169c3a4d5680991d4c46fc",
+    "src/breakwater/gameplay.cpp": "607988ed4cefdc2a0699a451a18916b6487601df457be6b64ba7acd19c7010a5",
+    "tests/porsche_pedals.cpp": "64056dfee702d41d10bb572baa4ed66e1d24b5d28406fd0e511dc8c1cda61cac"
+  },
+  "executable_sha256": "88230c4613c9eaab7834581f825d7590c9ab3e23509c9f176e12d5518afb119a",
+  "policy_checks": "porsche-pedals,checks=25,failures=0",
+  "native_qa": {
+    "passed": true,
+    "checks": 125,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "behavior": "Forward and reverse acceleration animate pedal by absolute requested demand; opposite-pedal braking and neutral drive keep accelerator released; nonfinite inputs return neutral",
+  "drive_forces_changed": false,
+  "complete": false
+}

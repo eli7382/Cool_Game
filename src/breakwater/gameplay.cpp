@@ -1,6 +1,7 @@
 #include "game.hpp"
 #include "porsche_native.hpp"
 #include "porsche_rear_steering.hpp"
+#include "porsche_pedals.hpp"
 
 namespace bw {
 // Gameplay proxy for the transonic drag rise and the supersonic wave-drag floor.
@@ -1147,7 +1148,7 @@ void UpdateCar(float dt){
     if(throttle<0&&oldForward>1.0f){drive=0;brake=std::max(brake,.72f);}
     else if(throttle>0&&oldForward< -1.0f){drive=0;brake=std::max(brake,.72f);}
     else if(throttle<0)drive=-.52f;
-    if(g.car.isPorsche){g.car.porscheThrottle=std::max(0.0f,drive);g.car.porscheBrake=brake;}
+    if(g.car.isPorsche){g.car.porscheThrottle=PorscheThrottlePedal(throttle,drive);g.car.porscheBrake=brake;}
     const Vector3 airRelative=Sub(V(g.car.velocity.x,0,g.car.velocity.z),V(weather.windVelocity.x,0,weather.windVelocity.z));
     const float airspeed=Vector3Length(airRelative),airDragScale=.5f*weather.airDensity*.95f/1900.0f*airspeed;
     const Vector3 aerodynamicAcceleration=Mul(airRelative,-airDragScale);
