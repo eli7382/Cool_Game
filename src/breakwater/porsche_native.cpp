@@ -87,7 +87,7 @@ Texture2D Texture(const char* path){
     if(!path)return Texture2D{};
     const auto found=textures.find(path);if(found!=textures.end())return found->second;
     Texture2D texture=LoadTexture(path);if(!IsTextureValid(texture))throw std::runtime_error(std::string("Missing Porsche texture: ")+path);
-    GenTextureMipmaps(&texture);SetTextureFilter(texture,TEXTURE_FILTER_ANISOTROPIC_8X);SetTextureWrap(texture,TEXTURE_WRAP_REPEAT);textures.emplace(path,texture);return texture;
+    GenTextureMipmaps(&texture);SetTextureFilter(texture,TEXTURE_FILTER_TRILINEAR);SetTextureFilter(texture,TEXTURE_FILTER_ANISOTROPIC_8X);SetTextureWrap(texture,TEXTURE_WRAP_REPEAT);textures.emplace(path,texture);return texture;
 }
 bool CastsSun(const NativeLevel& level,int mesh){
     const auto& binding=level.bindings[mesh];const auto& s=level.surfaces[binding.material];const std::string name=s.name;

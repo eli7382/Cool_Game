@@ -1,0 +1,40 @@
+{
+  "reviewed_at": "2026-10-29T06:50:49.864221+00:00",
+  "stage": "Explicit trilinear sampling before anisotropy",
+  "source_sha256": "ce7f05863675a791326cd03b2ec5d68959c96e733aff8d947c7b2205347987bc",
+  "executable_sha256": "8d8dda31c7ac26a5325d97eb0c567a8e25c618863d5ca148fad7eee633c4b779",
+  "native_qa": {
+    "passed": true,
+    "checks": 125,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "images": [
+    {
+      "path": "screenshots/porsche-filter-front.png",
+      "sha256": "8b78d87b05ad1924d2d48fafaf0804c505ad9a56d7e6763e58c1d2a4b0755322"
+    },
+    {
+      "path": "screenshots/porsche-filter-live-cockpit.png",
+      "sha256": "6ab0a9b1fe437c8fb09385c4ef916be46f6c30357588b5155a0e29b40c169e2c"
+    }
+  ],
+  "evidence": "Bundled raylib 5.5 rlLoadTexture initializes nearest filters; rlGenTextureMipmaps only generates levels; SetTextureFilter ANISOTROPIC_8X only sets anisotropy. Explicit TRILINEAR sets linear magnification and linear interpolation between mip levels.",
+  "scope": "Native Porsche PNG surface maps; HDR lighting and mirror filters unchanged",
+  "limits": [
+    "Visual inspection of fresh front capture; temporal shimmer and frame-time change not quantified"
+  ],
+  "complete": false
+}
