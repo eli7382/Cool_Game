@@ -60,13 +60,13 @@ bool PorscheAmbientOcclusion::Prepare(const Camera3D& camera,int samples,const s
     for(int axis=0;axis<2;++axis){const Vector2 direction=axis==0?Vector2{1,0}:Vector2{0,1};SetShaderValue(blur,GetShaderLocation(blur,"direction"),&direction,SHADER_UNIFORM_VEC2);TextureUnit(7,normalDepth.texture);TextureUnit(8,axis==0?raw.texture:temporary.texture);Quad(axis==0?temporary:filtered,blur);}}
     Unbind();rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedView);ready=true;++updates;return true;
 }
-void PorscheAmbientOcclusion::Bind(Shader shader,const Camera3D& camera,bool enabled){
+void PorscheAmbientOcclusion::Bind(Shader shader,const Camera3D& camera,bool enabled,unsigned int mainFramebuffer){
     if(!IsShaderValid(shader))return;auto found=bindings.find(shader.id);
     if(found==bindings.end()){
         Bindings b{GetShaderLocation(shader,"porscheAOReady"),GetShaderLocation(shader,"porscheAODepthPass"),GetShaderLocation(shader,"porscheAOView"),GetShaderLocation(shader,"porscheAOViewport"),GetShaderLocation(shader,"porscheAOResolution"),GetShaderLocation(shader,"porscheAOValue"),GetShaderLocation(shader,"porscheAONormalDepth")};found=bindings.emplace(shader.id,b).first;
         const int valueUnit=14,normalUnit=15;SetShaderValue(shader,b.value,&valueUnit,SHADER_UNIFORM_INT);SetShaderValue(shader,b.normalDepth,&normalUnit,SHADER_UNIFORM_INT);
     }
-    const auto& b=found->second;const float active=enabled&&ready&&!depthPass&&rlGetActiveFramebuffer()==0&&SameCamera(camera,captured)&&normalDepth.texture.width==GetRenderWidth()&&normalDepth.texture.height==GetRenderHeight()?1.0f:0.0f,depth=depthPass?1.0f:0.0f;
+    const auto& b=found->second;const float active=enabled&&ready&&!depthPass&&rlGetActiveFramebuffer()==mainFramebuffer&&SameCamera(camera,captured)&&normalDepth.texture.width==GetRenderWidth()&&normalDepth.texture.height==GetRenderHeight()?1.0f:0.0f,depth=depthPass?1.0f:0.0f;
     SetShaderValue(shader,b.ready,&active,SHADER_UNIFORM_FLOAT);SetShaderValue(shader,b.depth,&depth,SHADER_UNIFORM_FLOAT);SetShaderValueMatrix(shader,b.view,view);
     const Vector2 viewport{static_cast<float>(normalDepth.texture.width),static_cast<float>(normalDepth.texture.height)},resolution{static_cast<float>(filtered.texture.width),static_cast<float>(filtered.texture.height)};SetShaderValue(shader,b.viewport,&viewport,SHADER_UNIFORM_VEC2);SetShaderValue(shader,b.resolution,&resolution,SHADER_UNIFORM_VEC2);
     TextureUnit(14,active>.5f?filtered.texture:Texture2D{});TextureUnit(15,active>.5f?normalDepth.texture:Texture2D{});

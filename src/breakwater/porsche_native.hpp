@@ -41,7 +41,7 @@ private:
     friend class PorscheSuspension;
     std::span<const porsche_data::RigNode> source;
     std::unordered_map<std::string,int> names;
-    std::vector<Matrix> local,world;
+    std::vector<Matrix> local,world,restInverse;
     std::unique_ptr<PorscheSuspension> suspension;
     std::array<PorscheSuspensionDiagnostic,4> diagnostics{};
     std::array<Vector2,4> springWeights{};

@@ -276,6 +276,44 @@ Ground shadows now sit near the rendered ground and do not write depth. The
 previous raised shadow ellipsoid cut through the Porsche's low body. The
 existing pickup capture was repeated after that correction.
 
+## Conservative mesh visibility optimization
+
+Posed Porsche meshes and rigid meshes in the other detailed vehicle models
+now receive a conservative frustum test before draw submission and shader
+material uploads. The test uses the actual rlgl transform, view and projection
+matrices, so cropped/oblique mirror views use their real clipping planes.
+It retains uncertain, non-finite and boundary cases, and bypasses stereo.
+Geometry, textures, detail thresholds and effect quality are unchanged.
+Shader-deformed foliage and water remain outside this mesh-culling path.
+
+Spring bounds refresh after morph updates. Static hero bounds are cached by
+VAO, vertex pointer and count, then cleared at world shutdown. The rig caches
+inverse rest matrices, and each Porsche draw reuses its computed posed mesh
+transforms. CPU live-display/mirror bindings and the legacy shared material
+map overrides remain valid even when their meshes are outside the view.
+GPU parameter caches track only values actually uploaded for visible meshes.
+
+Run `build-native/ninja/bin/game.exe --qa-porsche-culling` for 36 paired
+on/off scenes: three detail levels, three mechanical poses, and front, rear,
+cockpit and overhead orthographic cameras. The test compares exact color in
+a full-size single-sample target **with contact shading**, exact floating
+normal/depth and AO buffers, and reflected targets. The production main view
+still uses framebuffer 0. Only this explicit full-size QA target is passed
+as an alternate AO receiver. Separate unchanged-repeat default-framebuffer
+captures establish the antialiasing/quantization comparison envelope.
+Every rejected mesh vertex is independently checked in homogeneous clip
+coordinates. See `docs/porsche-native-culling-qa.json` for finite coverage
+and limits; this is not exhaustive visibility or collision validation.
+
+Run `build-native/ninja/bin/game.exe --qa-porsche-culling-performance`, then
+`python scripts/review_porsche_performance.py --culling`, for a same-executable
+comparison with culling off/on. AO, mirrors, shadows, ordinary LOD selection
+and the HUD remain enabled on both sides. Both sides also use the inverse
+rest and transform caches. Paired controls, positions, speeds and mirror
+update schedules must agree. Reports include eligible mesh submissions and
+rejections as well as stage/frame timings; skipped vehicle submissions must
+not be described as a reduction in all world draw calls.
+
 ## Native driving performance measurements
 
 Run `build-native/ninja/bin/game.exe --qa-porsche-performance`, then

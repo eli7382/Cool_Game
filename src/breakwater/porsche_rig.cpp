@@ -7,8 +7,8 @@
 #include <stdexcept>
 
 namespace bw {
-PorscheRig::PorscheRig(std::span<const porsche_data::RigNode> nodes,std::span<const porsche_data::SpringSpec> springs):source(nodes),local(nodes.size()),world(nodes.size()) {
-    for(std::size_t i=0;i<nodes.size();++i){names.emplace(nodes[i].name,static_cast<int>(i));local[i]=nodes[i].local;world[i]=nodes[i].world;}
+PorscheRig::PorscheRig(std::span<const porsche_data::RigNode> nodes,std::span<const porsche_data::SpringSpec> springs):source(nodes),local(nodes.size()),world(nodes.size()),restInverse(nodes.size()) {
+    for(std::size_t i=0;i<nodes.size();++i){names.emplace(nodes[i].name,static_cast<int>(i));local[i]=nodes[i].local;world[i]=nodes[i].world;restInverse[i]=MatrixInvert(nodes[i].world);}
     suspension=std::make_unique<PorscheSuspension>(*this,springs);
     Pose({});
 }
@@ -19,7 +19,7 @@ Vector3 PorscheRig::Position(const std::string& name) const {const auto m=World(
 bool PorscheRig::DescendsFrom(int node,int ancestor) const {for(int p=node;p>=0;p=source[p].parent)if(p==ancestor)return true;return false;}
 Matrix PorscheRig::MeshDelta(int node) const {
     // raymath MatrixMultiply(a,b) is conventional b*a for column vectors.
-    return MatrixMultiply(MatrixInvert(source[node].world),world[node]);
+    return MatrixMultiply(restInverse[node],world[node]);
 }
 void PorscheRig::Rotate(const std::string& name,Vector3 axis,float angle){
     const int i=Find(name);if(i<0)return;

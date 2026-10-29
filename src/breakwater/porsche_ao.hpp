@@ -12,7 +12,7 @@ public:
     bool Init();
     void Release();
     bool Prepare(const Camera3D& camera,int samples,const std::function<void()>& drawGeometry);
-    void Bind(Shader shader,const Camera3D& camera,bool enabled);
+    void Bind(Shader shader,const Camera3D& camera,bool enabled,unsigned int mainFramebuffer=0);
     void Unbind();
     void Invalidate(){ready=false;}
     bool IsDepthPass()const{return depthPass;}

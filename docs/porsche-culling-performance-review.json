@@ -1,0 +1,319 @@
+{
+  "reviewed_at": "2026-10-29T01:50:23.126250+00:00",
+  "stage": "Conservative mesh visibility optimization",
+  "baseline_commit": "9f66b5b315efc979b34674c61586e9e28eda1b97",
+  "executable_sha256": "dc77fe086a547f0da6e16cc3814916697bb405600f214905cac16debb54e2906",
+  "source_hashes": {
+    "src/breakwater/porsche_profile.cpp": "b31229ac0ab7232e149638466f6717db6ea88db42f5d992c95f001a90b188089",
+    "src/breakwater/porsche_profile.hpp": "bde00b1fb208d59b1b473eb1adaf3b0cb34a1f548b4e71e96b7f76e3051cca72",
+    "src/breakwater/main.cpp": "cdaeea79da6b97e2e99aa42848601a05aace31911d0cbc6bdf4639527c015e84",
+    "src/breakwater/world.cpp": "c7217dbda1b354771cd31abec2bf22a590eca0c962f6c70f31e626b14a861a8d",
+    "src/breakwater/porsche_ao.cpp": "cd432fbc98e28f9f67763dc0216c42d5b8764b1719f410fbd1e2b8f58311ae4e",
+    "src/breakwater/porsche_native.cpp": "43537d5b2aaa7243504619e22a4b08550dd291448fe9c6675dabc9986027d33c",
+    "src/breakwater/porsche_native.hpp": "78c4fc89b7869e65f158efa4758a4b7ebe733faef2654c38b4fd94e34d6a5316",
+    "src/breakwater/mesh_visibility.cpp": "c90eb1de647ff9a1c3c9129099e8916c77709a52fcfffd2f99b60d68e430cc0b",
+    "src/breakwater/mesh_visibility.hpp": "dc21c50b441b47dc4e875446d517e6cb101ab0a860e2845d1295fe4d5516ee6a",
+    "src/breakwater/porsche_rig.cpp": "310e899b25e854f26df891886f96aa02437e856a50a7653535c4380d8332619b",
+    "src/breakwater/porsche_ao.hpp": "b45b3603caf26db431e475f4152afb2b237289e41da3539a0c351c46bcebfa78"
+  },
+  "reviewer_sha256": "8269b1b1edaab9766136e695903ecbd9cbd9538c132dc5c8f9bb3eb4182e19fa",
+  "runtime_evidence_sha256": "f85e8a182e899b4bd94b5bff44c9f88c27bbedd7482a9aae265d5ddfedeb17c4",
+  "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU/PCIe/SSE2",
+  "resolution": [
+    1280,
+    720
+  ],
+  "native_qa": {
+    "passed": true,
+    "checks": 125,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "legacy_thermal_regression": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.74,total-wear=0.00008251,peak-speed-mps=16.00",
+  "measured_frames": 768,
+  "ordinary_distance_LOD_selection": true,
+  "fixed_step_driving_physics": true,
+  "summary": [
+    {
+      "case": "low-chase-culling-off",
+      "frame_wall_p50_ms": 91.1464,
+      "frame_wall_p95_ms": 145.7523,
+      "gpu_p50_ms": 83.956736,
+      "ambient_mean_ms": 32.560768,
+      "normal_depth_mean_ms": 31.699808,
+      "evaluation_mean_ms": 0.573749333,
+      "filter_mean_ms": 0.282453333
+    },
+    {
+      "case": "low-chase-culling-on",
+      "frame_wall_p50_ms": 91.75165,
+      "frame_wall_p95_ms": 145.905925,
+      "gpu_p50_ms": 83.318784,
+      "ambient_mean_ms": 38.0982293,
+      "normal_depth_mean_ms": 37.1318507,
+      "evaluation_mean_ms": 0.624938667,
+      "filter_mean_ms": 0.336394667
+    },
+    {
+      "case": "low-cockpit-culling-on",
+      "frame_wall_p50_ms": 62.14975,
+      "frame_wall_p95_ms": 92.342375,
+      "gpu_p50_ms": 51.92704,
+      "ambient_mean_ms": 21.3171093,
+      "normal_depth_mean_ms": 20.3779947,
+      "evaluation_mean_ms": 0.582933333,
+      "filter_mean_ms": 0.351552
+    },
+    {
+      "case": "low-cockpit-culling-off",
+      "frame_wall_p50_ms": 70.0665,
+      "frame_wall_p95_ms": 105.05255,
+      "gpu_p50_ms": 61.25568,
+      "ambient_mean_ms": 20.9967467,
+      "normal_depth_mean_ms": 20.0458347,
+      "evaluation_mean_ms": 0.671008,
+      "filter_mean_ms": 0.275669333
+    },
+    {
+      "case": "high-chase-culling-on",
+      "frame_wall_p50_ms": 112.3762,
+      "frame_wall_p95_ms": 145.286025,
+      "gpu_p50_ms": 102.651392,
+      "ambient_mean_ms": 37.180512,
+      "normal_depth_mean_ms": 34.9348053,
+      "evaluation_mean_ms": 1.70949333,
+      "filter_mean_ms": 0.529877333
+    },
+    {
+      "case": "high-chase-culling-off",
+      "frame_wall_p50_ms": 119.83655,
+      "frame_wall_p95_ms": 177.073425,
+      "gpu_p50_ms": 110.894592,
+      "ambient_mean_ms": 41.1860267,
+      "normal_depth_mean_ms": 39.3535573,
+      "evaluation_mean_ms": 1.4104,
+      "filter_mean_ms": 0.416789333
+    },
+    {
+      "case": "high-cockpit-culling-off",
+      "frame_wall_p50_ms": 86.90735,
+      "frame_wall_p95_ms": 117.551525,
+      "gpu_p50_ms": 75.393024,
+      "ambient_mean_ms": 24.330176,
+      "normal_depth_mean_ms": 22.7451627,
+      "evaluation_mean_ms": 1.309696,
+      "filter_mean_ms": 0.270933333
+    },
+    {
+      "case": "high-cockpit-culling-on",
+      "frame_wall_p50_ms": 63.90355,
+      "frame_wall_p95_ms": 85.719175,
+      "gpu_p50_ms": 54.751744,
+      "ambient_mean_ms": 18.7172907,
+      "normal_depth_mean_ms": 17.1927147,
+      "evaluation_mean_ms": 1.25691733,
+      "filter_mean_ms": 0.263445333
+    }
+  ],
+  "matched_driving_paths": [
+    {
+      "high": false,
+      "cockpit": false,
+      "maximum_position_error_m": 0.0,
+      "maximum_speed_error_mps": 0.0,
+      "maximum_steering_control_error": 0.0,
+      "matched_mirror_update_schedule": true,
+      "gpu_p50_on_minus_off_ms": -0.6379520000000127,
+      "frame_wall_p50_on_minus_off_ms": 0.6052499999999981,
+      "porsche_draws_skipped": 18621,
+      "hero_draws_skipped": 87036,
+      "eligible_mesh_draw_fraction_skipped": 0.5538972068444892
+    },
+    {
+      "high": false,
+      "cockpit": true,
+      "maximum_position_error_m": 0.0,
+      "maximum_speed_error_mps": 0.0,
+      "maximum_steering_control_error": 0.0,
+      "matched_mirror_update_schedule": true,
+      "gpu_p50_on_minus_off_ms": -9.32864,
+      "frame_wall_p50_on_minus_off_ms": -7.9167500000000075,
+      "porsche_draws_skipped": 33578,
+      "hero_draws_skipped": 85642,
+      "eligible_mesh_draw_fraction_skipped": 0.6992539414414415
+    },
+    {
+      "high": true,
+      "cockpit": false,
+      "maximum_position_error_m": 0.0,
+      "maximum_speed_error_mps": 0.0,
+      "maximum_steering_control_error": 0.0,
+      "matched_mirror_update_schedule": true,
+      "gpu_p50_on_minus_off_ms": -8.243200000000002,
+      "frame_wall_p50_on_minus_off_ms": -7.460350000000005,
+      "porsche_draws_skipped": 24830,
+      "hero_draws_skipped": 143556,
+      "eligible_mesh_draw_fraction_skipped": 0.6616449767383378
+    },
+    {
+      "high": true,
+      "cockpit": true,
+      "maximum_position_error_m": 0.0,
+      "maximum_speed_error_mps": 0.0,
+      "maximum_steering_control_error": 0.0,
+      "matched_mirror_update_schedule": true,
+      "gpu_p50_on_minus_off_ms": -20.641279999999995,
+      "frame_wall_p50_on_minus_off_ms": -23.00379999999999,
+      "porsche_draws_skipped": 46805,
+      "hero_draws_skipped": 151905,
+      "eligible_mesh_draw_fraction_skipped": 0.7915471637985978
+    }
+  ],
+  "images": [
+    {
+      "path": "screenshots/porsche-culling-perf-low-chase-culling-off.png",
+      "sha256": "1e7eac27d2d3c54f165150a28be8016f247d2db104e61f32b386a6e33acaf51f"
+    },
+    {
+      "path": "screenshots/porsche-culling-perf-low-chase-culling-on.png",
+      "sha256": "6a29af1d6d30571a1bb96a372692264f8dd7ae6ad6c2b7ae05824025226c7631"
+    },
+    {
+      "path": "screenshots/porsche-culling-perf-low-cockpit-culling-on.png",
+      "sha256": "9773282c86dc3804b48036bc5cd1790a02638a3f0ec244015d8d6323ea2b7314"
+    },
+    {
+      "path": "screenshots/porsche-culling-perf-low-cockpit-culling-off.png",
+      "sha256": "ae881db84f0c914919c3ac908819df1ac3b25fefb216e49e0de6ff035c9db33a"
+    },
+    {
+      "path": "screenshots/porsche-culling-perf-high-chase-culling-on.png",
+      "sha256": "ba4139dcf9603d05addd416b2e75a149e49c665b2585816823b7ae2162c0f985"
+    },
+    {
+      "path": "screenshots/porsche-culling-perf-high-chase-culling-off.png",
+      "sha256": "628361cc778cb2ce2f84620c62ee6245e39b44a812009d6c45e516366f65f706"
+    },
+    {
+      "path": "screenshots/porsche-culling-perf-high-cockpit-culling-off.png",
+      "sha256": "0c1f04046045b0e7d5ccf0a80c4043134bacc66f319bebc5bbedc92e83cbdb94"
+    },
+    {
+      "path": "screenshots/porsche-culling-perf-high-cockpit-culling-on.png",
+      "sha256": "77d13a81a54d4360117c48878edaee53ddcd1cb4dda0ef163b658adc9276ad15"
+    },
+    {
+      "path": "screenshots/porsche-culling-cockpit-off.png",
+      "sha256": "448e9250aea1d4a0a847308628c2ed993a9b7eb5e87a19e7bb8198f904a15e93",
+      "single_sample_color_with_AO": true
+    },
+    {
+      "path": "screenshots/porsche-culling-cockpit-on.png",
+      "sha256": "448e9250aea1d4a0a847308628c2ed993a9b7eb5e87a19e7bb8198f904a15e93",
+      "single_sample_color_with_AO": true
+    },
+    {
+      "path": "screenshots/porsche-culling-open-off.png",
+      "sha256": "6f1d0271e0953a02ab0cc7e611ee9777f45ba7b3762bb2ce9ecc027de8a4bf02",
+      "single_sample_color_with_AO": true
+    },
+    {
+      "path": "screenshots/porsche-culling-open-on.png",
+      "sha256": "6f1d0271e0953a02ab0cc7e611ee9777f45ba7b3762bb2ce9ecc027de8a4bf02",
+      "single_sample_color_with_AO": true
+    }
+  ],
+  "local_instrumented_60fps_p95_target_met": false,
+  "limits": [
+    "Local instrumented native renderer/physics/HUD run on this machine; not a cross-device FPS guarantee",
+    "Per-stage batch flushes and timestamp commands add instrumentation overhead; nested ambient stages are included in ambient_total",
+    "GPU elapsed spans may include GPU idle gaps waiting for CPU commands; CPU submit is not CPU-only execution time",
+    "Hidden-window workload; presentation/compositor scheduling and visible-window performance need separate verification",
+    "Fixed simulation step and repeated input sequence; camera smoothing disabled so matched cases use identical views",
+    "Combat and audio held idle; shader/asset loading and cold-start latency excluded by warmup"
+  ],
+  "complete": false,
+  "final_fidelity_verified": false,
+  "visual_equivalence": {
+    "passed": true,
+    "image_pairs": 36,
+    "perspective_and_orthographic_views": true,
+    "detail_levels": 3,
+    "poses": 3,
+    "analytic_projection_fixtures": 600,
+    "analytic_and_nonfinite_cases_passed": true,
+    "color_differing_pairs": 0,
+    "normal_depth_differing_pairs": 0,
+    "ambient_visibility_differing_pairs": 0,
+    "mirror_target_pairs": 54,
+    "mirror_target_differing_pairs": 0,
+    "porsche_meshes_tested": 107796,
+    "porsche_meshes_rejected": 17679,
+    "hero_meshes_tested": 210240,
+    "hero_meshes_rejected": 74679,
+    "rejected_vertices_verified": 61571259,
+    "rejected_vertex_oracle_failures": 0,
+    "representative_images_exported": true,
+    "MSAA_unchanged_repeat_maximum_code_delta": 2,
+    "MSAA_culling_maximum_code_delta": 2,
+    "MSAA_unchanged_repeat_changed_pixels": 32137,
+    "MSAA_culling_changed_pixels": 32954,
+    "scope": "Same-process culling off/on exact single-sample main color with AO, floating normal/depth, AO and reflected target comparisons; all three LODs; front, rear, cockpit and overhead orthographic cameras; doors, windows, steering, wheels, aero, paddles, mirrors and spring travel",
+    "limits": [
+      "Finite camera/pose coverage, not exhaustive whole-game validation",
+      "Only rigid hero-vehicle meshes and posed Porsche meshes are culled; shader-deformed foliage/water are unchanged",
+      "Conservative rejection retains uncertain/boundary cases; stereo bypasses culling"
+    ],
+    "complete": false
+  },
+  "optimizations": [
+    "Conservative posed mesh/frustum rejection using actual view, stack and projection matrices",
+    "Upload shader materials only for submitted meshes while preserving CPU bindings and shared map overrides",
+    "Updated spring bounds after morphing",
+    "Cached inverse rest matrices and per-draw posed transforms"
+  ],
+  "timing_scope": "Same executable with culling disabled/enabled; AO and other effects held on. Both sides include the inverse-rest and transform caches.",
+  "runtime_geometry_unchanged": true,
+  "driving_image_comparisons": [
+    {
+      "high": false,
+      "cockpit": false,
+      "excluded_FPS_footer_rows": 30,
+      "maximum_color_code_delta": 1,
+      "pixels_over_unchanged_repeat_envelope": 0
+    },
+    {
+      "high": false,
+      "cockpit": true,
+      "excluded_FPS_footer_rows": 30,
+      "maximum_color_code_delta": 2,
+      "pixels_over_unchanged_repeat_envelope": 0
+    },
+    {
+      "high": true,
+      "cockpit": false,
+      "excluded_FPS_footer_rows": 30,
+      "maximum_color_code_delta": 1,
+      "pixels_over_unchanged_repeat_envelope": 0
+    },
+    {
+      "high": true,
+      "cockpit": true,
+      "excluded_FPS_footer_rows": 30,
+      "maximum_color_code_delta": 2,
+      "pixels_over_unchanged_repeat_envelope": 0
+    }
+  ]
+}

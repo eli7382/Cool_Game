@@ -1,15 +1,15 @@
 {
-  "reviewed_at": "2026-10-29T00:51:57.154747+00:00",
+  "reviewed_at": "2026-10-29T01:43:42.070017+00:00",
   "stage": "Native directional sun self-shadowing with receiver-plane filtered comparisons",
   "baseline_commit": "dcebb8c80d1aa33feaaef635300cef376036601d",
-  "executable_sha256": "7aadc94fcb48121c5fb1360b96d6d983aaa0e79123c46bbe999d9e3bb6a79d49",
+  "executable_sha256": "dc77fe086a547f0da6e16cc3814916697bb405600f214905cac16debb54e2906",
   "reviewer_sha256": "ef7903fa710d014ba5e1748ffdd42b69d37a6193d2b4b898f9782631fdf2bbbd",
   "source_hashes": {
-    "src/breakwater/porsche_native.cpp": "22e0256ceaaeedf85e23e190f995ccdf6fcfe86094de158d6fd1a1fc7363d459",
-    "src/breakwater/porsche_native.hpp": "50ffbe49e07c053a507f8fa0e40285f4e8ad7409832e47c173dad1f5a6c7d54b",
+    "src/breakwater/porsche_native.cpp": "43537d5b2aaa7243504619e22a4b08550dd291448fe9c6675dabc9986027d33c",
+    "src/breakwater/porsche_native.hpp": "78c4fc89b7869e65f158efa4758a4b7ebe733faef2654c38b4fd94e34d6a5316",
     "src/breakwater/porsche_shadow.cpp": "f9e5d461a92b5cd7bb790be1945d4e49ee10f565487c04f7e2ac37f1dea5a8c4",
     "src/breakwater/porsche_shadow.hpp": "90571e07773674abb9c0556a4d80e337d0f1f129e561a3ed8ce2aa233b59bf77",
-    "src/breakwater/world.cpp": "4aed7146d3f7beffdf8723bd34118e2eb8248aa9b40c1868026d06aa851aecfb",
+    "src/breakwater/world.cpp": "c7217dbda1b354771cd31abec2bf22a590eca0c962f6c70f31e626b14a861a8d",
     "assets/porsche/shaders/porsche.fs": "c2722f666adbabecfd0a86f811c17a44a368749f2c23e3c7420897a26ffe9a09",
     "assets/porsche/shaders/porsche_depth.vs": "aeb5398b9ef7da4e72b99cc31006a203199ae61c52705e598daf288fff1fe5cd",
     "assets/porsche/shaders/porsche_depth.fs": "710cb06b53a6c1c961e120130e30d7d8e31476c9728432acbec17c1f9222c34f"
@@ -135,49 +135,49 @@
   "images": [
     {
       "path": "screenshots/porsche-shadow-exterior-off.png",
-      "sha256": "ef237b274e8b43d9104f96359acde7930e427aa3cb0d9871015e57b0983e187d",
+      "sha256": "7bc1d4c82692dfadf05d2830fc9d20ad91f3b9ba964389ba3139e7596096c409",
       "view": "exterior",
       "self_shadows": false
     },
     {
       "path": "screenshots/porsche-shadow-exterior-on.png",
-      "sha256": "7cdd53a60cbd54af177499b2c8e68d9be1243686477a6db6ae6a60bd57a387c0",
+      "sha256": "3366c72500541fb34070e79c9a2fbbcc912a2120028405f798d9230059a83f92",
       "view": "exterior",
       "self_shadows": true
     },
     {
       "path": "screenshots/porsche-shadow-rear-off.png",
-      "sha256": "e1d993d6ef771b7c5a61b60760835b52189c50d57b6027b822083bbe4a01ad3f",
+      "sha256": "804194ca4ba3e72ffd582b52213fc880ff50be53444f427a7e125e245129f94b",
       "view": "rear",
       "self_shadows": false
     },
     {
       "path": "screenshots/porsche-shadow-rear-on.png",
-      "sha256": "4e9d0e83466ded217a052b348d0bc8f0b4f2e4aa8a54f132f51b5d5a642f645c",
+      "sha256": "1ddf7110439fe495fe58d2273ae891d17dc237c0e1b07d7a6ad31dd8527b3fb7",
       "view": "rear",
       "self_shadows": true
     },
     {
       "path": "screenshots/porsche-shadow-cockpit-off.png",
-      "sha256": "527ff234a4b21104c9110bf5fdb467a32b048b9d8c600556897f398e028c2a7f",
+      "sha256": "68bd80b93993745a10b3d50921278ac4c49a22b7aabf630481066806412a61b3",
       "view": "cockpit",
       "self_shadows": false
     },
     {
       "path": "screenshots/porsche-shadow-cockpit-on.png",
-      "sha256": "837191ed1d9af17ad4cbc87d7bf99fa5b65d1b3fc88d037df9a067e9dd3ff18b",
+      "sha256": "613fefd0c30b6f6478d8f17a67dc41b59edf67589c1272e1d56bf500edf86b71",
       "view": "cockpit",
       "self_shadows": true
     },
     {
       "path": "screenshots/porsche-shadow-open-off.png",
-      "sha256": "e6f00b6e88f88beb9a1a64da8851de0607899ad438fc8e24540a3842323a9395",
+      "sha256": "329df44bf747263a33d404b0fd1f7246df4cb5e7ac244afa334de0ecafc35ebb",
       "view": "open",
       "self_shadows": false
     },
     {
       "path": "screenshots/porsche-shadow-open-on.png",
-      "sha256": "c70628635da93fc45425e0d9f55745bda243c6d93021c25f31643f9bb71d629f",
+      "sha256": "d37a243aee03c6ab883585b404bbbcc483efc42b818c89ac9330ae1234054f6d",
       "view": "open",
       "self_shadows": true
     }
@@ -185,28 +185,28 @@
   "matched_image_differences": [
     {
       "view": "exterior",
-      "changed_pixels_over_2_levels": 20420,
+      "changed_pixels_over_2_levels": 20423,
       "brightened_pixels_over_2_levels": 0,
       "maximum_darken": 89,
       "maximum_brighten": 1
     },
     {
       "view": "rear",
-      "changed_pixels_over_2_levels": 38179,
+      "changed_pixels_over_2_levels": 38186,
       "brightened_pixels_over_2_levels": 0,
       "maximum_darken": 59,
       "maximum_brighten": 1
     },
     {
       "view": "cockpit",
-      "changed_pixels_over_2_levels": 151440,
+      "changed_pixels_over_2_levels": 151442,
       "brightened_pixels_over_2_levels": 0,
       "maximum_darken": 64,
       "maximum_brighten": 1
     },
     {
       "view": "open",
-      "changed_pixels_over_2_levels": 21540,
+      "changed_pixels_over_2_levels": 21538,
       "brightened_pixels_over_2_levels": 0,
       "maximum_darken": 89,
       "maximum_brighten": 1

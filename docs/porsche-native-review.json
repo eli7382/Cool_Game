@@ -1,17 +1,17 @@
 {
-  "reviewed_at": "2026-10-29T00:51:57.154747+00:00",
-  "stage": "Native contact shading and measured driving performance baseline",
+  "reviewed_at": "2026-10-29T01:43:42.070017+00:00",
+  "stage": "Conservative visibility and material-upload optimization",
   "native_stack": "C++20, raylib 5.5, OpenGL 3.3",
-  "executable_sha256": "7aadc94fcb48121c5fb1360b96d6d983aaa0e79123c46bbe999d9e3bb6a79d49",
+  "executable_sha256": "dc77fe086a547f0da6e16cc3814916697bb405600f214905cac16debb54e2906",
   "source_hashes": {
     "src/breakwater/game.hpp": "422e91d506496a9eea596b7d02117b14091c9803786b71d95f9202e5fd43588c",
     "src/breakwater/gameplay.cpp": "1e0cdd36c3468c279128aa1e6a5022cdc370f42af251e66d2328b7b77b4cbc54",
-    "src/breakwater/main.cpp": "0f2a3705809ea886e5fce9f230fc199daf4c0388a9563e40d9b451dd392f51a7",
-    "src/breakwater/world.cpp": "4aed7146d3f7beffdf8723bd34118e2eb8248aa9b40c1868026d06aa851aecfb",
+    "src/breakwater/main.cpp": "cdaeea79da6b97e2e99aa42848601a05aace31911d0cbc6bdf4639527c015e84",
+    "src/breakwater/world.cpp": "c7217dbda1b354771cd31abec2bf22a590eca0c962f6c70f31e626b14a861a8d",
     "src/breakwater/ui.cpp": "4fbad21164f05fe19f949cae897f70c642f7e54557cde254132a723216fa9f46",
-    "src/breakwater/porsche_native.cpp": "22e0256ceaaeedf85e23e190f995ccdf6fcfe86094de158d6fd1a1fc7363d459",
-    "src/breakwater/porsche_native.hpp": "50ffbe49e07c053a507f8fa0e40285f4e8ad7409832e47c173dad1f5a6c7d54b",
-    "src/breakwater/porsche_rig.cpp": "6d34b60928559d0b6587b6178acc2624498bddf80d841a85559ac6c72d274b9f",
+    "src/breakwater/porsche_native.cpp": "43537d5b2aaa7243504619e22a4b08550dd291448fe9c6675dabc9986027d33c",
+    "src/breakwater/porsche_native.hpp": "78c4fc89b7869e65f158efa4758a4b7ebe733faef2654c38b4fd94e34d6a5316",
+    "src/breakwater/porsche_rig.cpp": "310e899b25e854f26df891886f96aa02437e856a50a7653535c4380d8332619b",
     "src/breakwater/porsche_asset_data.hpp": "4bd0b92f1496fc788ed59c4345585435d480f5f377806d6d1551d436e07ea01a",
     "assets/porsche/shaders/porsche.vs": "22bb65756d5809d3ef1368ebdd37b63ac8e315f56e54022a3c6a95a672875c13",
     "assets/porsche/shaders/porsche.fs": "c2722f666adbabecfd0a86f811c17a44a368749f2c23e3c7420897a26ffe9a09",
@@ -37,11 +37,15 @@
     "src/breakwater/porsche_shadow.hpp": "90571e07773674abb9c0556a4d80e337d0f1f129e561a3ed8ce2aa233b59bf77",
     "assets/porsche/shaders/porsche_depth.vs": "aeb5398b9ef7da4e72b99cc31006a203199ae61c52705e598daf288fff1fe5cd",
     "assets/porsche/shaders/porsche_depth.fs": "710cb06b53a6c1c961e120130e30d7d8e31476c9728432acbec17c1f9222c34f",
-    "src/breakwater/porsche_ao.cpp": "b3b4c1e34c77800536654819a188ee9ef7d1429b58e49fc81a9bf83e48f6cce3",
-    "src/breakwater/porsche_ao.hpp": "c37377ec905ad686339fa23f2c2ad41c174bac8fdeebf16e542f46fb394cff5b",
+    "src/breakwater/porsche_ao.cpp": "cd432fbc98e28f9f67763dc0216c42d5b8764b1719f410fbd1e2b8f58311ae4e",
+    "src/breakwater/porsche_ao.hpp": "b45b3603caf26db431e475f4152afb2b237289e41da3539a0c351c46bcebfa78",
     "assets/porsche/shaders/porsche_ao.fs": "3ae68c070626227e12772410b8b979963fc719314484f1227a3038967a2112ea",
     "assets/porsche/shaders/porsche_ao_blur.fs": "d3e7cee211e75e36fbe3994ecbe13abbd859c6cb6aa4de70d4cde14fec98e404",
-    "assets/porsche/shaders/porsche_ao_lookup.glsl": "221a1a1622825763a6de1b6ac252a1f527b5d8ee72ed777d6afae69f2466605f"
+    "assets/porsche/shaders/porsche_ao_lookup.glsl": "221a1a1622825763a6de1b6ac252a1f527b5d8ee72ed777d6afae69f2466605f",
+    "src/breakwater/porsche_profile.cpp": "b31229ac0ab7232e149638466f6717db6ea88db42f5d992c95f001a90b188089",
+    "src/breakwater/porsche_profile.hpp": "bde00b1fb208d59b1b473eb1adaf3b0cb34a1f548b4e71e96b7f76e3051cca72",
+    "src/breakwater/mesh_visibility.cpp": "c90eb1de647ff9a1c3c9129099e8916c77709a52fcfffd2f99b60d68e430cc0b",
+    "src/breakwater/mesh_visibility.hpp": "dc21c50b441b47dc4e875446d517e6cb101ab0a860e2845d1295fe4d5516ee6a"
   },
   "asset_source_hashes": {
     "hero": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
@@ -71,23 +75,23 @@
   "images": [
     {
       "path": "screenshots/porsche-native-front.png",
-      "sha256": "f116370d9b7ae4cd0489db7244e300015a794528491897b3a8f5ac9d42099dc2"
+      "sha256": "ff1562be5c16c5148a6f3378511aeb0aa5899e525f7dd287df8e65f2fbefb99f"
     },
     {
       "path": "screenshots/porsche-native-open.png",
-      "sha256": "817856adb4f402d6a8a47dafdb1c5479b4a0cc3a33bd8f511262e0aad2215c1b"
+      "sha256": "325244b42e37beba6fa2d3a9f8f95628fdd1b85f17fb2a6d8c4f09ed452c8494"
     },
     {
       "path": "screenshots/porsche-native-steering-negative.png",
-      "sha256": "bf0c89718c969c93a16902b30412c75a6e61a1429f736ebbfc11d81646dd66a1"
+      "sha256": "bc98035af8a28941cfb96ce57235c5bf7cdba75a2ab7cf19257643a925b3570c"
     },
     {
       "path": "screenshots/porsche-native-steering-centre.png",
-      "sha256": "8a174845282c6b69da39d2594b21782b63c33a694356bad6b2a4d8d26f5c10d2"
+      "sha256": "dbb0c06defbfaea8e4ca71c62202ae2c3eb8129c0f5f02a0c806e43b02d2d631"
     },
     {
       "path": "screenshots/porsche-native-steering-positive.png",
-      "sha256": "ba089aeb38efc38400ca2ff5d1a846d04f9dd3ba94368ef11a040f4225828ea2"
+      "sha256": "60670a61575706bf1736b46e89b8dce41eedf3c1cd866d487e9bf3e904391723"
     },
     {
       "path": "screenshots/porsche-integration-pickup-regression.png",
@@ -95,15 +99,15 @@
     },
     {
       "path": "screenshots/porsche-native-suspension-rest.png",
-      "sha256": "890d902cac2124f0d898f8a1b5124b72f93fb8740dd9805b3c5b910c877f0b27"
+      "sha256": "1c74b51b210a0d5f8fb17fecdfadf68cd757c04e06673aa047cfeaa88e09d2f7"
     },
     {
       "path": "screenshots/porsche-native-suspension-cross.png",
-      "sha256": "f33d892856058f25c8593ebfde16edb3bd99cef846e032edbccbf81c05e44aca"
+      "sha256": "39bb6a063857ac832cb485ece034cf9e365e53cf8cfd452283dd324b2c4c4924"
     },
     {
       "path": "screenshots/porsche-native-grille-close.png",
-      "sha256": "70dff7551a8a39bc663486b86cd26f1aba04bdebb6239aeacc461d17bbd91877"
+      "sha256": "278ec5bd55dc376c6a2641c21cceb75de18dab562d3d951974d1819de736338a"
     },
     {
       "path": "screenshots/porsche-display-0-driving.png",
@@ -139,15 +143,15 @@
     },
     {
       "path": "screenshots/porsche-native-live-cockpit.png",
-      "sha256": "e18615fbf2825877a7f9c555dd8497d302004d2e5ef07c6c17da1243a99abba3"
+      "sha256": "ce5a4c49d4a1387e6cbde5875d8ef195c16f3576f8c16f0681cb45e4f0a9d47d"
     },
     {
       "path": "screenshots/porsche-native-scene-mirrors.png",
-      "sha256": "c99a6305581d874ca5c4390c0cc894564edc2c27d66530d6b2730c3283631598"
+      "sha256": "8727bf8a238ea8d24695765598d9c7acf285ec76a78593f8b907e4ee55517e8f"
     },
     {
       "path": "screenshots/porsche-native-mirror-markers.png",
-      "sha256": "0a587e41526224eb1c619e8e7c166fcefb2f1b2c4aa85b8bd683f0619c616f1e"
+      "sha256": "07b9472839c118d7a2a5e1473b212fc3cd6c371e984f6297f1e3cee90f34b96c"
     },
     {
       "path": "screenshots/porsche-mirror-left-markers.png",
@@ -246,7 +250,7 @@
     "glazing_invariance": true,
     "steering_response": true
   },
-  "performance_review": "docs/porsche-performance-review.json",
+  "performance_review": "docs/porsche-culling-performance-review.json",
   "native_driving_performance": {
     "measured_frames": 768,
     "renderer": "NVIDIA GeForce RTX 3050 Laptop GPU/PCIe/SSE2",
@@ -257,5 +261,6 @@
     "paired_paths_and_mirror_schedule_match": true,
     "local_instrumented_60fps_p95_target_met": false,
     "optimization_complete": false
-  }
+  },
+  "mesh_visibility_review": "docs/porsche-culling-performance-review.json"
 }

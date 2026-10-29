@@ -4,6 +4,7 @@
 #include "porsche_displays.hpp"
 #include "porsche_ao.hpp"
 #include "porsche_profile.hpp"
+#include "mesh_visibility.hpp"
 
 namespace bw {
 namespace {
@@ -1039,6 +1040,7 @@ void ConfigureStructureModel(Model &model){
 void DrawHeroMesh(Model &model,int index){
     if(index<0||index>=model.meshCount||!model.meshes||!model.meshMaterial)return;
     const int material=model.meshMaterial[index];if(material<0||material>=model.materialCount)return;
+    const bool visible=MeshView{}.Visible(model.meshes[index],CachedRigidMeshBounds(model.meshes[index]),model.transform,MeshVisibilityKind::HeroVehicle);
     static constexpr float planeUvScale[]{6.25f,5.5555553f,5.5555553f,4.1666665f,5.0f,4.1666665f,6.6666665f,10.0f,5.5555553f,6.6666665f,8.3333330f,12.5f,5.5555553f,10.0f,10.0f,5.5555553f};
     static constexpr float planeUvOffsetY[]{-5.25f,-4.5555553f,-4.5555553f,-3.1666665f,-4.0f,-3.1666665f,-5.6666665f,-9.0f,-4.5555553f,-5.6666665f,-7.3333330f,-11.5f,-4.5555553f,-9.0f,-9.0f,-4.5555553f};
     static constexpr float heliUvScale[]{5.5555553f,5.5555553f,6.25f,6.6666665f,5.0f,10.0f,10.0f,10.0f,12.5f,5.5555553f,5.5555553f};
@@ -1046,7 +1048,7 @@ void DrawHeroMesh(Model &model,int index){
     float uvScale=1.0f,uvOffsetY=0.0f;
     if(&model==&g.planeHero&&model.meshCount!=F16NetzMesh::MeshCount&&material<16){uvScale=planeUvScale[material];uvOffsetY=planeUvOffsetY[material];}
     else if(&model==&g.heliHero&&material<11){uvScale=heliUvScale[material];uvOffsetY=heliUvOffsetY[material];}
-    if(g.locHeroUvScale>=0&&g.locHeroUvOffset>=0&&(g.activeHeroUvScale!=uvScale||g.activeHeroUvOffsetY!=uvOffsetY)){
+    if(visible&&g.locHeroUvScale>=0&&g.locHeroUvOffset>=0&&(g.activeHeroUvScale!=uvScale||g.activeHeroUvOffsetY!=uvOffsetY)){
         rlDrawRenderBatchActive();const float scale[2]{uvScale,uvScale},offset[2]{0.0f,uvOffsetY};
         SetShaderValue(g.worldShader,g.locHeroUvScale,scale,SHADER_UNIFORM_VEC2);SetShaderValue(g.worldShader,g.locHeroUvOffset,offset,SHADER_UNIFORM_VEC2);
         g.activeHeroUvScale=uvScale;g.activeHeroUvOffsetX=0.0f;g.activeHeroUvOffsetY=uvOffsetY;
@@ -1056,11 +1058,11 @@ void DrawHeroMesh(Model &model,int index){
     if(&model==&g.planeHero&&model.meshCount==F16NetzMesh::MeshCount){
         microdetailWeight=(material>=0&&material<F16NetzMesh::MaterialCount)?F16NetzMesh::MaterialMicrodetailWeights[material]:0.0f;
     }
-    if(g.locHeroMicrodetail>=0&&g.activeHeroMicrodetail!=microdetailWeight){
+    if(visible&&g.locHeroMicrodetail>=0&&g.activeHeroMicrodetail!=microdetailWeight){
         rlDrawRenderBatchActive();SetShaderValue(g.worldShader,g.locHeroMicrodetail,&microdetailWeight,SHADER_UNIFORM_FLOAT);g.activeHeroMicrodetail=microdetailWeight;
     }
     const float displayEmission=(&model==&g.planeHero&&model.meshCount==F16NetzMesh::MeshCount&&material==F16NetzMesh::DisplayMaterial)?1.15f:0.0f;
-    if(g.locHeroDisplayEmission>=0&&g.activeHeroDisplayEmission!=displayEmission){
+    if(visible&&g.locHeroDisplayEmission>=0&&g.activeHeroDisplayEmission!=displayEmission){
         rlDrawRenderBatchActive();SetShaderValue(g.worldShader,g.locHeroDisplayEmission,&displayEmission,SHADER_UNIFORM_FLOAT);g.activeHeroDisplayEmission=displayEmission;
     }
     static bool loggedF16DisplayEmission=false;
@@ -1075,7 +1077,7 @@ void DrawHeroMesh(Model &model,int index){
     const bool helicopterPaintShell=&model==&g.heliHero&&(index==7||index==25||index==90||index==99);
     const bool aircraftPaintShell=&model==&g.planeHero&&model.meshCount!=F16NetzMesh::MeshCount&&(index==8||index==9||index==10||index==11||index==57||index==82);
     const float paintCoat=(suvPaintShell||helicopterPaintShell||aircraftPaintShell)?1.0f:0.0f;
-    if(g.locHeroPaintCoat>=0&&g.activeHeroPaintCoat!=paintCoat){
+    if(visible&&g.locHeroPaintCoat>=0&&g.activeHeroPaintCoat!=paintCoat){
         rlDrawRenderBatchActive();SetShaderValue(g.worldShader,g.locHeroPaintCoat,&paintCoat,SHADER_UNIFORM_FLOAT);g.activeHeroPaintCoat=paintCoat;
     }
     // The source SUV's watertight 14-station body shell is assigned its black
@@ -1116,11 +1118,13 @@ void DrawHeroMesh(Model &model,int index){
         surface.maps[MATERIAL_MAP_ROUGHNESS].value=aircraftPropeller?.41f:.36f;
     }
     const float metal=surface.maps[MATERIAL_MAP_METALNESS].value,rough=surface.maps[MATERIAL_MAP_ROUGHNESS].value;
-    if(g.locHeroMetal>=0&&g.locHeroRoughness>=0&&(g.activeHeroMetal!=metal||g.activeHeroRoughness!=rough)){
+    if(visible&&g.locHeroMetal>=0&&g.locHeroRoughness>=0&&(g.activeHeroMetal!=metal||g.activeHeroRoughness!=rough)){
         rlDrawRenderBatchActive();SetShaderValue(g.worldShader,g.locHeroMetal,&metal,SHADER_UNIFORM_FLOAT);SetShaderValue(g.worldShader,g.locHeroRoughness,&rough,SHADER_UNIFORM_FLOAT);
         g.activeHeroMetal=metal;g.activeHeroRoughness=rough;
     }
-    DrawMesh(model.meshes[index],surface,model.transform);
+    // CPU map overrides above remain in order even for rejected components:
+    // legacy materials share map storage. Cached GPU values track only uploads.
+    if(visible)DrawMesh(model.meshes[index],surface,model.transform);
 }
 void DrawGaugeTick(float x,float y,float z,float angle,float radius,float length,Color color,float thickness){
     const Vector3 outer=V(x,y+sinf(angle)*radius,z+cosf(angle)*radius);
@@ -4157,6 +4161,7 @@ void InitWorld(){
     LogEvent(g.locVehicleNormal>=0&&g.locVehicleRoughness>=0&&IsTextureValid(g.carNormalTex)&&IsTextureValid(g.planeNormalTex)&&IsTextureValid(g.heliNormalTex)&&IsTextureValid(g.carRoughnessTex)&&IsTextureValid(g.planeRoughnessTex)&&IsTextureValid(g.heliRoughnessTex)?"vehicle-detail-maps-ready":"vehicle-detail-maps-unavailable");
 }
 void ShutdownWorld(){
+    ClearMeshVisibilityCache();
     ShutdownPorsche();
     if(IsModelValid(g.terrain))UnloadModel(g.terrain);if(IsModelValid(g.road))UnloadModel(g.road);if(IsModelValid(g.waterMesh))UnloadModel(g.waterMesh);if(IsModelValid(g.waterMeshHigh))UnloadModel(g.waterMeshHigh);
     if(IsModelValid(g.cube))UnloadModel(g.cube);if(IsModelValid(g.concreteCube))UnloadModel(g.concreteCube);if(IsModelValid(g.detailSphere))UnloadModel(g.detailSphere);
