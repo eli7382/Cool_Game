@@ -21,7 +21,28 @@ interior roof point away from seams/vents against the authored roof height.
 It also checks restoration of the main camera matrices/framebuffer. This is
 limited depth-generation evidence, not a complete caster or shadow oracle.
 
-This callback is not yet connected to production Porsche shadow preparation.
-It does not currently change car lighting. The next stage needs a world-space
-shadow volume, receiver bindings, cache invalidation, independent GPU/ray
-receiver comparisons, rendered appearance review and performance measurement.
+Production integration
+----------------------
+
+The callback now feeds a separate world-space building map for each visible
+Porsche. It uses a 16 m orthographic span, 0.1–100 m depth range, and a camera
+40 m along the shared sun direction. High/low maps are 1024/512 square. The
+car shader samples the map on explicit texture unit 7, applies receiver-plane
+PCF using the existing self-shadow algorithm, and combines the two visibility
+terms with their minimum. The building-map binding is cleared after each car
+draw so it does not leak into other material passes or QA probes. Both map
+slots are released during shutdown.
+
+Maps currently regenerate on each preparation call. This avoids stale shadows
+from the moving safehouse door and sluice parts, but adds rendering work.
+Cache policy and frame time have not been validated. Building maps do not
+replace the separate car-caster maps used to shadow the ground.
+
+A receiver fixture compares the actual car shader at six exterior points
+against independent positive rays through the broad hangar core and roof
+boxes, away from narrow details. Three lit and three blocked points match
+exactly in the initial run. This finite fixture does not validate every PCF
+edge, all building details, vehicle body coverage or whole-scene appearance.
+Native appearance review near buildings and performance measurement remain
+required before considering this lighting work finished. Terrain, vegetation,
+debris and other vehicles are still outside this caster callback's scope.

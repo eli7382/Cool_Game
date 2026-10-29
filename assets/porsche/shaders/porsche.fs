@@ -20,6 +20,10 @@ uniform mat4 vehicleShadowMatrix;
 uniform vec3 shadowInfo; // inverse map width, world texel width, normalized depth bias
 uniform float shadowReady;
 uniform vec3 shadowProbeNormal;
+uniform sampler2D buildingShadow;
+uniform mat4 buildingShadowMatrix;
+uniform vec3 buildingShadowInfo;
+uniform float buildingShadowReady;
 uniform vec4 environmentRects[11]; // atlas gutter origin xy, content dimensions zw
 uniform vec2 environmentSize;
 uniform vec4 lightingProbe; // QA only: xyz direction/lookup coordinates, w mode
@@ -77,10 +81,10 @@ vec3 irradiance(vec3 n){return environment(n,1.0);}
 vec2 dfg(float nv,float rough){return texture(texture6,(vec2(clamp(nv,0.0,1.0),rough)*127.0+.5)/128.0).rg;}
 vec3 integratedSpecular(vec3 f0,vec2 brdf){vec3 energy=f0*brdf.x+brdf.y;return energy*(1.0+f0*(1.0/max(brdf.x+brdf.y,.001)-1.0));}
 vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.0,1.0);}
-float sunVisibility(vec3 position,vec3 normal){
-    if(shadowReady<.5)return 1.0;
-    vec3 light=normalize(vec3(.42,.88,-.28));float offset=shadowInfo.y*(.35+.8*(1.0-max(dot(normal,light),0.0)));
-    vec4 projected=vehicleShadowMatrix*vec4(position+normal*offset,1);vec3 coord=projected.xyz/projected.w*.5+.5;
+float mappedSunVisibility(sampler2D depthMap,mat4 matrix,vec3 info,float enabled,vec3 position,vec3 normal){
+    if(enabled<.5)return 1.0;
+    vec3 light=normalize(vec3(.42,.88,-.28));float offset=info.y*(.35+.8*(1.0-max(dot(normal,light),0.0)));
+    vec4 projected=matrix*vec4(position+normal*offset,1);vec3 coord=projected.xyz/projected.w*.5+.5;
     // Compare every PCF texel with the receiver plane at that texel, rather
     // than comparing sloped neighbouring depths with the centre depth.
     // Derivatives precede the per-fragment bounds branch.
@@ -89,11 +93,16 @@ float sunVisibility(vec3 position,vec3 normal){
     gradient=clamp(gradient,vec2(-16),vec2(16));
     if(any(lessThan(coord,vec3(0)))||any(greaterThan(coord,vec3(1))))return 1.0;
     float visible=0;for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){
-        vec2 sampleUV=(floor(coord.xy/shadowInfo.x)+vec2(x,y)+.5)*shadowInfo.x;
-        float receiverDepth=coord.z+dot(gradient,sampleUV-coord.xy)-shadowInfo.z;
-        visible+=receiverDepth<=texture(vehicleShadow,sampleUV).r?1.0:0.0;
+        vec2 sampleUV=(floor(coord.xy/info.x)+vec2(x,y)+.5)*info.x;
+        float receiverDepth=coord.z+dot(gradient,sampleUV-coord.xy)-info.z;
+        visible+=receiverDepth<=texture(depthMap,sampleUV).r?1.0:0.0;
     }
     return visible/9.0;
+}
+float sunVisibility(vec3 position,vec3 normal){
+    float self=mappedSunVisibility(vehicleShadow,vehicleShadowMatrix,shadowInfo,shadowReady,position,normal);
+    float building=mappedSunVisibility(buildingShadow,buildingShadowMatrix,buildingShadowInfo,buildingShadowReady,position,normal);
+    return min(self,building);
 }
 void main(){
     if(mirrorReady>.5){vec4 projected=mirrorMatrix*vec4(worldPosition,1);vec2 coord=projected.xy/projected.w;
