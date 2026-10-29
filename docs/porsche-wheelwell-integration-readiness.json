@@ -1,0 +1,63 @@
+{
+  "reviewed_at": "2026-10-29T08:15:50.761574+00:00",
+  "stage": "Front wheel-well candidate versus moving front assemblies and editable authoring round-trip",
+  "mechanism_clearance": {
+    "source_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+    "candidate_geometry_sha256": "8b4c92606411e02dc55cee66b27ed16afcd40a1dc520d94ba0a7db50f78656bf",
+    "poses": 135,
+    "moving_meshes": 59,
+    "morph_meshes": 2,
+    "poses_with_new_intersections": 0,
+    "limits": [
+      "Finite poses and triangle edge crossings; containment and coplanar overlap not covered",
+      "Only changed underbody faces compared against named front assemblies; baseline contacts are retained separately",
+      "Tire carcasses checked separately in the 405-pose sweep; unrelated parts excluded"
+    ]
+  },
+  "maximum_existing_triangle_pairs": 629,
+  "maximum_candidate_triangle_pairs": 0,
+  "authoring_transfer": {
+    "source_export_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+    "reviewed_export_sha256": "a27a4bd9efe5078d3234ce7313117b51d36023f92947b6e50c82d63470461027",
+    "authoring_candidate": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies/front-wheelwell-authoring-candidate.blend",
+    "split_normals_transferred": true,
+    "objects": [
+      {
+        "object": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+        "vertices": 2880,
+        "moved": 150
+      }
+    ],
+    "moved_source_vertices": 150,
+    "maximum_mapping_distance_m": 2.4575624024691933e-07,
+    "unmatched_vertices": 0,
+    "production_source_changed": false,
+    "limits": [
+      "Authoring transfer only; candidate export round-trip, other LODs and native integration still pending"
+    ],
+    "complete": false
+  },
+  "underbody_roundtrip": {
+    "reviewed_candidate_sha256": "a27a4bd9efe5078d3234ce7313117b51d36023f92947b6e50c82d63470461027",
+    "authoring_export_sha256": "3e71b0f50015096a302e16a6939d5e99834143e9a9478ded96b0153bf9f2666f",
+    "candidate_vertices": 3091,
+    "roundtrip_vertices": 3091,
+    "maximum_position_error_m": 1.228781191349344e-07,
+    "minimum_matched_normal_dot": 0.9999995620791594,
+    "scope": "Bidirectional world-space underbody vertex coverage and matching split normals; unrelated geometry and complete topology not compared",
+    "complete": false
+  },
+  "source_hashes": {
+    "scripts/build_front_mechanism_fixture.mjs": "c92b419d021fc184a2361274c00c00670cd382c29e17bc922d6e79e31eee6094",
+    "scripts/check_front_mechanism_clearance.py": "b3fdf516a0b7a5ac3a7ed1d88d0dc675f96f1760318157176c77b9013965a9ae",
+    "scripts/transfer_wheelwell_to_authoring.py": "e66d8b630a49b22760a347ee0d687308e807335f8e1919038507e4848200198d"
+  },
+  "fixture_sha256": "8e61d00cfd0274d63b725f5909f1d98586daae0836de04f3ba2db7b030bd1127",
+  "production_assets_changed": false,
+  "limits": [
+    "Round-trip proof covers the underbody; the fresh whole export is not promoted because other geometry/topology has not been compared",
+    "Source authoring candidate, all distance models and native game still require coordinated integration and regression",
+    "Finite selected triangle checks do not establish continuous full-vehicle clearance or final Forza-level visual fidelity"
+  ],
+  "complete": false
+}
