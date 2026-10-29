@@ -1,0 +1,106 @@
+{
+  "reviewed_at": "2026-10-29T11:12:05.470526+00:00",
+  "stage": "unpromoted front alignment and arch-opening studies",
+  "production_changed": false,
+  "promoted": false,
+  "clearance_comparison": [
+    {
+      "study": "arch-opening-baseline",
+      "report_sha256": "ba2001fc5760ad8bc7b3be3a84975e8f71781d31707e90915bee7cd1439552ca",
+      "poses": 165,
+      "intersection_poses": 90,
+      "intersection_triangle_pairs": 11084
+    },
+    {
+      "study": "arch-opening25",
+      "report_sha256": "e5f9fe1d5eabb21cb5a2ddb6771866879b38c4eef57ede21bf42f7ad068c1808",
+      "poses": 165,
+      "intersection_poses": 75,
+      "intersection_triangle_pairs": 3588
+    },
+    {
+      "study": "arch-opening40",
+      "report_sha256": "412b6cad41975acbe9778d29cd285e6c6af6522e624c7e1af4a92d8538724cac",
+      "poses": 165,
+      "intersection_poses": 36,
+      "intersection_triangle_pairs": 624
+    },
+    {
+      "study": "front-static-camber15",
+      "report_sha256": "abf40174fd8e6d4019b83cb417d6b771941251c5046eb9d93d3cde491009b50b",
+      "poses": 165,
+      "intersection_poses": 87,
+      "intersection_triangle_pairs": 8975
+    }
+  ],
+  "candidate_source_sha256": "fa669b712f83908a5580075735b3721ee9f426dfc40bcd9d69ff8fabf6b5695d",
+  "candidate_export_sha256": "4ad3ceec9c71e8e9a8d3acbb4778c3fbd3029169d7d56dc9ef19562c0fe3706e",
+  "front_static_camber_degrees": -1.5,
+  "hub_centres_preserved": true,
+  "wishbone_outer_end_maximum_adjustment_m": 0.004045078470817033,
+  "joint_frame_evidence": {
+    "passed": true,
+    "experimental_front_carrier_rest_correction": {
+      "poses": 45,
+      "max_joint_gap_m": 1.2223073999440811e-07,
+      "max_travel_error_m": 9.209004850352365e-09,
+      "max_residual_m": 9.479315221661011e-09,
+      "max_tie_error_m": 1.1102230246251565e-16,
+      "helper_sha256": "0fb39b5a1492d44384e117c30807c4944e03b1ed3a46c10f9b4d318e455c740b",
+      "export_sha256": "4ad3ceec9c71e8e9a8d3acbb4778c3fbd3029169d7d56dc9ef19562c0fe3706e"
+    },
+    "unmodified_runtime_negative_control": {
+      "poses": 45,
+      "max_joint_gap_m": 0.0021326643965728985,
+      "max_travel_error_m": 0.00023751128525369147,
+      "max_residual_m": 9.479315221661011e-09,
+      "max_tie_error_m": 1.1102230246251565e-16,
+      "helper_sha256": "6e1f8db3e6964e8d651a19994dfb24cf038487fdb32de846d07ccb14d2cfe366",
+      "export_sha256": "4ad3ceec9c71e8e9a8d3acbb4778c3fbd3029169d7d56dc9ef19562c0fe3706e"
+    },
+    "limits": [
+      "Candidate source and experimental JS solver only; native implementation unchanged",
+      "Finite joint tests do not prove geometry clearance or OEM alignment accuracy"
+    ],
+    "complete": false
+  },
+  "images": [
+    {
+      "path": "screenshots/porsche-front-alignment-study-production.png",
+      "sha256": "71872aa3e62ca73bf25f26915aebc532ef38912626c9d3825f7f02360a58d2b1",
+      "scope": "Cycles diagnostic rest view of actual exported geometry, not native game capture"
+    },
+    {
+      "path": "screenshots/porsche-front-alignment-study-camber15.png",
+      "sha256": "16580ee27a8e6839f9245f1db0d68b84e026b07d12be48eacd737b2093468a8a",
+      "scope": "Cycles diagnostic rest view of actual exported geometry, not native game capture"
+    }
+  ],
+  "reference": {
+    "url": "https://static.oemdtc.com/NHTSA-PDFs/MC-11027274-0001.pdf",
+    "author": "Porsche Cars North America",
+    "document": "11/24 ENU 0913: 911 992 GT3 RS Manthey Racing Kit, revised Dec 17 2025",
+    "pages": [
+      58,
+      59
+    ],
+    "delivery_camber_degrees": -1.5,
+    "circuit_camber_degrees": -2.75,
+    "scope": "Specific Manthey kit alignment tables; not a stock-car CAD or all-vehicle setup claim"
+  },
+  "decisions": [
+    "Keep 25 mm and 40 mm radial arch-opening edits diagnostic: neither clears all sampled poses and they alter the reference body shape.",
+    "Keep front-only 1.5-degree alignment candidate outside production: joints are coherent with the experimental helper, but painted-body contact remains.",
+    "Do not promote experimental front carrier-rest correction until matched native support, unchanged-baseline regression and broader physical clearance are verified."
+  ],
+  "visual_observations": [
+    "Matched views retain white paint, red wheels and gold caliper; the tilted front assembly has a subtle inward top edge.",
+    "The resting candidate does not demonstrate compressed or steered fit."
+  ],
+  "remaining": [
+    "Front tire/fender swept clearance, neighboring suspension/hardware clearance and the full rear alignment remain unverified.",
+    "Candidate full re-export also removes legacy degenerate triangles; any later promotion needs a scoped preservation review.",
+    "Final Forza-level visual fidelity, frame rate and GitHub publication remain incomplete."
+  ],
+  "complete": false
+}
