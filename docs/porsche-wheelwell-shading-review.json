@@ -1,0 +1,52 @@
+{
+  "input_sha256": "8b4c92606411e02dc55cee66b27ed16afcd40a1dc520d94ba0a7db50f78656bf",
+  "output_sha256": "a27a4bd9efe5078d3234ce7313117b51d36023f92947b6e50c82d63470461027",
+  "repairs": [
+    {
+      "affected_normals": 294,
+      "changed_faces": 190,
+      "meaningful_original_faces_inverted": 0,
+      "near_degenerate_original_changed_faces": 2,
+      "minimum_changed_area_m2": 0.0005110101423175663,
+      "maximum_frame_rotation_rad": 1.8630752997263795,
+      "tangents_repaired": true
+    }
+  ],
+  "method": "Rotate authored split normals and tangents by the change in area-weighted adjacent geometric normal; preserve existing shading splits",
+  "production_assets_changed": false,
+  "complete": false,
+  "reviewed_at": "2026-10-29T08:06:43.513104+00:00",
+  "positions_identical_to_405_pose_candidate": true,
+  "neighbor_review": {
+    "source_export_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+    "candidate_export_sha256": "8b4c92606411e02dc55cee66b27ed16afcd40a1dc520d94ba0a7db50f78656bf",
+    "changed_underbody_triangles": 190,
+    "unchanged_exterior_triangles": 2134,
+    "existing_changed_triangle_contact_pairs": 0,
+    "candidate_changed_triangle_contact_pairs": 0,
+    "new_contact_pairs": 0,
+    "samples": [],
+    "limits": [
+      "Static selected exterior surfaces only; suspension, self-intersection, containment and coplanar overlap excluded",
+      "Existing seam contacts are compared by stable triangle indices"
+    ],
+    "complete": false
+  },
+  "render_review": {
+    "views": [
+      "renders/wheelwell-close.png",
+      "renders/wheelwell-front.png"
+    ],
+    "image_hashes": {
+      "renders/wheelwell-close.png": "7824b87ba43c2c993ea59814a328b293cd43412380fc5a921d1ed3764939c50b",
+      "renders/wheelwell-front.png": "5a156673285b293b538c6a2e04419a209a61dd7132a22c5f0a1ccc33a19c2dc1"
+    },
+    "observation": "At rest, no visible wheel-well protrusion or obvious new exterior crease in these two views. Studio diagnostic lighting; not final game appearance.",
+    "limits": [
+      "Rest views do not establish appearance at every pose",
+      "Upper inner cavity is partly occluded by the tire",
+      "Other moving suspension parts still need a neighboring-clearance check"
+    ]
+  },
+  "next_action": "Check full neighboring front suspension assembly over the intended poses before updating source authoring, all LODs and native game assets"
+}
