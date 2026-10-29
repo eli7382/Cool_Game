@@ -1,0 +1,129 @@
+{
+  "reviewed_at": "2026-10-29T09:58:17.063528+00:00",
+  "scope_correction": "The previous selected-body tire sweeps omitted the main Carrara white painted shell. Those results establish only their recorded selected surfaces, not full painted-fender clearance.",
+  "current_levels": [
+    {
+      "level": "hero",
+      "export_sha256": "024324e72af6090d49503aad05bd4f0a7a319c751bc4237b0b292720006cc421",
+      "poses": 675,
+      "symmetric_poses": 405,
+      "asymmetric_poses": 270,
+      "poses_with_intersections": 355,
+      "fixed_body_triangles": 38230,
+      "body_meshes": [
+        "Runtime__Door_L__Carrara white | physical clearcoat",
+        "Runtime__Door_R__Carrara white | physical clearcoat",
+        "Front aero flap_L",
+        "Front aero flap_R",
+        "Runtime__CarRoot__Carrara white | physical clearcoat",
+        "TwiXeR_992_body.005_TwiXeR_992_carPaint.008_0",
+        "TwiXeR_992_gt3rs_carbon_roof_TwiXeR_992_carbon_roof.001_0",
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+        "TwiXeR_992_gt3rs_carbon_Wing_TwiXeR_992_carbon_roof.001_0"
+      ],
+      "contacts_by_body": {
+        "Runtime__CarRoot__Carrara white | physical clearcoat": 41592
+      },
+      "report_sha256": "7e78ad74a55283e6af81cc61709c4e60fc686b89d4da985732745cd0a6706ae8"
+    },
+    {
+      "level": "near",
+      "export_sha256": "9ebcc19692aa700fafa2ccb5bff647498964bc11a35e6fbaaa361a857d10ed28",
+      "poses": 675,
+      "symmetric_poses": 405,
+      "asymmetric_poses": 270,
+      "poses_with_intersections": 240,
+      "fixed_body_triangles": 37889,
+      "body_meshes": [
+        "Runtime__Door_L__Carrara white | physical clearcoat",
+        "Runtime__Door_R__Carrara white | physical clearcoat",
+        "Front aero flap_L",
+        "Front aero flap_R",
+        "Runtime__CarRoot__Carrara white | physical clearcoat",
+        "TwiXeR_992_body.005_TwiXeR_992_carPaint.008_0",
+        "TwiXeR_992_gt3rs_carbon_roof_TwiXeR_992_carbon_roof.001_0",
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+        "TwiXeR_992_gt3rs_carbon_Wing_TwiXeR_992_carbon_roof.001_0"
+      ],
+      "contacts_by_body": {
+        "Runtime__CarRoot__Carrara white | physical clearcoat": 760
+      },
+      "report_sha256": "f8ddbe07e6550463c1d2fb7cae03d30348f7c5840fd358c1e3665fd52eb25f28"
+    },
+    {
+      "level": "far",
+      "export_sha256": "765598e0f325ec62c88f0170ead5955d525c00ef938b58874da3243270646e3d",
+      "poses": 675,
+      "symmetric_poses": 405,
+      "asymmetric_poses": 270,
+      "poses_with_intersections": 240,
+      "fixed_body_triangles": 37752,
+      "body_meshes": [
+        "Runtime__Door_L__Carrara white | physical clearcoat",
+        "Runtime__Door_R__Carrara white | physical clearcoat",
+        "Front aero flap_L",
+        "Front aero flap_R",
+        "Runtime__CarRoot__Carrara white | physical clearcoat",
+        "TwiXeR_992_body.005_TwiXeR_992_carPaint.008_0",
+        "TwiXeR_992_gt3rs_carbon_roof_TwiXeR_992_carbon_roof.001_0",
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+        "TwiXeR_992_gt3rs_carbon_Wing_TwiXeR_992_carbon_roof.001_0"
+      ],
+      "contacts_by_body": {
+        "Runtime__CarRoot__Carrara white | physical clearcoat": 576
+      },
+      "report_sha256": "fbfdd4a64d6e3dcba9861e5467914ff21061072863051ebb2674b437acd33dcb"
+    }
+  ],
+  "total_poses": 2025,
+  "total_intersecting_poses": 835,
+  "alignment_diagnostics": [
+    {
+      "added_camber_degrees": 2,
+      "frame": "Prototype body-Z rotation of carcass matrices only",
+      "poses": 675,
+      "intersecting_poses": 345,
+      "production_change": false
+    },
+    {
+      "added_camber_degrees": 4,
+      "frame": "Steering-carrier local Z before wheel spin; carcass matrices only",
+      "poses": 675,
+      "intersecting_poses": 335,
+      "production_change": false
+    }
+  ],
+  "contact_diagnostic": {
+    "steering_rad": 0,
+    "front_compression_m": 0.05,
+    "distinct_contact_body_triangles": 100,
+    "normal_bins": {
+      "mixed": 22,
+      "X": 66,
+      "Y": 12
+    },
+    "note": "Intersections occur at the arch lip/return region; the current inward camber gain is small. Root cause and a complete mechanical correction remain to be resolved."
+  },
+  "render": {
+    "path": "Porsche_911/renders/painted-arch-compressed.png",
+    "sha256": "ce7d71e4c7c32ebc9137dafa80ec99aa389bb761a29ac9ea9d92ef4af87d225b",
+    "pose": "Symmetric +50 mm front compression, zero steering; complete imported node pose transferred from the source adapter",
+    "lighting": "Diagnostic studio render, not final native game appearance"
+  },
+  "source_hashes": {
+    "scripts/build_tire_clearance_fixture.mjs": "28e0c05d05eb1a9eb322e0ec0fa8b6fb23871e6b03aa18d45be4416a78226534",
+    "scripts/check_front_tire_clearance.py": "dfb5eee6333b9b3c68f6d92000086d6d57eba8ad9ee534a7ec262056280c81fc",
+    "scripts/inspect_painted_arch_contacts.py": "d1f639be4e9bab73d6c6b1c5e09e1b62f0c10554d00001f89cffbd42646a25a6",
+    "scripts/inspect_front_camber.mjs": "ea408f8b8b7118fd23451514443251993766cc4803735667bee4a1f27fc9bc52",
+    "scripts/export_painted_arch_pose.mjs": "c5592c0458d1d05770393b5b1cbfe39cebf6dcb206c455d9883bf3790c2b9085",
+    "scripts/render_painted_arch_pose.py": "0256b1fdcba9f3c326b5d6adaa40fdb457b91df1ccd6658ff9ae6eac4ebb69de"
+  },
+  "production_assets_changed": false,
+  "next_action": "Develop a realizable front-assembly/inner-arch correction, retaining nominal tire dimensions, visible exterior shape and intended travel. Alignment-only probes are not accepted.",
+  "limits": [
+    "Finite poses and triangle edge crossings, not continuous clearance, containment or coplanar overlap proof",
+    "Front carcasses only; doors remain closed, rear tires and other parts need separate coverage",
+    "Alignment probes do not modify the hub, brake or suspension geometry and are not production fixes"
+  ],
+  "complete": false
+}
