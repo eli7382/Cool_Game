@@ -1,0 +1,408 @@
+{
+  "production_assets_updated": true,
+  "promotion": {
+    "production_changed": true,
+    "files": [
+      {
+        "file": "Porsche_911_GT3RS_Development.blend",
+        "before_sha256": "55afa3797cb57443fb0f75e9940a1406c82148132198e55030850e7b6d261381",
+        "sha256": "97b53d8c595b21e7beb4830b0e22d3c71b18dd32559c21dbe81794fdfedd38a7"
+      },
+      {
+        "file": "exports\\Porsche_911_GT3RS_Development.glb",
+        "before_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
+        "sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2"
+      },
+      {
+        "file": "Porsche_911_GT3RS_DetailCandidate.blend",
+        "before_sha256": "45500cd07ff1a9e1e740ae644b181c93ec2f2b18f90f73888dfed8322f8648e8",
+        "sha256": "6857b11febff17cdd98c7d972bf9ef6340f98e173fb2bb0fa5fdda811656e826"
+      },
+      {
+        "file": "exports\\Porsche_911_GT3RS_DetailCandidate.glb",
+        "before_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
+        "sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2"
+      },
+      {
+        "file": "studies\\runtime-lods\\Porsche_911_GT3RS_LOD1.blend",
+        "before_sha256": "2155aecaa7cc98c5e0ed92562f603da26abe93484d3016e7d11dbe8baa22d9bf",
+        "sha256": "60e1c499865af163c547959ee5762fa98e22047a39195f13cdcd16256e999e2a"
+      },
+      {
+        "file": "exports\\Porsche_911_GT3RS_LOD1.glb",
+        "before_sha256": "3f220f0a220132f922dfde8de198a936e4d52795bc92c214241fd9043edc529e",
+        "sha256": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc"
+      },
+      {
+        "file": "studies\\runtime-lods\\Porsche_911_GT3RS_LOD2.blend",
+        "before_sha256": "61f3e572ac4f58e0dbbfe5ed85a021798ccf3b3f9a2f6a1088761a3736e7bfb3",
+        "sha256": "7e4723e189dcf0bc385b5d7eac6cd6b52c7355e6674b4e7a65ed22b7fbad0d6f"
+      },
+      {
+        "file": "exports\\Porsche_911_GT3RS_LOD2.glb",
+        "before_sha256": "0ddf51ef62b1989c6cb3e81c69a8043114c571cee6c5736c599b042bcc863c22",
+        "sha256": "279811ec86c10b6d5f026a578f3ef3ef0a318b9c62c4e9b1556f720042235ea2"
+      }
+    ],
+    "backup": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Porsche_911\\studies\\baseline-before-fixed-wing-carbon",
+    "hero_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+    "scope": "1008 fixed-wing triangles reassigned to existing carbon at all detail levels; no geometry or moving-rig changes",
+    "remaining": [
+      "Refresh game assets and compiled metadata",
+      "Post-promotion native hidden regression",
+      "Front tire/fender interference",
+      "Final visual/performance review",
+      "GitHub write access and delivery"
+    ],
+    "complete": false
+  },
+  "export_scope": {
+    "passed": true,
+    "levels": [
+      {
+        "level": "Development",
+        "source_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
+        "candidate_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+        "all_original_nodes_and_rig_frames_preserved": true,
+        "lod_derivation_bound_to_staged_hero": false,
+        "original_materials_images_accessors_and_binary_prefix_preserved": true,
+        "nonwing_geometry_normals_uv0_tangents_and_material_assignments_preserved": true,
+        "body_plus_wing_triangle_corner_attributes_exactly_preserved_except_detail_uv": true,
+        "changed_material_triangles": 1008
+      },
+      {
+        "level": "DetailCandidate",
+        "source_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
+        "candidate_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+        "all_original_nodes_and_rig_frames_preserved": true,
+        "lod_derivation_bound_to_staged_hero": false,
+        "original_materials_images_accessors_and_binary_prefix_preserved": true,
+        "nonwing_geometry_normals_uv0_tangents_and_material_assignments_preserved": true,
+        "body_plus_wing_triangle_corner_attributes_exactly_preserved_except_detail_uv": true,
+        "changed_material_triangles": 1008
+      },
+      {
+        "level": "LOD1",
+        "source_sha256": "3f220f0a220132f922dfde8de198a936e4d52795bc92c214241fd9043edc529e",
+        "candidate_sha256": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc",
+        "all_original_nodes_and_rig_frames_preserved": true,
+        "lod_derivation_bound_to_staged_hero": true,
+        "original_materials_images_accessors_and_binary_prefix_preserved": true,
+        "nonwing_geometry_normals_uv0_tangents_and_material_assignments_preserved": true,
+        "body_plus_wing_triangle_corner_attributes_exactly_preserved_except_detail_uv": true,
+        "changed_material_triangles": 1008
+      },
+      {
+        "level": "LOD2",
+        "source_sha256": "0ddf51ef62b1989c6cb3e81c69a8043114c571cee6c5736c599b042bcc863c22",
+        "candidate_sha256": "279811ec86c10b6d5f026a578f3ef3ef0a318b9c62c4e9b1556f720042235ea2",
+        "all_original_nodes_and_rig_frames_preserved": true,
+        "lod_derivation_bound_to_staged_hero": true,
+        "original_materials_images_accessors_and_binary_prefix_preserved": true,
+        "nonwing_geometry_normals_uv0_tangents_and_material_assignments_preserved": true,
+        "body_plus_wing_triangle_corner_attributes_exactly_preserved_except_detail_uv": true,
+        "changed_material_triangles": 1008
+      }
+    ],
+    "production_changed": false,
+    "limits": [
+      "Triangle scope and data preservation, not appearance or native-runtime validation",
+      "Source Blender/LOD authoring consistency still needs integration checks"
+    ]
+  },
+  "editable_sources": [
+    {
+      "passed": true,
+      "level": "Development",
+      "source_sha256": "55afa3797cb57443fb0f75e9940a1406c82148132198e55030850e7b6d261381",
+      "candidate_sha256": "97b53d8c595b21e7beb4830b0e22d3c71b18dd32559c21dbe81794fdfedd38a7",
+      "objects_compared": 1838,
+      "fixed_wing_polygons": 1008,
+      "all_objects_geometry_corner_normals_uv0_topology_morphs_transforms_and_properties_preserved": true,
+      "only_material_slot_changed": "TwiXeR_992_gt3rs_carbon_Wing_TwiXeR_992_carPaint.003_0",
+      "allowed_changes": [
+        "Fixed wing material slot and close-detail DetailUV",
+        "Low-detail CarRoot derivation digest"
+      ],
+      "scope": "Editable object state; export/native data and final appearance require separate checks"
+    },
+    {
+      "passed": true,
+      "level": "DetailCandidate",
+      "source_sha256": "45500cd07ff1a9e1e740ae644b181c93ec2f2b18f90f73888dfed8322f8648e8",
+      "candidate_sha256": "6857b11febff17cdd98c7d972bf9ef6340f98e173fb2bb0fa5fdda811656e826",
+      "objects_compared": 1838,
+      "fixed_wing_polygons": 1008,
+      "all_objects_geometry_corner_normals_uv0_topology_morphs_transforms_and_properties_preserved": true,
+      "only_material_slot_changed": "TwiXeR_992_gt3rs_carbon_Wing_TwiXeR_992_carPaint.003_0",
+      "allowed_changes": [
+        "Fixed wing material slot and close-detail DetailUV",
+        "Low-detail CarRoot derivation digest"
+      ],
+      "scope": "Editable object state; export/native data and final appearance require separate checks"
+    },
+    {
+      "passed": true,
+      "level": "LOD1",
+      "source_sha256": "2155aecaa7cc98c5e0ed92562f603da26abe93484d3016e7d11dbe8baa22d9bf",
+      "candidate_sha256": "60e1c499865af163c547959ee5762fa98e22047a39195f13cdcd16256e999e2a",
+      "objects_compared": 889,
+      "fixed_wing_polygons": 1008,
+      "all_objects_geometry_corner_normals_uv0_topology_morphs_transforms_and_properties_preserved": true,
+      "only_material_slot_changed": "TwiXeR_992_gt3rs_carbon_Wing_TwiXeR_992_carPaint.003_0",
+      "allowed_changes": [
+        "Fixed wing material slot and close-detail DetailUV",
+        "Low-detail CarRoot derivation digest"
+      ],
+      "scope": "Editable object state; export/native data and final appearance require separate checks"
+    },
+    {
+      "passed": true,
+      "level": "LOD2",
+      "source_sha256": "61f3e572ac4f58e0dbbfe5ed85a021798ccf3b3f9a2f6a1088761a3736e7bfb3",
+      "candidate_sha256": "7e4723e189dcf0bc385b5d7eac6cd6b52c7355e6674b4e7a65ed22b7fbad0d6f",
+      "objects_compared": 889,
+      "fixed_wing_polygons": 1008,
+      "all_objects_geometry_corner_normals_uv0_topology_morphs_transforms_and_properties_preserved": true,
+      "only_material_slot_changed": "TwiXeR_992_gt3rs_carbon_Wing_TwiXeR_992_carPaint.003_0",
+      "allowed_changes": [
+        "Fixed wing material slot and close-detail DetailUV",
+        "Low-detail CarRoot derivation digest"
+      ],
+      "scope": "Editable object state; export/native data and final appearance require separate checks"
+    }
+  ],
+  "export_audits": [
+    {
+      "level": "Development",
+      "sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+      "checks": 64,
+      "failures": []
+    },
+    {
+      "level": "DetailCandidate",
+      "sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+      "checks": 64,
+      "failures": []
+    },
+    {
+      "level": "LOD1",
+      "sha256": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc",
+      "checks": 64,
+      "failures": []
+    },
+    {
+      "level": "LOD2",
+      "sha256": "279811ec86c10b6d5f026a578f3ef3ef0a318b9c62c4e9b1556f720042235ea2",
+      "checks": 64,
+      "failures": []
+    }
+  ],
+  "native_assets": {
+    "passed": true,
+    "checker_sha256": "3d6a0d42b05ee555843e7ec872f24f17068f2d10b824b768f0a07dd0b02a6103",
+    "levels": [
+      {
+        "source_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+        "runtime_sha256": "f73ce856e7fe2ac3c855f4ff57553bf27d5330398f47a9a8e9153d8b60a92006",
+        "triangles_compared": 699758,
+        "primitives_checked": 312,
+        "morph_targets_checked": 8,
+        "embedded_images_verified": 52,
+        "maximum_vertices_per_primitive": 60000,
+        "attributes_targets_winding_hierarchy_materials_images_retained": true,
+        "level": "hero"
+      },
+      {
+        "source_sha256": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc",
+        "runtime_sha256": "37f4c899dc0f05aaabf5b36a6c52b0bc3ee54327464da542227cd587c1106a38",
+        "triangles_compared": 226176,
+        "primitives_checked": 314,
+        "morph_targets_checked": 8,
+        "embedded_images_verified": 27,
+        "maximum_vertices_per_primitive": 27961,
+        "attributes_targets_winding_hierarchy_materials_images_retained": true,
+        "level": "near"
+      },
+      {
+        "source_sha256": "279811ec86c10b6d5f026a578f3ef3ef0a318b9c62c4e9b1556f720042235ea2",
+        "runtime_sha256": "5d4a169381ad3f170b5d4e6aefceb6e6cfbf750b343937295e14975b70aac3ab",
+        "triangles_compared": 163440,
+        "primitives_checked": 313,
+        "morph_targets_checked": 8,
+        "embedded_images_verified": 27,
+        "maximum_vertices_per_primitive": 14658,
+        "attributes_targets_winding_hierarchy_materials_images_retained": true,
+        "level": "far"
+      }
+    ],
+    "limits": [
+      "Exact source triangle-corner data comparison; native renderer, animation, collision and performance need separate tests"
+    ]
+  },
+  "detail_switching": {
+    "passed": true,
+    "checks": 15,
+    "rest_matrix_max_error": 4.440892098500626E-16,
+    "hero_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+    "variants": {
+      "hero": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+      "near": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc",
+      "far": "279811ec86c10b6d5f026a578f3ef3ef0a318b9c62c4e9b1556f720042235ea2"
+    },
+    "wrapper_sha256": "50b32f5816aa3a2e188230c5fae849e5c8d1c0e065dedfc2add6388cb599925b",
+    "limits": [
+      "Actual exported geometry and controls; textures replaced by fixture materials",
+      "GPU uploads and visual transitions require browser review"
+    ]
+  },
+  "protected_surfaces": {
+    "passed": true,
+    "hero_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+    "variants": {
+      "hero": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+      "near": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc",
+      "far": "279811ec86c10b6d5f026a578f3ef3ef0a318b9c62c4e9b1556f720042235ea2"
+    },
+    "results": [
+      {
+        "level": "near",
+        "material": "Carrara white | physical clearcoat",
+        "unique_points": 17811,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "near",
+        "material": "Carbon | 2x2 twill under clear resin",
+        "unique_points": 1476,
+        "maximum_position_error_m": 0,
+        "maximum_normal_angle_degrees": 0
+      },
+      {
+        "level": "near",
+        "material": "Red GT3 RS graphics",
+        "unique_points": 10252,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "near",
+        "material": "GT3 RS white lettering",
+        "unique_points": 8395,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "near",
+        "material": "Glazing | thin laminated green glass",
+        "unique_points": 2198,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "near",
+        "material": "Headlamp | clear optical cover",
+        "unique_points": 420,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "near",
+        "material": "Mirror | silvered glass L",
+        "unique_points": 52,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "near",
+        "material": "Mirror | silvered glass R",
+        "unique_points": 52,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "near",
+        "material": "Mirror | silvered glass Interior",
+        "unique_points": 16,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "far",
+        "material": "Carrara white | physical clearcoat",
+        "unique_points": 17811,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "far",
+        "material": "Carbon | 2x2 twill under clear resin",
+        "unique_points": 1476,
+        "maximum_position_error_m": 0,
+        "maximum_normal_angle_degrees": 0
+      },
+      {
+        "level": "far",
+        "material": "Red GT3 RS graphics",
+        "unique_points": 10252,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "far",
+        "material": "GT3 RS white lettering",
+        "unique_points": 8395,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "far",
+        "material": "Glazing | thin laminated green glass",
+        "unique_points": 2198,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "far",
+        "material": "Headlamp | clear optical cover",
+        "unique_points": 420,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "far",
+        "material": "Mirror | silvered glass L",
+        "unique_points": 52,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "far",
+        "material": "Mirror | silvered glass R",
+        "unique_points": 52,
+        "maximum_position_error_m": 0
+      },
+      {
+        "level": "far",
+        "material": "Mirror | silvered glass Interior",
+        "unique_points": 16,
+        "maximum_position_error_m": 0
+      }
+    ],
+    "limits": [
+      "Protected surface positions only; does not certify final material appearance or every simplified part"
+    ]
+  },
+  "hidden_native": {
+    "passed": true,
+    "checks": 149,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 1.72295E-07,
+    "maximum_radial_drift_m": 4.98954E-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656E-07,
+    "reference_nodes_compared": 2572,
+    "accelerated_speed_mps": 12.0373,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "executable_sha256": "ad10814e10a41125ec6820ff1201021f7c330936f3532d95afffd78d284a8a2c",
+  "complete": false,
+  "limits": [
+    "Finish and regression validation, not full-goal completion",
+    "Front tire/fender interference remains unresolved",
+    "Final quality/performance review and GitHub delivery remain open"
+  ]
+}

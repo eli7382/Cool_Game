@@ -6,7 +6,11 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#ifdef BW_PORSCHE_ASSET_HEADER
+#include BW_PORSCHE_ASSET_HEADER
+#else
 #include "porsche_asset_data.hpp"
+#endif
 
 namespace bw {
 struct Vehicle;

@@ -1,9 +1,9 @@
 {
   "level": "near",
-  "source_sha256": "3f220f0a220132f922dfde8de198a936e4d52795bc92c214241fd9043edc529e",
-  "runtime_sha256": "3cd1de2b07e3472d7e092f99ef6681b39fb1a0aa79da749baec230a631f0dca4",
+  "source_sha256": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc",
+  "runtime_sha256": "37f4c899dc0f05aaabf5b36a6c52b0bc3ee54327464da542227cd587c1106a38",
   "triangles": 226176,
-  "raylib_meshes": 313,
+  "raylib_meshes": 314,
   "additional_primitives": 0,
   "maximum_vertices_per_primitive": 27961,
   "nodes": [
@@ -20852,7 +20852,7 @@
         "exterior_carbon_revision": "Bounded physical twill projection; smooth independent resin above the buried weave",
         "front_cooling_revision": "Fitted diamond protective screen and metre-scaled recessed radiator fins",
         "runtime_lod": 1,
-        "derived_from_export_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
+        "derived_from_export_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
         "lod_purpose": "Near gameplay",
         "wheelwell_revision": "Reviewed full-resolution underbody retained for consistent front tire clearance across distance variants"
       }
@@ -21317,6 +21317,50 @@
           0.11
         ],
         "typography": "Barlow Bold, SIL OFL; visual approximation, not FE-Schrift master"
+      }
+    },
+    {
+      "name": "FixedWing_Carbon_Mainplane",
+      "parent": 488,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -3.029462689596585e-07,
+        -0.9999999657714298,
+        0.0,
+        0.0,
+        0.9999999657714298,
+        -3.029462689596585e-07,
+        0.0,
+        0.013430243358016014,
+        0.7881028652191162,
+        -0.36222904920578003,
+        1.0
+      ],
+      "world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -3.029462689596585e-07,
+        -0.9999999657714298,
+        0.0,
+        0.0,
+        0.9999999657714298,
+        -3.029462689596585e-07,
+        0.0,
+        0.013430243358016014,
+        0.7881028652191162,
+        -0.36222904920578003,
+        1.0
+      ],
+      "extras": {
+        "reference_part": "TwiXeR_992_gt3rs_carbon_Wing",
+        "finish_revision": "Fixed plane uses existing exterior carbon; positions/normals/UV0 preserved from runtime export"
       }
     }
   ],
@@ -21969,7 +22013,7 @@
     {
       "node": 208,
       "material": 14,
-      "vertices": 15567
+      "vertices": 14658
     },
     {
       "node": 209,
@@ -22885,6 +22929,11 @@
       "node": 498,
       "material": 107,
       "vertices": 144
+    },
+    {
+      "node": 500,
+      "material": 28,
+      "vertices": 3024
     }
   ],
   "materials": [

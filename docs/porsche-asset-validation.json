@@ -3,10 +3,10 @@
   "checker_sha256": "3d6a0d42b05ee555843e7ec872f24f17068f2d10b824b768f0a07dd0b02a6103",
   "levels": [
     {
-      "source_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
-      "runtime_sha256": "65199bb6bfc5159152078b101d1e3d0beb5f367e7637cbc2ad12ccc99d4dba47",
+      "source_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+      "runtime_sha256": "f73ce856e7fe2ac3c855f4ff57553bf27d5330398f47a9a8e9153d8b60a92006",
       "triangles_compared": 699758,
-      "primitives_checked": 311,
+      "primitives_checked": 312,
       "morph_targets_checked": 8,
       "embedded_images_verified": 52,
       "maximum_vertices_per_primitive": 60000,
@@ -14,10 +14,10 @@
       "level": "hero"
     },
     {
-      "source_sha256": "3f220f0a220132f922dfde8de198a936e4d52795bc92c214241fd9043edc529e",
-      "runtime_sha256": "3cd1de2b07e3472d7e092f99ef6681b39fb1a0aa79da749baec230a631f0dca4",
+      "source_sha256": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc",
+      "runtime_sha256": "37f4c899dc0f05aaabf5b36a6c52b0bc3ee54327464da542227cd587c1106a38",
       "triangles_compared": 226176,
-      "primitives_checked": 313,
+      "primitives_checked": 314,
       "morph_targets_checked": 8,
       "embedded_images_verified": 27,
       "maximum_vertices_per_primitive": 27961,
@@ -25,13 +25,13 @@
       "level": "near"
     },
     {
-      "source_sha256": "0ddf51ef62b1989c6cb3e81c69a8043114c571cee6c5736c599b042bcc863c22",
-      "runtime_sha256": "bb60bb2c11529ae46ebc83cc346411de20ee9fed9ca7057929f8051df1e9ccfc",
+      "source_sha256": "279811ec86c10b6d5f026a578f3ef3ef0a318b9c62c4e9b1556f720042235ea2",
+      "runtime_sha256": "5d4a169381ad3f170b5d4e6aefceb6e6cfbf750b343937295e14975b70aac3ab",
       "triangles_compared": 163440,
-      "primitives_checked": 312,
+      "primitives_checked": 313,
       "morph_targets_checked": 8,
       "embedded_images_verified": 27,
-      "maximum_vertices_per_primitive": 15567,
+      "maximum_vertices_per_primitive": 14658,
       "attributes_targets_winding_hierarchy_materials_images_retained": true,
       "level": "far"
     }

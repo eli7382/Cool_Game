@@ -1,7 +1,11 @@
 #pragma once
 #include <memory>
 #include <span>
+#ifdef BW_PORSCHE_ASSET_HEADER
+#include BW_PORSCHE_ASSET_HEADER
+#else
 #include "porsche_asset_data.hpp"
+#endif
 namespace bw {
 class PorscheRig;
 struct PorscheControls;

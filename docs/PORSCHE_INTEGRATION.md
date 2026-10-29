@@ -27,6 +27,13 @@ texture bytes and moving assemblies are preserved. Near and far variants use
 lighter letter geometry; total triangle counts are 699,758 / 226,176 / 163,440.
 The plate uses an approximate Barlow typeface, not an OEM registration font.
 
+The fixed rear-wing plane now uses the existing exterior carbon finish,
+matching the dark wing in the approved white/red references. Its 1,008
+triangles are separated from the white body batch at each detail level; the
+moving upper flap, hinges and actuators retain their original geometry and
+frames. The editable sources and game assets share this finish. See
+`PORSCHE_FIXED_WING_FINISH.md` for the scope checks and hidden native regression.
+
 The white/red 992 GT3 RS now loads and drives in this native C++20/raylib 5.5
 game, alongside the existing pickup. Start a mission and walk to the white/red
 car beside the pickup at the base. Press E nearby to enter; E exits at low speed.

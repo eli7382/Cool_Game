@@ -1,9 +1,9 @@
 {
   "level": "hero",
-  "source_sha256": "4d22da63be601f44b83ed66ca8bc2648edc07922ce0ed3917cd68f6c433586a6",
-  "runtime_sha256": "65199bb6bfc5159152078b101d1e3d0beb5f367e7637cbc2ad12ccc99d4dba47",
+  "source_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+  "runtime_sha256": "f73ce856e7fe2ac3c855f4ff57553bf27d5330398f47a9a8e9153d8b60a92006",
   "triangles": 699758,
-  "raylib_meshes": 311,
+  "raylib_meshes": 312,
   "additional_primitives": 1,
   "maximum_vertices_per_primitive": 60000,
   "nodes": [
@@ -21351,6 +21351,50 @@
         ],
         "typography": "Barlow Bold, SIL OFL; visual approximation, not FE-Schrift master"
       }
+    },
+    {
+      "name": "FixedWing_Carbon_Mainplane",
+      "parent": 489,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -3.029462689596585e-07,
+        -0.9999999657714298,
+        0.0,
+        0.0,
+        0.9999999657714298,
+        -3.029462689596585e-07,
+        0.0,
+        0.013430243358016014,
+        0.7881028652191162,
+        -0.36222904920578003,
+        1.0
+      ],
+      "world": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -3.029462689596585e-07,
+        -0.9999999657714298,
+        0.0,
+        0.0,
+        0.9999999657714298,
+        -3.029462689596585e-07,
+        0.0,
+        0.013430243358016014,
+        0.7881028652191162,
+        -0.36222904920578003,
+        1.0
+      ],
+      "extras": {
+        "reference_part": "TwiXeR_992_gt3rs_carbon_Wing",
+        "finish_revision": "Fixed plane uses existing exterior carbon; positions/normals/UV0 preserved from runtime export"
+      }
     }
   ],
   "bindings": [
@@ -22012,7 +22056,7 @@
     {
       "node": 209,
       "material": 15,
-      "vertices": 18860
+      "vertices": 17833
     },
     {
       "node": 210,
@@ -22908,6 +22952,11 @@
       "node": 499,
       "material": 105,
       "vertices": 144
+    },
+    {
+      "node": 501,
+      "material": 29,
+      "vertices": 3024
     }
   ],
   "materials": [
