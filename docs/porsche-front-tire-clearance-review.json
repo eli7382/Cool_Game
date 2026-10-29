@@ -1,0 +1,3445 @@
+{
+  "export_sha256": "005dc4dc5f17692da38365dddf2983b94a9a69c6ed398a2a9a9eabd3b423b4d6",
+  "checker_sha256": "cc49fcfaa8c9931cfad6e58e226716189ad3ca3899c22645b4fb627bbe0aae43",
+  "fixture_sha256": "a1f302add8aeaf2c4960f408fcc7e12198e8acde9a0e1602fe884c709c6b9872",
+  "scope": "Source hero export posed by the production Three.js adapter; native meshes have separate equivalence evidence, not checked here",
+  "pose_count": 75,
+  "body_triangles": 4960,
+  "body_meshes": [
+    "Front aero flap_L",
+    "Front aero flap_R",
+    "TwiXeR_992_body.005_TwiXeR_992_carPaint.008_0",
+    "TwiXeR_992_gt3rs_carbon_roof_TwiXeR_992_carbon_roof.001_0",
+    "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+    "TwiXeR_992_gt3rs_carbon_Wing_TwiXeR_992_carbon_roof.001_0"
+  ],
+  "poses_with_intersections": 48,
+  "results": [
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 25,
+      "bvh_pairs": 25,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.571902871131897,
+            0.5497522950172424,
+            1.3818234205245972
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.568705677986145,
+            0.5417289733886719,
+            1.3880164623260498
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5718947052955627,
+            0.5502302050590515,
+            1.3812336921691895
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5640454888343811,
+            0.5355743169784546,
+            1.3830199241638184
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5640454888343811,
+            0.5355743169784546,
+            1.3830199241638184
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.567919909954071,
+            0.5532463192939758,
+            1.3539612293243408
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 25
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 26,
+      "bvh_pairs": 26,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.570717990398407,
+            0.5436367988586426,
+            1.387719988822937
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5701099038124084,
+            0.5430698394775391,
+            1.3878406286239624
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5718772411346436,
+            0.5501118898391724,
+            1.3812826871871948
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.570717990398407,
+            0.5436368584632874,
+            1.387719988822937
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5519218444824219,
+            0.5193803906440735,
+            1.369424819946289
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5670682787895203,
+            0.5566195249557495,
+            1.3383132219314575
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 26
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 28,
+      "bvh_pairs": 28,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5719008445739746,
+            0.5470143556594849,
+            1.384958028793335
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5718740820884705,
+            0.5500905513763428,
+            1.3812915086746216
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5719045996665955,
+            0.5465846657752991,
+            1.3854701519012451
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5718957781791687,
+            0.5459999442100525,
+            1.386098027229309
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.5687214136123657,
+            0.5417361259460449,
+            1.387988567352295
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.567177951335907,
+            0.5547361373901367,
+            1.3453621864318848
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 28
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 187,
+      "bvh_pairs": 187,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7916364073753357,
+            0.6062703132629395,
+            1.4570976495742798
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7822429537773132,
+            0.5955906510353088,
+            1.4721460342407227
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7865464687347412,
+            0.5978766083717346,
+            1.4665584564208984
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7868801355361938,
+            0.5984047055244446,
+            1.46596360206604
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7872163653373718,
+            0.5989606976509094,
+            1.4653369188308716
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7822429537773132,
+            0.5955906510353088,
+            1.4721460342407227
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 187
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 186,
+      "bvh_pairs": 186,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7931755185127258,
+            0.6088939309120178,
+            1.454138994216919
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7822072505950928,
+            0.5955803394317627,
+            1.4722081422805786
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7884894013404846,
+            0.6010268330574036,
+            1.4630087614059448
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7888534069061279,
+            0.6016378402709961,
+            1.4623198509216309
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7802181839942932,
+            0.5954711437225342,
+            1.4727678298950195
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7802181839942932,
+            0.5954711437225342,
+            1.4727678298950195
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 186
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 184,
+      "bvh_pairs": 184,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7904590368270874,
+            0.6043035984039307,
+            1.4593148231506348
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7849274277687073,
+            0.596103847026825,
+            1.4691067934036255
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7849274277687073,
+            0.596103847026825,
+            1.4691067934036255
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7896865606307983,
+            0.6030160784721375,
+            1.460766315460205
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7844702005386353,
+            0.5960162878036499,
+            1.46962571144104
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7629822492599487,
+            0.5945825576782227,
+            1.4772555828094482
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 184
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 542,
+      "bvh_pairs": 542,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8036180734634399,
+            0.6165226697921753,
+            1.4457107782363892
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8018313646316528,
+            0.6135081648826599,
+            1.4491097927093506
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7992756366729736,
+            0.6091960668563843,
+            1.4539718627929688
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7967262268066406,
+            0.6050834059715271,
+            1.4586056470870972
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7947275638580322,
+            0.6018591523170471,
+            1.4622385501861572
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7844821214675903,
+            0.595012366771698,
+            1.475894808769226
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 542
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 533,
+      "bvh_pairs": 533,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8050228953361511,
+            0.6189675331115723,
+            1.4429528713226318
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8007450699806213,
+            0.6116380095481873,
+            1.451219081878662
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8032815456390381,
+            0.6159839630126953,
+            1.4463176727294922
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7937411069869995,
+            0.6003484129905701,
+            1.4639391899108887
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7988433241844177,
+            0.6085245013237,
+            1.4547280073165894
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7962676286697388,
+            0.6043076515197754,
+            1.4594804048538208
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 533
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 535,
+      "bvh_pairs": 535,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7996445298194885,
+            0.6098458170890808,
+            1.4532387256622314
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7977834343910217,
+            0.6067529320716858,
+            1.4567252397537231
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7952422499656677,
+            0.6027130484580994,
+            1.4612760543823242
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7903051376342773,
+            0.5961052775382996,
+            1.4694286584854126
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7903051376342773,
+            0.5961052775382996,
+            1.4694286584854126
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7931624054908752,
+            0.5994064211845398,
+            1.4650007486343384
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 535
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 713,
+      "bvh_pairs": 713,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7891045808792114,
+            0.5951542854309082,
+            1.475292682647705
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7903985977172852,
+            0.5953918695449829,
+            1.4738887548446655
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7947288751602173,
+            0.5961869359016418,
+            1.4691909551620483
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8036484718322754,
+            0.6135426163673401,
+            1.4491236209869385
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7641398906707764,
+            0.590684711933136,
+            1.5016647577285767
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7617470622062683,
+            0.5902659296989441,
+            1.5041323900222778
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 713
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 720,
+      "bvh_pairs": 720,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7813252210617065,
+            0.5937458872795105,
+            1.4836081266403198
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7928152084350586,
+            0.5958317518234253,
+            1.4712908267974854
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7928152680397034,
+            0.5958317518234253,
+            1.4712908267974854
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8012595176696777,
+            0.6088936924934387,
+            1.4543761014938354
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.765237033367157,
+            0.5908817052841187,
+            1.5005019903182983
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7546023726463318,
+            0.5890113711357117,
+            1.511526107788086
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 720
+      }
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 723,
+      "bvh_pairs": 723,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7947100400924683,
+            0.5961815118789673,
+            1.4692238569259644
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7783896923065186,
+            0.5932226777076721,
+            1.4866943359375
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7852766513824463,
+            0.5944593548774719,
+            1.4793964624404907
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7874939441680908,
+            0.5948641300201416,
+            1.4770054817199707
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8024515509605408,
+            0.6112222075462341,
+            1.4517451524734497
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7686429023742676,
+            0.591484785079956,
+            1.496946096420288
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 723
+      }
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 128,
+      "bvh_pairs": 128,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8127375245094299,
+            0.6429975032806396,
+            1.4162381887435913
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8129400014877319,
+            0.6421354413032532,
+            1.417604684829712
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8151172995567322,
+            0.628132164478302,
+            1.437214970588684
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8144993185997009,
+            0.634028434753418,
+            1.4293934106826782
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8131904602050781,
+            0.6409680247306824,
+            1.4193073511123657
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8151172995567322,
+            0.628132164478302,
+            1.437214970588684
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 128
+      }
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 120,
+      "bvh_pairs": 120,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8148307204246521,
+            0.6307303309440613,
+            1.4337818622589111
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.81378173828125,
+            0.6382483243942261,
+            1.4233222007751465
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8123454451560974,
+            0.6447449326515198,
+            1.413582682609558
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8111264109611511,
+            0.6497779488563538,
+            1.4053759574890137
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8148307204246521,
+            0.6307303309440613,
+            1.4337818622589111
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8144489526748657,
+            0.6350858807563782,
+            1.4278643131256104
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 120
+      }
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 129,
+      "bvh_pairs": 129,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8116732835769653,
+            0.6475885510444641,
+            1.409049153327942
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8117436766624451,
+            0.6473067402839661,
+            1.4095220565795898
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8145402073860168,
+            0.6332879066467285,
+            1.4303194284439087
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8118314743041992,
+            0.6469213962554932,
+            1.4101159572601318
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8145402073860168,
+            0.6332879066467285,
+            1.4303194284439087
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8144447207450867,
+            0.6350739598274231,
+            1.4278393983840942
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 129
+      }
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 546,
+      "bvh_pairs": 546,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7785463333129883,
+            0.7240850925445557,
+            1.247056007385254
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7785457372665405,
+            0.7240806221961975,
+            1.2471038103103638
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7785456776618958,
+            0.7240803837776184,
+            1.2471063137054443
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7736243605613708,
+            0.7234286069869995,
+            1.1656306982040405
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7806114554405212,
+            0.7237999439239502,
+            1.1660431623458862
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.772761344909668,
+            0.7242721319198608,
+            1.1740154027938843
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 546
+      }
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 542,
+      "bvh_pairs": 542,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7785540223121643,
+            0.7240278720855713,
+            1.2470403909683228
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7727439403533936,
+            0.7242549657821655,
+            1.1745694875717163
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7802727818489075,
+            0.7246957421302795,
+            1.1750133037567139
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7719634175300598,
+            0.7249133586883545,
+            1.183329463005066
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7799063324928284,
+            0.7255136370658875,
+            1.1854884624481201
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7716411352157593,
+            0.7250893115997314,
+            1.1880241632461548
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 542
+      }
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 549,
+      "bvh_pairs": 549,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7785019278526306,
+            0.7235422730445862,
+            1.2515885829925537
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7785541415214539,
+            0.724027156829834,
+            1.2470401525497437
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.778499186038971,
+            0.7235167622566223,
+            1.251827597618103
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7736824750900269,
+            0.7233995199203491,
+            1.1647535562515259
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7805815935134888,
+            0.7239204049110413,
+            1.1666228771209717
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7719797492027283,
+            0.7248650789260864,
+            1.183534026145935
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 549
+      }
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 716,
+      "bvh_pairs": 716,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7922194004058838,
+            0.6970106363296509,
+            1.014822006225586
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7924308180809021,
+            0.6970275044441223,
+            1.0148777961730957
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7879668474197388,
+            0.6966713070869446,
+            1.0136990547180176
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7833402156829834,
+            0.6950035691261292,
+            1.0104402303695679
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7728521227836609,
+            0.6936116218566895,
+            1.0067999362945557
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7922194004058838,
+            0.6970106363296509,
+            1.014822006225586
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 716
+      }
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 715,
+      "bvh_pairs": 715,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7908039093017578,
+            0.6994336843490601,
+            1.0187751054763794
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7917003631591797,
+            0.6994068622589111,
+            1.0188484191894531
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7705139517784119,
+            0.6983069181442261,
+            1.014233946800232
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7728679776191711,
+            0.6936075687408447,
+            1.0067427158355713
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7483971118927002,
+            0.680140495300293,
+            0.9865336418151855
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7483970522880554,
+            0.680140495300293,
+            0.9865336418151855
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 715
+      }
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 711,
+      "bvh_pairs": 711,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7921836972236633,
+            0.6970672607421875,
+            1.0150232315063477
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7924149036407471,
+            0.6970597505569458,
+            1.0150424242019653
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7792665958404541,
+            0.6974852681159973,
+            1.0139493942260742
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7728426456451416,
+            0.6936140656471252,
+            1.0068341493606567
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7921836972236633,
+            0.6970672607421875,
+            1.0150232315063477
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7924149036407471,
+            0.6970597505569458,
+            1.0150424242019653
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 711
+      }
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 548,
+      "bvh_pairs": 548,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7712271213531494,
+            0.7263668179512024,
+            1.1822298765182495
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7798591256141663,
+            0.7265254855155945,
+            1.1822295188903809
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7706937789916992,
+            0.7265915870666504,
+            1.1907477378845215
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7796699404716492,
+            0.7267048954963684,
+            1.1888724565505981
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7703628540039062,
+            0.72673100233078,
+            1.196032166481018
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7794658541679382,
+            0.7268984913825989,
+            1.1960371732711792
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 548
+      }
+    },
+    {
+      "steering": 0,
+      "travel": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 546,
+      "bvh_pairs": 546,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7702001333236694,
+            0.7266732454299927,
+            1.2000526189804077
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7794209122657776,
+            0.7268402576446533,
+            1.1981290578842163
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7706186175346375,
+            0.7266693115234375,
+            1.1914299726486206
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7795893549919128,
+            0.7268342971801758,
+            1.191433072090149
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7697096467018127,
+            0.7263405323028564,
+            1.2139540910720825
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7791056632995605,
+            0.7265878319740295,
+            1.2120009660720825
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 546
+      }
+    },
+    {
+      "steering": 0,
+      "travel": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 531,
+      "bvh_pairs": 531,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7704302072525024,
+            0.7266629338264465,
+            1.1954034566879272
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.779541552066803,
+            0.7268030047416687,
+            1.1935011148452759
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7709066867828369,
+            0.7265478372573853,
+            1.1868289709091187
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7797204256057739,
+            0.7267099618911743,
+            1.1868304014205933
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7701395153999329,
+            0.7267331480979919,
+            1.2006347179412842
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7793500423431396,
+            0.7269026637077332,
+            1.2006416320800781
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 531
+      }
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 704,
+      "bvh_pairs": 704,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7408851981163025,
+            0.6772936582565308,
+            0.9824342131614685
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7591009140014648,
+            0.6867705583572388,
+            0.9945698976516724
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7510214447975159,
+            0.6807798147201538,
+            0.9865494966506958
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7591009140014648,
+            0.6867705583572388,
+            0.9945698976516724
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7204920053482056,
+            0.6705885529518127,
+            0.9768310189247131
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7302873730659485,
+            0.6738091707229614,
+            0.9795224070549011
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 704
+      }
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 707,
+      "bvh_pairs": 707,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7408853769302368,
+            0.6772828698158264,
+            0.9823399186134338
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7420061230659485,
+            0.6776666641235352,
+            0.9827805161476135
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7560191750526428,
+            0.6844130754470825,
+            0.9913785457611084
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7560191750526428,
+            0.6844130754470825,
+            0.9913785457611084
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7424636483192444,
+            0.6778233051300049,
+            0.9829604029655457
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7671300172805786,
+            0.691199541091919,
+            1.000693678855896
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 707
+      }
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 698,
+      "bvh_pairs": 698,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.752748966217041,
+            0.6820414066314697,
+            0.9882463216781616
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7408852577209473,
+            0.6772915124893188,
+            0.982415497303009
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.752748966217041,
+            0.6820414066314697,
+            0.9882463216781616
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.755098819732666,
+            0.6836003661155701,
+            0.9902129173278809
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7691231966018677,
+            0.691810667514801,
+            1.001408338546753
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7619865536689758,
+            0.6891130208969116,
+            0.9978221654891968
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 698
+      }
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 125,
+      "bvh_pairs": 125,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.781257688999176,
+            0.7039596438407898,
+            1.2265328168869019
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7816269993782043,
+            0.7039404511451721,
+            1.2264338731765747
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7812618017196655,
+            0.7039663791656494,
+            1.2263715267181396
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7816318869590759,
+            0.7039509415626526,
+            1.226184368133545
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.78167724609375,
+            0.7045623660087585,
+            1.2110624313354492
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7781214118003845,
+            0.7047427296638489,
+            1.212864637374878
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 125
+      }
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 122,
+      "bvh_pairs": 122,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7813611030578613,
+            0.7042349576950073,
+            1.2212941646575928
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7817248702049255,
+            0.7042186856269836,
+            1.2211101055145264
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7813458442687988,
+            0.7042215466499329,
+            1.221760869026184
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7817131280899048,
+            0.70420241355896,
+            1.2216624021530151
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7818945050239563,
+            0.7046205401420593,
+            1.2059098482131958
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7796230912208557,
+            0.7047425508499146,
+            1.2070616483688354
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 122
+      }
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 125,
+      "bvh_pairs": 125,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.782041609287262,
+            0.7046489119529724,
+            1.2025437355041504
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7808436155319214,
+            0.7047111988067627,
+            1.2028658390045166
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7821363210678101,
+            0.704643964767456,
+            1.2025182247161865
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7819792628288269,
+            0.7046241760253906,
+            1.2041136026382446
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7805249691009521,
+            0.7047053575515747,
+            1.2041950225830078
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7820999622344971,
+            0.704617440700531,
+            1.2041068077087402
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 125
+      }
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 538,
+      "bvh_pairs": 538,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7785397171974182,
+            0.7290908694267273,
+            1.2218765020370483
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7785313129425049,
+            0.7290769815444946,
+            1.2222819328308105
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.778827965259552,
+            0.7295680046081543,
+            1.2079421281814575
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7788618803024292,
+            0.7295629382133484,
+            1.2066136598587036
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7791950702667236,
+            0.7295132279396057,
+            1.1935616731643677
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7695330381393433,
+            0.7294539213180542,
+            1.1825909614562988
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 538
+      }
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 531,
+      "bvh_pairs": 531,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7786223292350769,
+            0.7293012142181396,
+            1.2175078392028809
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7786381840705872,
+            0.7293165326118469,
+            1.2167985439300537
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7789425253868103,
+            0.7296103835105896,
+            1.203152060508728
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7789871096611023,
+            0.7295833826065063,
+            1.2015087604522705
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7688542604446411,
+            0.7299050688743591,
+            1.1915732622146606
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7793329954147339,
+            0.729373574256897,
+            1.188762903213501
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 531
+      }
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 539,
+      "bvh_pairs": 539,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.778448224067688,
+            0.7287921905517578,
+            1.2270491123199463
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7784501910209656,
+            0.7287971377372742,
+            1.2269434928894043
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7787212133407593,
+            0.7294649481773376,
+            1.212727665901184
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7790235280990601,
+            0.7295768857002258,
+            1.2000876665115356
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7790648937225342,
+            0.7295921444892883,
+            1.1983582973480225
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7691774368286133,
+            0.7297066450119019,
+            1.1871124505996704
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 539
+      }
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 710,
+      "bvh_pairs": 710,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.776617705821991,
+            0.6884171366691589,
+            0.9868329763412476
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7732682228088379,
+            0.6873027086257935,
+            0.9857985377311707
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7422661781311035,
+            0.6772577166557312,
+            0.9785653948783875
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7078641057014465,
+            0.6663392782211304,
+            0.9725178480148315
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7121975421905518,
+            0.6677086353302002,
+            0.9732277989387512
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7325941324234009,
+            0.6741539239883423,
+            0.976569414138794
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 710
+      }
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 705,
+      "bvh_pairs": 705,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7732584476470947,
+            0.6872957348823547,
+            0.9857633709907532
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7869092226028442,
+            0.6918973326683044,
+            0.9904961585998535
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7362954020500183,
+            0.6753485798835754,
+            0.9773933291435242
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7180576324462891,
+            0.6695574522018433,
+            0.974162220954895
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7245036363601685,
+            0.6715846061706543,
+            0.9751337766647339
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.699470043182373,
+            0.6637119650840759,
+            0.9713606834411621
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 705
+      }
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 706,
+      "bvh_pairs": 706,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7732828259468079,
+            0.6873130798339844,
+            0.9858507513999939
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7481801509857178,
+            0.6791555881500244,
+            0.9797864556312561
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7302694916725159,
+            0.6734286546707153,
+            0.9762693047523499
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7405293583869934,
+            0.6766868233680725,
+            0.9780900478363037
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7118743658065796,
+            0.6676068305969238,
+            0.9731775522232056
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.716259777545929,
+            0.6689795851707458,
+            0.9737831354141235
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 706
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 25,
+      "bvh_pairs": 25,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.571902871131897,
+            0.5497522950172424,
+            1.3818234205245972
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.568705677986145,
+            0.5417289733886719,
+            1.3880164623260498
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5671586990356445,
+            0.5552935004234314,
+            1.3435636758804321
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.567919909954071,
+            0.5532463192939758,
+            1.3539613485336304
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5671586990356445,
+            0.5552935004234314,
+            1.3435636758804321
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.571902871131897,
+            0.5497522950172424,
+            1.3818234205245972
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 25
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 26,
+      "bvh_pairs": 26,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5686898231506348,
+            0.541721761226654,
+            1.3880443572998047
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5670682787895203,
+            0.5566195249557495,
+            1.3383132219314575
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5670353770256042,
+            0.5568187832832336,
+            1.3373074531555176
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5707494020462036,
+            0.5506938695907593,
+            1.3749980926513672
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5685797333717346,
+            0.5514614582061768,
+            1.3625569343566895
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5707494020462036,
+            0.5506938695907593,
+            1.3749980926513672
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 26
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 29,
+      "bvh_pairs": 29,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5536940693855286,
+            0.521740198135376,
+            1.3713880777359009
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5522179007530212,
+            0.5177763104438782,
+            1.3632127046585083
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5718957781791687,
+            0.5459999442100525,
+            1.3860979080200195
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5687214136123657,
+            0.5417361259460449,
+            1.387988567352295
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5719045996665955,
+            0.5465846657752991,
+            1.3854701519012451
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FR__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            -0.5719008445739746,
+            0.5470144152641296,
+            1.384958028793335
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 29
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 187,
+      "bvh_pairs": 187,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7798275947570801,
+            0.7058024406433105,
+            1.23542320728302
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7762854695320129,
+            0.7037085294723511,
+            1.2371841669082642
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7810858488082886,
+            0.7065462470054626,
+            1.2347975969314575
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7731133699417114,
+            0.7018333077430725,
+            1.2387611865997314
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7796850800514221,
+            0.7061849236488342,
+            1.234071969985962
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7751428484916687,
+            0.704142689704895,
+            1.2343710660934448
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 187
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 184,
+      "bvh_pairs": 184,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.780940055847168,
+            0.70291668176651,
+            1.244842767715454
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7799889445304871,
+            0.7023617029190063,
+            1.2452952861785889
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7812753915786743,
+            0.7031123638153076,
+            1.2446832656860352
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7791280150413513,
+            0.7018592953681946,
+            1.2457048892974854
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.781018853187561,
+            0.7080443501472473,
+            1.2298572063446045
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7792272567749023,
+            0.7085259556770325,
+            1.2172201871871948
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 184
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 182,
+      "bvh_pairs": 182,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7803747057914734,
+            0.7043741345405579,
+            1.2401580810546875
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7781054377555847,
+            0.703041136264801,
+            1.2412619590759277
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.781177818775177,
+            0.7048458456993103,
+            1.2397675514221191
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7760624885559082,
+            0.7018411159515381,
+            1.242255687713623
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7719435691833496,
+            0.7053600549697876,
+            1.2264668941497803
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7644595503807068,
+            0.7018890380859375,
+            1.227066993713379
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 182
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 527,
+      "bvh_pairs": 527,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7793121933937073,
+            0.710235059261322,
+            1.2868732213974
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7761586308479309,
+            0.707870602607727,
+            1.288147211074829
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7734826803207397,
+            0.7012013792991638,
+            1.2897695302963257
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.780107319355011,
+            0.7016242742538452,
+            1.2988892793655396
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7725911736488342,
+            0.6989794373512268,
+            1.290310025215149
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7760984897613525,
+            0.7079982757568359,
+            1.2879570722579956
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 527
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 528,
+      "bvh_pairs": 528,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7752182483673096,
+            0.7099468111991882,
+            1.2842700481414795
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7792325019836426,
+            0.711356520652771,
+            1.2843538522720337
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7755584716796875,
+            0.7091490030288696,
+            1.286197304725647
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7704156041145325,
+            0.7022309303283691,
+            1.2844823598861694
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7795532941818237,
+            0.7069908380508423,
+            1.2937347888946533
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7686521410942078,
+            0.6990270614624023,
+            1.2845795154571533
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 528
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 523,
+      "bvh_pairs": 523,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7794618010520935,
+            0.7081990242004395,
+            1.2912477254867554
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7744759917259216,
+            0.7117116451263428,
+            1.2797919511795044
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7790274620056152,
+            0.7142223715782166,
+            1.2779748439788818
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.779477059841156,
+            0.707998514175415,
+            1.2916579246520996
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7683628797531128,
+            0.7029232978820801,
+            1.2808878421783447
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.7662678360939026,
+            0.6990591883659363,
+            1.281051754951477
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 523
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 705,
+      "bvh_pairs": 705,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6893647909164429,
+            0.6602301597595215,
+            0.9672037959098816
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6801311373710632,
+            0.6575994491577148,
+            0.9681797027587891
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6618669629096985,
+            0.6524117588996887,
+            0.9702482223510742
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6654465198516846,
+            0.6534156799316406,
+            0.9697316884994507
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6516256332397461,
+            0.6500259041786194,
+            0.9722278118133545
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6618669629096985,
+            0.6524117588996887,
+            0.9702482223510742
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 705
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 713,
+      "bvh_pairs": 713,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8087780475616455,
+            0.6536813378334045,
+            1.3902792930603027
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.8065966963768005,
+            0.6520978212356567,
+            1.3887712955474854
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.674079954624176,
+            0.6558743715286255,
+            0.9688103795051575
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6572425961494446,
+            0.6511030197143555,
+            0.970812976360321
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6557072401046753,
+            0.6506745219230652,
+            0.9710531830787659
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6515790820121765,
+            0.6499801278114319,
+            0.9721596240997314
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 713
+      }
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 708,
+      "bvh_pairs": 708,
+      "samples": [
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6861441731452942,
+            0.6593201160430908,
+            0.9676091074943542
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.673535943031311,
+            0.6557080149650574,
+            0.9687694907188416
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.667991578578949,
+            0.6541451215744019,
+            0.9695002436637878
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6515694260597229,
+            0.6499705910682678,
+            0.9721454977989197
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.667991578578949,
+            0.6541451215744019,
+            0.9695002436637878
+          ]
+        },
+        {
+          "tire": "Runtime__WheelSpin_FL__Tire | culled satin micrograin",
+          "body": "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+          "point_m": [
+            0.6469748616218567,
+            0.6504514813423157,
+            0.9752039909362793
+          ]
+        }
+      ],
+      "contacts_by_body": {
+        "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0": 708
+      }
+    }
+  ],
+  "limits": [
+    "Finite 5 steering by 5 symmetric front travel by 3 wheel phase samples, hero export only",
+    "Tests tire carcasses against selected painted, exterior carbon and underbody triangle surfaces",
+    "Excludes lettering, liners, suspension, rim/caliper and other parts; not whole-vehicle or continuous clearance",
+    "Segment-triangle crossing test does not prove absence of containment or coplanar overlap"
+  ],
+  "complete": false,
+  "reviewed_at": "2026-10-29T07:54:53.722079+00:00",
+  "source_hashes": {
+    "viewer/GT3RSCar.js": "45f76e655bbf96347a8c044d048c7a98040047de17e713ca00a7ac63eb3bfe10",
+    "viewer/SuspensionKinematics.js": "6e1f8db3e6964e8d651a19994dfb24cf038487fdb32de846d07ccb14d2cfe366",
+    "scripts/build_tire_clearance_fixture.mjs": "9ecb422bc409f08cc0294a8531be30d4be9bf15601b4e262dde744aba579a36e",
+    "scripts/check_front_tire_clearance.py": "cc49fcfaa8c9931cfad6e58e226716189ad3ca3899c22645b4fb627bbe0aae43"
+  },
+  "next_action": "Inspect and reshape inner front wheel-well surfaces against the exported tire sweep; preserve visible body silhouette, stock tire dimensions and current intended motion envelope."
+}
