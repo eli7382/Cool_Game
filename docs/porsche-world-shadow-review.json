@@ -1,19 +1,19 @@
 {
-  "reviewed_at": "2026-10-28T22:52:24.414294+00:00",
+  "reviewed_at": "2026-10-29T00:08:17.853567+00:00",
   "stage": "Porsche directional shadows on native world receivers",
   "baseline_commit": "38a9f9535e37eb62000f2c1b2982b1b21210e0c2",
-  "executable_sha256": "213fd10d7056f5229498004b184dc5805dceba9223d7abfee929fabc29c09946",
+  "executable_sha256": "4890094004d6e14485b956af5742591930fe3e24d1087361c5d5bacf33679c65",
   "source_hashes": {
-    "src/breakwater/world.cpp": "0fe6d352cf519ebc5d5b3d55a51ea444ccef118db08426738b5b776c0acf5c29",
-    "src/breakwater/porsche_native.cpp": "002b4d724a2140f39264d591757b5ec5d9cfdebb03c901f3d9a2ca056b8edb5e",
-    "src/breakwater/porsche_native.hpp": "4a6eca8af419c77c60a4a12a66c13ecf5320844adff592aa5acfd4cee3b1c728",
+    "src/breakwater/world.cpp": "d2d74e236c5bb968214c801f235a8df74bd1c76257e33620e794c83e37637883",
+    "src/breakwater/porsche_native.cpp": "70634cbf3a02ccdac37f7d8c8ae0015b34129bee42a085a62fc45a9ec3702aaf",
+    "src/breakwater/porsche_native.hpp": "10a55f7a764c711567393714ed9371680586b34dc93c1e797fb05ae896116020",
     "src/breakwater/porsche_shadow.cpp": "f9e5d461a92b5cd7bb790be1945d4e49ee10f565487c04f7e2ac37f1dea5a8c4",
     "src/breakwater/porsche_shadow.hpp": "90571e07773674abb9c0556a4d80e337d0f1f129e561a3ed8ce2aa233b59bf77"
   },
-  "reviewer_sha256": "39cdf3b821573f1b8695ae7c2ff5b7a28775c30776df30cc1a82639273367372",
+  "reviewer_sha256": "6b869dfffab6168e2f21c5b48450d2c4795cae317266b8804e1b581848fca895",
   "native_qa": {
     "passed": true,
-    "checks": 112,
+    "checks": 125,
     "failures": 0,
     "native_steering_poses": 69,
     "maximum_axial_drift_m": 2.03028e-07,
@@ -113,7 +113,7 @@
   "images": [
     {
       "path": "screenshots/porsche-world-shadow-closed-off.png",
-      "sha256": "fa740949e55cb3020fc7a3cefd5bc22192fcf175e9888b65bd1cf4a0c78101fc",
+      "sha256": "29d88bb28bdb2d5366dc719cadbe6ceb85c1747f852ec1ad5eb60e349928a83f",
       "view": "closed",
       "world_receivers_enabled": false,
       "self_shadows_enabled": true,
@@ -121,7 +121,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-closed-on.png",
-      "sha256": "6ea6e7c3bfe5ddf96d4008234c34ac6a3554e940cbde7d8bf93879934b53bd89",
+      "sha256": "f2c1e238d58b67c334bba6aacaab600ce08e538f205d88e6e7416183f8dc52db",
       "view": "closed",
       "world_receivers_enabled": true,
       "self_shadows_enabled": true,
@@ -129,7 +129,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-open-off.png",
-      "sha256": "989ba9d55f4a80156333eb6fe22052ad24271bd41e452bdf1ef7e2bf613c80b8",
+      "sha256": "ec39956531809ce2a0308496e1e8e433dbe5bea361fa5388a93161e08f199d1c",
       "view": "open",
       "world_receivers_enabled": false,
       "self_shadows_enabled": true,
@@ -137,7 +137,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-open-on.png",
-      "sha256": "c324d8da02b9292f989e291c8265d7ba1b9caaea56f512732531d1157bffbaaa",
+      "sha256": "de30494f3f9bc5902430c026d82d1071a7759e8ffc26f7a1c57e7f467d4d3039",
       "view": "open",
       "world_receivers_enabled": true,
       "self_shadows_enabled": true,
@@ -145,7 +145,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-raised-off.png",
-      "sha256": "06335613e5568ed5c1bf921518c7f7727e451ecd1ba6c3251eb0e4fb3215c9ca",
+      "sha256": "3e43e94d653867c1d52f800859aba1a483256220a481027042fb7f16dcc335c6",
       "view": "raised",
       "world_receivers_enabled": false,
       "self_shadows_enabled": true,
@@ -153,7 +153,7 @@
     },
     {
       "path": "screenshots/porsche-world-shadow-raised-on.png",
-      "sha256": "db43911e7066938686b4a085a86a23a0e1452a2ea41fb0737faf44fa02e680eb",
+      "sha256": "dd3d26f590e9ac45da0c897f6271fc5a4b532d95eccd73d52f2236b7718a774e",
       "view": "raised",
       "world_receivers_enabled": true,
       "self_shadows_enabled": true,
@@ -207,10 +207,11 @@
   },
   "remaining": [
     "World geometry casting onto the Porsche",
-    "Local ambient occlusion and glass/material/optical refinements",
+    "Offscreen/reflection AO and glass/material/optical refinements",
     "Full-game frame time, memory/loading policy and LOD transition review",
     "Porsche-specific handling, full mechanical clearance and requested final fidelity"
   ],
   "complete": false,
-  "final_fidelity_verified": false
+  "final_fidelity_verified": false,
+  "contact_shading_review": "docs/porsche-ao-review.json"
 }

@@ -1,0 +1,15 @@
+{
+  "passed":true,
+  "geometry_cases":3,
+  "linear_depth_ray_comparisons":562,
+  "maximum_linear_depth_error_m":0.000146866,
+  "maximum_normal_length_error":5.96046e-08,
+  "finite_surface_pixels":828057,
+  "minimum_flat_plane_visibility":1,
+  "minimum_cube_contact_visibility":0.706935,
+  "cube_contact_pixels_below_095":2258,
+  "finite_unit_range":true,
+  "main_render_state_restored":true,
+  "scope":"Actual floating normal/linear-depth buffers and AO/blur shaders; independent ray/mesh view-depth checks, near/distant unoccluded planes and a floor/cube contact fixture",
+  "limits":["Screen-space visibility approximation; this is not an exact hemispherical ray-integral reference or a whole-scene appearance/performance validation"]
+}

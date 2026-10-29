@@ -147,7 +147,39 @@ each of 126 actual road/terrain mesh points, including softened edges. It
 compares geometry rather than reading the rendered depth values. Masked-only
 oracle hits are classified separately; the alpha mask path has a GPU fixture.
 
-World-to-car occlusion, local ambient occlusion, material refinements,
+Main-view contact shading now uses a separate geometry pass with floating-point
+world normals and positive linear view depth. The pass includes opaque world
+and posed car geometry, retains alpha masks, and excludes glazing, water and
+blended layers. It never turns the windscreen into an opaque ambient blocker.
+No authored glTF occlusion maps are present in the source materials.
+
+Visibility is evaluated at half resolution using a 0.28 m cosine-hemisphere
+kernel (32 samples on High, 16 on Low), with a 4 mm surface bias and a 3D
+distance falloff. Reconstruction uses the actual nearest depth-texel centres,
+including when the evaluation runs at half resolution. A normal-facing test rejects false occlusion from the
+receiver's own plane. Two 7-tap joint bilateral passes and a depth/normal-aware
+four-sample upsample preserve surface boundaries. The final scalar affects
+environment diffuse lighting and a roughness-dependent specular visibility
+term; direct sun, local lamps and emission retain their lighting contributions.
+The specular approximation follows the Lagarde formulation documented in
+[Filament's lighting notes](https://google.github.io/filament/Filament.html).
+
+Only the camera-matched main framebuffer samples this screen-space data.
+Mirror and other offscreen views leave it disabled. The auxiliary pass restores
+the main matrices, framebuffer, blending and sampler/ready state. Reflection
+renders also preserve the main camera's adaptive-grille hysteresis state.
+The geometry pass does not advance simulation or animate controls a second time.
+
+`docs/porsche-ao-review.json` records matched exterior, cockpit and open-door
+views. Native fixtures compare linear-depth values with independent
+mesh rays, preserve full visibility on near/distant unoccluded planes, and produce contact
+occlusion beside a cube. Scene checks validate floating normals/visibility,
+windows-only invariance, steering-dependent depth and AO changes, quality
+presets and main rendering-state restoration. These finite checks do not prove
+an exact hemispherical visibility integral or final visual fidelity.
+
+World-to-car sun occlusion, offscreen/reflection AO, temporal/halo refinement,
+material refinements,
 comprehensive clearance, optical appearance and full-game profiling remain in development.
 The linkage datums are fitted to the source model; the joint solver supplies
 visual articulation and does not replace the game's tire-force simulation.

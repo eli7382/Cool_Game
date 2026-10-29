@@ -4,6 +4,7 @@
 #include "porsche_ibl_data.hpp"
 #include "porsche_mirror_projection.hpp"
 #include "porsche_shadow.hpp"
+#include "porsche_ao.hpp"
 #include <cstring>
 #include <memory>
 #include <stdexcept>
@@ -62,6 +63,8 @@ Material depthMaterial{};
 std::array<PorscheSunShadow,2> sunShadows;
 bool qaShadowsDisabled{};
 bool qaWorldShadowsDisabled{};
+PorscheAmbientOcclusion ambientOcclusion;
+bool qaAODisabled{};
 struct ShadowLocations {int matrix,info,ready,probeNormal,depthAlpha,depthMasked;} shadowLocations;
 struct WorldShadowLocations {unsigned int shader{};bool valid{};std::array<int,2> matrix{},info{},sampler{};int ready{-1},probe{-1},probeNormal{-1};} worldShadowLocations;
 Texture2D environment{},dfgTexture{};
@@ -170,6 +173,7 @@ PorscheControls Controls(const Vehicle& v,bool occupied){
     c.travel={Clamp(v.wheelTravel[3],-.05f,.05f),Clamp(v.wheelTravel[2],-.05f,.05f),Clamp(v.wheelTravel[1],-.05f,.05f),Clamp(v.wheelTravel[0],-.05f,.05f)};c.chronoSeconds=v.porscheChronoSeconds;c.mirrorYaw=v.porscheMirrorYaw;c.mirrorPitch=v.porscheMirrorPitch;return c;
 }
 void BeginSunMap(PorscheSunShadow& shadow){
+    const float depthMode=0;SetShaderValue(depthShader,GetShaderLocation(depthShader,"normalDepthPass"),&depthMode,SHADER_UNIFORM_FLOAT);
     for(int unit:{11,12,13}){rlActiveTextureSlot(unit);rlDisableTexture();}rlActiveTextureSlot(0);BeginTextureMode(shadow.target);rlEnableDepthMask();ClearBackground(WHITE);BeginMode3D(shadow.camera);rlSetMatrixProjection(shadow.projection);rlDisableBackfaceCulling();rlDisableColorBlend();
 }
 void EndSunMap(){rlEnableColorBlend();rlEnableBackfaceCulling();EndMode3D();EndTextureMode();}
@@ -275,6 +279,31 @@ bool RunLightingProbes(){
     }
     const Vector4 reset{};SetShaderValue(porscheShader,probeLocation,&reset,SHADER_UNIFORM_VEC4);MemFree(material.maps);UnloadMesh(mesh);UnloadRenderTexture(target);
     const bool passed=count==static_cast<int>(std::size(porsche_ibl_reference::Probes))&&maximum<2.0f/255;std::ofstream report("docs/porsche-native-lighting-qa.json");report<<"{\n  \"passed\":"<<(passed?"true":"false")<<",\n  \"gpu_probes\":"<<count<<",\n  \"maximum_absolute_error\":"<<maximum<<",\n  \"quantization_tolerance\":"<<2.0/255<<",\n  \"scope\":\"Actual native shader, atlas/DFG textures, diffuse irradiance and compensated furnace response read back from a 16x16 GPU target; independent bake validation is separate\",\n  \"limits\":[\"Finite probe samples and RGBA8 quantization; not whole-vehicle appearance or local shadow validation\"]\n}\n";return passed;
+}
+bool RunAmbientOcclusionFixtures(){
+    PorscheAmbientOcclusion fixture;if(!fixture.Init())return false;
+    Mesh plane=GenMeshPlane(2,2,1,1),cube=GenMeshCube(.3f,.3f,.3f);const Matrix cubeFrame=MatrixTranslate(0,.15f,0);
+    const Camera3D nearCamera{{0,1.0f,1.8f},{0,.07f,0},{0,1,0},50,CAMERA_PERSPECTIVE};
+    porsche_data::Surface opaque{};opaque.base.w=1;DepthSurface(opaque);const float mode=1;
+    int compared=0,finitePixels=0,darkPixels=0;float maximumDepth=0,maximumNormal=0,flatMinimum=1,contactMinimum=1;bool finite=true;
+    const Matrix savedProjection=rlGetMatrixProjection(),savedView=rlGetMatrixModelview();
+    for(int geometry=0;geometry<3;++geometry){
+        const Camera3D camera=geometry==2?Camera3D{{8,9,12},{0,0,0},{0,1,0},60,CAMERA_PERSPECTIVE}:nearCamera;const Matrix view=MatrixLookAt(camera.position,camera.target,camera.up);
+        fixture.Prepare(camera,32,[&]{SetShaderValue(depthShader,GetShaderLocation(depthShader,"normalDepthPass"),&mode,SHADER_UNIFORM_FLOAT);BeginMode3D(camera);DrawMesh(plane,depthMaterial,MatrixIdentity());if(geometry==1)DrawMesh(cube,depthMaterial,cubeFrame);EndMode3D();});
+        Image normalDepth=LoadImageFromTexture(fixture.NormalDepth()),ao=LoadImageFromTexture(fixture.Visibility());
+        if(normalDepth.format!=PIXELFORMAT_UNCOMPRESSED_R32G32B32A32||ao.format!=PIXELFORMAT_UNCOMPRESSED_R32){finite=false;UnloadImage(normalDepth);UnloadImage(ao);continue;}
+        const auto* normal=static_cast<const float*>(normalDepth.data);const auto* visibility=static_cast<const float*>(ao.data);
+        for(int i=0;i<normalDepth.width*normalDepth.height;++i){for(int c=0;c<4;++c)finite=finite&&std::isfinite(normal[i*4+c]);if(normal[i*4+3]>0){const Vector3 n{normal[i*4],normal[i*4+1],normal[i*4+2]};maximumNormal=std::max(maximumNormal,std::abs(Vector3Length(n)-1));++finitePixels;}}
+        for(int y=16;y<normalDepth.height;y+=37)for(int x=16;x<normalDepth.width;x+=43){const int pixel=y*normalDepth.width+x;const Ray ray=GetScreenToWorldRayEx({x+.5f,normalDepth.height-y-.5f},camera,normalDepth.width,normalDepth.height);auto expected=GetRayCollisionMesh(ray,plane,MatrixIdentity());if(geometry==1){const auto hit=GetRayCollisionMesh(ray,cube,cubeFrame);if(hit.hit&&(!expected.hit||hit.distance<expected.distance))expected=hit;}
+            if(!expected.hit||normal[pixel*4+3]<=0)continue;maximumDepth=std::max(maximumDepth,std::abs(normal[pixel*4+3]+Vector3Transform(expected.point,view).z));++compared;}
+        for(int i=0;i<ao.width*ao.height;++i){finite=finite&&std::isfinite(visibility[i])&&visibility[i]>=0&&visibility[i]<=1;if(geometry==1){contactMinimum=std::min(contactMinimum,visibility[i]);if(visibility[i]<.95f)++darkPixels;}else flatMinimum=std::min(flatMinimum,visibility[i]);}
+        ImageFormat(&ao,PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);ImageFlipVertical(&ao);ExportImage(ao,geometry==1?"screenshots/porsche-ao-cube-fixture.png":geometry==2?"screenshots/porsche-ao-far-plane-fixture.png":"screenshots/porsche-ao-plane-fixture.png");UnloadImage(normalDepth);UnloadImage(ao);
+    }
+    const auto projection=MatrixToFloatV(rlGetMatrixProjection()),modelview=MatrixToFloatV(rlGetMatrixModelview()),expectedProjection=MatrixToFloatV(savedProjection),expectedView=MatrixToFloatV(savedView);bool restored=rlGetActiveFramebuffer()==0;for(int i=0;i<16;++i)restored=restored&&projection.v[i]==expectedProjection.v[i]&&modelview.v[i]==expectedView.v[i];
+    const bool passed=fixture.Ready()&&finite&&finitePixels>10000&&compared>100&&maximumDepth<.002f&&maximumNormal<.0001f&&flatMinimum>.995f&&contactMinimum<.95f&&darkPixels>20&&restored;
+    fixture.Release();UnloadMesh(plane);UnloadMesh(cube);
+    std::ofstream report("docs/porsche-native-ao-fixtures.json");report<<"{\n  \"passed\":"<<(passed?"true":"false")<<",\n  \"geometry_cases\":3,\n  \"linear_depth_ray_comparisons\":"<<compared<<",\n  \"maximum_linear_depth_error_m\":"<<maximumDepth<<",\n  \"maximum_normal_length_error\":"<<maximumNormal<<",\n  \"finite_surface_pixels\":"<<finitePixels<<",\n  \"minimum_flat_plane_visibility\":"<<flatMinimum<<",\n  \"minimum_cube_contact_visibility\":"<<contactMinimum<<",\n  \"cube_contact_pixels_below_095\":"<<darkPixels<<",\n  \"finite_unit_range\":"<<(finite?"true":"false")<<",\n  \"main_render_state_restored\":"<<(restored?"true":"false")<<",\n  \"scope\":\"Actual floating normal/linear-depth buffers and AO/blur shaders; independent ray/mesh view-depth checks, near/distant unoccluded planes and a floor/cube contact fixture\",\n  \"limits\":[\"Screen-space visibility approximation; this is not an exact hemispherical ray-integral reference or a whole-scene appearance/performance validation\"]\n}\n";
+    TraceLog(passed?LOG_INFO:LOG_ERROR,"AO fixtures: depth %.7f normal %.7f plane %.6f contact %.6f dark %d samples %d finite %d restored %d",maximumDepth,maximumNormal,flatMinimum,contactMinimum,darkPixels,compared,finite,restored);return passed;
 }
 struct SunProbeResults {bool self{},world{};};
 SunProbeResults RunSunShadowProbes(){
@@ -503,7 +532,8 @@ bool RunMirrorProjectionReference(){
 }
 bool InitPorsche(){
     try{
-        porscheShader=LoadShader("assets/porsche/shaders/porsche.vs","assets/porsche/shaders/porsche.fs");if(!IsShaderValid(porscheShader)||porscheShader.id==rlGetShaderIdDefault())return false;
+        porscheShader=LoadPorscheAOShader("assets/porsche/shaders/porsche.vs","assets/porsche/shaders/porsche.fs");if(!IsShaderValid(porscheShader)||porscheShader.id==rlGetShaderIdDefault())return false;
+        if(!ambientOcclusion.Init())throw std::runtime_error("Native contact shading shaders unavailable");
         locations={GetShaderLocation(porscheShader,"eyePosition"),GetShaderLocation(porscheShader,"baseFactor"),GetShaderLocation(porscheShader,"emissionFactor"),GetShaderLocation(porscheShader,"pbr"),GetShaderLocation(porscheShader,"optics"),GetShaderLocation(porscheShader,"maps"),GetShaderLocation(porscheShader,"channels"),GetShaderLocation(porscheShader,"normalStrength"),GetShaderLocation(porscheShader,"emissiveMap"),GetShaderLocation(porscheShader,"detailRepeat")};
         locations.liveDisplay=GetShaderLocation(porscheShader,"liveDisplay");if(!InitPorscheDisplays())throw std::runtime_error("Cannot initialize native cockpit fonts");
         locations.mirrorReady=GetShaderLocation(porscheShader,"mirrorReady");locations.mirrorMatrix=GetShaderLocation(porscheShader,"mirrorMatrix");porscheShader.locs[SHADER_LOC_MAP_BRDF]=GetShaderLocation(porscheShader,"texture10");
@@ -518,6 +548,7 @@ bool InitPorsche(){
     }catch(const std::exception& e){TraceLog(LOG_ERROR,"Porsche initialization: %s",e.what());LogEvent("porsche-initialization-failed");return false;}
 }
 void ShutdownPorsche(){
+    ambientOcclusion.Release();qaAODisabled=false;
     EndPorscheWorldSunShadows();worldShadowLocations={};qaWorldShadowsDisabled=qaShadowsDisabled=false;
     for(auto& shadow:sunShadows)shadow.Release();if(depthMaterial.maps)MemFree(depthMaterial.maps);depthMaterial={};if(IsShaderValid(depthShader))UnloadShader(depthShader);depthShader={};
     for(auto& mirrors:carMirrors){for(auto& pane:mirrors.panes)if(IsRenderTextureValid(pane.target))UnloadRenderTexture(pane.target);mirrors={};}mirrorStats={};mirrorPass=false;
@@ -596,11 +627,19 @@ void PreparePorscheMirrors(bool force){
     for(const auto& candidate:candidates){if(!force&&mirrorStats.lastFrameUpdates>=1)break;auto& pane=*candidate.pane;const int width=g.graphics==GraphicsMode::High?512:256;
         if(pane.target.texture.width!=width){if(IsRenderTextureValid(pane.target))UnloadRenderTexture(pane.target);pane.target=LoadRenderTexture(width,width/2);pane.ready=false;SetTextureFilter(pane.target.texture,TEXTURE_FILTER_BILINEAR);SetTextureWrap(pane.target.texture,TEXTURE_WRAP_CLAMP);}
         if(!IsRenderTextureValid(pane.target))continue;
-        mirrorPass=true;mirrorStats.maximumDepth=std::max(mirrorStats.maximumDepth,1);currentMirror=pane.projection;g.camera=pane.projection.camera;BeginTextureMode(pane.target);ClearBackground({94,123,132,255});
+        const bool mainGrille=levels[0].detailedGrille;mirrorPass=true;mirrorStats.maximumDepth=std::max(mirrorStats.maximumDepth,1);currentMirror=pane.projection;g.camera=pane.projection.camera;BeginTextureMode(pane.target);ClearBackground({94,123,132,255});
         try{DrawWorldScene(&pane.projection.projection);pane.ready=true;pane.lastUpdate=candidate.now;++mirrorStats.lastFrameUpdates;++mirrorStats.totalUpdates;}catch(const std::exception& error){EndMode3D();pane.ready=false;TraceLog(LOG_ERROR,"Porsche mirror pass: %s",error.what());}
-        EndTextureMode();if(pane.ready){GenTextureMipmaps(&pane.target.texture);SetTextureFilter(pane.target.texture,TEXTURE_FILTER_TRILINEAR);SetTextureFilter(pane.target.texture,TEXTURE_FILTER_ANISOTROPIC_8X);}g.camera=eye;mirrorPass=false;
+        EndTextureMode();levels[0].detailedGrille=mainGrille;if(pane.ready){GenTextureMipmaps(&pane.target.texture);SetTextureFilter(pane.target.texture,TEXTURE_FILTER_TRILINEAR);SetTextureFilter(pane.target.texture,TEXTURE_FILTER_ANISOTROPIC_8X);}g.camera=eye;mirrorPass=false;
     }
     rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedModelview);if(IsShaderValid(g.worldShader))SetShaderValue(g.worldShader,g.locEye,&eye.position,SHADER_UNIFORM_VEC3);SetShaderValue(porscheShader,locations.eye,&eye.position,SHADER_UNIFORM_VEC3);
+}
+bool PorscheAODepthPass(){return ambientOcclusion.IsDepthPass();}
+void BindPorscheAmbientOcclusion(Shader shader){ambientOcclusion.Bind(shader,g.camera,!mirrorPass&&!qaAODisabled);}
+void EndPorscheAmbientOcclusion(){ambientOcclusion.Unbind();}
+void PreparePorscheAmbientOcclusion(){
+    if(!porscheReady||mirrorPass||ambientOcclusion.IsDepthPass()||rlGetActiveFramebuffer()!=0)return;
+    if((!g.car.isPorsche||Vector3Distance(g.car.p,g.camera.position)>24)&&(!g.extraCar.isPorsche||Vector3Distance(g.extraCar.p,g.camera.position)>24)){ambientOcclusion.Invalidate();return;}
+    ambientOcclusion.Prepare(g.camera,g.graphics==GraphicsMode::High?32:16,[]{DrawWorldScene();});
 }
 void BindPorscheWorldSunShadows(){
     BindWorldSunMaps({&sunShadows[0],&sunShadows[1]},{PorscheVehicleMatrix(g.car),PorscheVehicleMatrix(g.extraCar)},porscheReady&&!qaWorldShadowsDisabled);
@@ -642,9 +681,16 @@ void DrawPorsche(const Vehicle& v,bool cockpit,bool mechanismOnly){
     }
     std::sort(opaque.begin(),opaque.end(),[&](int a,int b){return level.bindings[a].material<level.bindings[b].material;});
     auto transform=[&](int i){return MatrixMultiply(level.rig->MeshDelta(level.bindings[i].node),vehicle);};
+    if(ambientOcclusion.IsDepthPass()){
+        const float mode=1;SetShaderValue(depthShader,GetShaderLocation(depthShader,"normalDepthPass"),&mode,SHADER_UNIFORM_FLOAT);int last=-1;
+        for(int i:opaque){const auto& s=level.surfaces[level.bindings[i].material];if(level.bindings[i].material!=last){DepthSurface(s);last=level.bindings[i].material;}
+            if(s.doubleSided)rlDisableBackfaceCulling();else rlEnableBackfaceCulling();DrawMesh(level.model.meshes[i],depthMaterial,transform(i));}
+        rlEnableBackfaceCulling();return;
+    }
     std::sort(glass.begin(),glass.end(),[&](int a,int b){return Vector3DistanceSqr(Vector3Transform(level.centres[a],transform(a)),g.camera.position)>Vector3DistanceSqr(Vector3Transform(level.centres[b],transform(b)),g.camera.position);});
     rlDrawRenderBatchActive();SetShaderValue(porscheShader,locations.eye,&g.camera.position,SHADER_UNIFORM_VEC3);
     BindSunShadow(&v==&g.car?&sunShadows[0]:&v==&g.extraCar?&sunShadows[1]:nullptr,vehicle);
+    BindPorscheAmbientOcclusion(porscheShader);
     int last=-1;auto draw=[&](int i){const int material=level.bindings[i].material;const bool filtered=index==0&&!level.detailedGrille&&material==level.radiatorMaterial;auto s=filtered?level.filteredSurface:level.surfaces[material];auto& renderMaterial=filtered?level.filteredRadiator:level.model.materials[material+1];
         const auto display=PorscheDisplayTexture(v,PorscheDisplayKind(s.name));const bool live=IsTextureValid(display);
         if(live){renderMaterial.maps[MATERIAL_MAP_DIFFUSE].texture=renderMaterial.maps[MATERIAL_MAP_EMISSION].texture=display;s.base={1,1,1,1};s.emission={1,1,1};s.emissiveStrength=.65f;s.metallic=0;s.roughness=.34f;}
@@ -661,6 +707,7 @@ bool RunPorscheQA(){
     const bool shaderReady=porscheReady&&IsShaderValid(porscheShader)&&porscheShader.id!=rlGetShaderIdDefault();check(shaderReady,"dedicated-native-shader-and-linear-environment-ready");
     if(!shaderReady){std::ofstream("docs/porsche-native-qa.json")<<"{\"passed\":false,\"failure\":\"Native Porsche shader unavailable\"}";return false;}
     check(RunLightingProbes(),"native-GGX-atlas-DFG-and-diffuse-irradiance-match-independent-GPU-probes");
+    check(RunAmbientOcclusionFixtures(),"floating-AO-depth-normal-plane-and-contact-fixtures");
     const auto sunProbes=RunSunShadowProbes();check(sunProbes.self,"native-sun-shadow-depth-and-lookup-match-analytic-occluders");
     check(sunProbes.world,"world-sun-shadow-receivers-match-analytic-occlusion-and-filtering");
     check(RunMirrorProjectionReference(),"native-mirror-reflection-crop-and-oblique-clip-match-source-rig");
@@ -843,6 +890,28 @@ bool RunPorscheQA(){
     g.car.porscheDoor={1,1};g.car.porscheAero=1;worldPair("open");
     g.car=initial;g.car.p.y+=.65f;g.car.yaw+=.6f;worldPair("raised");
     g.car=shadowReviewCar;g.camera=shadowReviewCamera;
+    const Vehicle aoReviewCar=g.car;const Camera3D aoReviewCamera=g.camera;const auto aoReviewGraphics=g.graphics;g.car=initial;g.graphics=GraphicsMode::High;
+    auto aoCamera=[&](Vector3 eye,Vector3 target,float fov){const Matrix body=PorscheVehicleMatrix(g.car);g.camera={Vector3Transform(eye,body),Vector3Transform(target,body),V(0,1,0),fov,CAMERA_PERSPECTIVE};};
+    auto aoPair=[&](const char* name){
+        PreparePorscheDisplays(true);PreparePorscheShadows(true);PreparePorscheAmbientOcclusion();
+        for(int enabled=0;enabled<2;++enabled){qaAODisabled=enabled==0;PreparePorscheMirrors(true);BeginDrawing();ClearBackground({94,123,132,255});DrawWorldScene();rlDrawRenderBatchActive();Image image=LoadImageFromScreen();check(image.data&&ExportImage(image,TextFormat("screenshots/porsche-ao-%s-%s.png",name,enabled?"on":"off")),"export-matched-native-contact-shading-view");UnloadImage(image);EndDrawing();}qaAODisabled=false;
+    };
+    aoCamera(V(3.3f,2.1f,4.3f),V(0,.7f,.3f),42);aoPair("exterior");
+    aoCamera(V(.344f,1.06f,-.27f),V(.344f,.65f,1.2f),68);aoPair("cockpit");
+    const Matrix beforeAOProjection=rlGetMatrixProjection(),beforeAOView=rlGetMatrixModelview();
+    check(ambientOcclusion.Ready()&&ambientOcclusion.NormalDepth().format==PIXELFORMAT_UNCOMPRESSED_R32G32B32A32&&ambientOcclusion.Visibility().format==PIXELFORMAT_UNCOMPRESSED_R32,"main-view-floating-normal-depth-and-AO-targets-ready");
+    const auto closedNormalHash=pixelHash(ambientOcclusion.NormalDepth()),closedAOHash=pixelHash(ambientOcclusion.Visibility());
+    g.car.porscheWindow=1;PreparePorscheAmbientOcclusion();const bool glazing=pixelHash(ambientOcclusion.NormalDepth())==closedNormalHash&&pixelHash(ambientOcclusion.Visibility())==closedAOHash;check(glazing,"moving-only-the-glazing-does-not-create-AO-occluders");
+    g.car.steer=.5f;PreparePorscheAmbientOcclusion();const bool moving=pixelHash(ambientOcclusion.NormalDepth())!=closedNormalHash&&pixelHash(ambientOcclusion.Visibility())!=closedAOHash;check(moving,"posed-steering-updates-visible-depth-and-contact-shading");
+    int aoSurfacePixels=0,aoPixels=0;float aoMinimum=1,aoNormalError=0;bool aoFinite=true;
+    {Image image=LoadImageFromTexture(ambientOcclusion.NormalDepth());const auto* data=static_cast<const float*>(image.data);for(int i=0;i<image.width*image.height;++i){for(int c=0;c<4;++c)aoFinite=aoFinite&&std::isfinite(data[i*4+c]);if(data[i*4+3]>0){aoNormalError=std::max(aoNormalError,std::abs(Vector3Length(V(data[i*4],data[i*4+1],data[i*4+2]))-1));++aoSurfacePixels;}}UnloadImage(image);
+        image=LoadImageFromTexture(ambientOcclusion.Visibility());const auto* values=static_cast<const float*>(image.data);for(int i=0;i<image.width*image.height;++i){aoFinite=aoFinite&&std::isfinite(values[i])&&values[i]>=0&&values[i]<=1;aoMinimum=std::min(aoMinimum,values[i]);if(values[i]<.95f)++aoPixels;}ImageFormat(&image,PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);ImageFlipVertical(&image);ExportImage(image,"screenshots/porsche-ao-cockpit-visibility.png");UnloadImage(image);}
+    check(aoFinite&&aoNormalError<.001f&&aoSurfacePixels>10000&&aoPixels>100,"actual-scene-AO-buffers-have-finite-unit-normals-and-visibility");
+    g.graphics=GraphicsMode::Low;PreparePorscheAmbientOcclusion();check(ambientOcclusion.Ready()&&ambientOcclusion.Visibility().width==(GetRenderWidth()+1)/2,"low-preset-computes-contact-shading-at-half-resolution");g.graphics=GraphicsMode::High;
+    bool aoRestored=rlGetActiveFramebuffer()==0;const auto ap=MatrixToFloatV(beforeAOProjection),av=MatrixToFloatV(beforeAOView),bp=MatrixToFloatV(rlGetMatrixProjection()),bv=MatrixToFloatV(rlGetMatrixModelview());for(int i=0;i<16;++i)aoRestored=aoRestored&&ap.v[i]==bp.v[i]&&av.v[i]==bv.v[i];check(aoRestored,"AO-depth-compute-and-blur-restore-main-UI-matrices");
+    g.car=initial;g.car.porscheDoor={1,1};aoCamera(V(3.3f,2.1f,4.3f),V(0,.7f,.3f),42);aoPair("open");
+    std::ofstream aoReport("docs/porsche-native-ao-scene.json");aoReport<<"{\n  \"glazing_excluded\":"<<(glazing?"true":"false")<<",\n  \"visible_steering_changes_depth_and_AO\":"<<(moving?"true":"false")<<",\n  \"finite_visibility_and_normals\":"<<(aoFinite?"true":"false")<<",\n  \"maximum_unit_normal_error\":"<<aoNormalError<<",\n  \"surface_pixels\":"<<aoSurfacePixels<<",\n  \"pixels_below_095_visibility\":"<<aoPixels<<",\n  \"minimum_visibility\":"<<aoMinimum<<",\n  \"UI_matrices_restored\":"<<(aoRestored?"true":"false")<<",\n  \"scope\":\"Actual game depth/normal and filtered contact buffers; camera-matched paired exterior/cockpit/open views, windows-only invariance, visible steering motion and preset/state checks\",\n  \"limits\":[\"Main-view screen-space approximation; off-screen occluders and AO in planar reflections are not implemented\",\"Temporal stability, halo control and full-game frame time need further review\"]\n}\n";
+    g.car=aoReviewCar;g.camera=aoReviewCamera;g.graphics=aoReviewGraphics;
     std::ofstream report("docs/porsche-native-qa.json");report<<"{\n  \"passed\": "<<(failures==0?"true":"false")<<",\n  \"checks\": "<<checks<<",\n  \"failures\": "<<failures<<",\n  \"native_steering_poses\": "<<poses<<",\n  \"maximum_axial_drift_m\": "<<maximumAxial<<",\n  \"maximum_radial_drift_m\": "<<maximumRadial<<",\n  \"maximum_raw_rest_adjustment_m\": "<<maximumRest<<",\n  \"maximum_reference_pose_error_m\": "<<maximumReferenceError<<",\n  \"reference_nodes_compared\": "<<referenceNodes<<",\n  \"accelerated_speed_mps\": "<<acceleratedSpeed<<",\n  \"suspension_evidence\":\"docs/porsche-native-suspension-qa.json\",\n  \"limits\": [\"Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics\",\"Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames\",\"Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development\"]\n}\n";
     return failures==0;
 }

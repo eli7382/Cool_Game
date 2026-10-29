@@ -1,0 +1,12 @@
+{
+  "glazing_excluded":true,
+  "visible_steering_changes_depth_and_AO":true,
+  "finite_visibility_and_normals":true,
+  "maximum_unit_normal_error":1.78814e-07,
+  "surface_pixels":815630,
+  "pixels_below_095_visibility":65256,
+  "minimum_visibility":0.222875,
+  "UI_matrices_restored":true,
+  "scope":"Actual game depth/normal and filtered contact buffers; camera-matched paired exterior/cockpit/open views, windows-only invariance, visible steering motion and preset/state checks",
+  "limits":["Main-view screen-space approximation; off-screen occluders and AO in planar reflections are not implemented","Temporal stability, halo control and full-game frame time need further review"]
+}

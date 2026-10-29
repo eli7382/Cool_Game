@@ -1,24 +1,24 @@
 {
-  "reviewed_at": "2026-10-28T22:52:25.696943+00:00",
+  "reviewed_at": "2026-10-29T00:08:21.202289+00:00",
   "baseline_commit": "608b77b6cd8b15ede475c59eef7619e0d7c35df7",
   "baseline_source": "Matching native captures from that commit, locally retained under ignored .tools/lighting-baseline",
-  "current_executable_sha256": "213fd10d7056f5229498004b184dc5805dceba9223d7abfee929fabc29c09946",
+  "current_executable_sha256": "4890094004d6e14485b956af5742591930fe3e24d1087361c5d5bacf33679c65",
   "numeric_bake_validation": "docs/porsche-ibl-validation.json",
   "native_gpu_validation": "docs/porsche-native-lighting-qa.json",
   "matched_views": [
     {
       "path": "screenshots/porsche-native-front.png",
-      "sha256": "0e744128cb6fb634f373347917e43eb57b151e084098d08e29dfd008d65fce60",
+      "sha256": "40c8f07d44d676dc0dea125947ab33886030ca13320ea8dd3d6811b4641c5cf2",
       "baseline_sha256": "42dfbed2aab9f9ad161d4ef0219444763b78400fa81c0383bdf6e5980726dcb7"
     },
     {
       "path": "screenshots/porsche-native-grille-close.png",
-      "sha256": "7bc0ad9d21d9f926373a03db6c54da96b2db5505f97300abfa0695e4dd1abe29",
+      "sha256": "01699c98e678664cf28a60c6fe5f98b9734f0ad8a84ea6b00d0d40f5fa3e5f42",
       "baseline_sha256": "1a4f65945ce0aff3275e17636c1d8e64fa49a7e8a09555ed31ea54e3a15b7729"
     },
     {
       "path": "screenshots/porsche-native-live-cockpit.png",
-      "sha256": "fb474b9aedc9790223082056a8a1d2b022ee39c0ed3b6c2981ef01612650f0c6",
+      "sha256": "a556315cf726d7424b6866d09b737bf95a53d405431d3ed58be33e128fe9fae0",
       "baseline_sha256": "28f402653554749a43b2535ffa73f19676ca2dca292243f9b0a653542ab9ca1f"
     }
   ],
@@ -28,11 +28,12 @@
     "Close grille wires remain prone to subpixel aliasing; filtering and render resolution need further review"
   ],
   "remaining": [
-    "World-to-car occlusion and local ambient occlusion",
+    "World-to-car occlusion and offscreen/reflection AO",
     "Glass refraction, full material-extension interpretation and remaining surface detailing",
     "Full-game performance, load policy, swept clearance and requested final fidelity",
     "Final planar mirror optics and full-game rendering cost"
   ],
   "complete": false,
-  "final_fidelity_verified": false
+  "final_fidelity_verified": false,
+  "contact_shading_review": "docs/porsche-ao-review.json"
 }

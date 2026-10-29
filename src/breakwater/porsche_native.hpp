@@ -69,4 +69,8 @@ void PreparePorscheShadows(bool force=false);
 void BindPorscheWorldSunShadows();
 void EndPorscheWorldSunShadows();
 bool PorscheHasWorldSunShadow(const Vehicle& vehicle);
+void PreparePorscheAmbientOcclusion();
+bool PorscheAODepthPass();
+void BindPorscheAmbientOcclusion(Shader shader);
+void EndPorscheAmbientOcclusion();
 }

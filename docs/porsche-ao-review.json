@@ -1,0 +1,248 @@
+{
+  "reviewed_at": "2026-10-29T00:08:14.996353+00:00",
+  "stage": "Main-view dynamic screen-space contact shading",
+  "baseline_commit": "0d74f38d98b2a8af2f7743dfd112bd9d5ff67169",
+  "executable_sha256": "4890094004d6e14485b956af5742591930fe3e24d1087361c5d5bacf33679c65",
+  "source_hashes": {
+    "src/breakwater/porsche_ao.cpp": "f88052ea278d13b7518b907ddcde1570bf4d593398b27d27798fc7e7aacb0774",
+    "src/breakwater/porsche_ao.hpp": "c37377ec905ad686339fa23f2c2ad41c174bac8fdeebf16e542f46fb394cff5b",
+    "src/breakwater/porsche_native.cpp": "70634cbf3a02ccdac37f7d8c8ae0015b34129bee42a085a62fc45a9ec3702aaf",
+    "src/breakwater/porsche_native.hpp": "10a55f7a764c711567393714ed9371680586b34dc93c1e797fb05ae896116020",
+    "src/breakwater/world.cpp": "d2d74e236c5bb968214c801f235a8df74bd1c76257e33620e794c83e37637883",
+    "assets/porsche/shaders/porsche.fs": "c2722f666adbabecfd0a86f811c17a44a368749f2c23e3c7420897a26ffe9a09",
+    "assets/porsche/shaders/porsche_depth.vs": "aeb5398b9ef7da4e72b99cc31006a203199ae61c52705e598daf288fff1fe5cd",
+    "assets/porsche/shaders/porsche_depth.fs": "710cb06b53a6c1c961e120130e30d7d8e31476c9728432acbec17c1f9222c34f",
+    "assets/porsche/shaders/porsche_ao.fs": "3ae68c070626227e12772410b8b979963fc719314484f1227a3038967a2112ea",
+    "assets/porsche/shaders/porsche_ao_blur.fs": "d3e7cee211e75e36fbe3994ecbe13abbd859c6cb6aa4de70d4cde14fec98e404",
+    "assets/porsche/shaders/porsche_ao_lookup.glsl": "221a1a1622825763a6de1b6ac252a1f527b5d8ee72ed777d6afae69f2466605f"
+  },
+  "reviewer_sha256": "71021a7a8910bb780792e47be43d2013b4d7e078911438bd0cb8f2f942fa261f",
+  "native_qa": {
+    "passed": true,
+    "checks": 125,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "gpu_fixtures": {
+    "passed": true,
+    "geometry_cases": 3,
+    "linear_depth_ray_comparisons": 562,
+    "maximum_linear_depth_error_m": 0.000146866,
+    "maximum_normal_length_error": 5.96046e-08,
+    "finite_surface_pixels": 828057,
+    "minimum_flat_plane_visibility": 1,
+    "minimum_cube_contact_visibility": 0.706935,
+    "cube_contact_pixels_below_095": 2258,
+    "finite_unit_range": true,
+    "main_render_state_restored": true,
+    "scope": "Actual floating normal/linear-depth buffers and AO/blur shaders; independent ray/mesh view-depth checks, near/distant unoccluded planes and a floor/cube contact fixture",
+    "limits": [
+      "Screen-space visibility approximation; this is not an exact hemispherical ray-integral reference or a whole-scene appearance/performance validation"
+    ]
+  },
+  "scene_checks": {
+    "glazing_excluded": true,
+    "visible_steering_changes_depth_and_AO": true,
+    "finite_visibility_and_normals": true,
+    "maximum_unit_normal_error": 1.78814e-07,
+    "surface_pixels": 815630,
+    "pixels_below_095_visibility": 65256,
+    "minimum_visibility": 0.222875,
+    "UI_matrices_restored": true,
+    "scope": "Actual game depth/normal and filtered contact buffers; camera-matched paired exterior/cockpit/open views, windows-only invariance, visible steering motion and preset/state checks",
+    "limits": [
+      "Main-view screen-space approximation; off-screen occluders and AO in planar reflections are not implemented",
+      "Temporal stability, halo control and full-game frame time need further review"
+    ]
+  },
+  "images": [
+    {
+      "path": "screenshots/porsche-ao-exterior-off.png",
+      "sha256": "72af348b74423c0813feeffd8522bab40d106058030b60808d398f517aa74630",
+      "view": "exterior",
+      "contact_shading_enabled": false,
+      "directional_shadows_enabled": true
+    },
+    {
+      "path": "screenshots/porsche-ao-exterior-on.png",
+      "sha256": "0355f58e6f1189dae38f891757b1d8797afcda1f86fe48918441f407d4085730",
+      "view": "exterior",
+      "contact_shading_enabled": true,
+      "directional_shadows_enabled": true
+    },
+    {
+      "path": "screenshots/porsche-ao-cockpit-off.png",
+      "sha256": "53551d0955e1bc5d7dd4b4358a6944551d668ff19a547175628d2a79509c7c04",
+      "view": "cockpit",
+      "contact_shading_enabled": false,
+      "directional_shadows_enabled": true
+    },
+    {
+      "path": "screenshots/porsche-ao-cockpit-on.png",
+      "sha256": "f3587dfc9f67a9497d55a87c34f1bf867438d9bf32aba1f19272c1e7ed2cd0fc",
+      "view": "cockpit",
+      "contact_shading_enabled": true,
+      "directional_shadows_enabled": true
+    },
+    {
+      "path": "screenshots/porsche-ao-open-off.png",
+      "sha256": "f0ac05c7151717de60e9b5ea783dee707bcc2bee1e8aae03e1f2cbd4bf42a771",
+      "view": "open",
+      "contact_shading_enabled": false,
+      "directional_shadows_enabled": true
+    },
+    {
+      "path": "screenshots/porsche-ao-open-on.png",
+      "sha256": "ba26cff457454f97a810f6165251978ded7c0e814ff30b214b72e87973532700",
+      "view": "open",
+      "contact_shading_enabled": true,
+      "directional_shadows_enabled": true
+    },
+    {
+      "path": "screenshots/porsche-ao-plane-fixture.png",
+      "sha256": "949b40695bab3f7c1192f80132af444125896626c46820a05803c10bf16a1b8f",
+      "view": "plane-fixture"
+    },
+    {
+      "path": "screenshots/porsche-ao-far-plane-fixture.png",
+      "sha256": "949b40695bab3f7c1192f80132af444125896626c46820a05803c10bf16a1b8f",
+      "view": "far-plane-fixture"
+    },
+    {
+      "path": "screenshots/porsche-ao-cube-fixture.png",
+      "sha256": "949b40695bab3f7c1192f80132af444125896626c46820a05803c10bf16a1b8f",
+      "view": "cube-fixture"
+    },
+    {
+      "path": "screenshots/porsche-ao-cockpit-visibility.png",
+      "sha256": "949b40695bab3f7c1192f80132af444125896626c46820a05803c10bf16a1b8f",
+      "view": "cockpit-visibility"
+    }
+  ],
+  "matched_image_differences": [
+    {
+      "view": "exterior",
+      "changed_pixels_over_2_levels": 35322,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 52,
+      "maximum_brighten": 2
+    },
+    {
+      "view": "cockpit",
+      "changed_pixels_over_2_levels": 169852,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 59,
+      "maximum_brighten": 2
+    },
+    {
+      "view": "open",
+      "changed_pixels_over_2_levels": 32136,
+      "brightened_pixels_over_2_levels": 0,
+      "maximum_darken": 52,
+      "maximum_brighten": 1
+    }
+  ],
+  "new_checks": [
+    {
+      "name": "floating-AO-depth-normal-plane-and-contact-fixtures",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "main-view-floating-normal-depth-and-AO-targets-ready",
+      "passed": true
+    },
+    {
+      "name": "moving-only-the-glazing-does-not-create-AO-occluders",
+      "passed": true
+    },
+    {
+      "name": "posed-steering-updates-visible-depth-and-contact-shading",
+      "passed": true
+    },
+    {
+      "name": "actual-scene-AO-buffers-have-finite-unit-normals-and-visibility",
+      "passed": true
+    },
+    {
+      "name": "low-preset-computes-contact-shading-at-half-resolution",
+      "passed": true
+    },
+    {
+      "name": "AO-depth-compute-and-blur-restore-main-UI-matrices",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    },
+    {
+      "name": "export-matched-native-contact-shading-view",
+      "passed": true
+    }
+  ],
+  "render_policy": {
+    "normal_depth": "Full-resolution RGBA32F world normals and positive linear view depth; color blending disabled",
+    "geometry": "Actual posed opaque car and world geometry; alpha masks retained; glazing, water and blended layers excluded",
+    "evaluation": "Half-resolution R32F; cosine-hemisphere samples with a normal-facing rejection and 3D distance falloff; reconstruct at the actual sampled depth-texel centres",
+    "high_samples": 32,
+    "low_samples": 16,
+    "radius_m": 0.28,
+    "bias_m": 0.004,
+    "filter": "7-tap horizontal and vertical depth/normal bilateral blur, visibility clamped to [0,1], then a four-sample edge-aware upsample",
+    "application": "Indirect/environment diffuse and roughness-dependent specular visibility; direct sun, local lamps and emission contributions retained",
+    "specular_reference": "https://google.github.io/filament/Filament.html",
+    "samplers": [
+      14,
+      15
+    ],
+    "scope": "Camera-matched main framebuffer while a Porsche is within 24 m; mirror and other offscreen views disabled",
+    "state": "Matrices/framebuffer restored; shader readiness, depth mode and sampler bindings cleared; reflection rendering preserves main adaptive grille state"
+  },
+  "observations": [
+    "Matched cockpit captures show contact shading around vents, steering controls, trim and console overlaps",
+    "Exterior/open views preserve the white/red design while adding depth in local recesses",
+    "Windows-only motion produces identical depth and visibility buffers; steering motion changes both",
+    "The fixture has full visibility on a lone plane and contact occlusion beside a cube",
+    "Geometry, textures, source rig and corrected steering pivot are unchanged"
+  ],
+  "legacy_regression": {
+    "passed": true,
+    "evidence": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.74,total-wear=0.00008251,peak-speed-mps=16.00"
+  },
+  "remaining": [
+    "Offscreen occluders and AO in planar reflections",
+    "Temporal stability, silhouette/halo tuning and full-game frame time/memory review",
+    "World-to-car directional occlusion and remaining glass/material/optical refinements",
+    "Porsche-specific vehicle tuning, whole-model clearance and requested final fidelity"
+  ],
+  "complete": false,
+  "final_fidelity_verified": false
+}

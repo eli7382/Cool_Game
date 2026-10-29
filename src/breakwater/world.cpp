@@ -2,6 +2,7 @@
 #include "f16_netz_mesh_ids.hpp"
 #include "porsche_native.hpp"
 #include "porsche_displays.hpp"
+#include "porsche_ao.hpp"
 
 namespace bw {
 namespace {
@@ -748,6 +749,7 @@ void main(){
 }
 )";
     const char *fs=R"(#version 330
+// PORSCHE_AO_SHARED
 in vec2 uv;in vec3 worldPos;in vec3 worldNormal;in vec4 tint;in float modelHeight;
 uniform sampler2D texture0;uniform sampler2D environmentMap;uniform sampler2D vehicleNormalMap;uniform sampler2D vehicleRoughnessMap;uniform sampler2D vehiclePaintDetailMap;uniform vec4 colDiffuse;uniform vec3 viewPos;uniform vec3 lightDir;uniform vec4 fogColor;uniform vec2 fogRange;uniform float paintTextureBlend;uniform float vehicleSurfaceKind;uniform float heroMaterialPbr;uniform float heroPaintCoat;uniform float heroMaterialMetalness;uniform float heroMaterialRoughness;uniform float heroMicrodetailWeight;uniform float heroDisplayEmission;uniform float heroGlassAlpha;uniform float heroGlassOpacity;uniform vec3 heroGlassTint;uniform vec2 heroUvScale;uniform vec2 heroUvOffset;uniform float customTextureScale;uniform float waterSurface;uniform float waterTime;uniform float waterLevel;uniform float foliageSurface;uniform float terrainSurface;uniform float cockpitFill;uniform vec3 safehouseLightPosition0;uniform vec3 safehouseLightPosition1;uniform float safehouseLightingEnabled;
 out vec4 finalColor;
@@ -794,6 +796,14 @@ float terrainHeightAt(vec2 p){
     return mix(h,6.0+.08*sin(p.y*.025),runway);
 }
 void main(){
+    if(porscheAODepthPass>.5){
+        if(waterSurface>.5||heroGlassAlpha>.5||colDiffuse.a*tint.a<.99)discard;
+        vec2 source=mix(uv,uv*heroUvScale+heroUvOffset,clamp(heroMaterialPbr,0,1));
+        if(foliageSurface>.5&&texture(texture0,source*customTextureScale).a<.48)discard;
+        vec3 normal=worldNormal;if(dot(normal,normal)<.01)normal=cross(dFdx(worldPos),dFdy(worldPos));normal=normalize(normal);
+        if(heroMaterialPbr>.5&&!gl_FrontFacing)normal=-normal;
+        finalColor=vec4(normal,max(-(porscheAOView*vec4(worldPos,1)).z,0));return;
+    }
     if(porscheWorldProbe.w>.5){
         vec3 position=porscheWorldProbe.w<1.5?porscheWorldProbe.xyz:worldPos;
         vec3 normal=porscheWorldProbe.w<1.5?porscheWorldProbeNormal:normalize(worldNormal);
@@ -897,7 +907,8 @@ void main(){
     // automotive gloss while allowing the rescue enamel to reflect the coastal sky.
     float paintFresnel=0.04+0.96*pow(1.0-vh,5.0);
     float paintEnvironment=heroPaintFinish*(surfaceKind>2.5?0.22:(surfaceKind>1.5?0.10:0.15));
-    vec3 color=base*(diffuseAmbient+0.72*nl*carSun+diffuseEnvironment*0.34*heroSurface)+spec*(0.68+0.31*vehicleCoat)*carSun+vec3(coatSpec*(clearCoatResponse*vehicleCoat+heroClearCoat+automotiveClearcoat))*carSun+env*F*(0.05+0.18*metal+environmentResponse*vehicleCoat+heroEnvironment)+env*paintFresnel*paintEnvironment;
+    float ambientVisibility=porscheAmbientVisibility(worldPos,normalize(worldNormal)),specularVisibility=porscheSpecularVisibility(nv,ambientVisibility,rough);
+    vec3 color=base*((diffuseAmbient+diffuseEnvironment*0.34*heroSurface)*ambientVisibility+0.72*nl*carSun)+spec*(0.68+0.31*vehicleCoat)*carSun+vec3(coatSpec*(clearCoatResponse*vehicleCoat+heroClearCoat+automotiveClearcoat))*carSun+env*F*(0.05+0.18*metal+environmentResponse*vehicleCoat+heroEnvironment)*specularVisibility+env*paintFresnel*paintEnvironment*porscheSpecularVisibility(nv,ambientVisibility,coatRoughness);
     // Phosphor is a restrained emissive contribution on the F-16's tiny MFD
     // traces only; it keeps the displays readable without lighting the bezel.
     color+=base*clamp(heroDisplayEmission,0.0,1.25);
@@ -909,11 +920,11 @@ void main(){
         color+=base*vec3(1.38,0.82,0.48)*(attenuation0*(.10+.76*diffuse0)+attenuation1*(.10+.76*diffuse1));
     }
     float wetSun=pow(max(dot(reflect(-l,n),v),0.0),24.0)*terrainWetness*.16*carSun;
-    color=color*mix(1.0,.79,terrainWetness*.40)+vec3(.51,.61,.63)*wetSun+env*terrainWetness*.025;
+    color=color*mix(1.0,.79,terrainWetness*.40)+vec3(.51,.61,.63)*wetSun+env*terrainWetness*.025*specularVisibility;
     // Cabin surfaces receive sky and panel bounce, rather than the exterior sun vector alone.
-    color+=base*clamp(cockpitFill,0.0,1.0)*1.8;
+    color+=base*clamp(cockpitFill,0.0,1.0)*1.8*ambientVisibility;
     float wrapLight=clamp((nl+0.42)/1.42,0.0,1.0),leafBackscatter=pow(max(dot(-n,l),0.0),2.0);
-    vec3 foliageColor=base*(0.53+(0.64*wrapLight+0.23*leafBackscatter)*carSun+0.18*diffuseEnvironment)+spec*0.13*carSun+env*F*0.045;
+    vec3 foliageColor=base*((0.53+0.18*diffuseEnvironment)*ambientVisibility+(0.64*wrapLight+0.23*leafBackscatter)*carSun)+spec*0.13*carSun+env*F*0.045*specularVisibility;
     color=mix(color,foliageColor,clamp(foliageSurface,0.0,1.0));
     float fd=length(viewPos-worldPos),fog=clamp((fd-fogRange.x)/(fogRange.y-fogRange.x),0.0,0.86);
     vec3 fogged=mix(color,pow(max(fogColor.rgb,vec3(0.0)),vec3(2.2)),fog);
@@ -952,7 +963,7 @@ void main(){
     finalColor=vec4(mix(shown,glassReflected,glassMix),surfaceAlpha*tint.a*diffuseAlpha);
 }
 )";
-    return LoadShaderFromMemory(vs,fs);
+    const auto fragment=InjectPorscheAO(fs);return LoadShaderFromMemory(vs,fragment.c_str());
 }
 void TextureModel(Model &model,Texture2D tex,Shader shader){
     if(model.materialCount<1)return;SetMaterialTexture(&model.materials[0],MATERIAL_MAP_DIFFUSE,tex);
@@ -4262,12 +4273,13 @@ void UpdateCamera(){
     }
 }
 void DrawWorld(){
-    UpdateCamera();PreparePorscheDisplays();PreparePorscheShadows();PreparePorscheMirrors();DrawWorldScene();
+    UpdateCamera();PreparePorscheDisplays();PreparePorscheShadows();PreparePorscheAmbientOcclusion();PreparePorscheMirrors();DrawWorldScene();
 }
 void DrawWorldScene(const Matrix* projection){
     if(IsShaderValid(g.worldShader)){const Vector3 light=Norm(V(-.42f,-.88f,.28f));const float fog[4]{.46f,.57f,.59f,1};const Vector2 range=g.graphics==GraphicsMode::High?Vector2{115,460}:Vector2{90,320};SetShaderValue(g.worldShader,g.locLight,&light,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locEye,&g.camera.position,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locFog,fog,SHADER_UNIFORM_VEC4);SetShaderValue(g.worldShader,g.locFogRange,&range,SHADER_UNIFORM_VEC2);}
-    BindPorscheWorldSunShadows();BeginMode3D(g.camera);if(projection)rlSetMatrixProjection(*projection);
-    if(IsModelValid(g.skyDome)&&IsTextureValid(g.skyTex)){
+    BindPorscheAmbientOcclusion(g.worldShader);BindPorscheWorldSunShadows();BeginMode3D(g.camera);if(projection)rlSetMatrixProjection(*projection);
+    if(PorscheAODepthPass())BeginShaderMode(g.worldShader);
+    if(!PorscheAODepthPass()&&IsModelValid(g.skyDome)&&IsTextureValid(g.skyTex)){
         rlDisableBackfaceCulling();DrawModelEx(g.skyDome,g.camera.position,V(1,0,0),54,V(1,1,1),WHITE);rlEnableBackfaceCulling();
     }
     DrawMountains();
@@ -4328,8 +4340,8 @@ void DrawWorldScene(const Matrix* projection){
     if(IsShaderValid(g.worldShader))BeginShaderMode(g.worldShader);
     DrawVehicles();DrawActorModels();DrawParticles();
     if(IsShaderValid(g.worldShader))EndShaderMode();
-    DrawPorscheMirrorTestMarkers();
-    EndMode3D();EndPorscheWorldSunShadows();
+    if(!PorscheAODepthPass())DrawPorscheMirrorTestMarkers();
+    EndMode3D();EndPorscheWorldSunShadows();EndPorscheAmbientOcclusion();
 }
 
 } // namespace bw

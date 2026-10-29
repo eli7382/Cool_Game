@@ -1,4 +1,5 @@
 #version 330
+// PORSCHE_AO_SHARED
 in vec3 worldPosition;
 in vec3 worldNormal;
 in vec2 uv0;
@@ -111,12 +112,13 @@ void main(){
     vec3 diffuse=(1.0-f)*(1.0-metallic)*color.rgb/PI;
     vec3 radiance=(diffuse+spec)*vec3(2.7,2.55,2.35)*nl*sunlight;
     vec3 specularEnergy=integratedSpecular(f0,dfg(nv,rough));
-    vec3 ambientDiffuse=irradiance(n)*color.rgb*(1.0-metallic)*(1.0-clamp(specularEnergy,0.0,1.0));
-    vec3 ambientSpecular=environment(reflect(-v,n),rough)*specularEnergy;
+    float ambientVisibility=porscheAmbientVisibility(worldPosition,geometric);
+    vec3 ambientDiffuse=irradiance(n)*color.rgb*(1.0-metallic)*(1.0-clamp(specularEnergy,0.0,1.0))*ambientVisibility;
+    vec3 ambientSpecular=environment(reflect(-v,n),rough)*specularEnergy*porscheSpecularVisibility(nv,ambientVisibility,rough);
     float cv=max(dot(coatN,v),.001),cl=max(dot(coatN,l),0.0),ch=max(dot(coatN,h),0.0),cr=max(pbr.w,.04);
     float cf=.04+.96*pow(1.0-cv,5.0),coatSpec=distribution(ch,cr)*visibility(cv,cl,cr)*(.04+.96*pow(1.0-vh,5.0));
     float coatEnergy=integratedSpecular(vec3(.04),dfg(cv,cr)).r;
-    radiance=radiance*(1.0-pbr.z*cf)*(1.0-pbr.z*(.04+.96*pow(1.0-cl,5.0)))+(ambientDiffuse+ambientSpecular)*(1.0-pbr.z*coatEnergy)+pbr.z*(coatSpec*cl*vec3(2.7,2.55,2.35)*sunlight+environment(reflect(-v,coatN),cr)*coatEnergy);
+    radiance=radiance*(1.0-pbr.z*cf)*(1.0-pbr.z*(.04+.96*pow(1.0-cl,5.0)))+(ambientDiffuse+ambientSpecular)*(1.0-pbr.z*coatEnergy)+pbr.z*(coatSpec*cl*vec3(2.7,2.55,2.35)*sunlight+environment(reflect(-v,coatN),cr)*coatEnergy*porscheSpecularVisibility(cv,ambientVisibility,cr));
     vec3 emission=emissionFactor;if(emissiveMap.x>.5||liveDisplay>.5)emission*=srgb(texture(texture5,liveDisplay>.5?displayUV:uv(emissiveMap.y)).rgb);
     float alpha=color.a;
     if(optics.x>.01){

@@ -8,7 +8,7 @@ sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 def read(p):return json.loads(p.read_text(encoding='utf-8-sig'))
 def write(p,d):p.write_text(json.dumps(d,indent=2)+'\n',encoding='utf-8')
 qa=read(ROOT/'docs/porsche-native-qa.json');probes=read(ROOT/'docs/porsche-world-shadow-probes.json');car=read(ROOT/'docs/porsche-world-car-shadow-qa.json')
-assert qa['passed'] and qa['checks']==112 and qa['failures']==0
+assert qa['passed'] and qa['checks']>=112 and qa['failures']==0
 assert probes['passed'] and probes['analytic_ray_box_probes']==114 and probes['sloped_plane_pixels']==320
 assert probes['partial_overlap_cases']>0 and probes['maximum_duplicate_shadow_difference']<.01
 assert car['passed'] and car['world_gpu_points']==126 and car['road_mesh_points']>0 and car['terrain_or_floor_mesh_points']>0 and car['partial_filter_edge_points']>0
