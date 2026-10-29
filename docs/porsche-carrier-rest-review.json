@@ -1,0 +1,177 @@
+{
+  "reviewed_at": "2026-10-29T13:17:34.743102+00:00",
+  "change": "Preserve wheel-carrier rest orientation, steering-group origin and authored rear toe when posing the suspension. Source and native implementations now express steering rotation and pivot offset in the carrier coordinate frame.",
+  "trigger": "A front carrier with the authored 1.5-degree camber candidate previously separated the upright from its arm joints during steering. Rebased steering origins and rear alignment exposed additional coordinate-frame and toe-baseline assumptions.",
+  "production_runtime_updated": true,
+  "production_geometry_changed": false,
+  "actual_source_candidate_scope": "Front 1.5-degree source-fitted alignment export; not OEM CAD and not promoted geometry",
+  "synthetic_scope": "Rear 1.5-degree camber, +/-0.003 rad toe, plus four independently shifted/rotated steering frames. These are datum/frame tests with unrefitted rear hardware geometry.",
+  "native_frame_test": {
+    "poses": 190,
+    "frames": 12160,
+    "joint_pairs": 1520,
+    "failures": 0,
+    "unconverged_corners": 0,
+    "maximum_frame_error_m": 2.66560078899e-07,
+    "maximum_joint_gap_m": 2.6697625799e-07,
+    "maximum_rear_toe_delta_error_rad": 3.39932739735e-08,
+    "maximum_solver_residual_m": 9.26718755796e-09,
+    "maximum_tie_error_m": 1.11022302463e-16,
+    "maximum_ARB_error_m": 9.86953960225e-09,
+    "maximum_raw_rest_error_m": 1.20137002568e-07
+  },
+  "old_native_solver_negative_control": {
+    "poses": 190,
+    "frames": 12160,
+    "joint_pairs": 1520,
+    "failures": 4762,
+    "unconverged_corners": 0,
+    "maximum_frame_error_m": 0.00769186299294,
+    "maximum_joint_gap_m": 0.00513761444017,
+    "maximum_rear_toe_delta_error_rad": 0.00108194211498,
+    "maximum_solver_residual_m": 9.16415917422e-09,
+    "maximum_tie_error_m": 1.11022302463e-16,
+    "maximum_ARB_error_m": 9.86953960225e-09,
+    "maximum_raw_rest_error_m": 1.20137002568e-07
+  },
+  "source_reference": {
+    "passed": true,
+    "solver_sha256": "63cf76cdf99454aadb317bdb1b329755bd1a761d58672b42b83f7826cedabf1e",
+    "generator_sha256": "e431ad5ffdff47bd70b36ef8ddf573bbd3c4b05e6e1b052ff7d287e2b1d8152f",
+    "cases": [
+      {
+        "label": "ActualFront",
+        "synthetic_rear_alignment_and_rebased_steer_frames": false,
+        "old_solver": false,
+        "export_sha256": "4ad3ceec9c71e8e9a8d3acbb4778c3fbd3029169d7d56dc9ef19562c0fe3706e",
+        "poses": 95,
+        "frames_per_pose": 64,
+        "maximum_joint_gap_m": 1.2222925852482014e-07,
+        "maximum_rear_toe_delta_error_rad": 3.054719611289558e-08,
+        "maximum_solver_residual_m": 9.164158830746172e-09,
+        "maximum_tie_length_error_m": 1.1102230246251565e-16,
+        "unconverged_corners": 0
+      },
+      {
+        "label": "FourAlignedRebased",
+        "synthetic_rear_alignment_and_rebased_steer_frames": true,
+        "old_solver": false,
+        "export_sha256": "4ad3ceec9c71e8e9a8d3acbb4778c3fbd3029169d7d56dc9ef19562c0fe3706e",
+        "poses": 95,
+        "frames_per_pose": 64,
+        "maximum_joint_gap_m": 1.2210183056482395e-07,
+        "maximum_rear_toe_delta_error_rad": 3.089070874096045e-08,
+        "maximum_solver_residual_m": 9.267212613961462e-09,
+        "maximum_tie_length_error_m": 1.1102230246251565e-16,
+        "unconverged_corners": 0
+      },
+      {
+        "label": "OldActualFront",
+        "synthetic_rear_alignment_and_rebased_steer_frames": false,
+        "old_solver": true,
+        "export_sha256": "4ad3ceec9c71e8e9a8d3acbb4778c3fbd3029169d7d56dc9ef19562c0fe3706e",
+        "poses": 95,
+        "frames_per_pose": 64,
+        "maximum_joint_gap_m": 0.00213266440923834,
+        "maximum_rear_toe_delta_error_rad": 3.054719712597409e-08,
+        "maximum_solver_residual_m": 9.164159135710558e-09,
+        "maximum_tie_length_error_m": 1.1102230246251565e-16,
+        "unconverged_corners": 0
+      },
+      {
+        "label": "OldFourAlignedRebased",
+        "synthetic_rear_alignment_and_rebased_steer_frames": true,
+        "old_solver": true,
+        "export_sha256": "4ad3ceec9c71e8e9a8d3acbb4778c3fbd3029169d7d56dc9ef19562c0fe3706e",
+        "poses": 95,
+        "frames_per_pose": 64,
+        "maximum_joint_gap_m": 0.005137503353487239,
+        "maximum_rear_toe_delta_error_rad": 0.0010819573960381274,
+        "maximum_solver_residual_m": 9.13482162828716e-09,
+        "maximum_tie_length_error_m": 1.1102230246251565e-16,
+        "unconverged_corners": 0
+      }
+    ],
+    "limits": [
+      "Actual front-alignment export is a source-fitted study, not OEM CAD",
+      "Rear alignment, toe and steering-group rebases are synthetic coordinate/datum tests; rear hardware meshes are not refitted",
+      "Finite joint/frame verification, not tire/fender, neighboring hardware or continuous clearance proof"
+    ],
+    "complete": false
+  },
+  "production_source_regressions": [
+    {
+      "level": "hero",
+      "export_sha256": "eaca49d5d1107e0995898a8ef012348ac423499d1d3ad4014a14c34302b1cc56",
+      "poses": 65,
+      "maximum_joint_gap_m": 3.2014117468539496e-08,
+      "solver_sha256": "63cf76cdf99454aadb317bdb1b329755bd1a761d58672b42b83f7826cedabf1e",
+      "report_sha256": "71c04660e12bfd94017d1316a7f8cc305b657035b0193c1d227afbaa9167ed85"
+    },
+    {
+      "level": "near",
+      "export_sha256": "494bfb22107d188b7211e10af46cf3a7867c23f9eabd9af90d202abd52dbad90",
+      "poses": 65,
+      "maximum_joint_gap_m": 3.2014117468539496e-08,
+      "solver_sha256": "63cf76cdf99454aadb317bdb1b329755bd1a761d58672b42b83f7826cedabf1e",
+      "report_sha256": "87de9a3ace515015f39c262e8c6a753ad9c01885c298a7c2979f9c8ced97ace2"
+    },
+    {
+      "level": "far",
+      "export_sha256": "6f1d55c15c7db677907f04e360f2bc5c80a0210839a4c2fcb63ea15a5482723e",
+      "poses": 65,
+      "maximum_joint_gap_m": 3.2014117468539496e-08,
+      "solver_sha256": "63cf76cdf99454aadb317bdb1b329755bd1a761d58672b42b83f7826cedabf1e",
+      "report_sha256": "da560d3724d0eeccef13eb48af2b04f05655dd44f0e6227d043c650c75c519e1"
+    }
+  ],
+  "production_rear_steering_regression": {
+    "poses": 585,
+    "rear_carrier_frames": 1170,
+    "failures": 0,
+    "maximum_toe_error_rad": 1.30385160446e-08,
+    "maximum_solver_residual_m": 9.93497550894e-09,
+    "maximum_tie_length_error_m": 1.11022302463e-16,
+    "maximum_antiroll_length_error_m": 9.76008762699e-09
+  },
+  "native_game_qa": {
+    "passed": true,
+    "checks": 138,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 1.72295e-07,
+    "maximum_radial_drift_m": 4.98954e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 12.0373,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "native_qa_log_sha256": "8c0011b5c0e307fb1549f95d56a6dffd5514a15dd91840bccb773dacd18e6023",
+  "tested_exe_sha256": "e7da863e2defa47bdb457241e00cf36c6eebd3819a9ff8d34e4d840952fa097a",
+  "source_hashes": {
+    "Cool_Game/src/breakwater/porsche_suspension.cpp": "b8d611d477080d06c415329d6477403eb67f3a5685a9f526dbc418ccb5a7e42e",
+    "Porsche_911/viewer/SuspensionKinematics.js": "63cf76cdf99454aadb317bdb1b329755bd1a761d58672b42b83f7826cedabf1e",
+    "Cool_Game/tests/build_porsche_carrier_reference.mjs": "e431ad5ffdff47bd70b36ef8ddf573bbd3c4b05e6e1b052ff7d287e2b1d8152f",
+    "Cool_Game/tests/porsche_carrier_frames.cpp": "5d218f5c363fa16a9fb6a829993ebc7e78b3cc10235630d20810b62d8e18a030",
+    "Cool_Game/tests/porsche_carrier_reference.hpp": "405fe51b52de02724cc8fc5d892853524dc29a7bfdcd8aaa3be5dfd1975481ae"
+  },
+  "reproduce": [
+    "Generate the frozen carrier reference with node tests/build_porsche_carrier_reference.mjs ../Porsche_911, when the source workspace is available. The committed header permits native tests without that workspace.",
+    "Compile tests/porsche_carrier_frames.cpp with src/breakwater/porsche_rig.cpp and src/breakwater/porsche_suspension.cpp, C++20 and the raylib 5.5 headers. It needs no graphics window.",
+    "Build and run game.exe --qa-porsche for full native integration checks."
+  ],
+  "limits": [
+    "Finite numerical joint/frame verification; the sub-micrometre errors describe transform agreement, not physical manufacturing accuracy.",
+    "Rear alignment and origin rebases are synthetic tests, not an authored rear suspension replacement.",
+    "Tilted candidate geometry remains outside production; body, tire, trim and neighboring hardware clearance are not certified.",
+    "Front tire/fender contact under steered compression remains unresolved.",
+    "Requested Forza-level visual quality, full-game performance and GitHub publication remain incomplete."
+  ],
+  "complete": false
+}

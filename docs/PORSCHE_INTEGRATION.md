@@ -33,6 +33,10 @@ rear shafts use the source's small plunge approximation, and four springs
 compress/extend through their exported morph targets. The physics contact
 positions now match the stock wheel centres, and each corner drives its own
 named wheel. The visual travel envelope is +/- 50 mm.
+The rig supports authored carrier tilt and independently rebased steering-group
+origins. Rear steering preserves the authored toe and adds the requested steering
+change. Tilted candidate rigs have separate frame/joint tests; their geometry
+has not replaced the current production alignment.
 
 The steering wheel rotates about its fitted horn-hub axis at 14.1 times the
 front steering angle. This holds the published centre ratio constant; the OEM

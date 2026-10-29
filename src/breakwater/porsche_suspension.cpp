@@ -43,6 +43,7 @@ struct Corner {
     bool front{},drive{};
     V3 A,B,C,D,K,U,E,V,F,lowerAxis,upperAxis,offset,upright,tieA,tieB,tieDirection,driveA,driveB,driveDirection,damperTop,damperBottom,damperDirection,arbA,arbB,arbPivot,arbDirection;
     double lowerLength{},upperLength{},uprightLength{},trailingLength{},fourthLength{},tieLength{},driveLength{},arbLength{},arbAngle{};
+    Q restCarrier;V3 restWheelNormal;double restToe{};
     std::array<double,5> angles{};
     porsche_data::SpringSpec spring{};
 };
@@ -63,10 +64,10 @@ Pose Evaluate(const Corner& e,const std::array<double,5>& x,double travel,double
         p.hub=e.K+V3{x[0],travel,x[1]};const Q total=Q::YXZ(x[2],x[3],x[4]);
         auto attach=[&](V3 rest){return total.Rotate(rest-e.K)+p.hub;};
         p.C=attach(e.C);p.D=attach(e.D);p.E=attach(e.E);p.F=attach(e.F);
-        const V3 normal=total.Rotate({1,0,0});const double toe=std::atan2(-normal.z,normal.x);
+        const V3 normal=total.Rotate(e.restWheelNormal);const double toe=std::atan2(-normal.z,normal.x),toeError=std::remainder(toe-e.restToe-steering,2*3.14159265358979323846);
         p.camber=total*p.steer.Inverse();p.lower=Q::FromTo((e.C-e.A).Unit(),(p.C-e.A).Unit());p.upper=Q::FromTo((e.D-e.B).Unit(),(p.D-e.B).Unit());
         p.trailing=Q::FromTo((e.E-e.U).Unit(),(p.E-e.U).Unit());p.fourth=Q::FromTo((e.F-e.V).Unit(),(p.F-e.V).Unit());
-        p.residual={(p.C-e.A).Length()-e.lowerLength,(p.D-e.B).Length()-e.upperLength,(p.E-e.U).Length()-e.trailingLength,(p.F-e.V).Length()-e.fourthLength,(toe-steering)*.3};
+        p.residual={(p.C-e.A).Length()-e.lowerLength,(p.D-e.B).Length()-e.upperLength,(p.E-e.U).Length()-e.trailingLength,(p.F-e.V).Length()-e.fourthLength,toeError*.3};
     }
     return p;
 }
@@ -103,6 +104,9 @@ PorscheSuspension::PorscheSuspension(PorscheRig& rig,std::span<const porsche_dat
     const std::array<const char*,4> keys{"FL","FR","RL","RR"};
     for(int i=0;i<4;++i){auto& e=state->corners[i];e.key=keys[i];e.front=i<2;const auto& k=e.key;
         e.A=point("LowerArm_"+k);e.B=point("UpperArm_"+k);e.C=point("LowerBall_"+k);e.D=point("UpperBall_"+k);e.K=point("Suspension_"+k);
+        // Cache physical rest alignment; rear steering remains a delta from authored toe.
+        const Quaternion carrier=QuaternionNormalize(QuaternionFromMatrix(rig.source[rig.Find("Suspension_"+k)].local));e.restCarrier={carrier.x,carrier.y,carrier.z,carrier.w};e.restCarrier=e.restCarrier.Unit();
+        const Matrix wheel=MatrixMultiply(rig.World(rig.Find("WheelSpin_"+k)),inverse);e.restWheelNormal=V3{wheel.m0,wheel.m1,wheel.m2}.Unit();e.restToe=std::atan2(-e.restWheelNormal.z,e.restWheelNormal.x);
         e.lowerAxis=(point("LowerAxis_"+k)-e.A).Unit();e.upperAxis=(point("UpperAxis_"+k)-e.B).Unit();e.lowerLength=(e.C-e.A).Length();e.upperLength=(e.D-e.B).Length();e.upright=e.D-e.C;e.uprightLength=e.upright.Length();e.offset=e.K-e.C;
         if(!e.front){e.U=point("TrailingArm_"+k);e.E=point("TrailingOuter_"+k);e.V=point("UpperTrailingArm_"+k);e.F=point("UpperTrailingOuter_"+k);e.trailingLength=(e.E-e.U).Length();e.fourthLength=(e.F-e.V).Length();}
         e.tieA=point("TieInner_"+k);e.tieB=point("TieOuter_"+k);e.tieDirection=(e.tieB-e.tieA).Unit();e.tieLength=(e.tieB-e.tieA).Length();
@@ -123,8 +127,10 @@ void PorscheSuspension::Update(const PorscheControls& controls){
         e.angles=solution.x;const auto& p=solution.pose;const auto& k=e.key;
         setRotation("LowerArm_"+k,p.lower);setRotation("UpperArm_"+k,p.upper);if(!e.front){setRotation("TrailingArm_"+k,p.trailing);setRotation("UpperTrailingArm_"+k,p.fourth);}
         setPosition("Suspension_"+k,p.camber.Rotate(e.offset)+p.C);setRotation("Suspension_"+k,p.camber);
-        const V3 pivot=e.C-e.K;const Matrix rest=r.source[r.Find((e.front?"Steer_":"RearSteer_")+k)].local;
-        setPosition((e.front?"Steer_":"RearSteer_")+k,V3{rest.m12,rest.m13,rest.m14}+pivot-p.steer.Rotate(pivot));setRotation((e.front?"Steer_":"RearSteer_")+k,p.steer);
+        const Matrix rest=r.source[r.Find((e.front?"Steer_":"RearSteer_")+k)].local;const V3 restPosition{rest.m12,rest.m13,rest.m14};
+        // Express both rotation and pivot offset in the authored carrier frame.
+        const Q localSteer=e.restCarrier.Inverse()*p.steer*e.restCarrier;const V3 pivot=e.restCarrier.Inverse().Rotate(e.C-e.K)-restPosition;
+        setPosition((e.front?"Steer_":"RearSteer_")+k,restPosition+pivot-localSteer.Rotate(pivot));setRotation((e.front?"Steer_":"RearSteer_")+k,localSteer);
         auto& d=r.diagnostics[i];d={};d.residual=solution.error;d.requestedTravel=travel;d.achievedTravel=p.hub.y-e.K.y;d.converged=solution.error<1e-6;
     }
     r.Refresh();const Matrix inverse=MatrixInvert(r.World(state->frame));
