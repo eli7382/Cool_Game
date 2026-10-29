@@ -1,0 +1,37 @@
+{
+  "reviewed_at": "2026-10-29T07:41:18.019734+00:00",
+  "change": "Animate each Porsche wheel from its contact velocity projected onto the steered rolling direction, using body forward speed, lateral velocity, yaw rate and exported wheel contact locations.",
+  "source_sha256": "345a703dd74cc6fcee95f25b302d741f9eb53d60a9c8a2910cd8284ec2303dc7",
+  "executable_sha256": "eca0ee96e87aeed49a0541bc834d3f9985c88e5ade9ae72266ea8ee8a3de83d5",
+  "native_qa": {
+    "passed": true,
+    "checks": 129,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 9.97313,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "new_production_update_checks": [
+    "Straight distance agrees with front/rear radii",
+    "Outside wheel extra distance agrees with axle track in a turn",
+    "Reverse motion reverses wheel rotation",
+    "Steered rolling direction includes projected lateral velocity"
+  ],
+  "legacy_thermal_regression": "1.54,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=20.73,total-wear=0.00008172,peak-speed-mps=16.00",
+  "limits": [
+    "Kinematic rolling animation, not wheel inertia, wheelspin or lockup simulation",
+    "Uses planar game body motion and current approximate axle steering",
+    "Finite fixtures do not prove whole-model clearance or final visual quality"
+  ],
+  "complete": false
+}

@@ -596,7 +596,22 @@ void UpdatePorscheControls(Vehicle& v,float dt,bool occupied){
     const bool airbrake=occupied&&v.porscheBrake>.1f&&fabsf(v.speed)>12;
     v.porscheAirbrake=Lerp(v.porscheAirbrake,airbrake?1.0f:0.0f,blend);v.porscheAero=Lerp(v.porscheAero,v.porscheDRS&&!airbrake?1.0f:0.0f,blend);
     v.porschePaddleL=std::max(0.0f,v.porschePaddleL-dt*6);v.porschePaddleR=std::max(0.0f,v.porschePaddleR-dt*6);
-    if(occupied)for(int i=0;i<4;++i)v.porscheWheelAngles[i]=std::remainder(v.porscheWheelAngles[i]+v.speed*dt/(i<2?.35025f:.3672f),2*PI);
+    if(occupied){
+        // Project rigid-body contact velocity onto each steered wheel's rolling
+        // direction. Outside wheels cover more distance during a turn.
+        const auto contacts=CarWheelContactOffsets(v);
+        constexpr std::array<int,4> contactForWheel{3,2,1,0}; // FL, FR, RL, RR
+        const float lateral=Vector3DotProduct(v.velocity,Right(v.yaw));
+        const auto controls=Controls(v,true);
+        for(int i=0;i<4;++i){
+            const Vector2 contact=contacts[contactForWheel[i]];
+            const float angle=i<2?controls.steering:controls.rearSteering;
+            const float rolling=(v.speed-v.yawRate*contact.x)*cosf(angle)+
+                                (lateral+v.yawRate*contact.y)*sinf(angle);
+            const float delta=rolling*std::max(0.0f,dt)/(i<2?.35025f:.3672f);
+            if(std::isfinite(delta))v.porscheWheelAngles[i]=std::remainder(v.porscheWheelAngles[i]+delta,2*PI);
+        }
+    }
     if(!occupied)v.porscheBrake=v.porscheThrottle=0;
 }
 void SetPorscheChrono(Vehicle& v,bool running,bool reset){
@@ -856,6 +871,20 @@ bool RunPorscheQA(){
     g.qaPorscheThrottle=g.qaPorscheSteering=0;g.qaPorscheBrake=1;for(int i=0;i<240;++i)UpdateGameplay(1.0f/120);
     check(fabsf(g.car.speed)<fabsf(acceleratedSpeed),"game-brake-reduces-speed");check(std::isfinite(g.car.p.x)&&std::isfinite(g.car.yaw),"finite-game-pose");
     Vehicle parkedTest=initial;parkedTest.speed=2;const auto parkedAngles=parkedTest.porscheWheelAngles;UpdatePorscheControls(parkedTest,.5f,false);check(parkedTest.porscheWheelAngles==parkedAngles,"parked-wheel-angles-remain-still");
+    // Exercise the production animation update, with distances small enough
+    // that angle wrapping cannot hide a wheel-order or direction error.
+    Vehicle rollingTest=initial;rollingTest.porscheWheelAngles.fill(0);rollingTest.steer=0;rollingTest.yaw=0;rollingTest.yawRate=0;rollingTest.speed=10;rollingTest.velocity=V(0,0,10);
+    UpdatePorscheControls(rollingTest,.01f,true);
+    check(fabsf(rollingTest.porscheWheelAngles[0]*.35025f-.1f)<1e-6f&&fabsf(rollingTest.porscheWheelAngles[2]*.3672f-.1f)<1e-6f,"wheel-spin-matches-straight-contact-distance");
+    rollingTest.porscheWheelAngles.fill(0);rollingTest.yawRate=1;
+    UpdatePorscheControls(rollingTest,.01f,true);
+    check(fabsf((rollingTest.porscheWheelAngles[1]-rollingTest.porscheWheelAngles[0])*.35025f-.0163f)<1e-6f&&fabsf((rollingTest.porscheWheelAngles[3]-rollingTest.porscheWheelAngles[2])*.3672f-.01582f)<1e-6f,"outside-wheels-roll-the-extra-track-distance");
+    rollingTest.porscheWheelAngles.fill(0);rollingTest.yawRate=0;rollingTest.speed=-10;rollingTest.velocity=V(0,0,-10);
+    UpdatePorscheControls(rollingTest,.01f,true);
+    check(fabsf(rollingTest.porscheWheelAngles[0]*.35025f+.1f)<1e-6f&&fabsf(rollingTest.porscheWheelAngles[2]*.3672f+.1f)<1e-6f,"reverse-contact-distance-reverses-wheel-spin");
+    rollingTest.porscheWheelAngles.fill(0);rollingTest.speed=10;rollingTest.velocity=V(4,0,10);rollingTest.steer=1;rollingTest.steeringHealth=1;
+    UpdatePorscheControls(rollingTest,.01f,true);
+    check(fabsf(rollingTest.porscheWheelAngles[0]*.35025f-.01f*(10*cosf(.55f)+4*sinf(.55f)))<1e-6f,"steered-wheel-spin-projects-lateral-contact-velocity");
     g.car=initial;g.qaPorscheThrottle=g.qaPorscheBrake=g.qaPorscheSteering=0;g.qaCaptureActive=true;g.qaCaptureFront=true;g.cameraDistance=g.cameraActualDistance=5.8f;g.cameraInitialized=false;
     auto capture=[&](const char* path){
         for(int frame=0;frame<2;++frame){BeginDrawing();ClearBackground({94,123,132,255});DrawWorld();rlDrawRenderBatchActive();if(frame==1){Image image=LoadImageFromScreen();check(image.data&&ExportImage(image,path),path);UnloadImage(image);}EndDrawing();}
