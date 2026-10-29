@@ -22,7 +22,7 @@ namespace bw {
 namespace {
 constexpr int StageCount=static_cast<int>(PorscheProfileStage::Count);
 constexpr int QueryCount=2*(StageCount+1),Warmup=24,Samples=96;
-constexpr const char* StageNames[]{"simulation","camera","displays","sun_shadows","ambient_total","ambient_normal_depth","ambient_evaluation","ambient_filter","mirrors","scene_color","scene_static","scene_vegetation","scene_actors","scene_props","scene_vehicles","player_porsche","ui","scene_extra_car","scene_player_car","scene_plane","scene_helicopter"};
+constexpr const char* StageNames[]{"simulation","camera","displays","sun_shadows","ambient_total","ambient_normal_depth","ambient_evaluation","ambient_filter","mirrors","scene_color","scene_static","scene_vegetation","scene_actors","scene_props","scene_vehicles","player_porsche","ui","scene_extra_car","scene_player_car","scene_plane","scene_helicopter","building_shadows"};
 static_assert(std::size(StageNames)==StageCount);
 struct Frame {
     std::array<unsigned int,QueryCount> queries{};

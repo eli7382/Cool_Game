@@ -10,6 +10,7 @@
 #include "porsche_front_steering.hpp"
 #include "porsche_profile.hpp"
 #include <cstring>
+#include <cstdlib>
 #include <memory>
 #include <stdexcept>
 #include <unordered_set>
@@ -767,9 +768,11 @@ bool PorscheHasWorldSunShadow(const Vehicle& vehicle){
 void PreparePorscheShadows(bool force){
     if(!porscheReady||rlGetActiveFramebuffer()!=0||mirrorPass)return;const Matrix savedProjection=rlGetMatrixProjection(),savedModelview=rlGetMatrixModelview();const std::array<Vehicle*,2> cars{&g.car,&g.extraCar};
     BindBuildingShadow(nullptr);
+    {PorscheProfileScope buildingStage(PorscheProfileStage::BuildingShadows);
+    const char* buildingOption=std::getenv("BW_PORSCHE_BUILDING_SHADOWS");const bool buildingEnabled=!buildingOption||std::strcmp(buildingOption,"0")!=0;
     for(int slot=0;slot<2;++slot){
         const Vehicle& v=*cars[slot];auto& map=buildingShadows[slot];map.ready=false;
-        if(!v.isPorsche||Vector3Distance(v.p,g.camera.position)>65||!map.Ensure(g.graphics==GraphicsMode::High?1024:512))continue;
+        if(!buildingEnabled||!v.isPorsche||Vector3Distance(v.p,g.camera.position)>65||!map.Ensure(g.graphics==GraphicsMode::High?1024:512))continue;
         const Vector3 centre=Add(v.p,V(0,.7f,0));const auto sun=PorscheSunDirection();
         map.camera={Add(centre,Mul(sun,40)),centre,V(0,1,0),BuildingShadowSpan,CAMERA_ORTHOGRAPHIC};
         map.view=MatrixLookAt(map.camera.position,map.camera.target,map.camera.up);
@@ -778,6 +781,7 @@ void PreparePorscheShadows(bool force){
         BeginTextureMode(map.target);rlEnableDepthMask();ClearBackground(WHITE);rlDisableBackfaceCulling();rlDisableColorBlend();
         DrawStaticWorldSunDepth(map.camera,map.projection);
         rlEnableColorBlend();rlEnableBackfaceCulling();EndTextureMode();map.ready=true;++map.updates;
+    }
     }
     for(int slot=0;slot<2;++slot){const Vehicle& v=*cars[slot];auto& shadow=sunShadows[slot];const float distance=Vector3Distance(v.p,g.camera.position);if(!v.isPorsche||distance>65){shadow.ready=false;continue;}
         const int level=distance<12?0:distance<35?1:2,size=g.graphics==GraphicsMode::High?2048:1024;

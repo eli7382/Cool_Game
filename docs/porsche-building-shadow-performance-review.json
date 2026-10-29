@@ -1,0 +1,431 @@
+{
+  "source_reports": [
+    {
+      "path": "docs\\porsche-building-shadow-off-performance.json",
+      "sha256": "b3d715c469a0a4c4622324af8bcbeb97911144061034dbbe3ed09f1d92976fa2"
+    },
+    {
+      "path": "docs\\porsche-building-shadow-on-performance.json",
+      "sha256": "7749ca3075445b98ed4325b600074248efa91e7c9b0f48d71cdcccdde7af74ff"
+    }
+  ],
+  "scope": "One sequential OFF then ON pair, same executable, BW_PORSCHE_BUILDING_SHADOWS=0/1; hidden instrumented eight-case benchmark, 24 warmup and 96 sampled frames per case",
+  "identical_all_driving_traces": true,
+  "cases": [
+    {
+      "name": "low-chase-ao-off",
+      "high": false,
+      "cockpit": false,
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "off_p50": 36.50785,
+        "on_p50": 67.052,
+        "delta_p50": 30.54415000000001
+      },
+      "gpu_frame_ms": {
+        "off_p50": 21.178368,
+        "on_p50": 51.180032,
+        "delta_p50": 30.001663999999998
+      },
+      "building_stage": {
+        "off": {
+          "cpu_submit": {
+            "mean": 0.017425,
+            "p50": 0.0091,
+            "p95": 0.040975,
+            "p99": 0.06989,
+            "max": 0.0735
+          },
+          "gpu_elapsed": {
+            "mean": 0.00212266667,
+            "p50": 0.001024,
+            "p95": 0.004096,
+            "p99": 0.006144,
+            "max": 0.006144
+          }
+        },
+        "on": {
+          "cpu_submit": {
+            "mean": 5.75446563,
+            "p50": 4.8514,
+            "p95": 10.093075,
+            "p99": 16.532705,
+            "max": 17.2757
+          },
+          "gpu_elapsed": {
+            "mean": 3.34989867,
+            "p50": 0.949248,
+            "p95": 25.70112,
+            "p99": 34.0177408,
+            "max": 38.38464
+          }
+        }
+      }
+    },
+    {
+      "name": "low-chase-ao-on",
+      "high": false,
+      "cockpit": false,
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "off_p50": 63.86125,
+        "on_p50": 105.2931,
+        "delta_p50": 41.43185
+      },
+      "gpu_frame_ms": {
+        "off_p50": 49.887232,
+        "on_p50": 87.234048,
+        "delta_p50": 37.346816000000004
+      },
+      "building_stage": {
+        "off": {
+          "cpu_submit": {
+            "mean": 0.009565625,
+            "p50": 0.0088,
+            "p95": 0.012975,
+            "p99": 0.0287,
+            "max": 0.0648
+          },
+          "gpu_elapsed": {
+            "mean": 0.00173866667,
+            "p50": 0.001024,
+            "p95": 0.006144,
+            "p99": 0.008448,
+            "max": 0.013312
+          }
+        },
+        "on": {
+          "cpu_submit": {
+            "mean": 6.401725,
+            "p50": 5.24345,
+            "p95": 11.86495,
+            "p99": 18.77003,
+            "max": 24.1761
+          },
+          "gpu_elapsed": {
+            "mean": 2.18996267,
+            "p50": 0.958976,
+            "p95": 17.077504,
+            "p99": 25.5578624,
+            "max": 31.955968
+          }
+        }
+      }
+    },
+    {
+      "name": "low-cockpit-ao-on",
+      "high": false,
+      "cockpit": true,
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "off_p50": 41.8754,
+        "on_p50": 59.9031,
+        "delta_p50": 18.027700000000003
+      },
+      "gpu_frame_ms": {
+        "off_p50": 32.285696,
+        "on_p50": 47.593984,
+        "delta_p50": 15.308287999999997
+      },
+      "building_stage": {
+        "off": {
+          "cpu_submit": {
+            "mean": 0.00820625,
+            "p50": 0.00845,
+            "p95": 0.0101,
+            "p99": 0.014845,
+            "max": 0.0214
+          },
+          "gpu_elapsed": {
+            "mean": 0.001504,
+            "p50": 0.001024,
+            "p95": 0.00512,
+            "p99": 0.00512,
+            "max": 0.00512
+          }
+        },
+        "on": {
+          "cpu_submit": {
+            "mean": 4.72103021,
+            "p50": 4.40495,
+            "p95": 6.82655,
+            "p99": 9.083605,
+            "max": 9.9748
+          },
+          "gpu_elapsed": {
+            "mean": 0.936384,
+            "p50": 0.403456,
+            "p95": 0.68096,
+            "p99": 14.4311296,
+            "max": 26.881024
+          }
+        }
+      }
+    },
+    {
+      "name": "low-cockpit-ao-off",
+      "high": false,
+      "cockpit": true,
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "off_p50": 26.53095,
+        "on_p50": 49.3586,
+        "delta_p50": 22.827650000000002
+      },
+      "gpu_frame_ms": {
+        "off_p50": 17.107968,
+        "on_p50": 34.597376,
+        "delta_p50": 17.489407999999997
+      },
+      "building_stage": {
+        "off": {
+          "cpu_submit": {
+            "mean": 0.008375,
+            "p50": 0.0084,
+            "p95": 0.0104,
+            "p99": 0.01686,
+            "max": 0.018
+          },
+          "gpu_elapsed": {
+            "mean": 0.00168533333,
+            "p50": 0.001024,
+            "p95": 0.006144,
+            "p99": 0.0082944,
+            "max": 0.01024
+          }
+        },
+        "on": {
+          "cpu_submit": {
+            "mean": 5.65566354,
+            "p50": 5.0417,
+            "p95": 9.753425,
+            "p99": 14.14839,
+            "max": 15.6606
+          },
+          "gpu_elapsed": {
+            "mean": 1.19495467,
+            "p50": 0.393216,
+            "p95": 1.512192,
+            "p99": 18.2086144,
+            "max": 25.423872
+          }
+        }
+      }
+    },
+    {
+      "name": "high-chase-ao-on",
+      "high": true,
+      "cockpit": false,
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "off_p50": 64.6859,
+        "on_p50": 71.58525,
+        "delta_p50": 6.899349999999998
+      },
+      "gpu_frame_ms": {
+        "off_p50": 51.953152,
+        "on_p50": 63.654912,
+        "delta_p50": 11.70176
+      },
+      "building_stage": {
+        "off": {
+          "cpu_submit": {
+            "mean": 0.00896145833,
+            "p50": 0.0085,
+            "p95": 0.0141,
+            "p99": 0.03462,
+            "max": 0.0369
+          },
+          "gpu_elapsed": {
+            "mean": 0.001632,
+            "p50": 0.001024,
+            "p95": 0.00512,
+            "p99": 0.0065024,
+            "max": 0.013312
+          }
+        },
+        "on": {
+          "cpu_submit": {
+            "mean": 3.88143229,
+            "p50": 3.8208,
+            "p95": 5.803975,
+            "p99": 6.460785,
+            "max": 6.6486
+          },
+          "gpu_elapsed": {
+            "mean": 2.73581867,
+            "p50": 0.380416,
+            "p95": 19.21152,
+            "p99": 21.5765504,
+            "max": 22.760448
+          }
+        }
+      }
+    },
+    {
+      "name": "high-chase-ao-off",
+      "high": true,
+      "cockpit": false,
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "off_p50": 38.92265,
+        "on_p50": 74.6086,
+        "delta_p50": 35.68595
+      },
+      "gpu_frame_ms": {
+        "off_p50": 26.581504,
+        "on_p50": 57.266688,
+        "delta_p50": 30.685184000000003
+      },
+      "building_stage": {
+        "off": {
+          "cpu_submit": {
+            "mean": 0.00982604167,
+            "p50": 0.0084,
+            "p95": 0.0146,
+            "p99": 0.050205,
+            "max": 0.0864
+          },
+          "gpu_elapsed": {
+            "mean": 0.00154666667,
+            "p50": 0.001024,
+            "p95": 0.00512,
+            "p99": 0.0065536,
+            "max": 0.014336
+          }
+        },
+        "on": {
+          "cpu_submit": {
+            "mean": 6.14543854,
+            "p50": 4.9635,
+            "p95": 12.6829,
+            "p99": 17.949705,
+            "max": 20.5946
+          },
+          "gpu_elapsed": {
+            "mean": 2.28244267,
+            "p50": 0.970752,
+            "p95": 6.987776,
+            "p99": 30.3289344,
+            "max": 37.607424
+          }
+        }
+      }
+    },
+    {
+      "name": "high-cockpit-ao-off",
+      "high": true,
+      "cockpit": true,
+      "ao": false,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "off_p50": 36.2289,
+        "on_p50": 61.22735,
+        "delta_p50": 24.99845
+      },
+      "gpu_frame_ms": {
+        "off_p50": 26.006016,
+        "on_p50": 43.940352,
+        "delta_p50": 17.934336
+      },
+      "building_stage": {
+        "off": {
+          "cpu_submit": {
+            "mean": 0.0105322917,
+            "p50": 0.0087,
+            "p95": 0.013625,
+            "p99": 0.06535,
+            "max": 0.1252
+          },
+          "gpu_elapsed": {
+            "mean": 0.00154666667,
+            "p50": 0.001024,
+            "p95": 0.004352,
+            "p99": 0.006144,
+            "max": 0.006144
+          }
+        },
+        "on": {
+          "cpu_submit": {
+            "mean": 5.96898437,
+            "p50": 5.22455,
+            "p95": 9.642225,
+            "p99": 13.345815,
+            "max": 16.4469
+          },
+          "gpu_elapsed": {
+            "mean": 0.828085333,
+            "p50": 0.415232,
+            "p95": 1.00736,
+            "p99": 2.7301376,
+            "max": 28.59008
+          }
+        }
+      }
+    },
+    {
+      "name": "high-cockpit-ao-on",
+      "high": true,
+      "cockpit": true,
+      "ao": true,
+      "identical_driving_trace": true,
+      "frame_wall_ms": {
+        "off_p50": 56.8462,
+        "on_p50": 71.54195,
+        "delta_p50": 14.695749999999997
+      },
+      "gpu_frame_ms": {
+        "off_p50": 44.003328,
+        "on_p50": 58.878976,
+        "delta_p50": 14.875647999999998
+      },
+      "building_stage": {
+        "off": {
+          "cpu_submit": {
+            "mean": 0.00924791667,
+            "p50": 0.0089,
+            "p95": 0.01315,
+            "p99": 0.02437,
+            "max": 0.0276
+          },
+          "gpu_elapsed": {
+            "mean": 0.00148266667,
+            "p50": 0.001024,
+            "p95": 0.004096,
+            "p99": 0.00512,
+            "max": 0.00512
+          }
+        },
+        "on": {
+          "cpu_submit": {
+            "mean": 5.29557917,
+            "p50": 4.6758,
+            "p95": 9.63965,
+            "p99": 10.6713,
+            "max": 11.9177
+          },
+          "gpu_elapsed": {
+            "mean": 1.63562667,
+            "p50": 0.401408,
+            "p95": 10.441728,
+            "p99": 21.0558464,
+            "max": 38.670336
+          }
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Per-stage flushing and GPU timestamps add overhead",
+    "Single sequential pair can contain warmup, thermal and background-load differences; repeat before generalizing",
+    "This is not uninstrumented visible-game FPS or a cross-device guarantee",
+    "Cases follow the existing base-area route, not a dedicated hangar shadow-edge route"
+  ],
+  "complete": false
+}

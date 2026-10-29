@@ -61,3 +61,31 @@ Environment reflections and diffuse sky illumination remain present in shade;
 the building map modulates direct sun only. The ground does not yet receive
 this building map. Appearance under other buildings, moving-shadow stability,
 caster-volume boundaries and performance still need review.
+
+Performance diagnostics
+-----------------------
+
+`BW_PORSCHE_BUILDING_SHADOWS=0` disables building-map generation for a process;
+unset or any other value leaves it enabled. This is a diagnostic environment
+switch, not a gameplay setting. The explicit performance run now records a
+`building_shadows` CPU/GPU stage nested within the existing `sun_shadows`
+stage. Its scope includes both car slots, target preparation and building
+depth submissions. It excludes the extra car-shader lookup cost in color and
+mirror passes; whole-frame comparisons include that cost but also run-to-run
+noise. These timers are inactive during normal gameplay.
+
+`scripts/review_building_shadow_performance.py` compares the saved off/on
+reports, verifies matching benchmark settings and checks every recorded speed,
+steering and position sample for equality. Use its stated limits when reading
+the results; a single instrumented pair is not a general performance claim.
+
+The first sequential pair on the RTX 3050 Laptop at 1280x720 records identical
+driving traces in all eight cases. In the four AO-on cases, median building
+stage CPU submission is 3.8208–5.24345 ms and median GPU elapsed time is
+0.380416–0.958976 ms. Whole-frame medians are worse with shadows enabled,
+by 6.90–41.43 ms in those cases. That larger difference includes timing noise
+and other stage variation, so it is not assigned wholly to the new pass.
+The direct stage cost is still material: reducing needless building
+submissions and map refreshes is required next. These base-route captures
+do not replace a near-hangar movement/performance test or uninstrumented
+normal-game timing.
