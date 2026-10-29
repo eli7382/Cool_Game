@@ -71,6 +71,7 @@ bool PorscheMirrorInView(Vector3 point,float radius);
 PorscheMirrorStats GetPorscheMirrorStats();
 void DrawPorscheMirrorTestMarkers();
 void PreparePorscheShadows(bool force=false);
+int PorscheBuildingShadowUpdates();
 void BindPorscheWorldSunShadows();
 void EndPorscheWorldSunShadows();
 bool PorscheHasWorldSunShadow(const Vehicle& vehicle);

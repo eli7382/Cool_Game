@@ -9,6 +9,8 @@
 #include "porsche_rear_steering.hpp"
 #include "porsche_front_steering.hpp"
 #include "porsche_profile.hpp"
+#include "porsche_brake_hold.hpp"
+#include "car_corner_loads.hpp"
 #include <cstring>
 #include <cstdlib>
 #include <memory>
@@ -784,6 +786,7 @@ bool PorscheHasWorldSunShadow(const Vehicle& vehicle){
     const int slot=&vehicle==&g.car?0:&vehicle==&g.extraCar?1:-1;
     return vehicle.isPorsche&&slot>=0&&sunShadows[slot].ready&&CacheWorldShadowLocations();
 }
+int PorscheBuildingShadowUpdates(){return buildingShadows[0].updates+buildingShadows[1].updates;}
 void PreparePorscheShadows(bool force){
     if(!porscheReady||rlGetActiveFramebuffer()!=0||mirrorPass)return;const Matrix savedProjection=rlGetMatrixProjection(),savedModelview=rlGetMatrixModelview();const std::array<Vehicle*,2> cars{&g.car,&g.extraCar};
     BindBuildingShadow(nullptr);
@@ -791,13 +794,16 @@ void PreparePorscheShadows(bool force){
     {PorscheProfileScope buildingStage(PorscheProfileStage::BuildingShadows);
     const char* buildingOption=std::getenv("BW_PORSCHE_BUILDING_SHADOWS");const bool buildingEnabled=!buildingOption||std::strcmp(buildingOption,"0")!=0;
     const char* groupOption=std::getenv("BW_PORSCHE_BUILDING_GROUP_CULL");const bool groupEnabled=!groupOption||std::strcmp(groupOption,"0")!=0;
+    const char* cacheOption=std::getenv("BW_PORSCHE_BUILDING_CACHE");const bool cacheEnabled=!cacheOption||std::strcmp(cacheOption,"0")!=0;
     for(int slot=0;slot<2;++slot){
-        const Vehicle& v=*cars[slot];auto& map=buildingShadows[slot];map.ready=false;
-        if(!buildingEnabled||!v.isPorsche||Vector3Distance(v.p,g.camera.position)>65||!map.Ensure(g.graphics==GraphicsMode::High?1024:512))continue;
-        if(!SetPorscheBuildingSunFrame(map,Add(v.p,V(0,.7f,0)),BuildingShadowSpan,map.target.texture.width))continue;
+        const Vehicle& v=*cars[slot];auto& map=buildingShadows[slot];
+        if(!buildingEnabled||!v.isPorsche||Vector3Distance(v.p,g.camera.position)>65||!map.Ensure(g.graphics==GraphicsMode::High?1024:512)){map.ready=false;continue;}
+        if(!SetPorscheBuildingSunFrame(map,Add(v.p,V(0,.7f,0)),BuildingShadowSpan,map.target.texture.width)){map.ready=false;continue;}
+        const auto key=StaticWorldSunDepthCacheKey(map.localClip,groupEnabled);if(!key){map.ready=false;continue;}
+        if(cacheEnabled&&!force&&map.ready&&map.poseKey==key)continue;
         BeginTextureMode(map.target);rlEnableDepthMask();ClearBackground(WHITE);rlDisableBackfaceCulling();rlDisableColorBlend();
         DrawStaticWorldSunDepth(map.camera,map.projection,groupEnabled,&map.view);
-        rlEnableColorBlend();rlEnableBackfaceCulling();EndTextureMode();map.ready=true;++map.updates;
+        rlEnableColorBlend();rlEnableBackfaceCulling();EndTextureMode();map.ready=true;map.poseKey=key;++map.updates;
     }
     }
     for(int slot=0;slot<2;++slot){const Vehicle& v=*cars[slot];auto& shadow=sunShadows[slot];const float distance=Vector3Distance(v.p,g.camera.position);if(!v.isPorsche||distance>65){shadow.ready=false;continue;}
@@ -961,6 +967,56 @@ bool RunBuildingGroupCullingQA(){
     std::ofstream("docs/porsche-building-group-culling-qa.json")<<"{\"passed\":"<<(passed?"true":"false")<<",\"views\":12,\"depth_pixels_compared\":"<<compared<<",\"different_depth_pixels\":"<<different<<",\"occupied_pixels\":"<<occupied<<",\"scope\":\"R32 depth equality with group culling off/on: hangar, tower, safehouse and all three sluices, centred/cropped views with closed/open door and two clocks. Existing primitive culling remains enabled in both paths. Finite views, not exhaustive geometry containment proof.\"}\n";
     return passed;
 }
+bool RunBuildingCacheQA(){
+    const Vehicle savedCar=g.car,savedExtra=g.extraCar;const auto savedCamera=g.camera;const auto savedGraphics=g.graphics;const auto savedVehicle=g.vehicle;
+    const auto savedHouse=g.safehouse;const auto savedGates=g.gates;const float savedClock=g.clock,savedWater=g.water,savedTarget=g.waterTarget;const Matrix savedHouseModel=g.safehouseHero.transform;
+    const bool savedCull=MeshVisibilityEnabled();SetMeshVisibilityEnabled(true);
+    const char* cacheOption=std::getenv("BW_PORSCHE_BUILDING_CACHE");const bool enabled=!cacheOption||std::strcmp(cacheOption,"0")!=0;
+    const char* groupOption=std::getenv("BW_PORSCHE_BUILDING_GROUP_CULL");const bool grouped=!groupOption||std::strcmp(groupOption,"0")!=0;
+    bool valid=true;std::uint64_t pixels=0,different=0,dynamicPixels=0;int cases=0,hits=0,refreshes=0,observedHits=0,observedRefreshes=0;
+    auto read=[&](int slot){std::vector<float> result;const auto& map=buildingShadows[slot];Image image=LoadImageFromTexture(map.target.texture);
+        valid=valid&&map.ready&&image.data&&image.format==PIXELFORMAT_UNCOMPRESSED_R32;
+        if(image.data&&image.format==PIXELFORMAT_UNCOMPRESSED_R32){const auto* values=static_cast<const float*>(image.data);result.assign(values,values+image.width*image.height);for(float v:result)valid=valid&&std::isfinite(v)&&v>=0&&v<=1;}
+        UnloadImage(image);return result;};
+    auto exercise=[&](const char* name,std::array<bool,2> changed,bool checkDynamic=false){
+        const std::array<int,2> previous{buildingShadows[0].updates,buildingShadows[1].updates};std::vector<float> old;if(checkDynamic)old=read(0);
+        PreparePorscheShadows();std::array<std::vector<float>,2> cached;
+        for(int slot=0;slot<2;++slot){const int expected=(!enabled||changed[slot])?1:0,actual=buildingShadows[slot].updates-previous[slot];valid=valid&&actual==expected;expected?++refreshes:++hits;if(actual==0)++observedHits;else if(actual==1)++observedRefreshes;cached[slot]=read(slot);}
+        if(checkDynamic&&old.size()==cached[0].size())for(std::size_t i=0;i<old.size();++i)dynamicPixels+=old[i]!=cached[0][i];
+        PreparePorscheShadows(true);
+        for(int slot=0;slot<2;++slot){const auto fresh=read(slot);valid=valid&&fresh.size()==cached[slot].size();if(fresh.size()==cached[slot].size())for(std::size_t i=0;i<fresh.size();++i){different+=fresh[i]!=cached[slot][i];++pixels;}}
+        ++cases;TraceLog(LOG_INFO,"Building cache QA %s valid=%d depth-differences=%llu",name,valid?1:0,static_cast<unsigned long long>(different));
+    };
+    auto centre=[&](Vector3 p){g.car.p=p;g.extraCar.p=Add(p,V(3,0,3));g.camera={Add(p,V(5,3,8)),Add(p,V(0,.7f,0)),V(0,1,0),44,CAMERA_PERSPECTIVE};};
+    for(auto graphics:{GraphicsMode::High,GraphicsMode::Low}){
+        g.safehouse=savedHouse;g.safehouse.doorAngle=0;g.gates=savedGates;g.safehouseHero.transform=savedHouseModel;
+        g.graphics=graphics;g.vehicle=VehicleKind::Foot;g.car=Vehicle{};g.extraCar=Vehicle{};g.car.isPorsche=g.extraCar.isPorsche=true;
+        g.clock=3.25f;g.water=-1;g.waterTarget=1;centre(V(-53,TerrainHeight(-53,190)+.72f,190));PreparePorscheShadows(true);
+        exercise("unchanged-two-independent-targets",{false,false});
+        // Put both targets at their cell centers, then move only the first
+        // car a fifth of one texel along a light-space axis.
+        for(int slot=0;slot<2;++slot)(slot?g.extraCar:g.car).p=Sub(buildingShadows[slot].camera.target,V(0,.7f,0));PreparePorscheShadows(true);
+        const float pitch=BuildingShadowSpan/buildingShadows[0].target.texture.width;const Vector3 right=V(buildingShadows[0].view.m0,buildingShadows[0].view.m4,buildingShadows[0].view.m8);
+        g.car.p=Add(g.car.p,Mul(right,pitch*.2f));exercise("subcell-target-motion",{false,false});
+        g.car.p=Add(g.car.p,Mul(right,pitch*2));exercise("one-target-crosses-grid-cells",{true,false});
+        g.car.yaw=.3f;g.car.porscheDoor[0]=.7f;g.car.porscheAero=1;exercise("car-pose-does-not-change-building-depth",{false,false});
+        g.clock+=15;exercise("offscreen-sluice-clock",{!grouped,!grouped});
+        g.extraCar.isPorsche=false;const int before=buildingShadows[1].updates;PreparePorscheShadows();valid=valid&&!buildingShadows[1].ready&&buildingShadows[1].updates==before;
+        g.extraCar.isPorsche=true;exercise("inactive-slot-returns",{false,true});
+        centre(Add(g.safehouse.p,V(9,.72f,4)));PreparePorscheShadows(true);g.safehouse.doorAngle=1.3f;exercise("moving-house-door",{true,true});
+        g.safehouseHero.transform=MatrixMultiply(savedHouseModel,MatrixTranslate(.25f,0,0));exercise("house-model-transform",{true,true},true);
+        g.safehouseHero.transform=savedHouseModel;exercise("house-model-transform-restored",{true,true});
+        const auto gate=g.gates[0];centre(V(gate.x+3,TerrainHeight(gate.x+3,gate.z-4)+.72f,gate.z-4));PreparePorscheShadows(true);
+        g.clock+=2;exercise("moving-sluice-wheel",{true,true},true);g.water=1;exercise("sluice-gate-height-and-direction",{true,true},true);
+        g.gates[0].x+=.4f;exercise("sluice-position",{true,true},true);g.gates=savedGates;
+    }
+    Matrix malformed=MatrixIdentity();malformed.m0=std::numeric_limits<float>::quiet_NaN();valid=valid&&StaticWorldSunDepthCacheKey(malformed)==0;
+    g.car=savedCar;g.extraCar=savedExtra;g.camera=savedCamera;g.graphics=savedGraphics;g.vehicle=savedVehicle;g.safehouse=savedHouse;g.gates=savedGates;
+    g.clock=savedClock;g.water=savedWater;g.waterTarget=savedTarget;g.safehouseHero.transform=savedHouseModel;SetMeshVisibilityEnabled(savedCull);PreparePorscheShadows(true);
+    const bool passed=valid&&cases==24&&pixels>1000000&&different==0&&dynamicPixels>0;
+    std::ofstream("docs/porsche-building-cache-qa.json")<<"{\"passed\":"<<(passed?"true":"false")<<",\"cache_enabled\":"<<(enabled?"true":"false")<<",\"cases\":"<<cases<<",\"expected_reused_targets\":"<<hits<<",\"expected_refreshed_targets\":"<<refreshes<<",\"observed_reused_targets\":"<<observedHits<<",\"observed_refreshed_targets\":"<<observedRefreshes<<",\"depth_pixels_compared\":"<<pixels<<",\"different_depth_pixels\":"<<different<<",\"changed_dynamic_pixels\":"<<dynamicPixels<<",\"scope\":\"Actual production PreparePorscheShadows at both resolutions and vehicle slots: reuse, subcell motion, cell changes, car pose, offscreen clock, ownership, door, model transform, sluice animation/height/position. Every result compared to a forced fresh R32 render. Finite states, not a frame-rate guarantee.\"}\n";
+    return passed;
+}
 bool RunBuildingAppearanceQA(){
     const Vehicle savedCar=g.car;const Camera3D savedCamera=g.camera;const auto savedGraphics=g.graphics;
     g.graphics=GraphicsMode::High;g.car.p=V(-53,TerrainHeight(-53,190)+.72f,190);g.car.yaw=g.car.pitch=g.car.roll=g.car.suspension=0;g.car.steer=0;g.car.wheelTravel.fill(0);
@@ -1057,6 +1113,41 @@ bool RunStaticWorldCasterDepthQA(){
     std::ofstream("docs/porsche-static-world-depth-qa.json")<<"{\"passed\":"<<(passed?"true":"false")<<",\"hangar_occupied_pixels\":"<<occupied[0]<<",\"empty_view_occupied_pixels\":"<<occupied[1]<<",\"roof_projected_depth_error\":"<<roofDepthError<<",\"finite_unit_depth\":"<<(finite?"true":"false")<<",\"camera_and_render_state_restored\":"<<(restored?"true":"false")<<",\"scope\":\"Actual static building depth callback, occupied hangar and empty views with analytic roof-depth sample; not shadow receiver accuracy or appearance. Not yet enabled in production shadow preparation.\"}\n";
     target.Release();return passed;
 }
+std::array<bool,2> RunPorscheBrakeHoldQA(){
+    const auto body=CarBody(true);PorscheBrakeHoldInput input;
+    input.massKg=body.massKg;input.yawInertia=body.yawInertia;input.frontLever=body.frontAxleZ-body.cgOffsetZ;input.rearLever=body.rearAxleZ-body.cgOffsetZ;
+    input.dt=1.f/60;input.maximumBrakeAcceleration=8.6f;input.externalLongitudinal=.8f;input.externalLateral=-.5f;
+    input.normalLoad=CalculateCarCornerLoads(0,0,1,true);for(int i=0;i<4;++i)input.tireCapacity[i]=input.normalLoad[i]*.8f;
+    bool forces=true;int forceCases=0;double maximumBalance=0,maximumCaptureError=0,maximumUtilization=0;
+    auto accepted=[&](PorscheBrakeHoldInput p){const auto result=TryPorscheBrakeHold(p);++forceCases;forces=forces&&result.active;if(!result.active)return;
+        double x=0,y=0,moment=0;for(int i=0;i<4;++i){x+=result.longitudinal[i];y+=result.lateral[i];moment+=result.lateral[i]*(i>=2?p.frontLever:p.rearLever);
+            maximumUtilization=std::max(maximumUtilization,std::hypot(static_cast<double>(result.longitudinal[i]),result.lateral[i])/p.tireCapacity[i]);}
+        const double vx=p.forwardSpeed+(x/p.massKg+p.externalLongitudinal)*p.dt,vy=p.lateralSpeed+(y/p.massKg+p.externalLateral)*p.dt,w=p.yawRate+moment/p.yawInertia*p.dt;
+        maximumCaptureError=std::max({maximumCaptureError,std::abs(vx),std::abs(vy),std::abs(w)});
+        maximumBalance=std::max({maximumBalance,std::abs(x+p.massKg*(p.forwardSpeed/p.dt+p.externalLongitudinal)),std::abs(y+p.massKg*(p.lateralSpeed/p.dt+p.externalLateral)),std::abs(moment+p.yawInertia*p.yawRate/p.dt)});
+    };
+    auto rejected=[&](PorscheBrakeHoldInput p){++forceCases;forces=forces&&!TryPorscheBrakeHold(p).active;};
+    accepted(input);auto turn=input;turn.steering={-.08f,-.08f,.55f,.55f};turn.yawRate=.01f;accepted(turn);
+    auto moving=input;moving.forwardSpeed=.03f;moving.lateralSpeed=.01f;moving.yawRate=.003f;accepted(moving);
+    auto invalid=input;invalid.maximumBrakeAcceleration=0;rejected(invalid);invalid=input;invalid.driveAcceleration=.2f;rejected(invalid);
+    invalid=input;invalid.forwardSpeed=20;rejected(invalid);invalid=input;invalid.tireCapacity.fill(.1f);rejected(invalid);
+    invalid=input;invalid.maximumBrakeAcceleration=.001f;rejected(invalid);invalid=input;invalid.tireCapacity[0]=std::numeric_limits<float>::quiet_NaN();rejected(invalid);
+    forces=forces&&forceCases==9&&maximumCaptureError<1e-6&&maximumBalance<.01&&maximumUtilization<=1;
+    const Game saved=g;bool game=true;int cases=0,frames=0;float maximumDrift=0,maximumSpeed=0,maximumYaw=0,maximumWheelAngle=0;
+    for(float yaw:{0.f,PI*.5f,PI,-PI*.5f})for(float steering:{-1.f,0.f,1.f}){
+        g=saved;g.vehicle=VehicleKind::Car;g.qaPorsche=true;g.qaPorscheThrottle=0;g.qaPorscheBrake=1;g.qaPorscheSteering=steering;
+        g.car.isPorsche=true;g.car.p=V(-53,TerrainHeight(-53,190)+.72f,190);g.car.velocity=V(0,0,0);g.car.speed=g.car.yawRate=g.car.lateralSpeed=0;g.car.yaw=yaw;g.car.steer=steering;
+        g.car.porscheWheelAngles.fill(0);const Vector3 start=g.car.p;
+        for(auto& e:g.enemies)e.alive=false;for(auto& e:g.hostileRotorcraft)e.alive=false;for(auto& e:g.hostileFixedWings)e.alive=false;for(auto& e:g.hostileRoadVehicles)e.alive=false;
+        for(int frame=0;frame<240;++frame){UpdateGameplay(1.f/120);maximumDrift=std::max(maximumDrift,DistXZ(g.car.p,start));maximumSpeed=std::max(maximumSpeed,std::hypot(g.car.velocity.x,g.car.velocity.z));maximumYaw=std::max(maximumYaw,std::abs(g.car.yaw-yaw));for(float a:g.car.porscheWheelAngles)maximumWheelAngle=std::max(maximumWheelAngle,std::abs(a));++frames;}
+        game=game&&std::isfinite(g.car.p.x)&&std::isfinite(g.car.yaw);++cases;
+    }
+    const Vector3 releaseStart=g.car.p;g.qaPorscheBrake=0;g.qaPorscheThrottle=.5f;g.qaPorscheSteering=0;
+    for(int i=0;i<120;++i)UpdateGameplay(1.f/120);const float releasedDistance=DistXZ(g.car.p,releaseStart);
+    game=game&&cases==12&&maximumDrift<1e-5f&&maximumSpeed<1e-6f&&maximumYaw<1e-6f&&maximumWheelAngle<1e-5f&&releasedDistance>.1f;g=saved;
+    std::ofstream("docs/porsche-brake-hold-qa.json")<<"{\"passed\":"<<(forces&&game?"true":"false")<<",\"force_cases\":"<<forceCases<<",\"maximum_force_or_torque_balance_error\":"<<maximumBalance<<",\"maximum_one_step_capture_error\":"<<maximumCaptureError<<",\"maximum_tire_utilization\":"<<maximumUtilization<<",\"game_cases\":"<<cases<<",\"held_frames\":"<<frames<<",\"maximum_horizontal_drift_m\":"<<maximumDrift<<",\"maximum_horizontal_speed_mps\":"<<maximumSpeed<<",\"maximum_yaw_drift_rad\":"<<maximumYaw<<",\"maximum_wheel_angle_rad\":"<<maximumWheelAngle<<",\"released_distance_m\":"<<releasedDistance<<",\"scope\":\"Bounded force/torque and wheel-brake checks, plus real game slope hold at four headings and three steering inputs for two seconds each; release then acceleration. Rejects no brake, engine demand, excessive speed, insufficient grip/brake torque and nonfinite inputs. Game approximation, not OEM ABS/PSM or complete surface coverage.\"}\n";
+    return {forces,game};
+}
 bool RunPorscheQA(){
     std::filesystem::create_directories("screenshots");std::filesystem::create_directories("docs");
     int checks=0,failures=0;auto check=[&](bool ok,const char* name){++checks;if(!ok){++failures;TraceLog(LOG_ERROR,"PORSCHE QA: %s",name);}LogEvent(TextFormat("porsche-qa-check,name=%s,pass=%d",name,ok?1:0));};
@@ -1073,6 +1164,7 @@ bool RunPorscheQA(){
     StartMission();g.screen=Screen::Playing;g.graphics=GraphicsMode::High;
     check(RunBuildingGroupCullingQA(),"building-group-culling-preserves-centred-and-cropped-depth-buffers");
     check(RunBuildingShadowStabilityQA(),"building-shadow-grid-preserves-subcell-depth-and-integer-texel-motion");
+    check(RunBuildingCacheQA(),"building-shadow-cache-matches-fresh-depth-and-invalidates-world-motion");
     // Drive the game's existing E-interaction path, including the parked-car
     // swap, instead of replacing the active car solely inside this fixture.
     const Vector3 pickup=g.car.p,parked=g.extraCar.p;g.player.p=Add(parked,V(0,1,0));g.qaTaskInteractPending=true;UpdateGameplay(1.0f/60);
@@ -1181,6 +1273,7 @@ bool RunPorscheQA(){
     motionTrace.close();check(finiteMotion,"body-and-wheel-motion-remain-finite-during-gameplay");
     std::ofstream("docs/porsche-gameplay-body-motion.json")<<"{\"frames\":"<<motionFrame<<",\"finite\":"<<(finiteMotion?"true":"false")<<",\"maximum_hub_ground_error_m\":"<<maximumHubGroundError<<",\"maximum_absolute_pitch_rad\":"<<maximumBodyPitch<<",\"maximum_absolute_roll_rad\":"<<maximumBodyRoll<<",\"wheel_travel_stop_samples\":"<<travelStopSamples<<",\"scope\":\"Existing 120Hz acceleration, turn and braking route; hub ground residual uses fixed contact samples and nominal tire radii, not a triangle clearance test\"}\n";
     check(fabsf(g.car.speed)<fabsf(acceleratedSpeed),"game-brake-reduces-speed");check(std::isfinite(g.car.p.x)&&std::isfinite(g.car.yaw),"finite-game-pose");
+    const auto brakeHold=RunPorscheBrakeHoldQA();check(brakeHold[0],"brake-static-contact-respects-force-torque-and-friction-budgets");check(brakeHold[1],"brake-holds-car-on-slope-with-steered-wheels-and-releases");
     Vehicle parkedTest=initial;parkedTest.speed=2;const auto parkedAngles=parkedTest.porscheWheelAngles;UpdatePorscheControls(parkedTest,.5f,false);check(parkedTest.porscheWheelAngles==parkedAngles,"parked-wheel-angles-remain-still");
     // Exercise the production animation update, with distances small enough
     // that angle wrapping cannot hide a wheel-order or direction error.

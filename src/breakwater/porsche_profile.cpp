@@ -31,7 +31,7 @@ struct Frame {
     std::array<bool,StageCount> used{};
     std::array<double,StageCount> cpu{},gpu{};
     double submitMs{},frameMs{},gpuMs{};
-    int mirrorUpdates{},aoUpdates{},displayUpdates{};
+    int mirrorUpdates{},aoUpdates{},displayUpdates{},buildingUpdates{};
     float speed{},steer{};Vector3 position{};
 };
 Frame* active{};
@@ -68,7 +68,9 @@ bool RunPorschePerformanceQA(bool compareCulling,bool compareCylinders){
     std::filesystem::create_directories("docs");std::filesystem::create_directories("screenshots");
     SetTargetFPS(0);ClearWindowState(FLAG_VSYNC_HINT);g.qaPorsche=false;
     const Game initialWorld=g;
-    const char* routeOption=std::getenv("BW_PORSCHE_PERF_ROUTE");const bool hangarRoute=routeOption&&std::strcmp(routeOption,"hangar")==0;
+    const char* routeOption=std::getenv("BW_PORSCHE_PERF_ROUTE");const bool parkedRoute=routeOption&&std::strcmp(routeOption,"parked")==0;
+    const bool hangarRoute=parkedRoute||(routeOption&&std::strcmp(routeOption,"hangar")==0);
+    const char* cacheOption=std::getenv("BW_PORSCHE_BUILDING_CACHE");const bool buildingCache=!cacheOption||std::strcmp(cacheOption,"0")!=0;
     const bool savedCulling=MeshVisibilityEnabled(),savedCylinders=CylinderVisibilityEnabled();
 #if PORSCHE_GPU_TIMERS
     gpuTimers=glQueryCounter&&glGenQueries&&glGetQueryObjectui64v&&glDeleteQueries;
@@ -77,7 +79,7 @@ bool RunPorschePerformanceQA(bool compareCulling,bool compareCylinders){
     const char *vendor=nullptr,*renderer=nullptr,*version=nullptr;
 #endif
     std::ofstream report(compareCylinders?"docs/porsche-native-cylinder-performance.json":compareCulling?"docs/porsche-native-culling-performance.json":"docs/porsche-native-performance.json");report<<std::setprecision(9);
-    report<<"{\n\"route\":"<<JSONString(hangarRoute?"hangar":"base")<<",\n\"comparison\":\""<<(compareCylinders?"cylinder_culling":compareCulling?"mesh_culling":"ambient_occlusion")<<"\",\n\"schema\":2,\n\"gpu_timer_queries\":"<<(gpuTimers?"true":"false")<<",\n\"vendor\":"<<JSONString(vendor)<<",\n\"renderer\":"<<JSONString(renderer)<<",\n\"GL_version\":"<<JSONString(version)<<",\n\"width\":"<<GetRenderWidth()<<",\n\"height\":"<<GetRenderHeight()<<",\n\"warmup_frames\":"<<Warmup<<",\n\"sample_frames_per_case\":"<<Samples<<",\n\"vsync_requested\":false,\n\"hidden_window\":true,\n\"camera_smoothing_disabled_for_matched_cases\":true,\n\"fps_cap\":0,\n\"simulation_step_s\":0.0166666667,\n\"stage_flush_instrumentation\":true,\n\"cases\":[\n";
+    report<<"{\n\"route\":"<<JSONString(parkedRoute?"parked":hangarRoute?"hangar":"base")<<",\n\"building_shadow_cache_enabled\":"<<(buildingCache?"true":"false")<<",\n\"comparison\":\""<<(compareCylinders?"cylinder_culling":compareCulling?"mesh_culling":"ambient_occlusion")<<"\",\n\"schema\":2,\n\"gpu_timer_queries\":"<<(gpuTimers?"true":"false")<<",\n\"vendor\":"<<JSONString(vendor)<<",\n\"renderer\":"<<JSONString(renderer)<<",\n\"GL_version\":"<<JSONString(version)<<",\n\"width\":"<<GetRenderWidth()<<",\n\"height\":"<<GetRenderHeight()<<",\n\"warmup_frames\":"<<Warmup<<",\n\"sample_frames_per_case\":"<<Samples<<",\n\"vsync_requested\":false,\n\"hidden_window\":true,\n\"camera_smoothing_disabled_for_matched_cases\":true,\n\"fps_cap\":0,\n\"simulation_step_s\":0.0166666667,\n\"stage_flush_instrumentation\":true,\n\"cases\":[\n";
     bool passed=true;int caseIndex=0;
     // Alternate AO order between views/presets to reduce systematic warm/cache
     // ordering bias. Cylinder comparisons use ABBA/BAAB repetitions per view.
@@ -91,7 +93,7 @@ bool RunPorschePerformanceQA(bool compareCulling,bool compareCylinders){
         // world render and HUD. Combat is held idle for matched vehicle cases.
         for(auto& e:g.enemies)e.alive=false;for(auto& e:g.hostileRotorcraft)e.alive=false;for(auto& e:g.hostileFixedWings)e.alive=false;for(auto& e:g.hostileRoadVehicles)e.alive=false;
         g.cameraDistance=g.cameraActualDistance=cockpit?1.8f:6.0f;g.cameraInitialized=false;g.qaCaptureActive=false;
-        SetPorscheContactShadingEnabled(ao);g.qaPorscheThrottle=.7f;g.qaPorscheBrake=0;g.qaPorscheSteering=0;
+        SetPorscheContactShadingEnabled(ao);g.qaPorscheThrottle=parkedRoute?0:.7f;g.qaPorscheBrake=parkedRoute?1:0;g.qaPorscheSteering=0;
         UpdateCamera();PreparePorscheDisplays(true);PreparePorscheShadows(true);PreparePorscheMirrors(true);
         std::vector<Frame> frames(Samples);const Vector3 initial=g.car.p;const auto initialAngles=g.car.porscheWheelAngles;
 #if PORSCHE_GPU_TIMERS
@@ -101,25 +103,27 @@ bool RunPorschePerformanceQA(bool compareCulling,bool compareCylinders){
         std::uint64_t porscheTested=0,porscheRejected=0,heroTested=0,heroRejected=0,primitiveTested=0,primitiveRejected=0,cylinderTested=0,cylinderRejected=0;
         for(int frameIndex=-Warmup;frameIndex<Samples;++frameIndex){
             active=frameIndex>=0?&frames[frameIndex]:nullptr;const double start=GetTime();
-            {PorscheProfileScope scope(PorscheProfileStage::Simulation);g.qaPorsche=true;g.qaPorscheSteering=.16f*sinf((frameIndex+Warmup)*.035f);UpdateGameplay(1.0f/60);g.qaPorsche=false;}
+            {PorscheProfileScope scope(PorscheProfileStage::Simulation);g.qaPorsche=true;g.qaPorscheSteering=parkedRoute?0:.16f*sinf((frameIndex+Warmup)*.035f);UpdateGameplay(1.0f/60);g.qaPorsche=false;}
             const int previousAO=PorscheAmbientOcclusionUpdates();const auto previousDisplays=PorscheDisplayRevision(g.car);
+            const int previousBuilding=PorscheBuildingShadowUpdates();
             const auto previousPorsche=GetMeshVisibilityStats(MeshVisibilityKind::Porsche),previousHero=GetMeshVisibilityStats(MeshVisibilityKind::HeroVehicle),previousPrimitive=GetMeshVisibilityStats(MeshVisibilityKind::WorldPrimitive),previousCylinder=GetMeshVisibilityStats(MeshVisibilityKind::WorldCylinder);
             BeginDrawing();if(active){rlDrawRenderBatchActive();Stamp(2*StageCount);}ClearBackground({94,123,132,255});
             g.cameraInitialized=false;DrawWorld();{PorscheProfileScope scope(PorscheProfileStage::UI);DrawUI();}
             rlDrawRenderBatchActive();if(active){Stamp(2*StageCount+1);active->submitMs=(GetTime()-start)*1000;}
             EndDrawing();
             if(active){const auto p=GetMeshVisibilityStats(MeshVisibilityKind::Porsche),h=GetMeshVisibilityStats(MeshVisibilityKind::HeroVehicle),w=GetMeshVisibilityStats(MeshVisibilityKind::WorldPrimitive),c=GetMeshVisibilityStats(MeshVisibilityKind::WorldCylinder);cylinderTested+=c.tested-previousCylinder.tested;cylinderRejected+=c.rejected-previousCylinder.rejected;primitiveTested+=w.tested-previousPrimitive.tested;primitiveRejected+=w.rejected-previousPrimitive.rejected;porscheTested+=p.tested-previousPorsche.tested;porscheRejected+=p.rejected-previousPorsche.rejected;heroTested+=h.tested-previousHero.tested;heroRejected+=h.rejected-previousHero.rejected;}
-            if(active){active->frameMs=(GetTime()-start)*1000;active->mirrorUpdates=GetPorscheMirrorStats().lastFrameUpdates;active->aoUpdates=PorscheAmbientOcclusionUpdates()-previousAO;active->displayUpdates=static_cast<int>(PorscheDisplayRevision(g.car)-previousDisplays);active->speed=g.car.speed;active->steer=g.car.steer;active->position=g.car.p;allMirrors+=active->mirrorUpdates;allAO+=active->aoUpdates;}
+            if(active){active->frameMs=(GetTime()-start)*1000;active->mirrorUpdates=GetPorscheMirrorStats().lastFrameUpdates;active->aoUpdates=PorscheAmbientOcclusionUpdates()-previousAO;active->displayUpdates=static_cast<int>(PorscheDisplayRevision(g.car)-previousDisplays);active->buildingUpdates=PorscheBuildingShadowUpdates()-previousBuilding;active->speed=g.car.speed;active->steer=g.car.steer;active->position=g.car.p;allMirrors+=active->mirrorUpdates;allAO+=active->aoUpdates;}
             active=nullptr;
         }
         for(auto& frame:frames)Collect(frame);
-        const bool moved=DistXZ(g.car.p,initial)>1&&g.car.porscheWheelAngles!=initialAngles;
-        const bool state=g.car.isPorsche&&moved&&std::isfinite(g.car.speed)&&allAO==(ao?Samples:0)&&(!cockpit||allMirrors>0)&&PorscheDisplayRevision(g.car)>initialDisplays&&porscheTested>0&&heroTested>0&&primitiveTested>0&&((culling&&cylinders&&WorldSpaceBatchCoordinatesFixed())?(cylinderTested>0&&cylinderRejected>0):cylinderRejected==0)&&(culling?(porscheRejected+heroRejected+primitiveRejected+cylinderRejected>0):(porscheRejected+heroRejected+primitiveRejected+cylinderRejected==0));
+        const bool moved=parkedRoute?(DistXZ(g.car.p,initial)<.02f&&std::abs(g.car.speed)<.02f&&g.car.porscheWheelAngles==initialAngles):(DistXZ(g.car.p,initial)>1&&g.car.porscheWheelAngles!=initialAngles);
+        const bool displays=parkedRoute?PorscheDisplayRevision(g.car)>=initialDisplays:PorscheDisplayRevision(g.car)>initialDisplays;
+        const bool state=g.car.isPorsche&&moved&&std::isfinite(g.car.speed)&&allAO==(ao?Samples:0)&&(!cockpit||allMirrors>0)&&displays&&porscheTested>0&&heroTested>0&&primitiveTested>0&&((culling&&cylinders&&WorldSpaceBatchCoordinatesFixed())?(cylinderTested>0&&cylinderRejected>0):cylinderRejected==0)&&(culling?(porscheRejected+heroRejected+primitiveRejected+cylinderRejected>0):(porscheRejected+heroRejected+primitiveRejected+cylinderRejected==0));
         passed=passed&&state;const std::string name=std::string(preset?"high":"low")+"-"+(cockpit?"cockpit":"chase")+(compareCylinders?(cylinders?"-cylinders-on":"-cylinders-off"):compareCulling?(culling?"-culling-on":"-culling-off"):(ao?"-ao-on":"-ao-off"));
         BeginDrawing();ClearBackground({94,123,132,255});DrawWorld();DrawUI();rlDrawRenderBatchActive();Image image=LoadImageFromScreen();const bool exported=image.data&&ExportImage(image,(std::string(compareCylinders?"screenshots/porsche-cylinder-perf-":compareCulling?"screenshots/porsche-culling-perf-":"screenshots/porsche-perf-")+name+".png").c_str());UnloadImage(image);EndDrawing();passed=passed&&exported;
         if(caseIndex++)report<<",\n";report<<"{\"name\":"<<JSONString(name.c_str())<<",\"high\":"<<(preset?"true":"false")<<",\"cockpit\":"<<(cockpit?"true":"false")<<",\"ao\":"<<(ao?"true":"false")<<",\"culling\":"<<(culling?"true":"false")<<",\"porsche_meshes_tested\":"<<porscheTested<<",\"porsche_meshes_rejected\":"<<porscheRejected<<",\"hero_meshes_tested\":"<<heroTested<<",\"hero_meshes_rejected\":"<<heroRejected<<",\"primitive_meshes_tested\":"<<primitiveTested<<",\"primitive_meshes_rejected\":"<<primitiveRejected<<",\"cylinders_tested\":"<<cylinderTested<<",\"cylinders_rejected\":"<<cylinderRejected<<",\"cylinder_culling\":"<<(cylinders?"true":"false")<<",\"motion_and_render_state_passed\":"<<(state?"true":"false")<<",\"sample_frames\":"<<Samples<<",\"comparison_order_index\":"<<order<<",\"distance_m\":"<<DistXZ(g.car.p,initial)<<",\"mirror_updates\":"<<allMirrors<<",\"ao_updates\":"<<allAO<<",\"frame_wall_ms\":";Stats(report,frames,[](const Frame& f){return f.frameMs;});report<<",\"submit_wall_ms\":";Stats(report,frames,[](const Frame& f){return f.submitMs;});report<<",\"gpu_frame_ms\":";if(gpuTimers)Stats(report,frames,[](const Frame& f){return f.gpuMs;});else report<<"null";
         report<<",\"stages_ms\":{";for(int i=0;i<StageCount;++i){if(i)report<<",";report<<JSONString(StageNames[i])<<":{\"cpu_submit\":";Stats(report,frames,[&](const Frame& f){return f.cpu[i];});report<<",\"gpu_elapsed\":";if(gpuTimers)Stats(report,frames,[&](const Frame& f){return f.gpu[i];});else report<<"null";report<<"}";}report<<"},\"raw_frames\":[";
-        for(int i=0;i<Samples;++i){if(i)report<<",";const auto& f=frames[i];report<<"{\"frame_wall_ms\":"<<f.frameMs<<",\"gpu_ms\":";if(gpuTimers)report<<f.gpuMs;else report<<"null";report<<",\"mirror_updates\":"<<f.mirrorUpdates<<",\"ao_updates\":"<<f.aoUpdates<<",\"display_updates\":"<<f.displayUpdates<<",\"speed_mps\":"<<f.speed<<",\"steering_control\":"<<f.steer<<",\"position\":["<<f.position.x<<","<<f.position.y<<","<<f.position.z<<"]}";}report<<"]}";report.flush();
+        for(int i=0;i<Samples;++i){if(i)report<<",";const auto& f=frames[i];report<<"{\"frame_wall_ms\":"<<f.frameMs<<",\"gpu_ms\":";if(gpuTimers)report<<f.gpuMs;else report<<"null";report<<",\"mirror_updates\":"<<f.mirrorUpdates<<",\"ao_updates\":"<<f.aoUpdates<<",\"display_updates\":"<<f.displayUpdates<<",\"building_shadow_updates\":"<<f.buildingUpdates<<",\"speed_mps\":"<<f.speed<<",\"steering_control\":"<<f.steer<<",\"position\":["<<f.position.x<<","<<f.position.y<<","<<f.position.z<<"]}";}report<<"]}";report.flush();
         TraceLog(LOG_INFO,"Porsche performance case %s state=%d AO=%d mirrors=%d",name.c_str(),state,allAO,allMirrors);
     }
     SetPorscheContactShadingEnabled(true);SetMeshVisibilityEnabled(savedCulling);SetCylinderVisibilityEnabled(savedCylinders);g=initialWorld;

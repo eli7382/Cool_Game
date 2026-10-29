@@ -1,0 +1,412 @@
+{
+  "passed": true,
+  "source_base_commit": "9a78606eca823017527484fdc4803e1a5013051f",
+  "source_sha256": {
+    "src/breakwater/porsche_native.cpp": "e0e6978fe2f541faf22930cfdf46a319766e7b6801264a0d318d0e5801c9ace9",
+    "src/breakwater/world.cpp": "ebb0a5fc8a9d9781ce67a840c25d91f009b628ed99924f4c322482364866bda2",
+    "src/breakwater/porsche_profile.cpp": "419573992155821f5ade82ce13b5ddaca163b28a3a301307980606aa28cb939e",
+    "src/breakwater/porsche_shadow.cpp": "6c573cebded454597945372b566ed454ba66815879c3e045b77e769eea0c90b8",
+    "src/breakwater/gameplay.cpp": "c68aa523adccbd4a206cd837684728503df1213ff9cfb0b72bdd62627a0ad355",
+    "src/breakwater/porsche_brake_hold.hpp": "0c072e8e1c478eabfe5403ca7895f88526b96237b7285266164c5a8eb329c253"
+  },
+  "executable_sha256": "9a97bf93543ff6830f3b600d4ed9a14a705878f451e386d5ff452bc4dda44c6a",
+  "source_reports": [
+    {
+      "file": "docs\\porsche-building-cache-parked-off-performance.json",
+      "sha256": "a85b289ae55f640629a77c24451bae832e6750f267b0328d4fddf0b5a090774a"
+    },
+    {
+      "file": "docs\\porsche-building-cache-parked-on-performance.json",
+      "sha256": "28f255a16084a5b24705197cbba373a0547c02114db168f49bf833226d5a2649"
+    },
+    {
+      "file": "docs\\porsche-building-cache-hangar-off-performance.json",
+      "sha256": "a1a4207bbd892952763d44a2bb4917705c880043147dccaf7350da541a9fecfc"
+    },
+    {
+      "file": "docs\\porsche-building-cache-hangar-on-performance.json",
+      "sha256": "db7685b625a522408eed4109fb64535afdb0c94993c0d840e61d8c4eeb767b0d"
+    }
+  ],
+  "all_simulation_traces_equal": true,
+  "cases": [
+    {
+      "route": "parked",
+      "case": "low-chase-ao-off",
+      "ao": false,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 0
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.11795,
+        "on": 0.06435
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.10752,
+        "on": 0.001024
+      },
+      "frame_wall_p50_ms": {
+        "off": 62.6505,
+        "on": 75.78885
+      }
+    },
+    {
+      "route": "parked",
+      "case": "low-chase-ao-on",
+      "ao": true,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 0
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.0022,
+        "on": 0.0662
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.113152,
+        "on": 0.001024
+      },
+      "frame_wall_p50_ms": {
+        "off": 81.2046,
+        "on": 103.8644
+      }
+    },
+    {
+      "route": "parked",
+      "case": "low-cockpit-ao-on",
+      "ao": true,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 0
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 0.96435,
+        "on": 0.06325
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.090112,
+        "on": 0.001024
+      },
+      "frame_wall_p50_ms": {
+        "off": 51.34255,
+        "on": 168.7239
+      }
+    },
+    {
+      "route": "parked",
+      "case": "low-cockpit-ao-off",
+      "ao": false,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 0
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.0029,
+        "on": 0.0636
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.095232,
+        "on": 0.001024
+      },
+      "frame_wall_p50_ms": {
+        "off": 41.8676,
+        "on": 63.2717
+      }
+    },
+    {
+      "route": "parked",
+      "case": "high-chase-ao-on",
+      "ao": true,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 0
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.1746,
+        "on": 0.0627
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.233472,
+        "on": 0.001024
+      },
+      "frame_wall_p50_ms": {
+        "off": 91.54975,
+        "on": 129.3487
+      }
+    },
+    {
+      "route": "parked",
+      "case": "high-chase-ao-off",
+      "ao": false,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 0
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.55235,
+        "on": 0.0637
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.221696,
+        "on": 0.001024
+      },
+      "frame_wall_p50_ms": {
+        "off": 79.31965,
+        "on": 75.17215
+      }
+    },
+    {
+      "route": "parked",
+      "case": "high-cockpit-ao-off",
+      "ao": false,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 0
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.3027,
+        "on": 0.065
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.226304,
+        "on": 0.001024
+      },
+      "frame_wall_p50_ms": {
+        "off": 66.44545,
+        "on": 70.30485
+      }
+    },
+    {
+      "route": "parked",
+      "case": "high-cockpit-ao-on",
+      "ao": true,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 0
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.2513,
+        "on": 0.06345
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.270336,
+        "on": 0.001024
+      },
+      "frame_wall_p50_ms": {
+        "off": 97.30655,
+        "on": 95.08655
+      }
+    },
+    {
+      "route": "hangar",
+      "case": "low-chase-ao-off",
+      "ao": false,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 80
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.18495,
+        "on": 1.08265
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.101376,
+        "on": 0.099328
+      },
+      "frame_wall_p50_ms": {
+        "off": 77.869,
+        "on": 66.11785
+      }
+    },
+    {
+      "route": "hangar",
+      "case": "low-chase-ao-on",
+      "ao": true,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 80
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.16025,
+        "on": 1.09165
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.102912,
+        "on": 0.118272
+      },
+      "frame_wall_p50_ms": {
+        "off": 100.3936,
+        "on": 97.19865
+      }
+    },
+    {
+      "route": "hangar",
+      "case": "low-cockpit-ao-on",
+      "ao": true,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 80
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.22475,
+        "on": 1.11295
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.121856,
+        "on": 0.105472
+      },
+      "frame_wall_p50_ms": {
+        "off": 80.6294,
+        "on": 75.4465
+      }
+    },
+    {
+      "route": "hangar",
+      "case": "low-cockpit-ao-off",
+      "ao": false,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 80
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.11225,
+        "on": 1.41045
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.119808,
+        "on": 0.118784
+      },
+      "frame_wall_p50_ms": {
+        "off": 51.53205,
+        "on": 60.55495
+      }
+    },
+    {
+      "route": "hangar",
+      "case": "high-chase-ao-on",
+      "ao": true,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 95
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.0675,
+        "on": 1.2187
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.269824,
+        "on": 0.208896
+      },
+      "frame_wall_p50_ms": {
+        "off": 90.6074,
+        "on": 100.4339
+      }
+    },
+    {
+      "route": "hangar",
+      "case": "high-chase-ao-off",
+      "ao": false,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 95
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.04975,
+        "on": 1.2326
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.252416,
+        "on": 0.247296
+      },
+      "frame_wall_p50_ms": {
+        "off": 62.37455,
+        "on": 72.4021
+      }
+    },
+    {
+      "route": "hangar",
+      "case": "high-cockpit-ao-off",
+      "ao": false,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 95
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 1.19445,
+        "on": 1.3095
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.216576,
+        "on": 0.226304
+      },
+      "frame_wall_p50_ms": {
+        "off": 72.62445,
+        "on": 66.3164
+      }
+    },
+    {
+      "route": "hangar",
+      "case": "high-cockpit-ao-on",
+      "ao": true,
+      "identical_simulation_trace": true,
+      "sample_frames": 96,
+      "building_map_updates": {
+        "off": 96,
+        "on": 95
+      },
+      "building_cpu_submit_p50_ms": {
+        "off": 0.9652,
+        "on": 1.1237
+      },
+      "building_gpu_elapsed_p50_ms": {
+        "off": 0.512,
+        "on": 0.50944
+      },
+      "frame_wall_p50_ms": {
+        "off": 93.70385,
+        "on": 100.61735
+      }
+    }
+  ],
+  "scope": "Same compiled binary, hidden 1280x720 low/high chase/cockpit AO-off/on cases: brake-held parked inspection beside the hangar and the existing accelerating hangar route. Cache off then on for parked, on then off for moving. 24 warmup and 96 sampled frames per case.",
+  "limits": [
+    "Sequential runs can include thermal and background variation; not an interleaved repeated benchmark",
+    "Per-stage forced flushes and GPU queries add instrumentation overhead; GPU intervals can include idle gaps",
+    "Whole-frame timings varied strongly and some cached medians were worse; this run does not prove an overall FPS gain",
+    "Only the building shadow stage and update counts isolate the work removed; whole-frame differences have additional variation",
+    "Not uninstrumented visible-window FPS or a 60 FPS guarantee",
+    "Front tire/fender contact and final asset appearance remain open"
+  ],
+  "complete": false
+}

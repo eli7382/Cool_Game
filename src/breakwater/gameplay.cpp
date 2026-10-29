@@ -6,6 +6,7 @@
 #include "car_body_motion.hpp"
 #include "porsche_load_motion.hpp"
 #include "porsche_pedals.hpp"
+#include "porsche_brake_hold.hpp"
 
 namespace bw {
 // Gameplay proxy for the transonic drag rise and the supersonic wave-drag floor.
@@ -1146,9 +1147,11 @@ void UpdateCar(float dt){
     const float forwardSign=fabsf(oldForward)>.18f?copysignf(1.0f,oldForward):0.0f;
     const float brakeDeceleration=std::min(8.6f*brake,grip*9.80665f);
     const float driveAcceleration=g.car.isPorsche?UpdatePorschePowertrain(g.car.porschePowertrain,dt,drive,brake,oldForward,g.car.powerplantHealth)/vehicleMassKg:drive*5.2f*Lerp(.08f,1.0f,g.car.powerplantHealth);
-    const float passiveTireAcceleration=-brakeDeceleration*forwardSign-rollingDeceleration*forwardSign;
-    const float tireLongitudinalDemand=driveAcceleration+passiveTireAcceleration;
     const float externalLongitudinal=Vector3DotProduct(aerodynamicAcceleration,f)+gravityAlong;
+    const float passiveTireAcceleration=g.car.isPorsche&&brake>0&&dt>1e-6f?
+        Clamp(-oldForward/dt-externalLongitudinal-driveAcceleration,-brakeDeceleration-rollingDeceleration,brakeDeceleration+rollingDeceleration):
+        -brakeDeceleration*forwardSign-rollingDeceleration*forwardSign;
+    const float tireLongitudinalDemand=driveAcceleration+passiveTireAcceleration;
     const float estimatedLongitudinal=tireLongitudinalDemand+externalLongitudinal;
     g.car.steer=Lerp(g.car.steer,steerInput,Clamp(dt*Lerp(2.0f,7.5f,g.car.steeringHealth),0,1));
     const float forwardSpeed=Vector3DotProduct(g.car.velocity,f),lateral=Vector3DotProduct(g.car.velocity,r);
@@ -1189,6 +1192,27 @@ void UpdateCar(float dt){
                                                      tireLongitudinalForce[wheel]*tireLongitudinalForce[wheel]));
         tireLateralForce[wheel]=Clamp(lateralDemand,-lateralLimit,lateralLimit);
     }
+    bool staticBrakeContact=false;
+    if(g.car.isPorsche&&brake>0&&dt>1e-6f){
+        const Vector3 velocity=CarCGVelocity(g.car.velocity,g.car.yaw,g.car.yawRate,body.cgOffsetZ);
+        PorscheBrakeHoldInput input;input.massKg=vehicleMassKg;input.yawInertia=body.yawInertia;
+        input.frontLever=body.frontAxleZ-body.cgOffsetZ;input.rearLever=body.rearAxleZ-body.cgOffsetZ;input.dt=dt;
+        input.forwardSpeed=Vector3DotProduct(velocity,f);input.lateralSpeed=Vector3DotProduct(velocity,r);input.yawRate=g.car.yawRate;
+        input.externalLongitudinal=externalLongitudinal;input.externalLateral=Vector3DotProduct(aerodynamicAcceleration,r)+gravityLateral;
+        input.maximumBrakeAcceleration=brakeDeceleration;input.driveAcceleration=driveAcceleration;
+        // Test the loads for the proposed stopping acceleration. A turned
+        // stationary wheel has no rolling slip demand; using that dynamic
+        // slip estimate here would invent lateral load transfer at rest.
+        const float captureLongitudinal=-input.forwardSpeed/dt,captureLateral=-input.lateralSpeed/dt;
+        input.normalLoad=CarCornerNormalLoads(captureLongitudinal,captureLateral,g.car.normalG,true);
+        const float captureFront=CarFrontLoadFraction(body,captureLongitudinal,g.car.normalG);
+        for(int i=0;i<4;++i){const float axle=vehicleMassKg*9.80665f*Clamp(g.car.normalG,.15f,3.f)*(i>=2?captureFront:1-captureFront);
+            const float sensitivity=Clamp(powf(input.normalLoad[i]/std::max(1.f,axle*.5f),-.07f),.88f,1.08f);
+            input.tireCapacity[i]=std::max(0.f,wheelSurfaces[i].friction*wheelTireGrip[i]*sensitivity*input.normalLoad[i]);}
+        input.steering={rearSteer,rearSteer,steerAngle,steerAngle};
+        const auto hold=TryPorscheBrakeHold(input);staticBrakeContact=hold.active;
+        if(hold.active){tireLongitudinalForce=hold.longitudinal;tireLateralForce=hold.lateral;}
+    }
     const float longitudinal=(tireLongitudinalForce[0]+tireLongitudinalForce[1]+
                               tireLongitudinalForce[2]+tireLongitudinalForce[3])/vehicleMassKg+externalLongitudinal;
     const float frontForce=tireLateralForce[2]+tireLateralForce[3];
@@ -1222,6 +1246,9 @@ void UpdateCar(float dt){
     cgVelocity.x+=(f.x*longitudinal+r.x*lateralAcceleration)*dt;
     cgVelocity.z+=(f.z*longitudinal+r.z*lateralAcceleration)*dt;
     g.car.yawRate+=yawAcceleration*dt;g.car.yawRate*=std::max(0.0f,1.0f-dt*(.72f+grip*.24f));g.car.yawRate=Clamp(g.car.yawRate,-1.15f,1.15f);
+    // Eliminate only floating-point residue after the contact impulse has
+    // passed all brake/traction feasibility checks above.
+    if(staticBrakeContact){cgVelocity.x=cgVelocity.z=0;g.car.yawRate=0;}
     g.car.yaw+=g.car.yawRate*dt;
     g.car.velocity=CarOriginVelocity(cgVelocity,g.car.yaw,g.car.yawRate,body.cgOffsetZ);
     g.car.longitudinalG=longitudinal/9.80665f;g.car.lateralG=lateralAcceleration/9.80665f;

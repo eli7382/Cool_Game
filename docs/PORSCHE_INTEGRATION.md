@@ -1,5 +1,12 @@
 # Porsche integration in progress
 
+Building sun shadows now reuse unchanged depth targets, with exact state
+invalidation for moving doors and sluices. Low-speed Porsche braking also
+holds a stopped car on a slope when the available brake force and tire grip
+permit it. The hidden native regression passes 152 checks, including fresh
+versus cached depth comparisons and steered brake-hold/release cases. See
+`PORSCHE_BUILDING_CACHE_AND_BRAKES.md` for scope, evidence and comparison controls.
+
 Pickup tread, brake and hub details now use rigid cached meshes under the
 existing steering/spin frames, instead of rebuilding their primitive vertices
 on every pass. The 16/26-block tread variants and brake geometry are retained;
@@ -83,7 +90,7 @@ virtual center steering request. Rack calibration gives a measured center
 ratio of about 14.105 in this fitted model, matching the one-decimal 14.1
 reference. The OEM variable-ratio rack curve is not reproduced. This remains
 source-fitted game geometry, not an OEM suspension reconstruction.
-The current native suite passes 143 checks. Shared-rack evidence is in
+The current native suite passes 152 checks. Shared-rack evidence is in
 `porsche-native-rack-qa.json` and `porsche-shared-rack-review.json`; the rear
 reference frames and spring data match the pre-change fixture exactly across
 195 sampled poses. Front tire/body intersections remain in the stress sweep.

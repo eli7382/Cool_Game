@@ -6,9 +6,11 @@
 #include "porsche_profile.hpp"
 #include "mesh_visibility.hpp"
 #include "pickup_wheel_cache.hpp"
+#include <bit>
 
 namespace bw {
 namespace {
+std::uint64_t worldSunDepthRevision=1;
 
 uint32_t Noise(int x,int z){
     uint32_t n=(uint32_t)x*374761393u+(uint32_t)z*668265263u+1442695041u;
@@ -4081,6 +4083,7 @@ SurfaceSample SampleSurface(float x,float z){
 }
 
 void InitWorld(){
+    ++worldSunDepthRevision;
     MakeDirectory("logs");MakeDirectory("screenshots");
     Image whitePixel=GenImageColor(4,4,WHITE);
     if(whitePixel.data){g.solidWhiteTex=LoadTextureFromImage(whitePixel);UnloadImage(whitePixel);}
@@ -4324,19 +4327,13 @@ void UpdateCamera(){
         SetShaderValue(g.worldShader,g.locFog,fog,SHADER_UNIFORM_VEC4);SetShaderValue(g.worldShader,g.locFogRange,&range,SHADER_UNIFORM_VEC2);
     }
 }
-void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection,bool groupCull,const Matrix* view){
-    // Draw the real building geometry, rather than collision-box proxies.
-    // Caller owns the depth-enabled render target and clear operation.
-    const Camera3D savedCamera=g.camera;const Matrix savedProjection=rlGetMatrixProjection(),savedView=rlGetMatrixModelview();
-    const int location=GetShaderLocation(g.worldShader,"porscheWorldCasterDepth");
-    const float on=1,off=0;g.camera=camera;SetShaderValue(g.worldShader,location,&on,SHADER_UNIFORM_FLOAT);
-    BeginMode3D(camera);rlSetMatrixProjection(projection);if(view)rlSetMatrixModelview(*view);BeginShaderMode(g.worldShader);
-    const Matrix clip=MatrixMultiply(view?*view:MatrixLookAt(camera.position,camera.target,camera.up),projection);
+static std::array<bool,6> StaticWorldSunGroups(Matrix clip,bool groupCull){
+    std::array<bool,6> groups{};
     auto visible=[&](BoundingBox box){return !groupCull||!MeshVisibilityEnabled()||MeshView::Intersects(box,clip);};
     const float hangarY=TerrainHeight(-38,188),palletY=TerrainHeight(-23.5f,197);
-    if(visible({V(-51,std::min(hangarY,palletY)-1,171),V(-21,std::max(hangarY+14,palletY+3),205)}))DrawHangar();
+    groups[0]=visible({V(-51,std::min(hangarY,palletY)-1,171),V(-21,std::max(hangarY+14,palletY+3),205)});
     const float towerY=TerrainHeight(8,8);
-    if(visible({V(1,towerY-1,1),V(15,towerY+31,15)}))DrawTower();
+    groups[1]=visible({V(1,towerY-1,1),V(15,towerY+31,15)});
     BoundingBox house{V(1e9f,1e9f,1e9f),V(-1e9f,-1e9f,-1e9f)};
     auto include=[&](Vector3 p){house.min=Vector3Min(house.min,p);house.max=Vector3Max(house.max,p);};
     // The authored door's complete swing, stairs/rails and lamps fit this
@@ -4349,8 +4346,45 @@ void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection,bool groupCull,co
     for(int item=0;item<3;++item){float radius=0;const Model& model=*furniture[item];
         for(int mesh=0;mesh<model.meshCount;++mesh){const auto box=CachedRigidMeshBounds(model.meshes[mesh]);for(int bits=0;bits<8;++bits)radius=std::max(radius,Vector3Length(Vector3Transform(V(bits&1?box.max.x:box.min.x,bits&2?box.max.y:box.min.y,bits&4?box.max.z:box.min.z),model.transform)));}
         const auto centre=SafehouseWorld(offsets[item]);include(Sub(centre,V(radius,radius,radius)));include(Add(centre,V(radius,radius,radius)));}
-    if(visible(house))DrawSafehouse();
-    for(int i=0;i<3;++i){const auto p=g.gates[i];const float y=TerrainHeight(p.x,p.z);if(visible({V(p.x-14,y-1,p.z-10),V(p.x+14,y+10,p.z+10)}))DrawSluice(i);}
+    groups[2]=visible(house);
+    for(int i=0;i<3;++i){const auto p=g.gates[i];const float y=TerrainHeight(p.x,p.z);groups[3+i]=visible({V(p.x-14,y-1,p.z-10),V(p.x+14,y+10,p.z+10)});}
+    return groups;
+}
+std::uint64_t StaticWorldSunDepthCacheKey(Matrix clip,bool groupCull){
+    // Geometry/models are immutable between InitWorld calls, apart from the
+    // safehouse door and sluice mechanisms below. Hash exact float bits: no
+    // additional movement threshold beyond the already snapped light frame.
+    std::uint64_t key=14695981039346656037ull;bool finite=true;
+    auto integer=[&](std::uint64_t value){key^=value;key*=1099511628211ull;};
+    auto value=[&](float v){finite=finite&&std::isfinite(v);integer(std::bit_cast<std::uint32_t>(v));};
+    auto point=[&](Vector3 p){value(p.x);value(p.y);value(p.z);};
+    auto matrix=[&](Matrix m){for(float v:MatrixToFloatV(m).v)value(v);};
+    integer(worldSunDepthRevision);integer(g.worldShader.id);integer(groupCull);integer(MeshVisibilityEnabled());matrix(clip);
+    const auto groups=StaticWorldSunGroups(clip,groupCull);for(bool active:groups)integer(active);
+    if(groups[2]){
+        point(g.safehouse.p);value(g.safehouse.yaw);value(g.safehouse.doorAngle);
+        for(const Model* model:{&g.safehouseHero,&g.safehouseSofa,&g.safehouseDesk,&g.safehouseBed}){
+            integer(model->meshCount);matrix(model->transform);
+            for(int i=0;i<model->meshCount;++i){const auto& mesh=model->meshes[i];integer(mesh.vaoId);integer(mesh.vertexCount);integer(mesh.triangleCount);}
+        }
+    }
+    for(int i=0;i<3;++i)if(groups[3+i]){
+        point(g.gates[i]);integer(g.water>0);
+        value(g.clock*.035f*(g.waterTarget>g.water?1.f:-1.f));
+    }
+    return finite?(key?key:1):0;
+}
+void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection,bool groupCull,const Matrix* view){
+    // Draw the real building geometry, rather than collision-box proxies.
+    // Caller owns the depth-enabled render target and clear operation.
+    const Camera3D savedCamera=g.camera;const Matrix savedProjection=rlGetMatrixProjection(),savedView=rlGetMatrixModelview();
+    const int location=GetShaderLocation(g.worldShader,"porscheWorldCasterDepth");
+    const float on=1,off=0;g.camera=camera;SetShaderValue(g.worldShader,location,&on,SHADER_UNIFORM_FLOAT);
+    BeginMode3D(camera);rlSetMatrixProjection(projection);if(view)rlSetMatrixModelview(*view);BeginShaderMode(g.worldShader);
+    const Matrix clip=MatrixMultiply(view?*view:MatrixLookAt(camera.position,camera.target,camera.up),projection);
+    const auto groups=StaticWorldSunGroups(clip,groupCull);
+    if(groups[0])DrawHangar();if(groups[1])DrawTower();if(groups[2])DrawSafehouse();
+    for(int i=0;i<3;++i)if(groups[3+i])DrawSluice(i);
     rlDrawRenderBatchActive();EndShaderMode();EndMode3D();SetShaderValue(g.worldShader,location,&off,SHADER_UNIFORM_FLOAT);
     g.camera=savedCamera;rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedView);
 }

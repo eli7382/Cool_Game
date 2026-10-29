@@ -272,6 +272,7 @@ void ShutdownWorld();
 void DrawWorld();
 void DrawWorldScene(const Matrix* projection=nullptr);
 void DrawStaticWorldSunDepth(Camera3D camera,Matrix projection,bool groupCull=true,const Matrix* view=nullptr);
+std::uint64_t StaticWorldSunDepthCacheKey(Matrix clip,bool groupCull=true);
 void DrawActors();
 void UpdateCamera();
 void DrawUI();
