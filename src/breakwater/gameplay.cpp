@@ -4,6 +4,7 @@
 #include "porsche_front_steering.hpp"
 #include "car_corner_loads.hpp"
 #include "car_body_motion.hpp"
+#include "porsche_load_motion.hpp"
 #include "porsche_pedals.hpp"
 
 namespace bw {
@@ -1238,6 +1239,31 @@ void UpdateCar(float dt){
         if(wheelOffset[i].x<0)leftGround+=wh*.5f;else rightGround+=wh*.5f;
     }
     const float previousSuspensionVelocity=g.car.suspensionVelocity;
+    if(g.car.isPorsche){
+        // Effective wheel/antiroll rates are game estimates; see the load helper.
+        const auto loadPose=CalculatePorscheLoadPose(longitudinal,lateralAcceleration,g.car.normalG);
+        const float currentGround=TerrainHeight(g.car.p.x,g.car.p.z);
+        const float heaveTarget=Clamp(meanGround-currentGround+loadPose.bodyHeave,-.18f,.18f);
+        StepPorscheResponse(g.car.suspension,g.car.suspensionVelocity,heaveTarget,18.f,dt);
+        g.car.suspension=Clamp(g.car.suspension,-.20f,.20f);
+        StepPorscheResponse(g.car.pitch,g.car.pitchRate,Clamp(atan2f(rearGround-frontGround,contactWheelbase)+loadPose.pitch,-.14f,.14f),18.f,dt);
+        StepPorscheResponse(g.car.roll,g.car.rollRate,Clamp(atan2f(rightGround-leftGround,contactTrack)+loadPose.roll,-.18f,.18f),18.f,dt);
+        Vehicle contactPose=g.car;contactPose.p.y=currentGround+.72f+g.car.suspension;
+        const Matrix bodyMatrix=PorscheVehicleMatrix(contactPose);
+        for(std::size_t i=0;i<wheelOffset.size();++i){
+            const bool front=wheelOffset[i].y>0;
+            const float tireRadius=front?.35025f:.3672f;
+            const Vector3 hub=Vector3Transform(V(wheelOffset[i].x,tireRadius,wheelOffset[i].y),bodyMatrix);
+            // Ground matching uses the current smoothed body pose, avoiding a
+            // second terrain tilt in the wheel offsets. Full travel is retained.
+            const float target=Clamp((wheelGround[i]+tireRadius+.02f-hub.y)/bodyMatrix.m5,-.05f,.05f);
+            StepPorscheResponse(g.car.wheelTravel[i],g.car.wheelTravelVelocity[i],target,PorscheWheelResponseOmega(front),dt);
+            g.car.wheelTravel[i]=Clamp(g.car.wheelTravel[i],-.05f,.05f);
+            g.car.wheelTravelVelocity[i]=Clamp(g.car.wheelTravelVelocity[i],-3.2f,3.2f);
+            if((g.car.wheelTravel[i]>=.05f&&g.car.wheelTravelVelocity[i]>0)||(g.car.wheelTravel[i]<=-.05f&&g.car.wheelTravelVelocity[i]<0))g.car.wheelTravelVelocity[i]=0;
+        }
+        g.car.normalG=Clamp(1.f+(g.car.suspensionVelocity-previousSuspensionVelocity)/(std::max(dt,.001f)*9.80665f),.15f,3.f);
+    }else{
     const float heaveTarget=Clamp(meanGround-centerGround,-.18f,.18f);
     g.car.suspensionVelocity+=(heaveTarget-g.car.suspension)*44.0f*dt-g.car.suspensionVelocity*9.2f*dt;
     g.car.suspension=Clamp(g.car.suspension+g.car.suspensionVelocity*dt,-.20f,.20f);
@@ -1259,6 +1285,7 @@ void UpdateCar(float dt){
     }
     g.car.pitch=Lerp(g.car.pitch,Clamp(atan2f(rearGround-frontGround,contactWheelbase)-longitudinal*.012f,-.14f,.14f),Clamp(dt*5.5f,0,1));
     g.car.roll=Lerp(g.car.roll,Clamp(atan2f(rightGround-leftGround,contactTrack)+lateralAcceleration*.013f,-.18f,.18f),Clamp(dt*6.0f,0,1));
+    }
     const float radius=sqrtf(g.car.p.x*g.car.p.x+g.car.p.z*g.car.p.z);
     if(radius>418){const Vector3 n=Norm(V(g.car.p.x,0,g.car.p.z));const float hitSpeed=std::max(0.0f,Vector3DotProduct(g.car.velocity,n));g.car.velocity=Sub(g.car.velocity,Mul(n,hitSpeed*1.18f));g.car.p.x*=418/radius;g.car.p.z*=418/radius;g.car.damage=Clamp(g.car.damage+hitSpeed*hitSpeed*.00012f,0,1);}
     for(const auto &o:g.obstacles){const float d=DistXZ(g.car.p,o.p),minimum=o.radius+1.55f;if(d<minimum&&d>.01f){
