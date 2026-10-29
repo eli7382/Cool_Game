@@ -5,6 +5,7 @@
 #include "porsche_ao.hpp"
 #include "porsche_profile.hpp"
 #include "mesh_visibility.hpp"
+#include "pickup_wheel_cache.hpp"
 
 namespace bw {
 namespace {
@@ -1335,7 +1336,8 @@ void DrawHeroVehicleServiceDetail(int vehicleKind,const Vehicle &vehicle,bool co
         // staggered blocks at the measured tire radius and rotate them with the
         // same steering/spin pivots as the GLB wheel assemblies.
         const int treadBlocks=g.graphics==GraphicsMode::High?26:16;
-        for(int axle=0;axle<2;++axle)for(int side=-1;side<=1;side+=2){
+        const bool cachedWheels=PreparePickupWheelCache(g.graphics==GraphicsMode::High);
+        if(!cachedWheels)for(int axle=0;axle<2;++axle)for(int side=-1;side<=1;side+=2){
             const bool front=axle==0;const float pivotX=front?-1.43f:1.51f;
             const float centerX=front?-1.3781f:1.5105f,centerY=.37f,centerZ=side*.84f;
             rlPushMatrix();rlTranslatef(0,-vehicle.suspension,0);rlTranslatef(pivotX,centerY,centerZ);
@@ -1360,6 +1362,7 @@ void DrawHeroVehicleServiceDetail(int vehicleKind,const Vehicle &vehicle,bool co
             rlPushMatrix();rlTranslatef(0,-vehicle.suspension,0);rlTranslatef(x,y,z);
             if(front)rlRotatef(vehicle.steer*.34f/DEG,0,1,0);
             rlRotatef(-vehicle.wheelAngle/DEG,0,0,1);rlTranslatef(-x,-y,-z);
+            if(!(cachedWheels&&DrawPickupWheelCache(axle,side,g.graphics==GraphicsMode::High,g.worldShader))){
             DrawCylinderEx(V(x,y,side*.905f),V(x,y,side*.936f),.264f,.264f,32,Color{104,111,107,255});
             DrawCylinderEx(V(x,y,side*.936f),V(x,y,side*.944f),.115f,.115f,24,Color{63,71,69,255});
             for(int hole=0;hole<12;++hole){
@@ -1367,7 +1370,7 @@ void DrawHeroVehicleServiceDetail(int vehicleKind,const Vehicle &vehicle,bool co
                 DrawSphere(V(x+cosf(a)*.218f,y+sinf(a)*.218f,side*.947f),.012f,darkMetal);
             }
             DrawCube(V(x+.196f,y+.012f,side*.936f),.085f,.156f,.052f,Color{117,67,51,255});
-            DrawSphere(V(x,y,side*.951f),.054f,warmSteel);
+            DrawSphere(V(x,y,side*.951f),.054f,warmSteel);}
             rlPopMatrix();
 
             // Exposed, animated struts and coil springs sit behind each wheel.
@@ -4180,6 +4183,7 @@ void InitWorld(){
     LogEvent(g.locVehicleNormal>=0&&g.locVehicleRoughness>=0&&IsTextureValid(g.carNormalTex)&&IsTextureValid(g.planeNormalTex)&&IsTextureValid(g.heliNormalTex)&&IsTextureValid(g.carRoughnessTex)&&IsTextureValid(g.planeRoughnessTex)&&IsTextureValid(g.heliRoughnessTex)?"vehicle-detail-maps-ready":"vehicle-detail-maps-unavailable");
 }
 void ShutdownWorld(){
+    ReleasePickupWheelCache();
     ClearMeshVisibilityCache();
     ShutdownPorsche();
     if(IsModelValid(g.terrain))UnloadModel(g.terrain);if(IsModelValid(g.road))UnloadModel(g.road);if(IsModelValid(g.waterMesh))UnloadModel(g.waterMesh);if(IsModelValid(g.waterMeshHigh))UnloadModel(g.waterMeshHigh);

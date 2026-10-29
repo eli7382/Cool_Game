@@ -189,5 +189,6 @@
     "The extra-car category includes its ground shadow; the player-car category includes its impact overlay",
     "Scene-only category timers exclude mirror and AO geometry passes; those retain their aggregate timers",
     "This run locates a bottleneck but does not implement its optimization"
-  ]
+  ],
+  "performance_report_path": "docs\\porsche-vehicle-stage-baseline-performance.json"
 }

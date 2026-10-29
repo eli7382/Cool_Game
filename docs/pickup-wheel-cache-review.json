@@ -1,0 +1,188 @@
+{
+  "enabled_by_default": true,
+  "disable_for_comparison": "BW_PICKUP_WHEEL_CACHE=0",
+  "explicit_benchmark_selection": "BW_PICKUP_WHEEL_CACHE=1 for enabled runs; 0 for repeat-disabled run",
+  "runs": [
+    {
+      "label": "initial-off",
+      "file": "docs\\pickup-wheel-cache-initial-off-performance.json",
+      "sha256": "47851873f4f305c3119818fa27474de358ffd17b14fc1a13b9388e55e855abe4"
+    },
+    {
+      "label": "initial-on",
+      "file": "docs\\pickup-wheel-cache-initial-on-performance.json",
+      "sha256": "772afcd2db8542dd111b91124e6f7f2b71ecd27c05bb8a48a1355b44ed1e670b"
+    },
+    {
+      "label": "repeat-off",
+      "file": "docs\\pickup-wheel-cache-repeat-off-performance.json",
+      "sha256": "a838467ea40592dc52417e682dd284e172bd199665a03c46bc447a4ede65c789"
+    },
+    {
+      "label": "repeat-on",
+      "file": "docs\\pickup-wheel-cache-repeat-on-performance.json",
+      "sha256": "61370da58a5b6a69322b65550a14404a27ef46a23781288524b53e75834514b9"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison": "initial-off to initial-on",
+      "case": "low-chase-ao-off",
+      "before_frame_median_ms": 97.6764,
+      "after_frame_median_ms": 37.52515,
+      "before_pickup_cpu_submit_mean_ms": 20.8787792,
+      "after_pickup_cpu_submit_mean_ms": 5.59115729
+    },
+    {
+      "comparison": "initial-off to initial-on",
+      "case": "low-chase-ao-on",
+      "before_frame_median_ms": 104.78295,
+      "after_frame_median_ms": 61.93875,
+      "before_pickup_cpu_submit_mean_ms": 16.9963708,
+      "after_pickup_cpu_submit_mean_ms": 6.86637813
+    },
+    {
+      "comparison": "initial-off to initial-on",
+      "case": "low-cockpit-ao-on",
+      "before_frame_median_ms": 55.4313,
+      "after_frame_median_ms": 41.3307,
+      "before_pickup_cpu_submit_mean_ms": 0.266367708,
+      "after_pickup_cpu_submit_mean_ms": 0.165971875
+    },
+    {
+      "comparison": "initial-off to initial-on",
+      "case": "low-cockpit-ao-off",
+      "before_frame_median_ms": 33.0032,
+      "after_frame_median_ms": 33.41615,
+      "before_pickup_cpu_submit_mean_ms": 0.2056,
+      "after_pickup_cpu_submit_mean_ms": 0.193586458
+    },
+    {
+      "comparison": "initial-off to initial-on",
+      "case": "high-chase-ao-on",
+      "before_frame_median_ms": 105.0006,
+      "after_frame_median_ms": 58.58135,
+      "before_pickup_cpu_submit_mean_ms": 16.3811875,
+      "after_pickup_cpu_submit_mean_ms": 5.39308958
+    },
+    {
+      "comparison": "initial-off to initial-on",
+      "case": "high-chase-ao-off",
+      "before_frame_median_ms": 71.384,
+      "after_frame_median_ms": 39.26735,
+      "before_pickup_cpu_submit_mean_ms": 17.409076,
+      "after_pickup_cpu_submit_mean_ms": 5.58376563
+    },
+    {
+      "comparison": "initial-off to initial-on",
+      "case": "high-cockpit-ao-off",
+      "before_frame_median_ms": 33.68305,
+      "after_frame_median_ms": 31.1665,
+      "before_pickup_cpu_submit_mean_ms": 0.222967708,
+      "after_pickup_cpu_submit_mean_ms": 0.163226042
+    },
+    {
+      "comparison": "initial-off to initial-on",
+      "case": "high-cockpit-ao-on",
+      "before_frame_median_ms": 52.82325,
+      "after_frame_median_ms": 42.92975,
+      "before_pickup_cpu_submit_mean_ms": 0.184441667,
+      "after_pickup_cpu_submit_mean_ms": 0.154311458
+    },
+    {
+      "comparison": "repeat-off to repeat-on",
+      "case": "low-chase-ao-off",
+      "before_frame_median_ms": 61.33645,
+      "after_frame_median_ms": 56.4926,
+      "before_pickup_cpu_submit_mean_ms": 14.5094313,
+      "after_pickup_cpu_submit_mean_ms": 8.07724167
+    },
+    {
+      "comparison": "repeat-off to repeat-on",
+      "case": "low-chase-ao-on",
+      "before_frame_median_ms": 90.9574,
+      "after_frame_median_ms": 70.0036,
+      "before_pickup_cpu_submit_mean_ms": 15.3915719,
+      "after_pickup_cpu_submit_mean_ms": 7.13413646
+    },
+    {
+      "comparison": "repeat-off to repeat-on",
+      "case": "low-cockpit-ao-on",
+      "before_frame_median_ms": 45.79835,
+      "after_frame_median_ms": 38.7545,
+      "before_pickup_cpu_submit_mean_ms": 0.181577083,
+      "after_pickup_cpu_submit_mean_ms": 0.151682292
+    },
+    {
+      "comparison": "repeat-off to repeat-on",
+      "case": "low-cockpit-ao-off",
+      "before_frame_median_ms": 30.438,
+      "after_frame_median_ms": 25.09585,
+      "before_pickup_cpu_submit_mean_ms": 0.187234375,
+      "after_pickup_cpu_submit_mean_ms": 0.1499375
+    },
+    {
+      "comparison": "repeat-off to repeat-on",
+      "case": "high-chase-ao-on",
+      "before_frame_median_ms": 94.05265,
+      "after_frame_median_ms": 59.3206,
+      "before_pickup_cpu_submit_mean_ms": 15.7250937,
+      "after_pickup_cpu_submit_mean_ms": 5.91244479
+    },
+    {
+      "comparison": "repeat-off to repeat-on",
+      "case": "high-chase-ao-off",
+      "before_frame_median_ms": 57.82335,
+      "after_frame_median_ms": 41.432,
+      "before_pickup_cpu_submit_mean_ms": 13.2096396,
+      "after_pickup_cpu_submit_mean_ms": 5.71951042
+    },
+    {
+      "comparison": "repeat-off to repeat-on",
+      "case": "high-cockpit-ao-off",
+      "before_frame_median_ms": 30.3959,
+      "after_frame_median_ms": 35.47715,
+      "before_pickup_cpu_submit_mean_ms": 0.167413542,
+      "after_pickup_cpu_submit_mean_ms": 0.20730625
+    },
+    {
+      "comparison": "repeat-off to repeat-on",
+      "case": "high-cockpit-ao-on",
+      "before_frame_median_ms": 49.82065,
+      "after_frame_median_ms": 46.4737,
+      "before_pickup_cpu_submit_mean_ms": 0.185155208,
+      "after_pickup_cpu_submit_mean_ms": 0.23363125
+    }
+  ],
+  "repeat_cache_counters": {
+    "builds": 8,
+    "draws": 4616,
+    "vertices": 193536
+  },
+  "geometry_review_sha256": "28242b87aa8c98cd6124f71c9bc5f53455c7421cc1a6c059a2091fe58aae1816",
+  "native_checks": 142,
+  "native_failures": 0,
+  "final_validation_executable_sha256": "362e6c474281a58ccbaa99bc251f97994a0e32a1c57dd187f0a943538136a8d9",
+  "captures": {
+    "pickup-wheel-cache-off.png": "04b8572192b77719b03d751727e112b133dcb2f6ab41af46e6432572a293535b",
+    "pickup-wheel-cache-on.png": "3ede5cb1b480bb4a8d2ddd8503136fdb85f8f8857af9004e3374cc60b35c2135",
+    "porsche-pickup-cache-high-chase.png": "57dcec842ed15cfeaacce6c0960e29d95a62a3baeca15815a981ea4ef565ffdd"
+  },
+  "visual_review": "Inspected cached chase view and disabled/enabled steered wheel close-ups. Tread, rotors, calipers and hub geometry retained. Explicit sphere/cylinder normals intentionally alter their lighting; pixel identity is not claimed.",
+  "limits": [
+    "Sequential local comparisons with varying GPU scheduling/temperature; not randomized ABBA trials or a cross-device FPS guarantee",
+    "One high-cockpit AO-off repeat regressed; the pickup benefit is concentrated in chase views where it is visible",
+    "Raw performance runs measured the enabled override before the default switch; the final default path separately passed 142 native checks",
+    "Geometry equivalence evidence samples surfaces in both directions; articulation uses the retained wheel matrix stack and was visually checked in the steered close-up",
+    "Pickup cached geometry is about 14 MB of combined CPU/GPU vertex payload; cold construction occurs before measured frames",
+    "Does not resolve Porsche tire/fender interference, reach 60 FPS, or establish final Forza-level fidelity"
+  ],
+  "complete": false,
+  "default_capture_cache_counters": {
+    "builds": 4,
+    "draws": 80,
+    "vertices": 98928
+  },
+  "default_capture_log_sha256": "371a0faa89b7d8a17ec4bdf14bdae0e773ade137e8c3ac60ea87b24de5947e19",
+  "native_regression_scope": "142 Porsche checks; the standard isolated Porsche fixture does not exercise this pickup cache. Separate ordinary pickup-view captures and the 32 performance cases exercise the cache and its legacy path."
+}

@@ -1,9 +1,21 @@
 # Porsche integration in progress
 
+Pickup tread, brake and hub details now use rigid cached meshes under the
+existing steering/spin frames, instead of rebuilding their primitive vertices
+on every pass. The 16/26-block tread variants and brake geometry are retained;
+sphere and cylinder normals are now explicit. Cached models are released with
+the world. Set `BW_PICKUP_WHEEL_CACHE=0` for the legacy comparison path.
+See `pickup-wheel-cache-review.json` for two local timing comparisons and
+`pickup-wheel-cache-geometry-review.json` for 903,168 bidirectional surface
+samples against the original raylib primitive emitters. The latest enabled
+AO-on median times were 70.00 / 38.75 ms for low chase/cockpit and 59.32 / 46.47
+ms for high chase/cockpit. These remain below the 60 FPS goal. One cockpit
+repeat regressed, so the measured benefit is concentrated in chase views.
+
 The explicit performance run now separates the extra parked car, player car,
 plane and helicopter within the main scene pass. These scopes are inactive
 outside that run. The eight-case review in `porsche-vehicle-stage-review.json`
-identifies the parked pickup as the largest vehicle submission cost in chase
+identified the uncached parked pickup as the largest vehicle submission cost in chase
 views. This is diagnostic evidence, not a speed improvement. Added timing flush
 boundaries mean earlier aggregate timing runs are historical comparisons only.
 

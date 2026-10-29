@@ -1,0 +1,80 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "name": "0-0--1",
+      "triangles": 7884,
+      "surface_samples_both_directions": 110376,
+      "maximum_surface_distance_m": 2.6656007889869215e-07,
+      "cache_sha256": "6fd084250033724853cbc2491638971363630656ea97398253d43a56ce887492",
+      "reference_sha256": "65f0baa82788d2f69739a43b7213eb12953bdca767abc3ff89704f4e4facdc76"
+    },
+    {
+      "name": "0-0-1",
+      "triangles": 7884,
+      "surface_samples_both_directions": 110376,
+      "maximum_surface_distance_m": 2.6656007889869215e-07,
+      "cache_sha256": "581a1b0a9ab13fb1fdacce1224978039127c322a93ec1213937d519ab27134eb",
+      "reference_sha256": "31f6f820fcdd316cf9b116b00538d0246b4489162e7407cabcbc67f676e78f8a"
+    },
+    {
+      "name": "0-1--1",
+      "triangles": 7884,
+      "surface_samples_both_directions": 110376,
+      "maximum_surface_distance_m": 2.4575624024691933e-07,
+      "cache_sha256": "7b69575cf0299b0cb6b8382fc72c56d3aca87ba9eccd7b74596ff34086018fe9",
+      "reference_sha256": "0491aecc777f0872c3d180592dd250f81d8a86a87315c8f2ea16318dfaeb3ab2"
+    },
+    {
+      "name": "0-1-1",
+      "triangles": 7884,
+      "surface_samples_both_directions": 110376,
+      "maximum_surface_distance_m": 2.4575624024691933e-07,
+      "cache_sha256": "524a5514b3325901126809a643f82d76110d835356e6f33828e603f3f280cfb9",
+      "reference_sha256": "c35e52bdff009eac9db5e22299df9b124d27dbcd571ef139c5550398ecce3733"
+    },
+    {
+      "name": "1-0--1",
+      "triangles": 8244,
+      "surface_samples_both_directions": 115416,
+      "maximum_surface_distance_m": 2.980232238769531e-07,
+      "cache_sha256": "bc2126ba8f3c7f963519641aeb880fd64cd14f71a1306c0ef7a0497a023e637c",
+      "reference_sha256": "41922b24a8436f8479479f6f9e6bc35e285bee7a146080652b8ade0ad60a73f7"
+    },
+    {
+      "name": "1-0-1",
+      "triangles": 8244,
+      "surface_samples_both_directions": 115416,
+      "maximum_surface_distance_m": 2.980232238769531e-07,
+      "cache_sha256": "0438ee6d7b060779ef334e459628c6366ccdbc6a7b4fdd32d2f1398a8452616e",
+      "reference_sha256": "ddc8cac1fe877461debf9dac28e89f4a9c2380e34c854b517b9c83b549f0ac97"
+    },
+    {
+      "name": "1-1--1",
+      "triangles": 8244,
+      "surface_samples_both_directions": 115416,
+      "maximum_surface_distance_m": 3.816559512870299e-07,
+      "cache_sha256": "62975929fc0334cca07f2d874e450bb2e4f7307f774d44fbb38f92b13c5fe1cb",
+      "reference_sha256": "3fbc9f0d2b3ea22c58508cbc159d16483be6171856337477a3555d53c7aaa365"
+    },
+    {
+      "name": "1-1-1",
+      "triangles": 8244,
+      "surface_samples_both_directions": 115416,
+      "maximum_surface_distance_m": 3.816559512870299e-07,
+      "cache_sha256": "41e7f01c662ae53a0d04cfc8be77fd0f2cb1e861d64cfd086baa462f165e3619",
+      "reference_sha256": "bc139112aa1d6a00dfa76bcb545c7595ccd05c218b373e29b867fe8891ae1c73"
+    }
+  ],
+  "failures": [],
+  "raylib_source_sha256": "35d6bfb5e8feea378d408dca2dae9c6d57e4578aeb5fdf31dd3efa4c205bd9d4",
+  "cache_builder_sha256": "bfd8dd1fd174697e11a3c30227c4f210511c429576aaf5c24a4db5a6f19516e7",
+  "checker_sha256": "4185913db82d88cd1c2d70fcd6eab9badbc8073e24f23c042df627c043b05fe5",
+  "source_geometry": "Unmodified raylib DrawCube, DrawSphere, DrawSphereEx and DrawCylinderEx functions compiled with CPU matrix/vertex recording stubs",
+  "normal_change": "Cached spheres/cylinders use explicit surface normals; original immediate functions inherit prior normals. Pixel equivalence is not claimed.",
+  "limits": [
+    "Finite vertex, edge midpoint and triangle centroid distance samples in both directions by pigment; not an algebraic continuous-surface proof",
+    "Local rigid wheel geometry only; native motion, visibility, shading and performance need separate review"
+  ],
+  "complete": false
+}
