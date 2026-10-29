@@ -17,7 +17,7 @@ Vehicle selection keeps each parked car's identity and position.
 | I | Raise / lower both windows |
 | G | Toggle the visual DRS flap |
 | L | Toggle headlamp emitters |
-| [ / ] | Animate the shift paddles |
+| [ / ] | Downshift / upshift; manual override lasts eight seconds |
 | J | Start / pause the Sport Chrono stopwatch |
 | U | Stop and zero the stopwatch |
 | Home / End | Adjust rear-view mirror yaw |
@@ -34,11 +34,18 @@ compress/extend through their exported morph targets. The physics contact
 positions now match the stock wheel centres, and each corner drives its own
 named wheel. The visual travel envelope is +/- 50 mm.
 
-Doors, windows, pedals, paddles, tachometer needle and wing surfaces use the
-named rig. Braking at speed raises the visual airbrake
-and takes priority over DRS. Paddles currently animate without a manual
-gearbox. The Porsche currently inherits the game's existing driving model;
-Porsche-specific mass, gearing and tire-force handling are unfinished.
+Doors, windows, pedals, paddles, tachometer needle and wing surfaces follow the
+articulated rig. The paddles also request a gear change in the driving model.
+The gearbox uses the published seven forward ratios, reverse ratio and final
+drive, with an approximate launch clutch, 0.10-second torque interruption and
+eight-second manual override before automatic shifting resumes. Downshifts
+that would exceed 9,000 rpm are rejected. The live instruments read the actual
+selected gear and engine RPM.
+
+The Porsche uses its own baseline mass, axle dimensions and rear-wheel-drive
+force distribution. CG, inertia, suspension, tire forces, torque interpolation,
+shift scheduling, clutch losses and aero remain game approximations. This is
+not a calibrated OEM powertrain or a verified match for the published performance.
 
 The driver camera follows the authored seat anchor and body transform. A
 dedicated native shader uses the original artwork UVs, detail UVs, packed

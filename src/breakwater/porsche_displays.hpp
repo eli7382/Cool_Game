@@ -6,7 +6,7 @@
 namespace bw {
 struct Vehicle;
 struct PorscheDisplayState {
-    int speedKmh{},rpm{},chronoTenths{};
+    int speedKmh{},rpm{},chronoTenths{},gear{1};
     char selection{'N'};
     bool running{},powered{},flash{};
     float longitudinalG{},lateralG{},normalG{};

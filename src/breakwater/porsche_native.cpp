@@ -173,7 +173,7 @@ void Surface(const porsche_data::Surface& s,const Vehicle& v,Vector2 detailRepea
     SetShaderValue(porscheShader,locations.detailRepeat,&detailRepeat,SHADER_UNIFORM_VEC2);
 }
 PorscheControls Controls(const Vehicle& v,bool occupied){
-    PorscheControls c;c.steering=PorscheFrontSteeringAngle(v.steer,v.steeringHealth);c.rearSteering=PorscheRearSteeringAngle(v.steer*Lerp(.24f,1.0f,v.steeringHealth),v.speed);c.doorL=v.porscheDoor[0];c.doorR=v.porscheDoor[1];c.windowL=c.windowR=v.porscheWindow;c.drs=v.porscheAero;c.airbrake=v.porscheAirbrake;c.brake=v.porscheBrake;c.throttle=v.porscheThrottle;c.paddleL=v.porschePaddleL;c.paddleR=v.porschePaddleR;c.wheelAngles=v.porscheWheelAngles;c.rpm=occupied?900+Clamp((v.engineRpm-.18f)/.82f,0,1)*8100:0;
+    PorscheControls c;c.steering=PorscheFrontSteeringAngle(v.steer,v.steeringHealth);c.rearSteering=PorscheRearSteeringAngle(v.steer*Lerp(.24f,1.0f,v.steeringHealth),v.speed);c.doorL=v.porscheDoor[0];c.doorR=v.porscheDoor[1];c.windowL=c.windowR=v.porscheWindow;c.drs=v.porscheAero;c.airbrake=v.porscheAirbrake;c.brake=v.porscheBrake;c.throttle=v.porscheThrottle;c.paddleL=v.porschePaddleL;c.paddleR=v.porschePaddleR;c.wheelAngles=v.porscheWheelAngles;c.rpm=occupied?v.porschePowertrain.rpm:0;
     // Physics contact slots are -X rear, +X rear, -X front, +X front;
     // the model's named left side is +X. Keep each corner on its own sample.
     c.travel={Clamp(v.wheelTravel[3],-.05f,.05f),Clamp(v.wheelTravel[2],-.05f,.05f),Clamp(v.wheelTravel[1],-.05f,.05f),Clamp(v.wheelTravel[0],-.05f,.05f)};c.chronoSeconds=v.porscheChronoSeconds;c.mirrorYaw=v.porscheMirrorYaw;c.mirrorPitch=v.porscheMirrorPitch;return c;
@@ -587,8 +587,8 @@ void UpdatePorscheControls(Vehicle& v,float dt,bool occupied){
         if(IsKeyPressed(KEY_I))v.porscheWindowsOpen=!v.porscheWindowsOpen;
         if(IsKeyPressed(KEY_G))v.porscheDRS=!v.porscheDRS;
         if(IsKeyPressed(KEY_L))v.porscheLights=!v.porscheLights;
-        if(IsKeyPressed(KEY_LEFT_BRACKET))v.porschePaddleL=1;
-        if(IsKeyPressed(KEY_RIGHT_BRACKET))v.porschePaddleR=1;
+        if(IsKeyPressed(KEY_LEFT_BRACKET)){v.porschePaddleL=1;RequestPorscheShift(v.porschePowertrain,-1);}
+        if(IsKeyPressed(KEY_RIGHT_BRACKET)){v.porschePaddleR=1;RequestPorscheShift(v.porschePowertrain,1);}
     }
     const float blend=1-expf(-std::max(0.0f,dt)*8);
     for(int i=0;i<2;++i){if(fabsf(v.speed)>.7f)v.porscheDoorsOpen[i]=false;v.porscheDoor[i]=Lerp(v.porscheDoor[i],v.porscheDoorsOpen[i]?1.0f:0.0f,blend);}
@@ -851,9 +851,9 @@ bool RunPorscheQA(){
     SetPorscheChrono(timer,true);UpdatePorscheControls(timer,.1f,false);check(std::abs(timer.porscheChronoSeconds-1.1)<1e-6,"stopwatch-resumes-while-parked");
     SetPorscheChrono(timer,false,true);check(timer.porscheChronoSeconds==0&&!timer.porscheChronoRunning,"stopwatch-reset");
     timer.porscheChronoSeconds=5999.85;SetPorscheChrono(timer,true);UpdatePorscheControls(timer,.1f,false);check(timer.porscheChronoSeconds==5999.9&&!timer.porscheChronoRunning,"stopwatch-upper-limit-stops");
-    Vehicle telemetry=g.car;telemetry.speed=-10;telemetry.engineRpm=1;telemetry.porscheChronoSeconds=75.3;telemetry.tireTemperatureC={40,50,60,70};const auto state=PorscheDisplayTelemetry(telemetry,true);
+    Vehicle telemetry=g.car;telemetry.speed=-10;telemetry.engineRpm=1;telemetry.porschePowertrain.rpm=9000;telemetry.porschePowertrain.gear=-1;telemetry.porscheChronoSeconds=75.3;telemetry.tireTemperatureC={40,50,60,70};const auto state=PorscheDisplayTelemetry(telemetry,true);
     check(state.speedKmh==36&&state.rpm==9000&&state.selection=='R'&&state.chronoTenths==753&&state.temperatures==std::array<float,4>{70,60,50,40},"displays-use-signed-game-speed-rpm-and-correct-corner-temperatures");
-    telemetry.speed=std::numeric_limits<float>::quiet_NaN();telemetry.engineRpm=std::numeric_limits<float>::infinity();const auto invalid=PorscheDisplayTelemetry(telemetry,true);check(invalid.speedKmh==0&&invalid.rpm==900,"invalid-display-telemetry-stays-finite");
+    telemetry.speed=std::numeric_limits<float>::quiet_NaN();telemetry.engineRpm=std::numeric_limits<float>::infinity();telemetry.porschePowertrain.rpm=std::numeric_limits<float>::infinity();const auto invalid=PorscheDisplayTelemetry(telemetry,true);check(invalid.speedKmh==0&&invalid.rpm==900,"invalid-display-telemetry-stays-finite");
     // Exercise real game physics with deterministic controls, without OS input.
     const Vehicle initial=g.car;g.qaPorscheThrottle=1;g.qaPorscheSteering=0;
     const auto sunState=RunSunShadowStateChecks();
@@ -885,6 +885,10 @@ bool RunPorscheQA(){
     rollingTest.porscheWheelAngles.fill(0);rollingTest.speed=10;rollingTest.velocity=V(4,0,10);rollingTest.steer=1;rollingTest.steeringHealth=1;
     UpdatePorscheControls(rollingTest,.01f,true);
     check(fabsf(rollingTest.porscheWheelAngles[0]*.35025f-.01f*(10*cosf(.55f)+4*sinf(.55f)))<1e-6f,"steered-wheel-spin-projects-lateral-contact-velocity");
+    g.car=initial;g.car.speed=25;g.car.velocity=Mul(Forward(g.car.yaw),25);g.qaPorscheThrottle=1;g.qaPorscheBrake=g.qaPorscheSteering=0;
+    UpdateGameplay(1.0f/120);check(g.car.porschePowertrain.gear==2&&g.car.porschePowertrain.shiftRemaining>0,"game-powertrain-upshifts-before-overrev");
+    g.car.porschePowertrain.shiftCooldown=0;RequestPorscheShift(g.car.porschePowertrain,1);UpdateGameplay(1.0f/120);check(g.car.porschePowertrain.gear==3&&g.car.porschePowertrain.manualSeconds>7,"paddle-request-changes-the-driving-gear");
+    g.car.speed=70;g.car.velocity=Mul(Forward(g.car.yaw),70);g.car.porschePowertrain.gear=5;g.car.porschePowertrain.shiftCooldown=0;RequestPorscheShift(g.car.porschePowertrain,-1);UpdateGameplay(1.0f/120);check(g.car.porschePowertrain.gear==5,"game-powertrain-rejects-an-overrev-downshift");
     g.car=initial;g.qaPorscheThrottle=g.qaPorscheBrake=g.qaPorscheSteering=0;g.qaCaptureActive=true;g.qaCaptureFront=true;g.cameraDistance=g.cameraActualDistance=5.8f;g.cameraInitialized=false;
     auto capture=[&](const char* path){
         for(int frame=0;frame<2;++frame){BeginDrawing();ClearBackground({94,123,132,255});DrawWorld();rlDrawRenderBatchActive();if(frame==1){Image image=LoadImageFromScreen();check(image.data&&ExportImage(image,path),path);UnloadImage(image);}EndDrawing();}
@@ -916,13 +920,13 @@ bool RunPorscheQA(){
     for(int kind=0;kind<4;++kind)check(ExportPorscheDisplay(g.car,kind,TextFormat("screenshots/porsche-display-%d-rest.png",kind)),"export-rest-live-display");
     std::array<unsigned int,4> restHashes{};auto pixelHash=[](Texture2D texture){Image image=LoadImageFromTexture(texture);const auto* pixels=static_cast<const unsigned char*>(image.data);unsigned int hash=2166136261u;const int bytes=GetPixelDataSize(image.width,image.height,image.format);for(int i=0;i<bytes;++i)hash=(hash^pixels[i])*16777619u;UnloadImage(image);return hash;};
     for(int kind=0;kind<4;++kind)restHashes[kind]=pixelHash(PorscheDisplayTexture(g.car,kind));
-    g.car.speed=31.25f;g.car.engineRpm=.8f;g.car.porscheChronoSeconds=75.3;g.car.porscheChronoRunning=true;g.car.longitudinalG=.73f;g.car.lateralG=-.42f;g.car.tireTemperatureC={72,74,75,77};g.car.porscheDisplayClock+=.2;PreparePorscheDisplays();
+    g.car.speed=31.25f;g.car.engineRpm=.8f;g.car.porschePowertrain.rpm=7200;g.car.porschePowertrain.gear=3;g.car.porscheChronoSeconds=75.3;g.car.porscheChronoRunning=true;g.car.longitudinalG=.73f;g.car.lateralG=-.42f;g.car.tireTemperatureC={72,74,75,77};g.car.porscheDisplayClock+=.2;PreparePorscheDisplays();check(PorscheDisplayTelemetry(g.car,true).rpm==7200&&PorscheDisplayTelemetry(g.car,true).gear==3&&Controls(g.car,true).rpm==7200,"instruments-and-needle-use-actual-powertrain-rpm-and-gear");
     for(int kind=0;kind<4;++kind){check(pixelHash(PorscheDisplayTexture(g.car,kind))!=restHashes[kind],"GPU-display-pixels-change-with-driving-telemetry");check(ExportPorscheDisplay(g.car,kind,TextFormat("screenshots/porsche-display-%d-driving.png",kind)),"export-driving-live-display");}
     g.car.steer=0;g.cameraInitialized=false;capture("screenshots/porsche-native-live-cockpit.png");
     bool displayBindings=true;for(int detail=0;detail<3;++detail){qaDetailLevel=detail;BeginDrawing();BeginMode3D(g.camera);DrawPorsche(g.car,true);EndMode3D();EndDrawing();auto& level=levels[detail];
         for(int kind=0;kind<4;++kind){int count=0;for(std::size_t m=0;m<level.surfaces.size();++m)if(PorscheDisplayKind(level.surfaces[m].name)==kind){const auto texture=PorscheDisplayTexture(g.car,kind);displayBindings=displayBindings&&level.model.materials[m+1].maps[MATERIAL_MAP_DIFFUSE].texture.id==texture.id&&level.model.materials[m+1].maps[MATERIAL_MAP_EMISSION].texture.id==texture.id;++count;}displayBindings=displayBindings&&count==1;}
     }qaDetailLevel=-1;check(displayBindings,"all-four-live-displays-bound-after-actual-detail-level-draws");
-    const auto rateRevision=PorscheDisplayRevision(g.car);g.car.engineRpm=.7f;PreparePorscheDisplays();check(PorscheDisplayRevision(g.car)==rateRevision,"changed-telemetry-is-throttled-within-one-display-tick");g.car.porscheDisplayClock+=.11;PreparePorscheDisplays();check(PorscheDisplayRevision(g.car)==rateRevision+1,"changed-telemetry-refreshes-on-next-display-tick");
+    const auto rateRevision=PorscheDisplayRevision(g.car);g.car.porschePowertrain.rpm=6300;PreparePorscheDisplays();check(PorscheDisplayRevision(g.car)==rateRevision,"changed-telemetry-is-throttled-within-one-display-tick");g.car.porscheDisplayClock+=.11;PreparePorscheDisplays();check(PorscheDisplayRevision(g.car)==rateRevision+1,"changed-telemetry-refreshes-on-next-display-tick");
     const Vehicle savedExtra=g.extraCar;g.extraCar=g.car;g.extraCar.speed=-8;g.extraCar.porscheChronoSeconds=23.4;PreparePorscheDisplays(true);bool isolated=true;for(int kind=0;kind<4;++kind)isolated=isolated&&PorscheDisplayTexture(g.car,kind).id!=PorscheDisplayTexture(g.extraCar,kind).id;
     check(isolated&&pixelHash(PorscheDisplayTexture(g.car,1))!=pixelHash(PorscheDisplayTexture(g.extraCar,1)),"parked-and-occupied-cars-have-independent-display-targets");
     std::swap(g.car,g.extraCar);PreparePorscheDisplays(true);check(PorscheDisplayTelemetry(g.car,true).chronoTenths==234&&PorscheDisplayTelemetry(g.extraCar,false).chronoTenths==753,"vehicle-swap-keeps-each-stopwatch-with-its-car");g.extraCar=savedExtra;

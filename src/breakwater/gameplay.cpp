@@ -1144,7 +1144,7 @@ void UpdateCar(float dt){
     const float rollingDeceleration=meanRollingResistance*9.80665f;
     const float forwardSign=fabsf(oldForward)>.18f?copysignf(1.0f,oldForward):0.0f;
     const float brakeDeceleration=std::min(8.6f*brake,grip*9.80665f);
-    const float driveAcceleration=drive*5.2f*Lerp(.08f,1.0f,g.car.powerplantHealth);
+    const float driveAcceleration=g.car.isPorsche?UpdatePorschePowertrain(g.car.porschePowertrain,dt,drive,brake,oldForward,g.car.powerplantHealth)/vehicleMassKg:drive*5.2f*Lerp(.08f,1.0f,g.car.powerplantHealth);
     const float passiveTireAcceleration=-brakeDeceleration*forwardSign-rollingDeceleration*forwardSign;
     const float tireLongitudinalDemand=driveAcceleration+passiveTireAcceleration;
     const float externalLongitudinal=Vector3DotProduct(aerodynamicAcceleration,f)+gravityAlong;
@@ -1224,10 +1224,10 @@ void UpdateCar(float dt){
     g.car.yaw+=g.car.yawRate*dt;
     g.car.velocity=CarOriginVelocity(cgVelocity,g.car.yaw,g.car.yawRate,body.cgOffsetZ);
     g.car.longitudinalG=longitudinal/9.80665f;g.car.lateralG=lateralAcceleration/9.80665f;
-    g.car.speed=Clamp(Vector3DotProduct(g.car.velocity,Forward(g.car.yaw)),-13,42);
+    g.car.speed=g.car.isPorsche?Vector3DotProduct(g.car.velocity,Forward(g.car.yaw)):Clamp(Vector3DotProduct(g.car.velocity,Forward(g.car.yaw)),-13,42);
     g.car.lateralSpeed=Vector3DotProduct(g.car.velocity,Right(g.car.yaw));
     const float rpmTarget=Clamp(.20f+.55f*Clamp(fabsf(g.car.speed)/42.0f,0,1)+.28f*std::max(0.0f,drive),.18f,1.0f);
-    g.car.engineRpm=Lerp(g.car.engineRpm,rpmTarget,Clamp(dt*2.8f,0,1));
+    g.car.engineRpm=g.car.isPorsche?.18f+.82f*Clamp((g.car.porschePowertrain.rpm-900)/8100,0,1):Lerp(g.car.engineRpm,rpmTarget,Clamp(dt*2.8f,0,1));
     const Vector3 originStep=CarOriginStep(cgVelocity,oldYaw,g.car.yaw,body.cgOffsetZ,dt);
     g.car.p.x+=originStep.x;g.car.p.z+=originStep.z;
     g.car.wheelAngle+=g.car.speed*dt/.48f;

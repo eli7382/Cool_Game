@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "checks": 133,
+  "checks": 137,
   "failures": 0,
   "native_steering_poses": 69,
   "maximum_axial_drift_m": 2.03028e-07,
@@ -8,7 +8,7 @@
   "maximum_raw_rest_adjustment_m": 0.0241878,
   "maximum_reference_pose_error_m": 2.6656e-07,
   "reference_nodes_compared": 2512,
-  "accelerated_speed_mps": 9.9707,
+  "accelerated_speed_mps": 12.0373,
   "suspension_evidence":"docs/porsche-native-suspension-qa.json",
   "limits": ["Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics","Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames","Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"]
 }

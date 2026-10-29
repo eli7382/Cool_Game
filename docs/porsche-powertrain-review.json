@@ -1,0 +1,91 @@
+{
+  "reviewed_at": "2026-10-29T09:27:52.660277+00:00",
+  "change": "Connect animated paddles to a seven-speed driving powertrain, use wheel-coupled engine RPM for the needle, audio normalization and live instrument gear/RPM readout, and replace the fixed Porsche acceleration demand with rear-wheel torque.",
+  "published_values": {
+    "reference": "https://newsroom.porsche.com/dam/jcr%3A1d390f77-93c3-49c0-89c7-634f5f02b26a/S22_3515_en.pdf",
+    "forward_ratios": [
+      3.75,
+      2.38,
+      1.72,
+      1.34,
+      1.11,
+      0.96,
+      0.84
+    ],
+    "reverse_ratio": 3.42,
+    "final_drive": 4.27,
+    "maximum_rpm": 9000,
+    "peak_torque_Nm": 465,
+    "peak_torque_rpm": 6300,
+    "peak_power_W": 386000,
+    "peak_power_rpm": 8500
+  },
+  "game_approximations": {
+    "intermediate_torque_curve": true,
+    "drivetrain_efficiency": 0.92,
+    "launch_clutch_rpm_target": "900 + effective throttle * 3500, with wheel-coupled RPM as a floor",
+    "shift_torque_cut_seconds": 0.1,
+    "shift_cooldown_seconds": 0.25,
+    "manual_override_seconds": 8,
+    "automatic_upshift_rpm_light_full": [
+      4200,
+      8800
+    ],
+    "automatic_downshift_rpm_light_full": [
+      1800,
+      4500
+    ],
+    "braking_behavior": "Suppress economy upshift while braking; overrev protection remains active",
+    "reverse_input": "Retains existing reduced reverse demand"
+  },
+  "source_hashes": {
+    "src/breakwater/porsche_powertrain.hpp": "b3af4c7aff3c4955a6e0fb570e31c141a11486a4eb277822f5885171135ea23b",
+    "src/breakwater/game.hpp": "59e922ae8d06bf827e779d127364b86f09211f9be59b061abd8b8b220363b161",
+    "src/breakwater/gameplay.cpp": "8dc70d34a21c33c97b90e58a95f7f03a2f6c57173bfb2bee19983702578abe59",
+    "src/breakwater/porsche_native.cpp": "3c33ca5b62eb8a2d8c86ee6e6572855366bb52495c1f5a24e0285f0653c097d8",
+    "src/breakwater/porsche_displays.cpp": "0f6552d77ddf375fe2f51056c215672fed1c6b00623bb94bad0834dc17a3a50c",
+    "src/breakwater/porsche_displays.hpp": "68f6ef1b535935b94371bf5039e74c09b96a0bcbd8684fbdc4bc61f3f250c259",
+    "tests/porsche_powertrain.cpp": "6ac43ba8a8a2b7084ae52f300cf6e343a69c56cb9e5e26c0e8cd3478351d37e9"
+  },
+  "cpu_result": "porsche-powertrain,checks=34544,failures=0",
+  "cpu_executable_sha256": "05d9fbd293c33a430030ff0799f33249707b7b22b4b930383445de2142d8726d",
+  "native_executable_sha256": "70e5b1d8aea441d674bb861e0218bb519a52daa4aee4119acafab46b1ac49b42",
+  "native_qa": {
+    "passed": true,
+    "checks": 137,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 2.03028e-07,
+    "maximum_radial_drift_m": 3.47715e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 12.0373,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "new_native_cases": [
+    "Automatic upshift through actual gameplay update",
+    "Paddle request changes driving gear",
+    "Reject overrev downshift from a valid cruising gear",
+    "Needle and display use actual powertrain RPM and selected gear"
+  ],
+  "thermal_result": "1.55,qa-car-tire-thermal-result,pass=1,load-transfer-pass=1,max-temp-c=21.00,total-wear=0.00008308,peak-speed-mps=16.00",
+  "thermal_log_sha256": "7a0439b0d4fe16d7a37be7f7da5074ae2fe111bd201a5c51915157abe8a850c3",
+  "images": {
+    "screenshots/porsche-powertrain-cockpit.png": "4d7fbd83d3949aab988f1b7fd033329df27697df6725a346ec87e4e4c816d1fb",
+    "screenshots/porsche-powertrain-instruments.png": "c1e1b4b3f8b96962282ddc4c2077e3179f6ff70a207b96f98deac0b45f91263e"
+  },
+  "image_fixture": "Controlled native telemetry fixture: 113 km/h, 7200 rpm, third gear. Not a capture of a human driving run.",
+  "limits": [
+    "Torque interpolation, clutch/shift dynamics, differential behavior and control thresholds are approximations, not OEM PDK calibration",
+    "No engine-braking, clutch thermal model, wheel inertia or detailed traction-control calibration",
+    "No verified real-world acceleration, top speed, braking distance or lap time",
+    "Full main-painted-body clearance, final visual fidelity, current performance target and GitHub publishing remain unfinished"
+  ],
+  "complete": false
+}

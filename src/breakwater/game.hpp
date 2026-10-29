@@ -1,5 +1,6 @@
 #pragma once
 #include "raylib.h"
+#include "porsche_powertrain.hpp"
 #include "raymath.h"
 #include "rlgl.h"
 #include <algorithm>
@@ -96,6 +97,7 @@ struct Vehicle {
     bool porscheChronoRunning{};
     float porscheMirrorYaw{},porscheMirrorPitch{};
     float porscheWindow{},porscheAero{},porscheAirbrake{},porscheBrake{},porscheThrottle{},porschePaddleL{},porschePaddleR{};
+    PorschePowertrain porschePowertrain{};
     Vector3 p{},velocity{};
     float yaw{},speed{},wheelAngle{},wheelSpinRate{},steer{},suspension{},damage{};
     float pitch{},roll{},verticalSpeed{},collective{},rotorAngle{},propAngle{};
