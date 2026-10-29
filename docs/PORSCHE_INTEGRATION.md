@@ -34,6 +34,10 @@ compress/extend through their exported morph targets. The physics contact
 positions now match the stock wheel centres, and each corner drives its own
 named wheel. The visual travel envelope is +/- 50 mm.
 
+The steering wheel rotates about its fitted horn-hub axis at 14.1 times the
+front steering angle. This holds the published centre ratio constant; the OEM
+variable-ratio rack curve is not available and is not reproduced.
+
 Doors, windows, pedals, paddles, tachometer needle and wing surfaces follow the
 articulated rig. The paddles also request a gear change in the driving model.
 The gearbox uses the published seven forward ratios, reverse ratio and final

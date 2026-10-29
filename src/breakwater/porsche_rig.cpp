@@ -62,7 +62,8 @@ void PorscheRig::Pose(const PorscheControls& inputs){
     Rotate("Door_L",y,-c.doorL*1.05f);Rotate("Door_R",y,c.doorR*1.05f);
     Rotate("WingUpper_Hinge",x,(40*c.airbrake-12*c.drs*(1-c.airbrake))*DEG2RAD);
     for(const char* side:{"L","R"})Rotate(std::string("FrontAero_")+side,x,(20*c.airbrake-8*c.drs)*DEG2RAD);
-    Rotate("SteeringWheel_Pivot",z,c.steering*8);
+    // Published 14.1:1 centre ratio; constant approximation of the variable rack.
+    Rotate("SteeringWheel_Pivot",z,c.steering*14.1f);
     Rotate("Mirror_Adjust_Interior",y,c.mirrorYaw);Rotate("Mirror_Adjust_Interior",x,c.mirrorPitch);
     Rotate("BrakePedal_Pivot",x,-c.brake*.18f);Rotate("ThrottlePedal_Pivot",x,c.throttle*.12f);
     Rotate("ShiftPaddle_L",y,c.paddleL*.12f);Rotate("ShiftPaddle_R",y,-c.paddleR*.12f);

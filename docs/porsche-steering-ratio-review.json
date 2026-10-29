@@ -1,0 +1,103 @@
+{
+  "reviewed_at": "2026-10-29T10:56:57.966362+00:00",
+  "change": "Use 14.1 steering-wheel radians per radian of front steering in the native game and source preview, retaining the fitted horn-hub frame.",
+  "published_reference": "https://newsroom.porsche.com/dam/jcr:1d390f77-93c3-49c0-89c7-634f5f02b26a/S22_3515_en.pdf",
+  "published_centre_ratio": 14.1,
+  "previous_multiplier": 8,
+  "constant_ratio_approximation": true,
+  "full_lock_front_radians": 0.55,
+  "full_lock_handwheel_degrees": 444.32877012395346,
+  "source_sweeps": [
+    {
+      "detail": "hero",
+      "export_sha256": "024324e72af6090d49503aad05bd4f0a7a319c751bc4237b0b292720006cc421",
+      "adapter_sha256": "76f5529578b241437dd8caae428a8e8cbf80183f4bf3c9acd3ce2c9a501eba3f",
+      "poses": 46,
+      "maximum_rigid_motion_error_m": 3.103168773495576e-08,
+      "hub": {
+        "maximum_centre_orbit_m": 2.8505090211156385e-08,
+        "return_to_centre_error_m": 7.850462293418876e-17,
+        "poses": 6
+      },
+      "report_sha256": "8f56eacb995131f87938c120e7684ae0933e16e4185d4661eec85d25f54d2f0c"
+    },
+    {
+      "detail": "near",
+      "export_sha256": "9ebcc19692aa700fafa2ccb5bff647498964bc11a35e6fbaaa361a857d10ed28",
+      "adapter_sha256": "76f5529578b241437dd8caae428a8e8cbf80183f4bf3c9acd3ce2c9a501eba3f",
+      "poses": 46,
+      "maximum_rigid_motion_error_m": 3.102536989069218e-08,
+      "hub": {
+        "maximum_centre_orbit_m": 2.8505090211156385e-08,
+        "return_to_centre_error_m": 7.850462293418876e-17,
+        "poses": 6
+      },
+      "report_sha256": "c8d104501ebca2f1c7b8fb7a71902a066918b7cbad303e8c891d74367abf7684"
+    },
+    {
+      "detail": "far",
+      "export_sha256": "765598e0f325ec62c88f0170ead5955d525c00ef938b58874da3243270646e3d",
+      "adapter_sha256": "76f5529578b241437dd8caae428a8e8cbf80183f4bf3c9acd3ce2c9a501eba3f",
+      "poses": 46,
+      "maximum_rigid_motion_error_m": 3.104352119071809e-08,
+      "hub": {
+        "maximum_centre_orbit_m": 2.8505090211156385e-08,
+        "return_to_centre_error_m": 7.850462293418876e-17,
+        "poses": 6
+      },
+      "report_sha256": "dfde28b2895799d9c9cda344244ad723f375cb73ee012cf7ae6c0a8ff0360de8"
+    }
+  ],
+  "native_qa": {
+    "passed": true,
+    "checks": 138,
+    "failures": 0,
+    "native_steering_poses": 69,
+    "maximum_axial_drift_m": 1.72295e-07,
+    "maximum_radial_drift_m": 4.98954e-07,
+    "maximum_raw_rest_adjustment_m": 0.0241878,
+    "maximum_reference_pose_error_m": 2.6656e-07,
+    "reference_nodes_compared": 2512,
+    "accelerated_speed_mps": 12.0373,
+    "suspension_evidence": "docs/porsche-native-suspension-qa.json",
+    "limits": [
+      "Finite motion and basic driving smoke test, not complete vehicle clearance or OEM physics",
+      "Zero-pose linkages are compared against the existing production rig; live wing actuators intentionally adjust their raw authoring rest frames",
+      "Source-fitted suspension, live screens and planar scene mirrors are implemented; Porsche tire-force tuning, optical appearance, instrument artwork and material refinements remain in development"
+    ]
+  },
+  "native_log_sha256": "a55134870acd85ed4d688358df8c98a0e296bce3784f2fdbb0cdb58c2d6a65c3",
+  "native_ratio_gate": "porsche-qa-check,name=native-steering-wheel-matches-published-centre-ratio-through-full-lock,pass=1",
+  "images": [
+    {
+      "path": "screenshots/porsche-steering-ratio-negative.png",
+      "sha256": "297c0e1338bc9a12a344e03fe07bf7227cddb4a0d5dc3b56164e74723cf6bbbd"
+    },
+    {
+      "path": "screenshots/porsche-steering-ratio-centre.png",
+      "sha256": "d42fb1228a754b7776dca6b6e30a2b997c941b0518bafb8c41424b653e8718b3"
+    },
+    {
+      "path": "screenshots/porsche-steering-ratio-positive.png",
+      "sha256": "9e266fd51ea02d02dc77507e0746cffe9ee271ae447a92907623b3d00a22a641"
+    }
+  ],
+  "visual_observations": [
+    "Neutral wheel has upright badge and fitted hub location",
+    "Positive steering rotates the complete rim, horn hub, control pods and shift paddles as one assembly around the shaft",
+    "Numeric axis and radius checks cover 69 native poses and 138 source poses across three detail levels"
+  ],
+  "source_hashes": {
+    "Cool_Game/src/breakwater/porsche_rig.cpp": "968fe99e2794091098b6ce5ccf4832a39f9159dcea262cb2b4d1c8df95513e9b",
+    "Cool_Game/src/breakwater/porsche_native.cpp": "94d058010d585cfc332744486d792726356f95e1a8c5907eee610ff3eebfdfdf",
+    "Porsche_911/viewer/GT3RSCar.js": "76f5529578b241437dd8caae428a8e8cbf80183f4bf3c9acd3ce2c9a501eba3f",
+    "Porsche_911/scripts/test_steering_axis.mjs": "8795efe4ac35228e154853410500445305f20a4ddb3401de72a5ca4d13d7f4f1"
+  },
+  "limits": [
+    "Published centre ratio is held constant. The OEM variable-ratio curve is not reproduced.",
+    "Finite pose sweep does not prove cockpit or driver-hand clearance.",
+    "Front tire/main painted-fender contact during suspension compression remains unresolved.",
+    "Requested final visual fidelity and full-game performance remain unverified."
+  ],
+  "complete": false
+}

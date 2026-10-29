@@ -793,7 +793,7 @@ bool RunPorscheQA(){
     const Vector3 pickup=g.car.p,parked=g.extraCar.p;g.player.p=Add(parked,V(0,1,0));g.qaTaskInteractPending=true;UpdateGameplay(1.0f/60);
     check(g.vehicle==VehicleKind::Car&&g.car.isPorsche,"enter-parked-porsche");check(!g.extraCar.isPorsche&&DistXZ(g.extraCar.p,pickup)<.01f,"pickup-retained-after-swap");
     for(auto& e:g.enemies)e.alive=false;for(auto& e:g.hostileRotorcraft)e.alive=false;for(auto& e:g.hostileFixedWings)e.alive=false;for(auto& e:g.hostileRoadVehicles)e.alive=false;
-    double maximumAxial=0,maximumRadial=0,maximumRest=0,maximumReferenceError=0;int poses=0,referenceNodes=0;
+    double maximumAxial=0,maximumRadial=0,maximumRest=0,maximumReferenceError=0,maximumSteeringMappingError=0;int poses=0,referenceNodes=0;
     auto compareReference=[&](PorscheRig& rig,std::span<const porsche_reference::Node> expected){
         double error=0;
         for(const auto& node:expected){const int index=rig.Find(node.name);if(index<0){error=1;continue;}const Matrix actual=rig.World(index);
@@ -818,12 +818,15 @@ bool RunPorscheQA(){
         for(int k=-11;k<=11;++k){PorscheControls controls;controls.steering=k*.05f;rig.Pose(controls);++poses;
             for(std::size_t i=0;i<level.bindings.size();++i){const int node=level.bindings[i].node;if(!rig.DescendsFrom(node,pivot))continue;const Matrix delta=rig.MeshDelta(node);const auto& mesh=level.model.meshes[i];
                 for(int n=0;n<mesh.vertexCount;++n){const Vector3 point{mesh.vertices[n*3],mesh.vertices[n*3+1],mesh.vertices[n*3+2]},a=Sub(point,centre),b=Sub(Vector3Transform(point,delta),centre);const double az=Vector3DotProduct(a,axis),bz=Vector3DotProduct(b,axis);
+                    const Vector3 expected=Vector3RotateByAxisAngle(a,axis,controls.steering*14.1f);
+                    maximumSteeringMappingError=std::max(maximumSteeringMappingError,static_cast<double>(Vector3Distance(b,expected)));
                     maximumAxial=std::max(maximumAxial,fabs(az-bz));maximumRadial=std::max(maximumRadial,fabs(sqrt(std::max(0.0,static_cast<double>(Vector3LengthSqr(a))-az*az))-sqrt(std::max(0.0,static_cast<double>(Vector3LengthSqr(b))-bz*bz))));
                 }
             }
         }
         rig.Pose({});
     }
+    check(maximumSteeringMappingError<3e-6,"native-steering-wheel-matches-published-centre-ratio-through-full-lock");
     check(maximumAxial<3e-6,"native-wheel-plane-invariant");check(maximumRadial<3e-6,"native-wheel-radius-invariant");
     PorscheControls aero;aero.drs=1;levels[0].rig->Pose(aero);check(compareReference(*levels[0].rig,porsche_reference::DRS)<2e-5,"native-DRS-linkages-match-production-rig");
     aero.airbrake=1;levels[0].rig->Pose(aero);check(compareReference(*levels[0].rig,porsche_reference::Airbrake)<2e-5,"native-airbrake-linkages-match-production-rig");
