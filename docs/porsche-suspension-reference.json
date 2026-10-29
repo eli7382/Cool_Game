@@ -1,24 +1,24 @@
 {
-  "fixture_sha256": "1427d225e955aac3da75a07e4c96805e30ebc7ccb93201ca36660ef5ccdee040",
+  "fixture_sha256": "bf76d4f8899949151eaaa44da69fcc9340201202920510040a42b339bb79a4ff",
   "generator_sha256": "969302f8559b49ba3eec93a9a2c7421d21c6e42ad4f888cb129cfb17089f7869",
-  "adapter_sha256": "45f76e655bbf96347a8c044d048c7a98040047de17e713ca00a7ac63eb3bfe10",
-  "solver_sha256": "6e1f8db3e6964e8d651a19994dfb24cf038487fdb32de846d07ccb14d2cfe366",
+  "adapter_sha256": "76f5529578b241437dd8caae428a8e8cbf80183f4bf3c9acd3ce2c9a501eba3f",
+  "solver_sha256": "63cf76cdf99454aadb317bdb1b329755bd1a761d58672b42b83f7826cedabf1e",
   "levels": [
     {
       "level": "hero",
-      "runtime_sha256": "cc189bfd46c3a29faea767f323f824618f7179e1fbfd8c7eb83bbae7ef1f959c",
+      "runtime_sha256": "442b2abe53a69da49e7111df3ac43fbe6afb3b7cc48853dff5b21000d1f3b499",
       "poses": 65,
       "spring_samples_per_pose": 128
     },
     {
       "level": "near",
-      "runtime_sha256": "d2353b1194a92dd189299b25bd1500ffeb4dc05ab3f614a128b564ad30b7a0d5",
+      "runtime_sha256": "3311b16d2aa5e2f52e597f5db21824cb79a3f29e81077e0e524f7020cc498441",
       "poses": 65,
       "spring_samples_per_pose": 128
     },
     {
       "level": "far",
-      "runtime_sha256": "00723e2c1a3af3ed9d562905c43d36b6f55c1baa3112267e8bb20b7875107a59",
+      "runtime_sha256": "ed75dc983136a5adf22f17014856b8b36bbb84755f82f2664f80ec607a315e67",
       "poses": 65,
       "spring_samples_per_pose": 128
     }

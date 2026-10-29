@@ -7,7 +7,7 @@
   "maximum_morphed_position_error_m":5.17051e-07,
   "maximum_morphed_normal_error":4.00464e-07,
   "maximum_spring_weight_error":7.7486e-07,
-  "maximum_solver_residual_m":9.44149e-09,
+  "maximum_solver_residual_m":8.5368e-09,
   "maximum_joint_gap_m":1.79434e-07,
   "maximum_wheel_height_error_m":2.79397e-08,
   "maximum_rigid_link_error_m":1.78814e-07,

@@ -439,3 +439,13 @@ node tests/build_porsche_suspension_reference.mjs ../Porsche_911
 Keep `assets/porsche/ATTRIBUTION.md` with distributions. The body and original
 cockpit are adapted from Black Snow's CC BY 4.0 model; the rig, wheel assemblies,
 finish maps and other additions are described in that attribution.
+
+The current exports include 1.5 degrees of front static negative camber, with
+the wishbone accessories, tie rods, anti-roll drop links, damper frames and
+spring morphs refitted together. This is a reference-informed game alignment,
+not an OEM hardpoint reconstruction. The body, tire sizes, wheel centers and
+requested travel remain unchanged. All three variants passed 195 source poses
+in total and the native build passed 138 checks; the native suspension oracle
+also compares 195 poses. See `docs/porsche-front-alignment-review.json` and
+`screenshots/porsche-front-alignment-native.png`. Tire contact with the painted
+front arch remains in 87 of 165 sampled clearance poses and is still unresolved.
