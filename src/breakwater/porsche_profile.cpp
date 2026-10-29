@@ -7,6 +7,8 @@
 #include <fstream>
 #include <iomanip>
 #include <numeric>
+#include <cstdlib>
+#include <cstring>
 
 // The source-based raylib build exposes the same GLAD declarations it uses.
 // Installed raylib packages may omit them: keep normal builds and CPU timings
@@ -66,6 +68,7 @@ bool RunPorschePerformanceQA(bool compareCulling,bool compareCylinders){
     std::filesystem::create_directories("docs");std::filesystem::create_directories("screenshots");
     SetTargetFPS(0);ClearWindowState(FLAG_VSYNC_HINT);g.qaPorsche=false;
     const Game initialWorld=g;
+    const char* routeOption=std::getenv("BW_PORSCHE_PERF_ROUTE");const bool hangarRoute=routeOption&&std::strcmp(routeOption,"hangar")==0;
     const bool savedCulling=MeshVisibilityEnabled(),savedCylinders=CylinderVisibilityEnabled();
 #if PORSCHE_GPU_TIMERS
     gpuTimers=glQueryCounter&&glGenQueries&&glGetQueryObjectui64v&&glDeleteQueries;
@@ -74,7 +77,7 @@ bool RunPorschePerformanceQA(bool compareCulling,bool compareCylinders){
     const char *vendor=nullptr,*renderer=nullptr,*version=nullptr;
 #endif
     std::ofstream report(compareCylinders?"docs/porsche-native-cylinder-performance.json":compareCulling?"docs/porsche-native-culling-performance.json":"docs/porsche-native-performance.json");report<<std::setprecision(9);
-    report<<"{\n\"comparison\":\""<<(compareCylinders?"cylinder_culling":compareCulling?"mesh_culling":"ambient_occlusion")<<"\",\n\"schema\":2,\n\"gpu_timer_queries\":"<<(gpuTimers?"true":"false")<<",\n\"vendor\":"<<JSONString(vendor)<<",\n\"renderer\":"<<JSONString(renderer)<<",\n\"GL_version\":"<<JSONString(version)<<",\n\"width\":"<<GetRenderWidth()<<",\n\"height\":"<<GetRenderHeight()<<",\n\"warmup_frames\":"<<Warmup<<",\n\"sample_frames_per_case\":"<<Samples<<",\n\"vsync_requested\":false,\n\"hidden_window\":true,\n\"camera_smoothing_disabled_for_matched_cases\":true,\n\"fps_cap\":0,\n\"simulation_step_s\":0.0166666667,\n\"stage_flush_instrumentation\":true,\n\"cases\":[\n";
+    report<<"{\n\"route\":"<<JSONString(hangarRoute?"hangar":"base")<<",\n\"comparison\":\""<<(compareCylinders?"cylinder_culling":compareCulling?"mesh_culling":"ambient_occlusion")<<"\",\n\"schema\":2,\n\"gpu_timer_queries\":"<<(gpuTimers?"true":"false")<<",\n\"vendor\":"<<JSONString(vendor)<<",\n\"renderer\":"<<JSONString(renderer)<<",\n\"GL_version\":"<<JSONString(version)<<",\n\"width\":"<<GetRenderWidth()<<",\n\"height\":"<<GetRenderHeight()<<",\n\"warmup_frames\":"<<Warmup<<",\n\"sample_frames_per_case\":"<<Samples<<",\n\"vsync_requested\":false,\n\"hidden_window\":true,\n\"camera_smoothing_disabled_for_matched_cases\":true,\n\"fps_cap\":0,\n\"simulation_step_s\":0.0166666667,\n\"stage_flush_instrumentation\":true,\n\"cases\":[\n";
     bool passed=true;int caseIndex=0;
     // Alternate AO order between views/presets to reduce systematic warm/cache
     // ordering bias. Cylinder comparisons use ABBA/BAAB repetitions per view.
@@ -83,6 +86,7 @@ bool RunPorschePerformanceQA(bool compareCulling,bool compareCylinders){
         const int comparisonState=compareCylinders?(order==1||order==2?1:0):order;
         const bool feature=(comparisonState^preset^cockpit)!=0,ao=compareCulling||compareCylinders||feature,culling=!compareCulling||feature,cylinders=compareCylinders?feature:savedCylinders;SetMeshVisibilityEnabled(culling);SetCylinderVisibilityEnabled(cylinders);g=initialWorld;g.clock=5.4f;g.qaPorscheThrottle=g.qaPorscheSteering=g.qaPorscheBrake=0;StartMission();g.screen=Screen::Playing;g.graphics=preset?GraphicsMode::High:GraphicsMode::Low;
         g.qaPorsche=true;g.player.p=Add(g.extraCar.p,V(0,1,0));g.qaTaskInteractPending=true;UpdateGameplay(1.0f/60);g.qaPorsche=false;
+        if(hangarRoute){g.car.p=V(-53,TerrainHeight(-53,190)+.72f,190);g.car.yaw=0;g.car.speed=0;g.car.velocity=V(0,0,0);g.car.yawRate=g.car.lateralSpeed=g.car.pitch=g.car.roll=g.car.suspension=0;g.car.pitchRate=g.car.rollRate=g.car.suspensionVelocity=0;g.car.wheelTravel.fill(0);g.car.wheelTravelVelocity.fill(0);}
         // Real game physics/controls, ordinary camera, ordinary LOD selection,
         // world render and HUD. Combat is held idle for matched vehicle cases.
         for(auto& e:g.enemies)e.alive=false;for(auto& e:g.hostileRotorcraft)e.alive=false;for(auto& e:g.hostileFixedWings)e.alive=false;for(auto& e:g.hostileRoadVehicles)e.alive=false;

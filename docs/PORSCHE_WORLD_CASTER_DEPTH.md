@@ -118,3 +118,38 @@ route, where buildings are usually outside the local shadow volume; it does
 not imply the same reduction beside a building or a 97% whole-frame gain.
 The runs are non-interleaved and instrumented. See the raw reports and
 `porsche-building-group-performance-review.json` for their scope and limits.
+
+Hangar benchmark route
+----------------------
+
+`BW_PORSCHE_PERF_ROUTE=hangar` selects an explicit benchmark-only starting
+point at X=-53, Z=190 outside the west hangar wall, facing +Z. It resets body
+and wheel motion before each case, then uses the same warmup, controls,
+ordinary gameplay, cameras and HUD as the base benchmark. The report records
+`route: hangar`; ordinary mission placement is unchanged. This short route
+does not cover every building or driving scenario.
+
+`BW_PORSCHE_BUILDING_GROUP_CULL=0` retains the original full-group submission
+path in production shadow preparation for diagnostics. Unset or any other
+value enables culling. It does not change the explicit off/on render oracle
+inside native QA. For the hangar comparison, building shadows remain enabled
+in both runs; only this group-culling switch changes.
+
+Review the resulting reports with:
+
+```
+python scripts/review_building_group_performance.py --before docs/porsche-hangar-group-off-performance.json --after docs/porsche-hangar-group-on-performance.json --output docs/porsche-hangar-group-performance-review.json
+```
+
+The first sequential hangar pair passes all eight cases in each run, with
+identical speed, steering and position traces. The car moves approximately
+8.06 m beside the west wall, from X≈-53/Z≈190.37 at the first sampled frame
+to X≈-52.01/Z≈198.00 at the last. The retained high-preset chase capture is
+`screenshots/porsche-hangar-performance-high-chase.png` (culled run).
+
+For AO-on cases, median building-stage CPU submission decreases from
+3.82275–4.9397 ms to 0.58495–0.61535 ms. Stage GPU medians decrease from
+0.331264–0.701952 ms to 0.070656–0.48128 ms. This confirms a useful local
+reduction while the hangar remains nearby, rather than only on the open base
+route. The sequential instrumented comparison does not establish normal-game
+FPS, all building workloads, repeated-run variance or cross-device gains.

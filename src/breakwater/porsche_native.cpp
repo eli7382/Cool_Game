@@ -770,6 +770,7 @@ void PreparePorscheShadows(bool force){
     BindBuildingShadow(nullptr);
     {PorscheProfileScope buildingStage(PorscheProfileStage::BuildingShadows);
     const char* buildingOption=std::getenv("BW_PORSCHE_BUILDING_SHADOWS");const bool buildingEnabled=!buildingOption||std::strcmp(buildingOption,"0")!=0;
+    const char* groupOption=std::getenv("BW_PORSCHE_BUILDING_GROUP_CULL");const bool groupEnabled=!groupOption||std::strcmp(groupOption,"0")!=0;
     for(int slot=0;slot<2;++slot){
         const Vehicle& v=*cars[slot];auto& map=buildingShadows[slot];map.ready=false;
         if(!buildingEnabled||!v.isPorsche||Vector3Distance(v.p,g.camera.position)>65||!map.Ensure(g.graphics==GraphicsMode::High?1024:512))continue;
@@ -779,7 +780,7 @@ void PreparePorscheShadows(bool force){
         map.projection=MatrixOrtho(-BuildingShadowSpan*.5,BuildingShadowSpan*.5,-BuildingShadowSpan*.5,BuildingShadowSpan*.5,.1,100);
         map.localClip=MatrixMultiply(map.view,map.projection);
         BeginTextureMode(map.target);rlEnableDepthMask();ClearBackground(WHITE);rlDisableBackfaceCulling();rlDisableColorBlend();
-        DrawStaticWorldSunDepth(map.camera,map.projection);
+        DrawStaticWorldSunDepth(map.camera,map.projection,groupEnabled);
         rlEnableColorBlend();rlEnableBackfaceCulling();EndTextureMode();map.ready=true;++map.updates;
     }
     }
