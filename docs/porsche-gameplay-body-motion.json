@@ -1,0 +1,1 @@
+{"frames":600,"finite":true,"maximum_hub_ground_error_m":0.012394,"maximum_absolute_pitch_rad":0.0970555,"maximum_absolute_roll_rad":0.030482,"wheel_travel_stop_samples":0,"scope":"Existing 120Hz acceleration, turn and braking route; hub ground residual uses fixed contact samples and nominal tire radii, not a triangle clearance test"}

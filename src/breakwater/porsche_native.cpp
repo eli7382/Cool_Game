@@ -949,11 +949,34 @@ bool RunPorscheQA(){
     check(sunState.restored,"shadow-pass-restores-main-camera-matrices-and-framebuffer");
     check(sunState.coverage,"all-posed-car-caster-bounds-fit-shadow-map");
     check(RunWorldCarShadowChecks(),"actual-road-and-terrain-car-shadows-match-posed-triangle-rays");
-    for(int i=0;i<240;++i)UpdateGameplay(1.0f/120);
+    std::ofstream motionTrace("docs/porsche-gameplay-body-motion.csv");
+    motionTrace<<"phase,frame,longitudinal_g,lateral_g,normal_g,pitch_rad,roll_rad,heave_m,rr_m,rl_m,fr_m,fl_m,maximum_hub_ground_error_m\n";
+    int motionFrame=0;bool finiteMotion=true;float maximumHubGroundError=0,maximumBodyPitch=0,maximumBodyRoll=0;int travelStopSamples=0;
+    auto driveMotionStep=[&](const char* phase){
+        UpdateGameplay(1.f/120);
+        const Matrix body=PorscheVehicleMatrix(g.car);const auto offsets=CarWheelContactOffsets(g.car);
+        float error=0;
+        for(int wheel=0;wheel<4;++wheel){
+            const float radius=wheel>=2?.35025f:.3672f;
+            const auto hub=Vector3Transform(V(offsets[wheel].x,radius+g.car.wheelTravel[wheel],offsets[wheel].y),body);
+            const auto sample=Local(g.car.p,g.car.yaw,V(offsets[wheel].x,0,offsets[wheel].y));
+            const float gap=hub.y-radius-.02f-TerrainHeight(sample.x,sample.z);
+            finiteMotion=finiteMotion&&std::isfinite(gap)&&std::isfinite(g.car.wheelTravelVelocity[wheel]);
+            error=std::max(error,std::abs(gap));
+            if(std::abs(g.car.wheelTravel[wheel])>=.04999f)++travelStopSamples;
+        }
+        finiteMotion=finiteMotion&&std::isfinite(g.car.pitch)&&std::isfinite(g.car.roll)&&std::isfinite(g.car.suspension)&&std::isfinite(g.car.normalG);
+        maximumHubGroundError=std::max(maximumHubGroundError,error);maximumBodyPitch=std::max(maximumBodyPitch,std::abs(g.car.pitch));maximumBodyRoll=std::max(maximumBodyRoll,std::abs(g.car.roll));
+        motionTrace<<phase<<','<<motionFrame++<<','<<g.car.longitudinalG<<','<<g.car.lateralG<<','<<g.car.normalG<<','<<g.car.pitch<<','<<g.car.roll<<','<<g.car.suspension;
+        for(float travel:g.car.wheelTravel)motionTrace<<','<<travel;motionTrace<<','<<error<<'\n';
+    };
+    for(int i=0;i<240;++i)driveMotionStep("accelerate");
     const float acceleratedSpeed=g.car.speed;check(acceleratedSpeed>1&&DistXZ(g.car.p,initial.p)>1,"porsche-drives-under-game-physics");
-    const float beforeTurn=g.car.yaw;g.qaPorscheSteering=.6f;for(int i=0;i<120;++i)UpdateGameplay(1.0f/120);
+    const float beforeTurn=g.car.yaw;g.qaPorscheSteering=.6f;for(int i=0;i<120;++i)driveMotionStep("turn");
     check(g.car.yaw-beforeTurn>.01f&&g.car.steer>.1f,"game-steering-turns-car-toward-front-tyres");
-    g.qaPorscheThrottle=g.qaPorscheSteering=0;g.qaPorscheBrake=1;for(int i=0;i<240;++i)UpdateGameplay(1.0f/120);
+    g.qaPorscheThrottle=g.qaPorscheSteering=0;g.qaPorscheBrake=1;for(int i=0;i<240;++i)driveMotionStep("brake");
+    motionTrace.close();check(finiteMotion,"body-and-wheel-motion-remain-finite-during-gameplay");
+    std::ofstream("docs/porsche-gameplay-body-motion.json")<<"{\"frames\":"<<motionFrame<<",\"finite\":"<<(finiteMotion?"true":"false")<<",\"maximum_hub_ground_error_m\":"<<maximumHubGroundError<<",\"maximum_absolute_pitch_rad\":"<<maximumBodyPitch<<",\"maximum_absolute_roll_rad\":"<<maximumBodyRoll<<",\"wheel_travel_stop_samples\":"<<travelStopSamples<<",\"scope\":\"Existing 120Hz acceleration, turn and braking route; hub ground residual uses fixed contact samples and nominal tire radii, not a triangle clearance test\"}\n";
     check(fabsf(g.car.speed)<fabsf(acceleratedSpeed),"game-brake-reduces-speed");check(std::isfinite(g.car.p.x)&&std::isfinite(g.car.yaw),"finite-game-pose");
     Vehicle parkedTest=initial;parkedTest.speed=2;const auto parkedAngles=parkedTest.porscheWheelAngles;UpdatePorscheControls(parkedTest,.5f,false);check(parkedTest.porscheWheelAngles==parkedAngles,"parked-wheel-angles-remain-still");
     // Exercise the production animation update, with distances small enough

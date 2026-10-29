@@ -39,3 +39,22 @@ compiler, with assertions enabled (do not define NDEBUG):
 .tools/w64devkit/bin/g++.exe -std=c++17 -O2 tests/porsche_load_motion_test.cpp -o .tools/porsche_load_motion_test.exe
 .tools/porsche_load_motion_test.exe
 ```
+
+Gameplay trace follow-up
+-----------------------
+
+The native suite now writes `porsche-gameplay-body-motion.csv` and a JSON
+summary for all 600 existing acceleration/turn/brake frames at 120 Hz. It
+checks finite body and wheel state; the complete suite passes 144 checks.
+No wheel reaches either 50 mm travel stop on this route. Maximum absolute
+travel is 18.90 mm; maximum nominal hub-to-ground residual is 12.394 mm.
+The trace includes response lag and terrain changes. Its maximum body pitch
+is 5.561 degrees and roll 1.747 degrees, including terrain attitude; these
+are not flat-road load-only measurements. Hub residual uses fixed physics
+contact samples, the body matrix and nominal radii, not solved wheel-node
+centres or full tire geometry. These observations do not establish complete
+ground contact, front fender clearance or handling accuracy.
+
+The follow-up build is also `game-load-motion-test.exe`; the primary executable
+remains locked against replacement. Neither launch nor shutdown of a user's
+existing game window is part of the QA run.
