@@ -22,7 +22,8 @@ namespace bw {
 namespace {
 constexpr int StageCount=static_cast<int>(PorscheProfileStage::Count);
 constexpr int QueryCount=2*(StageCount+1),Warmup=24,Samples=96;
-constexpr const char* StageNames[]{"simulation","camera","displays","sun_shadows","ambient_total","ambient_normal_depth","ambient_evaluation","ambient_filter","mirrors","scene_color","ui"};
+constexpr const char* StageNames[]{"simulation","camera","displays","sun_shadows","ambient_total","ambient_normal_depth","ambient_evaluation","ambient_filter","mirrors","scene_color","scene_static","scene_vegetation","scene_actors","scene_props","scene_vehicles","player_porsche","ui"};
+static_assert(std::size(StageNames)==StageCount);
 struct Frame {
     std::array<unsigned int,QueryCount> queries{};
     std::array<bool,StageCount> used{};
@@ -54,8 +55,8 @@ template<class F> void Stats(std::ostream& out,const std::vector<Frame>& frames,
     out<<"{\"mean\":"<<std::accumulate(samples.begin(),samples.end(),0.0)/samples.size()<<",\"p50\":"<<percentile(.5)<<",\"p95\":"<<percentile(.95)<<",\"p99\":"<<percentile(.99)<<",\"max\":"<<samples.back()<<"}";
 }
 }
-PorscheProfileScope::PorscheProfileScope(PorscheProfileStage value){
-    if(!active)return;stage=static_cast<int>(value);started=GetTime();rlDrawRenderBatchActive();Stamp(2*stage);active->used[stage]=true;
+PorscheProfileScope::PorscheProfileScope(PorscheProfileStage value,bool enabled){
+    if(!active||!enabled)return;stage=static_cast<int>(value);started=GetTime();rlDrawRenderBatchActive();Stamp(2*stage);active->used[stage]=true;
 }
 PorscheProfileScope::~PorscheProfileScope(){if(stage<0)return;rlDrawRenderBatchActive();Stamp(2*stage+1);active->cpu[stage]+=(GetTime()-started)*1000;}
 
@@ -89,32 +90,32 @@ bool RunPorschePerformanceQA(bool compareCulling){
         if(gpuTimers)for(auto& frame:frames)glGenQueries(QueryCount,frame.queries.data());
 #endif
         unsigned int initialDisplays=PorscheDisplayRevision(g.car);int allMirrors=0,allAO=0;
-        std::uint64_t porscheTested=0,porscheRejected=0,heroTested=0,heroRejected=0;
+        std::uint64_t porscheTested=0,porscheRejected=0,heroTested=0,heroRejected=0,primitiveTested=0,primitiveRejected=0;
         for(int frameIndex=-Warmup;frameIndex<Samples;++frameIndex){
             active=frameIndex>=0?&frames[frameIndex]:nullptr;const double start=GetTime();
             {PorscheProfileScope scope(PorscheProfileStage::Simulation);g.qaPorsche=true;g.qaPorscheSteering=.16f*sinf((frameIndex+Warmup)*.035f);UpdateGameplay(1.0f/60);g.qaPorsche=false;}
             const int previousAO=PorscheAmbientOcclusionUpdates();const auto previousDisplays=PorscheDisplayRevision(g.car);
-            const auto previousPorsche=GetMeshVisibilityStats(MeshVisibilityKind::Porsche),previousHero=GetMeshVisibilityStats(MeshVisibilityKind::HeroVehicle);
+            const auto previousPorsche=GetMeshVisibilityStats(MeshVisibilityKind::Porsche),previousHero=GetMeshVisibilityStats(MeshVisibilityKind::HeroVehicle),previousPrimitive=GetMeshVisibilityStats(MeshVisibilityKind::WorldPrimitive);
             BeginDrawing();if(active){rlDrawRenderBatchActive();Stamp(2*StageCount);}ClearBackground({94,123,132,255});
             g.cameraInitialized=false;DrawWorld();{PorscheProfileScope scope(PorscheProfileStage::UI);DrawUI();}
             rlDrawRenderBatchActive();if(active){Stamp(2*StageCount+1);active->submitMs=(GetTime()-start)*1000;}
             EndDrawing();
-            if(active){const auto p=GetMeshVisibilityStats(MeshVisibilityKind::Porsche),h=GetMeshVisibilityStats(MeshVisibilityKind::HeroVehicle);porscheTested+=p.tested-previousPorsche.tested;porscheRejected+=p.rejected-previousPorsche.rejected;heroTested+=h.tested-previousHero.tested;heroRejected+=h.rejected-previousHero.rejected;}
+            if(active){const auto p=GetMeshVisibilityStats(MeshVisibilityKind::Porsche),h=GetMeshVisibilityStats(MeshVisibilityKind::HeroVehicle),w=GetMeshVisibilityStats(MeshVisibilityKind::WorldPrimitive);primitiveTested+=w.tested-previousPrimitive.tested;primitiveRejected+=w.rejected-previousPrimitive.rejected;porscheTested+=p.tested-previousPorsche.tested;porscheRejected+=p.rejected-previousPorsche.rejected;heroTested+=h.tested-previousHero.tested;heroRejected+=h.rejected-previousHero.rejected;}
             if(active){active->frameMs=(GetTime()-start)*1000;active->mirrorUpdates=GetPorscheMirrorStats().lastFrameUpdates;active->aoUpdates=PorscheAmbientOcclusionUpdates()-previousAO;active->displayUpdates=static_cast<int>(PorscheDisplayRevision(g.car)-previousDisplays);active->speed=g.car.speed;active->steer=g.car.steer;active->position=g.car.p;allMirrors+=active->mirrorUpdates;allAO+=active->aoUpdates;}
             active=nullptr;
         }
         for(auto& frame:frames)Collect(frame);
         const bool moved=DistXZ(g.car.p,initial)>1&&g.car.porscheWheelAngles!=initialAngles;
-        const bool state=g.car.isPorsche&&moved&&std::isfinite(g.car.speed)&&allAO==(ao?Samples:0)&&(!cockpit||allMirrors>0)&&PorscheDisplayRevision(g.car)>initialDisplays&&porscheTested>0&&heroTested>0&&(culling?(porscheRejected+heroRejected>0):(porscheRejected+heroRejected==0));
+        const bool state=g.car.isPorsche&&moved&&std::isfinite(g.car.speed)&&allAO==(ao?Samples:0)&&(!cockpit||allMirrors>0)&&PorscheDisplayRevision(g.car)>initialDisplays&&porscheTested>0&&heroTested>0&&primitiveTested>0&&(culling?(porscheRejected+heroRejected+primitiveRejected>0):(porscheRejected+heroRejected+primitiveRejected==0));
         passed=passed&&state;const std::string name=std::string(preset?"high":"low")+"-"+(cockpit?"cockpit":"chase")+(compareCulling?(culling?"-culling-on":"-culling-off"):(ao?"-ao-on":"-ao-off"));
         BeginDrawing();ClearBackground({94,123,132,255});DrawWorld();DrawUI();rlDrawRenderBatchActive();Image image=LoadImageFromScreen();const bool exported=image.data&&ExportImage(image,(std::string(compareCulling?"screenshots/porsche-culling-perf-":"screenshots/porsche-perf-")+name+".png").c_str());UnloadImage(image);EndDrawing();passed=passed&&exported;
-        if(caseIndex++)report<<",\n";report<<"{\"name\":"<<JSONString(name.c_str())<<",\"high\":"<<(preset?"true":"false")<<",\"cockpit\":"<<(cockpit?"true":"false")<<",\"ao\":"<<(ao?"true":"false")<<",\"culling\":"<<(culling?"true":"false")<<",\"porsche_meshes_tested\":"<<porscheTested<<",\"porsche_meshes_rejected\":"<<porscheRejected<<",\"hero_meshes_tested\":"<<heroTested<<",\"hero_meshes_rejected\":"<<heroRejected<<",\"motion_and_render_state_passed\":"<<(state?"true":"false")<<",\"sample_frames\":"<<Samples<<",\"distance_m\":"<<DistXZ(g.car.p,initial)<<",\"mirror_updates\":"<<allMirrors<<",\"ao_updates\":"<<allAO<<",\"frame_wall_ms\":";Stats(report,frames,[](const Frame& f){return f.frameMs;});report<<",\"submit_wall_ms\":";Stats(report,frames,[](const Frame& f){return f.submitMs;});report<<",\"gpu_frame_ms\":";if(gpuTimers)Stats(report,frames,[](const Frame& f){return f.gpuMs;});else report<<"null";
+        if(caseIndex++)report<<",\n";report<<"{\"name\":"<<JSONString(name.c_str())<<",\"high\":"<<(preset?"true":"false")<<",\"cockpit\":"<<(cockpit?"true":"false")<<",\"ao\":"<<(ao?"true":"false")<<",\"culling\":"<<(culling?"true":"false")<<",\"porsche_meshes_tested\":"<<porscheTested<<",\"porsche_meshes_rejected\":"<<porscheRejected<<",\"hero_meshes_tested\":"<<heroTested<<",\"hero_meshes_rejected\":"<<heroRejected<<",\"primitive_meshes_tested\":"<<primitiveTested<<",\"primitive_meshes_rejected\":"<<primitiveRejected<<",\"motion_and_render_state_passed\":"<<(state?"true":"false")<<",\"sample_frames\":"<<Samples<<",\"distance_m\":"<<DistXZ(g.car.p,initial)<<",\"mirror_updates\":"<<allMirrors<<",\"ao_updates\":"<<allAO<<",\"frame_wall_ms\":";Stats(report,frames,[](const Frame& f){return f.frameMs;});report<<",\"submit_wall_ms\":";Stats(report,frames,[](const Frame& f){return f.submitMs;});report<<",\"gpu_frame_ms\":";if(gpuTimers)Stats(report,frames,[](const Frame& f){return f.gpuMs;});else report<<"null";
         report<<",\"stages_ms\":{";for(int i=0;i<StageCount;++i){if(i)report<<",";report<<JSONString(StageNames[i])<<":{\"cpu_submit\":";Stats(report,frames,[&](const Frame& f){return f.cpu[i];});report<<",\"gpu_elapsed\":";if(gpuTimers)Stats(report,frames,[&](const Frame& f){return f.gpu[i];});else report<<"null";report<<"}";}report<<"},\"raw_frames\":[";
         for(int i=0;i<Samples;++i){if(i)report<<",";const auto& f=frames[i];report<<"{\"frame_wall_ms\":"<<f.frameMs<<",\"gpu_ms\":";if(gpuTimers)report<<f.gpuMs;else report<<"null";report<<",\"mirror_updates\":"<<f.mirrorUpdates<<",\"ao_updates\":"<<f.aoUpdates<<",\"display_updates\":"<<f.displayUpdates<<",\"speed_mps\":"<<f.speed<<",\"steering_control\":"<<f.steer<<",\"position\":["<<f.position.x<<","<<f.position.y<<","<<f.position.z<<"]}";}report<<"]}";report.flush();
         TraceLog(LOG_INFO,"Porsche performance case %s state=%d AO=%d mirrors=%d",name.c_str(),state,allAO,allMirrors);
     }
     SetPorscheContactShadingEnabled(true);SetMeshVisibilityEnabled(savedCulling);g=initialWorld;
-    report<<"\n],\n\"passed\":"<<(passed?"true":"false")<<",\n\"limits\":[\"Local instrumented native renderer/physics/HUD run on this machine; not a cross-device FPS guarantee\",\"Per-stage batch flushes and timestamp commands add instrumentation overhead; nested ambient stages are included in ambient_total\",\"GPU elapsed spans may include GPU idle gaps waiting for CPU commands; CPU submit is not CPU-only execution time\",\"Hidden-window workload; presentation/compositor scheduling and visible-window performance need separate verification\",\"Fixed simulation step and repeated input sequence; camera smoothing disabled so matched cases use identical views\",\"Combat and audio held idle; shader/asset loading and cold-start latency excluded by warmup\"],\n\"complete\":false\n}\n";
+    report<<"\n],\n\"passed\":"<<(passed?"true":"false")<<",\n\"limits\":[\"Local instrumented native renderer/physics/HUD run on this machine; not a cross-device FPS guarantee\",\"Per-stage batch flushes and timestamp commands add instrumentation overhead; nested ambient stages are included in ambient_total and nested scene stages in scene_color\",\"GPU elapsed spans may include GPU idle gaps waiting for CPU commands; CPU submit is not CPU-only execution time\",\"Hidden-window workload; presentation/compositor scheduling and visible-window performance need separate verification\",\"Fixed simulation step and repeated input sequence; camera smoothing disabled so matched cases use identical views\",\"Combat and audio held idle; shader/asset loading and cold-start latency excluded by warmup\"],\n\"complete\":false\n}\n";
     return passed;
 }
 }

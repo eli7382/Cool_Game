@@ -1,0 +1,14 @@
+{
+"passed":true,
+"camera_pose_cases":36,
+"primitives_tested":127080,
+"primitives_rejected":50688,
+"actual_rejected_vertices_verified":124631946,
+"oracle_failures":0,
+"single_sample_color_differences":0,
+"normal_depth_differences":0,
+"AO_differences":0,
+"mirror_differences":0,
+"limits":["Finite scenes; existing primitive functions only","Material state updates retained for rejected draws","Foliage displacement and stereo bypass this optimization"],
+"complete":false
+}

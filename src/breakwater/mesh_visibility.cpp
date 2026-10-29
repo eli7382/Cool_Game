@@ -9,7 +9,7 @@
 namespace bw {
 namespace {
 bool enabled=true,verify=false;
-std::array<MeshVisibilityStats,2> statistics;
+std::array<MeshVisibilityStats,static_cast<int>(MeshVisibilityKind::Count)> statistics;
 struct CachedBounds {const float* vertices{};int count{};BoundingBox bounds{};};
 std::unordered_map<unsigned int,CachedBounds> rigidBounds;
 std::array<Vector4,6> Planes(Matrix m){return {{{m.m3+m.m0,m.m7+m.m4,m.m11+m.m8,m.m15+m.m12},{m.m3-m.m0,m.m7-m.m4,m.m11-m.m8,m.m15-m.m12},{m.m3+m.m1,m.m7+m.m5,m.m11+m.m9,m.m15+m.m13},{m.m3-m.m1,m.m7-m.m5,m.m11-m.m9,m.m15-m.m13},{m.m3+m.m2,m.m7+m.m6,m.m11+m.m10,m.m15+m.m14},{m.m3-m.m2,m.m7-m.m6,m.m11-m.m10,m.m15-m.m14}}};}

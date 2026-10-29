@@ -3,7 +3,7 @@
 #include <cstdint>
 
 namespace bw {
-enum class MeshVisibilityKind { Porsche, HeroVehicle };
+enum class MeshVisibilityKind { Porsche, HeroVehicle, WorldPrimitive, Count };
 struct MeshVisibilityStats {std::uint64_t tested{},rejected{},verifiedVertices{},oracleFailures{};};
 class MeshView {
 public:

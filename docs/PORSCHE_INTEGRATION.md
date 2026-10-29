@@ -449,3 +449,21 @@ in total and the native build passed 138 checks; the native suspension oracle
 also compares 195 poses. See `docs/porsche-front-alignment-review.json` and
 `screenshots/porsche-front-alignment-native.png`. Tire contact with the painted
 front arch remains in 87 of 165 sampled clearance poses and is still unresolved.
+
+Rigid box and sphere parts now use the current render-stack frustum before
+submission, including parts belonging to other vehicles. Their material-state
+updates still run when a draw is rejected. In 36 camera/pose comparisons this
+removed 50,688 draws with zero differing single-sample color, normal/depth, AO
+or mirror target pairs. See `docs/porsche-primitive-culling-qa.json`.
+
+The sequential local performance comparison recorded median frame times with
+AO enabled of 119.67 to 51.75 ms (low chase), 55.82 to 31.64 ms (low cockpit),
+122.89 to 69.53 ms (high chase), and 52.84 to 37.68 ms (high cockpit).
+These are instrumented 1280x720 hidden-window measurements on the recorded
+RTX 3050 Laptop GPU, with 24 warmup and 96 sampled frames per case. They do
+not establish 60 FPS or visible-window presentation performance. Current
+timings, baseline samples, source hashes and limitations are recorded in
+`docs/porsche-primitive-performance-review.json`. The explicit performance
+mode also separates main-color static scenery, vegetation, actors, props,
+vehicles and the player Porsche; those nested intervals are already included
+in their parent stage timings.

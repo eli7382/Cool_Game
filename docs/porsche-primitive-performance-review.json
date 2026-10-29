@@ -1,0 +1,346 @@
+{
+  "reviewed_at": "2026-10-29T14:26:42.447047+00:00",
+  "baseline_commit": "44e4883b378240a3b1c7a183077714db0492488a",
+  "change": "Conservative current-stack frustum rejection for rigid generated box and sphere parts; retain original shader/material updates; add main-color scene timing subdivisions",
+  "comparison": "Sequential instrumented local runs with matching deterministic controls, cameras, current Porsche assets and graphics presets; baseline includes the same scene timing probes, final run additionally records primitive counters",
+  "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU/PCIe/SSE2",
+  "resolution": [
+    1280,
+    720
+  ],
+  "warmup_frames": 24,
+  "samples_per_case": 96,
+  "executable_sha256": "656f96f9fb0e4a8842ed6ae5c66fa4e90412f21ca745280fa4a001eb9dd464cf",
+  "source_sha256": {
+    "src/breakwater/world.cpp": "bfdfc9b33644fedb909fe585a70464b0e66f189246759f0beae4f9d727d5ba94",
+    "src/breakwater/mesh_visibility.cpp": "62a8b2de29c249a44876ec5f82c64ea1fd9502a604e57de1445b49d2e57f1f47",
+    "src/breakwater/mesh_visibility.hpp": "3628adbde26fae3fd1d39450a38d532312661f8b3805257e70124613b95112f8",
+    "src/breakwater/porsche_profile.cpp": "363afd80775cf8b93b95987101b893484603fef4dd323c0021911e0c23deace7",
+    "src/breakwater/porsche_profile.hpp": "433efc39aa9ed2408fda9f12215bfaef04ce0242b3b85fa6aa76ab835cddd1b3",
+    "src/breakwater/porsche_native.cpp": "b75e0e063af17c9e0006a08031abbaa561925e187a271b58f48f0b642af288a1"
+  },
+  "evidence_sha256": {
+    "docs/porsche-native-performance.json": "ad0338dd29c595b3d91693e555829c6b0910f872d0fca78961a5ad584dd2ad90",
+    "docs/porsche-primitive-culling-baseline.json": "7ad4c53d34ef11438016e63609ed2f601e818e197562467bedeaa62ccd8b77ef",
+    "docs/porsche-primitive-culling-qa.json": "d1590466a793225ad2a6f9e542a536742d13624795af0992df65ebbd4fb4323e",
+    "docs/porsche-native-culling-qa.json": "e5d5ca56c3f82e4fed5a032a7ccdbedaa4d6312d3171c1e7e02be837bb521bf8"
+  },
+  "native_qa": {
+    "checks": 138,
+    "failures": 0,
+    "exit_code": 0,
+    "session_start_line": 7316,
+    "log_sha256": "e2612a96d4579c6d2a39d7d69717ce72968b07c25a762a6a8f66e30c466e64c2"
+  },
+  "pixel_equivalence": {
+    "passed": true,
+    "camera_pose_cases": 36,
+    "primitives_tested": 127080,
+    "primitives_rejected": 50688,
+    "actual_rejected_vertices_verified": 124631946,
+    "oracle_failures": 0,
+    "single_sample_color_differences": 0,
+    "normal_depth_differences": 0,
+    "AO_differences": 0,
+    "mirror_differences": 0,
+    "limits": [
+      "Finite scenes; existing primitive functions only",
+      "Material state updates retained for rejected draws",
+      "Foliage displacement and stereo bypass this optimization"
+    ],
+    "complete": false
+  },
+  "timing_cases": [
+    {
+      "case": "low-chase-ao-off",
+      "ambient_occlusion": false,
+      "before_frame_wall_ms": {
+        "mean": 80.6811271,
+        "p50": 83.05455,
+        "p95": 106.96305,
+        "p99": 117.98162,
+        "max": 132.9464
+      },
+      "after_frame_wall_ms": {
+        "mean": 30.6701448,
+        "p50": 31.1969,
+        "p95": 47.749175,
+        "p99": 50.459415,
+        "max": 51.0202
+      },
+      "before_gpu_frame_ms": {
+        "mean": 65.7063253,
+        "p50": 67.623424,
+        "p95": 90.774016,
+        "p99": 101.584333,
+        "max": 108.013568
+      },
+      "after_gpu_frame_ms": {
+        "mean": 22.73184,
+        "p50": 23.021056,
+        "p95": 37.677568,
+        "p99": 44.3984896,
+        "max": 45.505536
+      },
+      "median_wall_reduction_percent": 62.43806028688375,
+      "primitive_draws_tested": 59472,
+      "primitive_draws_rejected": 51272
+    },
+    {
+      "case": "low-chase-ao-on",
+      "ambient_occlusion": true,
+      "before_frame_wall_ms": {
+        "mean": 130.601273,
+        "p50": 119.6721,
+        "p95": 259.377,
+        "p99": 330.55177,
+        "max": 396.4755
+      },
+      "after_frame_wall_ms": {
+        "mean": 53.3278375,
+        "p50": 51.75475,
+        "p95": 77.3921,
+        "p99": 83.135985,
+        "max": 84.726
+      },
+      "before_gpu_frame_ms": {
+        "mean": 114.374379,
+        "p50": 107.954688,
+        "p95": 197.2672,
+        "p99": 261.374054,
+        "max": 348.869632
+      },
+      "after_gpu_frame_ms": {
+        "mean": 45.0582827,
+        "p50": 43.660288,
+        "p95": 66.794752,
+        "p99": 74.7075584,
+        "max": 77.443072
+      },
+      "median_wall_reduction_percent": 56.752868880883675,
+      "primitive_draws_tested": 93456,
+      "primitive_draws_rejected": 77272
+    },
+    {
+      "case": "low-cockpit-ao-on",
+      "ambient_occlusion": true,
+      "before_frame_wall_ms": {
+        "mean": 55.5822188,
+        "p50": 55.82365,
+        "p95": 73.04365,
+        "p99": 86.32599,
+        "max": 159.2934
+      },
+      "after_frame_wall_ms": {
+        "mean": 31.9796333,
+        "p50": 31.64445,
+        "p95": 44.457725,
+        "p99": 45.58713,
+        "max": 46.9063
+      },
+      "before_gpu_frame_ms": {
+        "mean": 45.7341973,
+        "p50": 45.52448,
+        "p95": 61.15968,
+        "p99": 68.976128,
+        "max": 140.058624
+      },
+      "after_gpu_frame_ms": {
+        "mean": 24.4926507,
+        "p50": 24.713216,
+        "p95": 35.008256,
+        "p99": 38.9224448,
+        "max": 39.412736
+      },
+      "median_wall_reduction_percent": 43.31354184113722,
+      "primitive_draws_tested": 72960,
+      "primitive_draws_rejected": 59383
+    },
+    {
+      "case": "low-cockpit-ao-off",
+      "ambient_occlusion": false,
+      "before_frame_wall_ms": {
+        "mean": 43.5658635,
+        "p50": 43.7973,
+        "p95": 60.3768,
+        "p99": 78.67745,
+        "max": 78.971
+      },
+      "after_frame_wall_ms": {
+        "mean": 19.9306177,
+        "p50": 18.75475,
+        "p95": 27.765525,
+        "p99": 29.923835,
+        "max": 31.2165
+      },
+      "before_gpu_frame_ms": {
+        "mean": 30.805056,
+        "p50": 31.51872,
+        "p95": 44.96768,
+        "p99": 59.193344,
+        "max": 60.419072
+      },
+      "after_gpu_frame_ms": {
+        "mean": 11.772768,
+        "p50": 12.063744,
+        "p95": 19.632384,
+        "p99": 22.4642048,
+        "max": 22.925312
+      },
+      "median_wall_reduction_percent": 57.17829637900053,
+      "primitive_draws_tested": 43776,
+      "primitive_draws_rejected": 36818
+    },
+    {
+      "case": "high-chase-ao-on",
+      "ambient_occlusion": true,
+      "before_frame_wall_ms": {
+        "mean": 128.099124,
+        "p50": 122.894,
+        "p95": 152.5066,
+        "p99": 210.13774,
+        "max": 308.0341
+      },
+      "after_frame_wall_ms": {
+        "mean": 67.8844177,
+        "p50": 69.53045,
+        "p95": 81.149275,
+        "p99": 86.1415,
+        "max": 91.4102
+      },
+      "before_gpu_frame_ms": {
+        "mean": 112.909749,
+        "p50": 109.059072,
+        "p95": 126.75072,
+        "p99": 178.209894,
+        "max": 278.6048
+      },
+      "after_gpu_frame_ms": {
+        "mean": 53.6746347,
+        "p50": 54.743552,
+        "p95": 67.84,
+        "p99": 72.0602624,
+        "max": 81.483776
+      },
+      "median_wall_reduction_percent": 43.42242094813417,
+      "primitive_draws_tested": 101664,
+      "primitive_draws_rejected": 85408
+    },
+    {
+      "case": "high-chase-ao-off",
+      "ambient_occlusion": false,
+      "before_frame_wall_ms": {
+        "mean": 95.7738885,
+        "p50": 94.2214,
+        "p95": 115.5147,
+        "p99": 131.43725,
+        "max": 137.8659
+      },
+      "after_frame_wall_ms": {
+        "mean": 48.3117667,
+        "p50": 50.4529,
+        "p95": 61.981775,
+        "p99": 63.441005,
+        "max": 72.1659
+      },
+      "before_gpu_frame_ms": {
+        "mean": 79.5718507,
+        "p50": 78.845952,
+        "p95": 93.703424,
+        "p99": 101.758464,
+        "max": 108.850176
+      },
+      "after_gpu_frame_ms": {
+        "mean": 31.0718507,
+        "p50": 32.645632,
+        "p95": 39.585792,
+        "p99": 44.0780288,
+        "max": 44.699648
+      },
+      "median_wall_reduction_percent": 46.452822819444414,
+      "primitive_draws_tested": 67776,
+      "primitive_draws_rejected": 59504
+    },
+    {
+      "case": "high-cockpit-ao-off",
+      "ambient_occlusion": false,
+      "before_frame_wall_ms": {
+        "mean": 40.4974625,
+        "p50": 39.63055,
+        "p95": 47.985525,
+        "p99": 49.29306,
+        "max": 50.5786
+      },
+      "after_frame_wall_ms": {
+        "mean": 24.6764396,
+        "p50": 25.19235,
+        "p95": 28.36565,
+        "p99": 30.16843,
+        "max": 32.6808
+      },
+      "before_gpu_frame_ms": {
+        "mean": 31.9222507,
+        "p50": 31.576064,
+        "p95": 37.364224,
+        "p99": 38.8322304,
+        "max": 39.865344
+      },
+      "after_gpu_frame_ms": {
+        "mean": 15.9896747,
+        "p50": 14.76352,
+        "p95": 22.3488,
+        "p99": 23.47264,
+        "max": 25.252864
+      },
+      "median_wall_reduction_percent": 36.43199501394757,
+      "primitive_draws_tested": 58176,
+      "primitive_draws_rejected": 50885
+    },
+    {
+      "case": "high-cockpit-ao-on",
+      "ambient_occlusion": true,
+      "before_frame_wall_ms": {
+        "mean": 53.6796458,
+        "p50": 52.8374,
+        "p95": 65.256675,
+        "p99": 68.835465,
+        "max": 78.0213
+      },
+      "after_frame_wall_ms": {
+        "mean": 37.8296063,
+        "p50": 37.67705,
+        "p95": 45.882375,
+        "p99": 48.70899,
+        "max": 50.985
+      },
+      "before_gpu_frame_ms": {
+        "mean": 46.28256,
+        "p50": 45.071872,
+        "p95": 56.552448,
+        "p99": 61.0530304,
+        "max": 68.23424
+      },
+      "after_gpu_frame_ms": {
+        "mean": 28.9560533,
+        "p50": 28.80256,
+        "p95": 37.040896,
+        "p99": 40.5949952,
+        "max": 41.442304
+      },
+      "median_wall_reduction_percent": 28.69246026488813,
+      "primitive_draws_tested": 87264,
+      "primitive_draws_rejected": 73354
+    }
+  ],
+  "nested_scene_gpu_intervals_valid": true,
+  "porsche_geometry_and_materials_changed": false,
+  "sixty_fps_target_achieved": false,
+  "complete": false,
+  "limits": [
+    "Hidden-window instrumented runs on this machine; not visible presentation or a cross-device FPS guarantee",
+    "Sequential timings can vary with thermal, power and scheduling conditions",
+    "Extra timestamp/batch flush probes add overhead; nested scene/ambient stages are included in their parents",
+    "Finite camera/pose equivalence checks do not cover every game scene",
+    "Tire/fender contact and final visual fidelity remain unresolved"
+  ]
+}

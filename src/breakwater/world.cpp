@@ -2129,13 +2129,22 @@ void DrawPaintedModel(Model &model,Vector3 position,float scale,Color tint,float
 void DrawPaintedEllipsoid(Model &model,Vector3 position,Vector3 radii,Color tint,float yaw,float textureBlend){
     DrawPaintedModelEx(model,position,V(0,1,0),yaw/DEG,radii,tint,textureBlend);
 }
+bool PrimitiveModelVisible(const Model& model,Vector3 position,Vector3 axis,float angle,Vector3 scale){
+    // Match DrawModelEx's exact transform order, including the current rlgl
+    // stack. These rigid generated primitives have no vertex displacement.
+    if(model.meshCount!=1||!model.meshes||g.activeFoliageSurface>.001f)return true;
+    const Matrix local=MatrixMultiply(MatrixMultiply(MatrixScale(scale.x,scale.y,scale.z),MatrixRotate(axis,angle*DEG2RAD)),MatrixTranslate(position.x,position.y,position.z));
+    const Matrix transform=MatrixMultiply(model.transform,local);
+    return MeshView{}.Visible(model.meshes[0],CachedRigidMeshBounds(model.meshes[0]),transform,MeshVisibilityKind::WorldPrimitive);
+}
 void Box(Vector3 p,Vector3 size,Color color,float yaw,bool concrete){
     UsePaintBlend(concrete?1.0f:0.0f);
-    DrawModelEx(concrete?g.concreteCube:g.cube,p,V(0,1,0),yaw/DEG,size,color);
+    const Model& model=concrete?g.concreteCube:g.cube;
+    if(PrimitiveModelVisible(model,p,V(0,1,0),yaw/DEG,size))DrawModelEx(model,p,V(0,1,0),yaw/DEG,size,color);
 }
 void Between(Vector3 a,Vector3 b,float r,Color c,int sides){if(sides<3)sides=g.graphics==GraphicsMode::High?20:12;DrawCylinderEx(a,b,r,r,sides,c);}
 void Ellipsoid(Vector3 p,Vector3 radii,Color c,float yaw){
-    if(IsModelValid(g.detailSphere)){UsePaintBlend(0.0f);DrawModelEx(g.detailSphere,p,V(0,1,0),yaw/DEG,radii,c);}
+    if(IsModelValid(g.detailSphere)){UsePaintBlend(0.0f);if(PrimitiveModelVisible(g.detailSphere,p,V(0,1,0),yaw/DEG,radii))DrawModelEx(g.detailSphere,p,V(0,1,0),yaw/DEG,radii,c);}
     else DrawSphere(p,std::max(radii.x,std::max(radii.y,radii.z)),c);
 }
 void DrawInteriorSurface(Model &model,Vector3 p,Vector3 scale,float yaw,Color tint,Texture2D texture,float uvScale){
@@ -4290,6 +4299,10 @@ void DrawWorldScene(const Matrix* projection){
     if(IsShaderValid(g.worldShader)){const Vector3 light=Norm(V(-.42f,-.88f,.28f));const float fog[4]{.46f,.57f,.59f,1};const Vector2 range=g.graphics==GraphicsMode::High?Vector2{115,460}:Vector2{90,320};SetShaderValue(g.worldShader,g.locLight,&light,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locEye,&g.camera.position,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locFog,fog,SHADER_UNIFORM_VEC4);SetShaderValue(g.worldShader,g.locFogRange,&range,SHADER_UNIFORM_VEC2);}
     BindPorscheAmbientOcclusion(g.worldShader);BindPorscheWorldSunShadows();BeginMode3D(g.camera);if(projection)rlSetMatrixProjection(*projection);
     if(PorscheAODepthPass())BeginShaderMode(g.worldShader);
+    // These nested timestamps describe the main color pass only. Reusing the
+    // same query pair in mirror/AO callbacks would overwrite the frame sample.
+    const bool profileColor=!PorscheAODepthPass()&&!PorscheMirrorPass();
+    {PorscheProfileScope stage(PorscheProfileStage::SceneStatic,profileColor);
     if(!PorscheAODepthPass()&&IsModelValid(g.skyDome)&&IsTextureValid(g.skyTex)){
         rlDisableBackfaceCulling();DrawModelEx(g.skyDome,g.camera.position,V(1,0,0),54,V(1,1,1),WHITE);rlEnableBackfaceCulling();
     }
@@ -4305,6 +4318,8 @@ void DrawWorldScene(const Matrix* projection){
     DrawTower();UsePaintBlend(0.0f);DrawSafehouse();UsePaintBlend(1.0f);Box(V(8,TerrainHeight(8,8)+1,8),V(3.2f,.5f,3.2f),Color{206,193,161,255},0,true);
     Box(V(8,TerrainHeight(8,8)+2.1f,8),V(.7f,2.3f,.7f),Color{86,110,109,255});
     DrawSphere(V(8,TerrainHeight(8,8)+3.6f,8),.5f,g.gateDone[0]&&g.gateDone[1]&&g.gateDone[2]?Color{92,235,191,255}:Color{232,91,60,255});
+    }
+    {PorscheProfileScope stage(PorscheProfileStage::SceneVegetation,profileColor);
     // Marsh-grass has authored vertex colors and no sampled albedo. Keep the
     // terrain texture-blend switch off while drawing the tuft mesh so it does
     // not turn every blade into the default white texture.
@@ -4342,16 +4357,19 @@ void DrawWorldScene(const Matrix* projection){
         Tree(treePosition,height,VegetationWindAt(treePosition,1000+i),1,1000+i);
     }
     UsePaintBlend(0.0f);
+    }
+    {PorscheProfileScope stage(PorscheProfileStage::SceneActors,profileColor);
     for(int i=0;i<3;++i){
         const Vector3 p=g.gates[i];const float y=TerrainHeight(p.x,p.z);
         DrawCylinder(V(p.x,y+11.8f,p.z),.18f,.18f,8,10,Color{81,96,91,255});
         DrawSphere(V(p.x,y+16.3f,p.z),.65f,g.gateDone[i]?Color{88,234,185,255}:Color{236,151,80,255});
     }
-    DrawDebris();DrawTracks();DrawObstacles();
+    {PorscheProfileScope stage(PorscheProfileStage::SceneProps,profileColor);DrawDebris();DrawTracks();DrawObstacles();}
     if(IsShaderValid(g.worldShader))BeginShaderMode(g.worldShader);
-    DrawVehicles();DrawActorModels();DrawParticles();
+    {PorscheProfileScope stage(PorscheProfileStage::SceneVehicles,profileColor);DrawVehicles();}DrawActorModels();DrawParticles();
     if(IsShaderValid(g.worldShader))EndShaderMode();
     if(!PorscheAODepthPass())DrawPorscheMirrorTestMarkers();
+    }
     EndMode3D();EndPorscheWorldSunShadows();EndPorscheAmbientOcclusion();
 }
 
