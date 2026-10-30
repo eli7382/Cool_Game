@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": 15,
+  "rest_matrix_max_error": 4.440892098500626e-16,
+  "hero_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
+  "variants": {
+    "hero": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
+    "near": "a72102853b261a0b759127a99b8d4905bd5b6ef01c5e7800d55d85731d413e1d",
+    "far": "7fead8dde40a4e6c918ae927ee719daed5547b8de0b3c4c253370f061de954c9"
+  },
+  "wrapper_sha256": "50b32f5816aa3a2e188230c5fae849e5c8d1c0e065dedfc2add6388cb599925b",
+  "limits": [
+    "Actual exported geometry and controls; textures replaced by fixture materials",
+    "GPU uploads and visual transitions require browser review"
+  ]
+}

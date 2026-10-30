@@ -1,0 +1,156 @@
+{
+  "front_fit_integrated": true,
+  "levels": [
+    {
+      "level": "hero",
+      "source_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
+      "native_sha256": "06adedf69d0524c1e58ec91f2af3aea5b3f0c4f165e13a6f67a1de8a44dc4bef",
+      "triangles": 695220,
+      "packaging_poses_clear": 135,
+      "export_checks": 64,
+      "suspension_poses": 65
+    },
+    {
+      "level": "near",
+      "source_sha256": "a72102853b261a0b759127a99b8d4905bd5b6ef01c5e7800d55d85731d413e1d",
+      "native_sha256": "6b0077040540d76c411d799c510416081e17761024173c0ef5243f8d759c9906",
+      "triangles": 291248,
+      "packaging_poses_clear": 135,
+      "export_checks": 64,
+      "suspension_poses": 65
+    },
+    {
+      "level": "far",
+      "source_sha256": "7fead8dde40a4e6c918ae927ee719daed5547b8de0b3c4c253370f061de954c9",
+      "native_sha256": "28510330850f568c8b17fb3119ef2ecd4135fa5b07b5ed53268a207d350ccc7c",
+      "triangles": 207196,
+      "packaging_poses_clear": 135,
+      "export_checks": 64,
+      "suspension_poses": 65
+    }
+  ],
+  "native_checks": 152,
+  "native_suspension_poses": 195,
+  "native_culling_image_pairs": 36,
+  "tire_body_poses_clear": 165,
+  "well_original_overlap_pairs": 50,
+  "well_after_overlap_pairs": 46,
+  "well_new_overlap_pairs": 0,
+  "source_package": {
+    "source_sha256": "0a5b81643255842b81b252b5df0a044bf7118c4eb3c785d5ee29cb094ad0cbd0",
+    "package_sha256": "4f18b94556c582903a8d6bb30e0271ce045810eef69d27b0a04761f37afba1f6",
+    "bytes": 68904731,
+    "used_images_packed": 52,
+    "editable_meshes": 1066,
+    "scope": "Packed images and fonts in an editable Blender source; game control constraints are implemented by the runtime rig code, not Blender animation keyframes."
+  },
+  "executable_sha256": "f6d4a2cc88cc0e4c616bb4015a37b2b7c1cce55ffb5442ccba402679e3386a43",
+  "native_controller_sha256": "5c22fb523e62da73b05381157b2ec611f571fa1bc6f988ed4a6c21336e4b2464",
+  "asset_header_sha256": "8f8a9378a2ec8cdfa3d2999089c301cf2d49cff5c28ad52808b47e3934faea4d",
+  "captures": [
+    {
+      "file": "screenshots\\porsche-front-fit-front.png",
+      "sha256": "8c4a8eb2b9742f7129e3126c39013299606b5ff7894736cdc40298bad8e8bbbf"
+    },
+    {
+      "file": "screenshots\\porsche-front-fit-cockpit.png",
+      "sha256": "2897451e7cc9fbe9e33b1602d8e752f6faf2db40af764e8487d3f1e37b67b271"
+    },
+    {
+      "file": "screenshots\\porsche-front-fit-rest.png",
+      "sha256": "0a8a12dc23eefaff5edc4b07937df50cd6c3cf5aa3ebf00b730c12d52bd5153c"
+    },
+    {
+      "file": "screenshots\\porsche-front-fit-cross.png",
+      "sha256": "1eabb94c0c655ee3b78d238ec23876f7a66f9e42ca78c853a69978347886de46"
+    }
+  ],
+  "evidence": [
+    {
+      "file": "docs\\porsche-front-fit\\hero-wheel-packaging.json",
+      "sha256": "9d25cb7ebe792cb35673449bf599849527811e740b5cb4c24db88fe2bab7827e"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\hero-export-audit.json",
+      "sha256": "75c15bb1b8ae37adabbf17f51ed247c17631ee451bf5baa90bde27a19d35bd88"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\hero-suspension.json",
+      "sha256": "fe8ea13d45bc5311a46c2b80d743ee67041b221af467da1a3ca9e8fe84637ec0"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\near-wheel-packaging.json",
+      "sha256": "70d709b1d4271246e2d36b90c64ed83f8f7a7930711c951dfe547f6b1befaa8a"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\near-export-audit.json",
+      "sha256": "63b48a75adb344c6482744bc46272a49394a8e032bf374438da4944b9ebff727"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\near-suspension.json",
+      "sha256": "293a184603da96aa4c961a839b487fe91817141226baed2b26e84179a267628a"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\far-wheel-packaging.json",
+      "sha256": "b5788afd53d66177e406d950a98a8cedc8b7aea91f0a4bb2975d07c2032a009c"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\far-export-audit.json",
+      "sha256": "847b44976b537f6de01cca6fa194366f83e92dfd0d488f0cd23cae7fdf3d0194"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\far-suspension.json",
+      "sha256": "2f808d32d0557d9c0f0069f21e56bc53dbda2c137d72be87adac0976b4e99688"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\hero-tire-body.json",
+      "sha256": "9c1c387712f7e04c9b7e8aa21cf24a7682e12fccbc6b8985f4aa109f30e68426"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\well-self-overlap.json",
+      "sha256": "00a3cae39386173154fabd203e57f0f4b143013aa3270bf8b46eafe13edd5d76"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\lod-runtime.json",
+      "sha256": "8db21f5305401ea600f225d16094b9e2ca2abc2da0cdd6c3acd68d713ba78507"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\lod-protected-surfaces.json",
+      "sha256": "9dcbb3f332e8d0258809b2f5883d4042dadcbae2dcd746239c0811d7d33124b5"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\front-fit-source-package.json",
+      "sha256": "25bdbc6fe186e81b3e64bc3b0b5292c3f54b5ed06b66f0b54713e09ba7dd3e82"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\bundled-native-fixture.json",
+      "sha256": "ae6b7fe166bfabdc64a90883ff09d9d439170304ca8e867ac9fbd052b9d0c50e"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\bundled-checker-smoke.json",
+      "sha256": "60e04f910805003b503ac2e1491733e092b4858106d664a0d35b1111e79d559a"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\porsche-native-qa.json",
+      "sha256": "8faf432b4be3d7c3534d6baa801ce0002c5c02864b3ad8dd38a2ddbe40a5694c"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\porsche-native-suspension-qa.json",
+      "sha256": "5b665f9b7f7198675496673fb9f0d8c70877951a15a7400ad5d7bb9c2acf2754"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\porsche-native-rack-qa.json",
+      "sha256": "b940217e6a86eb7c48d840b8b43a0640d29dd443ad65f8a1e5d4f587ec30afb5"
+    },
+    {
+      "file": "docs\\porsche-front-fit\\porsche-native-culling-qa.json",
+      "sha256": "6e61854aa4e7e4d0cb0a3667eade3c093a82da0153d19e3d6afc117232f1b04b"
+    }
+  ],
+  "limits": [
+    "Finite selected-surface clearance, not whole-vehicle continuous collision or solid containment",
+    "Source-fitted game mechanics, not Porsche CAD or OEM vehicle physics",
+    "Native visual captures reviewed; exact Forza parity and 60 FPS are not established; earlier frame-time results belong to earlier asset hashes"
+  ],
+  "complete": false
+}

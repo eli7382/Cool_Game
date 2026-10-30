@@ -1,0 +1,251 @@
+{
+  "passed": true,
+  "source_blends": [
+    {
+      "file": "studies\\front-fit\\BodyOnlyBeforeMechanics.blend",
+      "sha256": "dab5c5b644f1ad8e74750cf2c8d100e88ec9d961e8c89a3142689c33b9037cb6"
+    },
+    {
+      "file": "studies\\front-fit\\MountedFrontFitCandidate.blend",
+      "sha256": "0a5b81643255842b81b252b5df0a044bf7118c4eb3c785d5ee29cb094ad0cbd0"
+    }
+  ],
+  "old_export": {
+    "fixture_sha256": "2d458a57f0ca4e9eb15d41437b5efe0cdbc916083387bbb6c4a25634c17ca463",
+    "export_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
+    "triangles": 2826,
+    "ambiguous_triangle_mappings": [],
+    "maximum_source_vertex_mapping_error_m": 2.4575624024691933e-07
+  },
+  "new_export": {
+    "fixture_sha256": "0541652b5fd822ddca1c88d89b3ec2cd9b3b5f7d2f4b8957609d4f79d5aae2bc",
+    "export_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
+    "triangles": 12140,
+    "ambiguous_triangle_mappings": [],
+    "maximum_source_vertex_mapping_error_m": 2.4575624024691933e-07
+  },
+  "script_sha256": "7beedf730e92730bcd9d3b3432090a73914d41ade1bee5d1ae128318e9e9ec70",
+  "broadphase": "double-precision AABB sweep; no BVH triangle predicate",
+  "control_cases_passed": 9,
+  "changed_source_polygons": 434,
+  "before_source_polygon_pairs": 50,
+  "after_source_polygon_pairs": 46,
+  "before_triangle_pair_kinds": {
+    "crossing": 50
+  },
+  "after_triangle_pair_kinds": {
+    "crossing": 234
+  },
+  "new_source_polygon_pairs": 0,
+  "removed_source_polygon_pairs": 4,
+  "new_junction_contact_analysis": [],
+  "new_samples": [],
+  "baseline_source_polygon_pairs": [
+    [
+      538,
+      640
+    ],
+    [
+      538,
+      641
+    ],
+    [
+      538,
+      642
+    ],
+    [
+      538,
+      857
+    ],
+    [
+      538,
+      862
+    ],
+    [
+      539,
+      634
+    ],
+    [
+      539,
+      635
+    ],
+    [
+      539,
+      638
+    ],
+    [
+      539,
+      639
+    ],
+    [
+      539,
+      857
+    ],
+    [
+      539,
+      859
+    ],
+    [
+      539,
+      863
+    ],
+    [
+      539,
+      2314
+    ],
+    [
+      548,
+      634
+    ],
+    [
+      548,
+      859
+    ],
+    [
+      609,
+      736
+    ],
+    [
+      610,
+      736
+    ],
+    [
+      610,
+      737
+    ],
+    [
+      641,
+      643
+    ],
+    [
+      641,
+      644
+    ],
+    [
+      641,
+      862
+    ],
+    [
+      1514,
+      1620
+    ],
+    [
+      1514,
+      1621
+    ],
+    [
+      1514,
+      1622
+    ],
+    [
+      1514,
+      1837
+    ],
+    [
+      1514,
+      1842
+    ],
+    [
+      1515,
+      1613
+    ],
+    [
+      1515,
+      1614
+    ],
+    [
+      1515,
+      1615
+    ],
+    [
+      1515,
+      1618
+    ],
+    [
+      1515,
+      1619
+    ],
+    [
+      1515,
+      1837
+    ],
+    [
+      1515,
+      1839
+    ],
+    [
+      1515,
+      1843
+    ],
+    [
+      1522,
+      1712
+    ],
+    [
+      1524,
+      1712
+    ],
+    [
+      1526,
+      1613
+    ],
+    [
+      1526,
+      1839
+    ],
+    [
+      1543,
+      1712
+    ],
+    [
+      1544,
+      1712
+    ],
+    [
+      1588,
+      1716
+    ],
+    [
+      1589,
+      1716
+    ],
+    [
+      1589,
+      1717
+    ],
+    [
+      1621,
+      1623
+    ],
+    [
+      1621,
+      1624
+    ],
+    [
+      1621,
+      1842
+    ],
+    [
+      1712,
+      2766
+    ],
+    [
+      1712,
+      2771
+    ],
+    [
+      1712,
+      2792
+    ],
+    [
+      1712,
+      2793
+    ]
+  ],
+  "plane_tolerance_m": 1e-07,
+  "coplanar_plane_tolerance_m": 1e-10,
+  "coplanar_overlap_area_threshold_m2": 1e-10,
+  "scope": "Actual before/after GLB triangle surfaces mapped to unchanged source polygon identities. Double precision strict crossing plus coplanar positive-area overlap; baseline contacts retained. Finite static underbody self-overlap, not all neighboring components, solid containment, native rendering or continuous-motion clearance.",
+  "production_changed": false,
+  "complete": false
+}

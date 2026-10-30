@@ -1,0 +1,1729 @@
+{
+  "geometry_studies": {},
+  "export_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
+  "checker_sha256": "2596fce13b794e18082dde0c22532304e6bdc1ac2832c0a26c188cb551355044",
+  "fixture_sha256": "0541652b5fd822ddca1c88d89b3ec2cd9b3b5f7d2f4b8957609d4f79d5aae2bc",
+  "scope": "Specified source export posed by the production Three.js adapter; native meshes have separate equivalence evidence, not checked here",
+  "suspension_module": "viewer/SuspensionKinematics.js",
+  "experimental_suspension_module": false,
+  "carrier_rest_frame_study": false,
+  "suspension_helper_sha256": "db379f9dd97c03a6d753823fa8f8676b358936404d9ede3387eed40b9632c5bc",
+  "rest_alignment_study": {
+    "camber_degrees": 0,
+    "caster_change_degrees": 0,
+    "caster_definition": "atan2(-upright.z,upright.y); X-axis rotation has the opposite sign",
+    "measured": {
+      "FL": {
+        "baseline_degrees": 6.8640021627235015,
+        "requested_change_degrees": 0,
+        "measured_degrees": 6.8640021627235015,
+        "note": "Additional camber and upper-ball experiments can also change the measured caster"
+      },
+      "FR": {
+        "baseline_degrees": 6.8640021627235015,
+        "requested_change_degrees": 0,
+        "measured_degrees": 6.8640021627235015,
+        "note": "Additional camber and upper-ball experiments can also change the measured caster"
+      }
+    }
+  },
+  "upper_ball_study_z_offset_m": 0,
+  "upper_pivot_study_offset_m": 0,
+  "upper_pivot_lateral_study_offset_m": 0,
+  "maximum_solver_residual_m": 4.8021976395418164e-09,
+  "unconverged_corners": 0,
+  "maximum_travel_error_m": 1.768956758851914e-09,
+  "alignment_study_frame": null,
+  "alignment_study_added_camber_degrees": 0,
+  "full_painted": true,
+  "generator_sha256": "9779e9fbeadc8f23dcc3b234afc36d7b9046e6da02473ab4a2f5cbe46c4d1c25",
+  "adapter_sha256": "76f5529578b241437dd8caae428a8e8cbf80183f4bf3c9acd3ce2c9a501eba3f",
+  "materials": {
+    "Carrara white | physical clearcoat": 3,
+    "Carbon | 2x2 twill under clear resin": 4,
+    "Chassis | cast aluminium grain": 2,
+    "Rubber | satin micrograin": 1,
+    "TwiXeR_992_carPaint.008": 1,
+    "Underbody | textured black coating": 1
+  },
+  "pose_count": 165,
+  "symmetric_pose_count": 75,
+  "asymmetric_pose_count": 90,
+  "body_triangles": 55048,
+  "body_meshes": [
+    "Runtime__Door_L__Carrara white | physical clearcoat",
+    "Runtime__Door_R__Carrara white | physical clearcoat",
+    "Front aero flap_L",
+    "Front aero flap_R",
+    "Runtime__CarRoot__Carbon | 2x2 twill under clear resin",
+    "Runtime__CarRoot__Carrara white | physical clearcoat",
+    "TwiXeR_992_steeringbox_TwiXeR_992.001_0",
+    "Runtime__Subframe_F__Chassis | cast aluminium grain",
+    "Runtime__Subframe_F__Rubber | satin micrograin",
+    "TwiXeR_992_body.005_TwiXeR_992_carPaint.008_0",
+    "TwiXeR_992_underbody_gt3rs_TwiXeR_992.001_0",
+    "TwiXeR_992_gt3rs_carbon_Wing_TwiXeR_992_carbon_roof.001_0"
+  ],
+  "poses_with_intersections": 0,
+  "results": [
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.55,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": -0.275,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.275,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.025,
+      "travelRight": -0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.025,
+      "travelRight": 0.025,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": -0.05,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0,
+      "travelRight": 0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "travelRight": -0.05,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 0,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 1.0471975511965976,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    },
+    {
+      "steering": 0.55,
+      "travel": 0.05,
+      "travelRight": 0,
+      "phase": 2.0943951023931953,
+      "intersecting_triangle_pairs": 0,
+      "bvh_pairs": 0,
+      "samples": [],
+      "contacts_by_body": {}
+    }
+  ],
+  "limits": [
+    "Finite sampled steering, front travel and wheel phase values in the supplied fixture; symmetric and asymmetric counts are recorded separately",
+    "Tests tire carcasses against selected painted, exterior carbon and underbody triangle surfaces",
+    "Excludes lettering, liners, suspension, rim/caliper and other parts; not whole-vehicle or continuous clearance",
+    "Segment-triangle crossing test does not prove absence of containment or coplanar overlap",
+    "Nonzero alignment study modifies only carcass matrices; it does not validate a realizable hub/brake/suspension change",
+    "Nonzero pivot or upper-ball offset changes analytic front linkage datums only; meshes, chassis mounts and other neighboring parts are not refitted or cleared"
+  ],
+  "complete": false
+}

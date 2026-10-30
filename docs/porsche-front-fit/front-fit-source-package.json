@@ -1,0 +1,8 @@
+{
+  "source_sha256": "0a5b81643255842b81b252b5df0a044bf7118c4eb3c785d5ee29cb094ad0cbd0",
+  "package_sha256": "4f18b94556c582903a8d6bb30e0271ce045810eef69d27b0a04761f37afba1f6",
+  "bytes": 68904731,
+  "used_images_packed": 52,
+  "editable_meshes": 1066,
+  "scope": "Packed images and fonts in an editable Blender source; game control constraints are implemented by the runtime rig code, not Blender animation keyframes."
+}

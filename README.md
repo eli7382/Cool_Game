@@ -1,5 +1,9 @@
 # BREAKWATER: HIGH WATER
 
+The white/red Porsche GT3 RS build is available on this branch. Run
+`Play-Game.cmd`, start a mission and press E beside the Porsche at the base.
+See [Porsche controls and model validation](docs/PORSCHE_FRONT_FIT.md).
+
 **Breakwater: High Water** is a compact storm-coast action-adventure about reopening a flooded catchment and extracting stranded crews. Its central system, **Gaugework**, links three manual sluices to the basin's tide: operating a wheel raises or lowers water, changes which low routes are usable, alters ground traction, moves debris, and changes enemy cover and patrol positions.
 
 ## Operation

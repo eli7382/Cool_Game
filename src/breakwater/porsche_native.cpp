@@ -1280,9 +1280,22 @@ bool RunPorscheQA(){
     Vehicle rollingTest=initial;rollingTest.porscheWheelAngles.fill(0);rollingTest.wheelTravel.fill(0);rollingTest.steer=0;rollingTest.yaw=0;rollingTest.yawRate=0;rollingTest.speed=10;rollingTest.velocity=V(0,0,10);
     UpdatePorscheControls(rollingTest,.01f,true);
     check(fabsf(rollingTest.porscheWheelAngles[0]*.35025f-.1f)<1e-6f&&fabsf(rollingTest.porscheWheelAngles[2]*.3672f-.1f)<1e-6f,"wheel-spin-matches-straight-contact-distance");
-    rollingTest.porscheWheelAngles.fill(0);rollingTest.yawRate=1;
-    UpdatePorscheControls(rollingTest,.01f,true);
-    check(fabsf((rollingTest.porscheWheelAngles[1]-rollingTest.porscheWheelAngles[0])*.35025f-.0163f)<1e-6f&&fabsf((rollingTest.porscheWheelAngles[3]-rollingTest.porscheWheelAngles[2])*.3672f-.01582f)<1e-6f,"outside-wheels-roll-the-extra-track-distance");
+    // Rest alignment can include toe. Project a rigid-body yaw velocity at
+    // the independently specified stock contact centres onto the source
+    // reference headings; track width alone assumes parallel wheel planes.
+    constexpr Vector2 rollingCentres[]{{.815f,1.2f},{-.815f,1.2f},{.791f,-1.257f},{-.791f,-1.257f}};
+    bool outsideRolling=true;
+    for(float yawRate:{-1.f,1.f}){
+        rollingTest.porscheWheelAngles.fill(0);rollingTest.yawRate=yawRate;
+        UpdatePorscheControls(rollingTest,.01f,true);
+        for(int i=0;i<4;++i){const auto centre=rollingCentres[i],direction=porsche_reference::RollingNeutralDirections[i];
+            const Vector2 velocity{yawRate*centre.y,10-yawRate*centre.x};
+            const float expectedDistance=.01f*Vector2DotProduct(velocity,direction),radius=i<2?.35025f:.3672f;
+            outsideRolling=outsideRolling&&fabsf(rollingTest.porscheWheelAngles[i]*radius-expectedDistance)<1e-6f;
+        }
+        outsideRolling=outsideRolling&&(rollingTest.porscheWheelAngles[1]-rollingTest.porscheWheelAngles[0])*yawRate>0&&(rollingTest.porscheWheelAngles[3]-rollingTest.porscheWheelAngles[2])*yawRate>0;
+    }
+    check(outsideRolling,"outside-wheels-roll-the-extra-track-distance");
     rollingTest.porscheWheelAngles.fill(0);rollingTest.yawRate=0;rollingTest.speed=-10;rollingTest.velocity=V(0,0,-10);
     UpdatePorscheControls(rollingTest,.01f,true);
     check(fabsf(rollingTest.porscheWheelAngles[0]*.35025f+.1f)<1e-6f&&fabsf(rollingTest.porscheWheelAngles[2]*.3672f+.1f)<1e-6f,"reverse-contact-distance-reverses-wheel-spin");

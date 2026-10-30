@@ -3,9 +3,9 @@
   "checker_sha256": "3d6a0d42b05ee555843e7ec872f24f17068f2d10b824b768f0a07dd0b02a6103",
   "levels": [
     {
-      "source_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2",
-      "runtime_sha256": "f73ce856e7fe2ac3c855f4ff57553bf27d5330398f47a9a8e9153d8b60a92006",
-      "triangles_compared": 699758,
+      "source_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
+      "runtime_sha256": "06adedf69d0524c1e58ec91f2af3aea5b3f0c4f165e13a6f67a1de8a44dc4bef",
+      "triangles_compared": 695220,
       "primitives_checked": 312,
       "morph_targets_checked": 8,
       "embedded_images_verified": 52,
@@ -14,9 +14,9 @@
       "level": "hero"
     },
     {
-      "source_sha256": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc",
-      "runtime_sha256": "37f4c899dc0f05aaabf5b36a6c52b0bc3ee54327464da542227cd587c1106a38",
-      "triangles_compared": 226176,
+      "source_sha256": "a72102853b261a0b759127a99b8d4905bd5b6ef01c5e7800d55d85731d413e1d",
+      "runtime_sha256": "6b0077040540d76c411d799c510416081e17761024173c0ef5243f8d759c9906",
+      "triangles_compared": 291248,
       "primitives_checked": 314,
       "morph_targets_checked": 8,
       "embedded_images_verified": 27,
@@ -25,9 +25,9 @@
       "level": "near"
     },
     {
-      "source_sha256": "279811ec86c10b6d5f026a578f3ef3ef0a318b9c62c4e9b1556f720042235ea2",
-      "runtime_sha256": "5d4a169381ad3f170b5d4e6aefceb6e6cfbf750b343937295e14975b70aac3ab",
-      "triangles_compared": 163440,
+      "source_sha256": "7fead8dde40a4e6c918ae927ee719daed5547b8de0b3c4c253370f061de954c9",
+      "runtime_sha256": "28510330850f568c8b17fb3119ef2ecd4135fa5b07b5ed53268a207d350ccc7c",
+      "triangles_compared": 207196,
       "primitives_checked": 313,
       "morph_targets_checked": 8,
       "embedded_images_verified": 27,

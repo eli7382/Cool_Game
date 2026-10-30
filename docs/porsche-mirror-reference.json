@@ -7,17 +7,17 @@
     {
       "level": 0,
       "file": "Porsche_911_GT3RS_Development.glb",
-      "export_sha256": "5d140650d099fc5dbe5c4c8fc16ccc125b679be6e4257b74f852b338dd7565e2"
+      "export_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9"
     },
     {
       "level": 1,
       "file": "Porsche_911_GT3RS_LOD1.glb",
-      "export_sha256": "6c2f3b9668ac3be60b17b484c0c05bf7a63c7d239550740f86d7b857519a9dfc"
+      "export_sha256": "a72102853b261a0b759127a99b8d4905bd5b6ef01c5e7800d55d85731d413e1d"
     },
     {
       "level": 2,
       "file": "Porsche_911_GT3RS_LOD2.glb",
-      "export_sha256": "279811ec86c10b6d5f026a578f3ef3ef0a318b9c62c4e9b1556f720042235ea2"
+      "export_sha256": "7fead8dde40a4e6c918ae927ee719daed5547b8de0b3c4c253370f061de954c9"
     }
   ],
   "cases": [

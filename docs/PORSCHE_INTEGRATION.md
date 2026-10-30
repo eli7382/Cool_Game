@@ -1,5 +1,13 @@
 # Porsche integration in progress
 
+The front assembly is now refitted coherently across all three detail levels.
+The selected wheel/mechanism sweep clears 135 poses at each level; the Hero
+tire/body sweep clears 165 poses. The current executable passes 152 hidden
+checks. The editable Blender source and matching Windows executable accompany
+the assets. See `PORSCHE_FRONT_FIT.md` and `porsche-front-fit-review.json` for
+the hash-bound evidence and finite-test limits. Earlier timing and geometry
+records below describe their recorded revisions.
+
 Building sun shadows now reuse unchanged depth targets, with exact state
 invalidation for moving doors and sluices. Low-speed Porsche braking also
 holds a stopped car on a slope when the available brake force and tire grip
@@ -31,7 +39,8 @@ S GT 992, a black carrier with fitted contact feet, fasteners, an EU band and
 generic seals, plus the centered red GT3 RS marking. New parts are separate
 static children of CarRoot. The original source geometry, material definitions,
 texture bytes and moving assemblies are preserved. Near and far variants use
-lighter letter geometry; total triangle counts are 699,758 / 226,176 / 163,440.
+lighter letter geometry. Current totals after the front-fit rebuild are
+695,220 / 291,248 / 207,196 triangles.
 The plate uses an approximate Barlow typeface, not an OEM registration font.
 
 The fixed rear-wing plane now uses the existing exterior carbon finish,

@@ -4,7 +4,7 @@
   "finite_visibility_and_normals":true,
   "maximum_unit_normal_error":1.78814e-07,
   "surface_pixels":815631,
-  "pixels_below_095_visibility":64545,
+  "pixels_below_095_visibility":64546,
   "minimum_visibility":0.264453,
   "UI_matrices_restored":true,
   "scope":"Actual game depth/normal and filtered contact buffers; camera-matched paired exterior/cockpit/open views, windows-only invariance, visible steering motion and preset/state checks",

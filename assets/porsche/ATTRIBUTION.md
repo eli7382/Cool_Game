@@ -1,5 +1,12 @@
 # Model attribution
 
+Front-fit adaptation: the front carrier alignment, wishbone skins, curved tie
+rods, damper frames, spring morphs, caliper lettering, arch/well surfaces and
+mounting supports were revised together for game clearance. These are authored
+approximations, not manufacturer CAD. The editable, packed Blender source is
+included as `Porsche_911_GT3RS_Source.blend`; the runtime code drives its moving
+groups. See `docs/PORSCHE_FRONT_FIT.md` for test scope and current asset hashes.
+
 Steering adaptation: front wishbone closure and fixed-length tie rods now use
 one shared lateral rack, with geometric steering calibration, different inner
 and outer wheel angles, and travel-dependent bump steer. Rolling animation
