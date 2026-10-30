@@ -4400,10 +4400,11 @@ void DrawWorldScene(const Matrix* projection){
     if(IsShaderValid(g.worldShader)){const Vector3 light=Norm(V(-.42f,-.88f,.28f));const float fog[4]{.46f,.57f,.59f,1};const Vector2 range=g.graphics==GraphicsMode::High?Vector2{115,460}:Vector2{90,320};SetShaderValue(g.worldShader,g.locLight,&light,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locEye,&g.camera.position,SHADER_UNIFORM_VEC3);SetShaderValue(g.worldShader,g.locFog,fog,SHADER_UNIFORM_VEC4);SetShaderValue(g.worldShader,g.locFogRange,&range,SHADER_UNIFORM_VEC2);}
     BindPorscheAmbientOcclusion(g.worldShader);BindPorscheWorldSunShadows();BeginMode3D(g.camera);if(projection)rlSetMatrixProjection(*projection);
     if(PorscheAODepthPass())BeginShaderMode(g.worldShader);
-    // These nested timestamps describe the main color pass only. Reusing the
-    // same query pair in mirror/AO callbacks would overwrite the frame sample.
+    // Color and normal/depth use distinct query pairs. Reflected callbacks
+    // reuse the geometry without overwriting either main-view sample.
     const bool profileColor=!PorscheAODepthPass()&&!PorscheMirrorPass();
-    {PorscheProfileScope stage(PorscheProfileStage::SceneStatic,profileColor);
+    const bool profileDepth=PorscheAODepthPass();
+    {PorscheProfileScope stage(profileDepth?PorscheProfileStage::DepthStatic:PorscheProfileStage::SceneStatic,profileColor||profileDepth);
     if(!PorscheAODepthPass()&&IsModelValid(g.skyDome)&&IsTextureValid(g.skyTex)){
         rlDisableBackfaceCulling();DrawModelEx(g.skyDome,g.camera.position,V(1,0,0),54,V(1,1,1),WHITE);rlEnableBackfaceCulling();
     }
@@ -4420,7 +4421,7 @@ void DrawWorldScene(const Matrix* projection){
     Box(V(8,TerrainHeight(8,8)+2.1f,8),V(.7f,2.3f,.7f),Color{86,110,109,255});
     DrawSphere(V(8,TerrainHeight(8,8)+3.6f,8),.5f,g.gateDone[0]&&g.gateDone[1]&&g.gateDone[2]?Color{92,235,191,255}:Color{232,91,60,255});
     }
-    {PorscheProfileScope stage(PorscheProfileStage::SceneVegetation,profileColor);
+    {PorscheProfileScope stage(profileDepth?PorscheProfileStage::DepthVegetation:PorscheProfileStage::SceneVegetation,profileColor||profileDepth);
     // Marsh-grass has authored vertex colors and no sampled albedo. Keep the
     // terrain texture-blend switch off while drawing the tuft mesh so it does
     // not turn every blade into the default white texture.
@@ -4459,15 +4460,15 @@ void DrawWorldScene(const Matrix* projection){
     }
     UsePaintBlend(0.0f);
     }
-    {PorscheProfileScope stage(PorscheProfileStage::SceneActors,profileColor);
+    {PorscheProfileScope stage(profileDepth?PorscheProfileStage::DepthActors:PorscheProfileStage::SceneActors,profileColor||profileDepth);
     for(int i=0;i<3;++i){
         const Vector3 p=g.gates[i];const float y=TerrainHeight(p.x,p.z);
         DrawCylinder(V(p.x,y+11.8f,p.z),.18f,.18f,8,10,Color{81,96,91,255});
         DrawSphere(V(p.x,y+16.3f,p.z),.65f,g.gateDone[i]?Color{88,234,185,255}:Color{236,151,80,255});
     }
-    {PorscheProfileScope stage(PorscheProfileStage::SceneProps,profileColor);DrawDebris();DrawTracks();DrawObstacles();}
+    {PorscheProfileScope stage(profileDepth?PorscheProfileStage::DepthProps:PorscheProfileStage::SceneProps,profileColor||profileDepth);DrawDebris();DrawTracks();DrawObstacles();}
     if(IsShaderValid(g.worldShader))BeginShaderMode(g.worldShader);
-    {PorscheProfileScope stage(PorscheProfileStage::SceneVehicles,profileColor);DrawVehicles();}DrawActorModels();DrawParticles();
+    {PorscheProfileScope stage(profileDepth?PorscheProfileStage::DepthVehicles:PorscheProfileStage::SceneVehicles,profileColor||profileDepth);DrawVehicles();}DrawActorModels();DrawParticles();
     if(IsShaderValid(g.worldShader))EndShaderMode();
     if(!PorscheAODepthPass())DrawPorscheMirrorTestMarkers();
     }

@@ -1,0 +1,313 @@
+{
+  "asset_sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+  "asset": "exports\\Porsche_911_GT3RS_Development.glb",
+  "script_sha256": "e9ef7eeb8edbe20572cb9d3a63a1929a779b212f0cec434831010c6900502bf8",
+  "triangles": 695220,
+  "car_mesh_objects": 301,
+  "render_engine": "Cycles",
+  "device": "OPTIX: NVIDIA GeForce RTX 3050 Laptop GPU",
+  "samples": 64,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "lighting": [
+    {
+      "name": "Overhead softbox",
+      "location": [
+        2.5,
+        -3.6,
+        5.5
+      ],
+      "watts": 1700,
+      "size_m": [
+        5.5,
+        2.5
+      ],
+      "target": [
+        0,
+        0,
+        0.65
+      ]
+    },
+    {
+      "name": "Side softbox",
+      "location": [
+        -4.5,
+        -0.3,
+        2.8
+      ],
+      "watts": 450,
+      "size_m": [
+        4,
+        1.8
+      ],
+      "target": [
+        0,
+        0,
+        0.65
+      ]
+    },
+    {
+      "name": "Rear strip",
+      "location": [
+        -0.5,
+        4.5,
+        4.8
+      ],
+      "watts": 250,
+      "size_m": [
+        3,
+        0.3
+      ],
+      "target": [
+        0,
+        0,
+        0.65
+      ]
+    },
+    {
+      "name": "Front fill",
+      "location": [
+        -0.5,
+        -5,
+        4
+      ],
+      "watts": 250,
+      "size_m": [
+        0.5,
+        2
+      ],
+      "target": [
+        0,
+        0,
+        0.65
+      ]
+    }
+  ],
+  "view_transform": "AgX",
+  "look": "AgX - Medium High Contrast",
+  "views": [
+    {
+      "view": "front",
+      "file": "renders\\current-studio\\front.png",
+      "sha256": "826bb8fc10b12c6466ff6d0d8eaea05ae44d71039bb01597d2c6e4bd74fb07a3",
+      "camera_location": [
+        5.4,
+        -7.5,
+        2.75
+      ],
+      "target": [
+        0,
+        0,
+        0.65
+      ],
+      "lens_mm": 65,
+      "lights": [
+        {
+          "name": "Overhead softbox",
+          "location": [
+            2.5,
+            -3.5999999046325684,
+            5.5
+          ],
+          "watts": 1700.0
+        },
+        {
+          "name": "Side softbox",
+          "location": [
+            -4.5,
+            -0.30000001192092896,
+            2.799999952316284
+          ],
+          "watts": 450.0
+        },
+        {
+          "name": "Rear strip",
+          "location": [
+            -0.5,
+            4.5,
+            4.800000190734863
+          ],
+          "watts": 250.0
+        },
+        {
+          "name": "Front fill",
+          "location": [
+            -0.5,
+            -5.0,
+            4.0
+          ],
+          "watts": 250.0
+        }
+      ],
+      "seconds": 62.62485337257385
+    },
+    {
+      "view": "rear",
+      "file": "renders\\current-studio\\rear.png",
+      "sha256": "6477ecdd5da0ead49df61e57b6386d4c3444b3373c9b709b9a9dfd36914e6b8c",
+      "camera_location": [
+        -5.4,
+        7,
+        2.7
+      ],
+      "target": [
+        0,
+        0,
+        0.65
+      ],
+      "lens_mm": 65,
+      "lights": [
+        {
+          "name": "Overhead softbox",
+          "location": [
+            -2.6175997257232666,
+            3.5154192447662354,
+            5.5
+          ],
+          "watts": 1700.0
+        },
+        {
+          "name": "Side softbox",
+          "location": [
+            4.48762845993042,
+            0.4485425353050232,
+            2.799999952316284
+          ],
+          "watts": 450.0
+        },
+        {
+          "name": "Rear strip",
+          "location": [
+            0.6484333276748657,
+            -4.481019496917725,
+            4.800000190734863
+          ],
+          "watts": 250.0
+        },
+        {
+          "name": "Front fill",
+          "location": [
+            0.3344976007938385,
+            5.013792037963867,
+            4.0
+          ],
+          "watts": 250.0
+        }
+      ],
+      "seconds": 58.32775378227234
+    },
+    {
+      "view": "side",
+      "file": "renders\\current-studio\\side.png",
+      "sha256": "3f83d687bcd0ea8d8b5618013ffb65428966b8726fc9b223a7b3d87cdec6da15",
+      "camera_location": [
+        10.4,
+        0,
+        2.1
+      ],
+      "target": [
+        0,
+        0,
+        0.65
+      ],
+      "lens_mm": 70,
+      "lights": [
+        {
+          "name": "Overhead softbox",
+          "location": [
+            4.3822855949401855,
+            -0.07466115802526474,
+            5.5
+          ],
+          "watts": 1700.0
+        },
+        {
+          "name": "Side softbox",
+          "location": [
+            -2.385910987854004,
+            -3.827195882797241,
+            2.799999952316284
+          ],
+          "watts": 450.0
+        },
+        {
+          "name": "Rear strip",
+          "location": [
+            -3.944056987762451,
+            2.223604202270508,
+            4.800000190734863
+          ],
+          "watts": 250.0
+        },
+        {
+          "name": "Front fill",
+          "location": [
+            3.765519380569458,
+            -3.3272907733917236,
+            4.0
+          ],
+          "watts": 250.0
+        }
+      ],
+      "seconds": 57.488563776016235
+    },
+    {
+      "view": "wheel",
+      "file": "renders\\current-studio\\wheel.png",
+      "sha256": "16a2e5641e583211c2c3d01a544e3355428677a9be663d51dad8c5d8954125f4",
+      "camera_location": [
+        2.2,
+        -2.55,
+        0.68
+      ],
+      "target": [
+        0.82,
+        -1.2,
+        0.45
+      ],
+      "lens_mm": 75,
+      "lights": [
+        {
+          "name": "Overhead softbox",
+          "location": [
+            2.806124448776245,
+            -3.3668479919433594,
+            5.5
+          ],
+          "watts": 1700.0
+        },
+        {
+          "name": "Side softbox",
+          "location": [
+            -4.456343650817871,
+            -0.6935431361198425,
+            2.799999952316284
+          ],
+          "watts": 450.0
+        },
+        {
+          "name": "Rear strip",
+          "location": [
+            -0.8927723169326782,
+            4.438801288604736,
+            4.800000190734863
+          ],
+          "watts": 250.0
+        },
+        {
+          "name": "Front fill",
+          "location": [
+            -0.059518154710531235,
+            -5.024585247039795,
+            4.0
+          ],
+          "watts": 250.0
+        }
+      ],
+      "seconds": 63.28990149497986
+    }
+  ],
+  "scope": "Studio renders of the actual portable GLB geometry/materials. This is a Blender material/shape review, not a native game screenshot or a frame-rate result."
+}

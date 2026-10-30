@@ -1,0 +1,225 @@
+{
+  "schema": 1,
+  "stage": "portable_model_and_studio_delivery",
+  "created_at": "2026-10-30T14:34:57.136809+00:00",
+  "baseline_commit": "679f071e552fed32faa6fbf07c30c4199fe0aaf4",
+  "branch": "codex/porsche-gt3rs-integration",
+  "executable": {
+    "file": "dist/Breakwater_Windows_x64.exe",
+    "sha256": "ec09f4a46a2bdbf17f7ac6c1c076e959349d85a8b5d101b489e5350bdddb4fc9",
+    "bytes": 7461439
+  },
+  "editable_source": {
+    "file": "assets/porsche/Porsche_911_GT3RS_Source.blend",
+    "sha256": "587f63bb0278920b62ea7e5d2ddd35fb6966f349d666e8cf69988a97715e6ff5",
+    "bytes": 68946284
+  },
+  "portable_exports": [
+    {
+      "level": "hero",
+      "file": "assets\\porsche\\portable\\exports\\Porsche_911_GT3RS_Development.glb",
+      "sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+      "bytes": 54749496,
+      "triangles": 695220
+    },
+    {
+      "level": "near",
+      "file": "assets\\porsche\\portable\\exports\\Porsche_911_GT3RS_LOD1.glb",
+      "sha256": "b4f44436c3eca6a26d178567e27bf77eb88131f94663a924c7e00dd09fe8ca3d",
+      "bytes": 18053680,
+      "triangles": 292878
+    },
+    {
+      "level": "far",
+      "file": "assets\\porsche\\portable\\exports\\Porsche_911_GT3RS_LOD2.glb",
+      "sha256": "49c8d9da6b3b9f578f80b7ef0d8e6ebd988830346025ecb82e65100e5dd6d20b",
+      "bytes": 12020876,
+      "triangles": 209478
+    }
+  ],
+  "native_checks_passed": 155,
+  "performance_cases_passed": 8,
+  "performance_summary": [
+    {
+      "case": "low-chase-ao-off",
+      "frame_wall_mean_ms": 41.2322135,
+      "gpu_mean_ms": 27.1419733,
+      "motion_and_render_state_passed": true
+    },
+    {
+      "case": "low-chase-ao-on",
+      "frame_wall_mean_ms": 51.3068906,
+      "gpu_mean_ms": 41.2296747,
+      "motion_and_render_state_passed": true
+    },
+    {
+      "case": "low-cockpit-ao-on",
+      "frame_wall_mean_ms": 33.0911781,
+      "gpu_mean_ms": 25.93792,
+      "motion_and_render_state_passed": true
+    },
+    {
+      "case": "low-cockpit-ao-off",
+      "frame_wall_mean_ms": 23.1901344,
+      "gpu_mean_ms": 14.8653013,
+      "motion_and_render_state_passed": true
+    },
+    {
+      "case": "high-chase-ao-on",
+      "frame_wall_mean_ms": 56.1193896,
+      "gpu_mean_ms": 43.8132053,
+      "motion_and_render_state_passed": true
+    },
+    {
+      "case": "high-chase-ao-off",
+      "frame_wall_mean_ms": 36.9936917,
+      "gpu_mean_ms": 20.5748693,
+      "motion_and_render_state_passed": true
+    },
+    {
+      "case": "high-cockpit-ao-off",
+      "frame_wall_mean_ms": 29.0635719,
+      "gpu_mean_ms": 20.96368,
+      "motion_and_render_state_passed": true
+    },
+    {
+      "case": "high-cockpit-ao-on",
+      "frame_wall_mean_ms": 46.3796719,
+      "gpu_mean_ms": 37.2431893,
+      "motion_and_render_state_passed": true
+    }
+  ],
+  "performance_limits": [
+    "Local instrumented native renderer/physics/HUD run on this machine; not a cross-device FPS guarantee",
+    "Per-stage batch flushes and timestamp commands add instrumentation overhead; nested ambient stages are included in ambient_total and nested scene stages in scene_color",
+    "GPU elapsed spans may include GPU idle gaps waiting for CPU commands; CPU submit is not CPU-only execution time",
+    "Hidden-window workload; presentation/compositor scheduling and visible-window performance need separate verification",
+    "Fixed simulation step and repeated input sequence; camera smoothing disabled so matched cases use identical views",
+    "Combat and audio held idle; shader/asset loading and cold-start latency excluded by warmup"
+  ],
+  "runtime_change": "Separate normal/depth scene timing scopes from main color timing scopes. Inactive outside explicit profiling. Geometry and render submission remain unchanged from the baseline.",
+  "code": [
+    {
+      "file": "src/breakwater/porsche_profile.cpp",
+      "sha256": "7e5239f35495e570777e68e50d040fc1498239d02ad9def18ec5acfde1c424ea",
+      "bytes": 15766
+    },
+    {
+      "file": "src/breakwater/porsche_profile.hpp",
+      "sha256": "e0980eb9cd48065b0a8dd19c29d6b8fed91a49269f9a93eab9f5299a9a39d942",
+      "bytes": 955
+    },
+    {
+      "file": "src/breakwater/world.cpp",
+      "sha256": "fe0bc7d36415e92e4ce73c34b8b8a8bda44b0ef5e07825b9aa5bf4f57645ce65",
+      "bytes": 352966
+    },
+    {
+      "file": "src/breakwater/porsche_native.cpp",
+      "sha256": "a432a225482835a5e2baf847567c92e7baafae0457577308c62c68583280fed9",
+      "bytes": 197176
+    },
+    {
+      "file": "src/breakwater/porsche_rig.cpp",
+      "sha256": "968fe99e2794091098b6ce5ccf4832a39f9159dcea262cb2b4d1c8df95513e9b",
+      "bytes": 5619
+    },
+    {
+      "file": "src/breakwater/porsche_suspension.cpp",
+      "sha256": "a2a6fa4a696f66c379a21cb4c9ff45d23fc5743bab65e10cd196e1e8269889db",
+      "bytes": 14649
+    },
+    {
+      "file": "scripts/render_porsche_studio.py",
+      "sha256": "5e510a564c26064ef8e1edd3f4ac84b0737cde869bbd0cb7042bd25c182544b4",
+      "bytes": 3988
+    },
+    {
+      "file": "tests/check_porsche_assets.py",
+      "sha256": "8bbe97025400de6a1bf3cc9f41bcb9b7556f030f9d671c0083d05d1dd34a92f3",
+      "bytes": 5612
+    }
+  ],
+  "reports": [
+    {
+      "file": "docs/porsche-native-qa.json",
+      "sha256": "545855bb4f5bf5570aff059a5446f099d3c8f4d4317ca081a4416233ec85fe60",
+      "bytes": 860
+    },
+    {
+      "file": "docs/porsche-native-performance.json",
+      "sha256": "c57cbb79f2fa859c172733d04bee26220e7097ebab3a6232a1e3e1f1ebe57d15",
+      "bytes": 223203
+    },
+    {
+      "file": "docs/porsche-asset-validation.json",
+      "sha256": "628d3ff4f25983c0fda3d6817f839f4e5fa56bee1ff0ae74fac88c04ea70fb5b",
+      "bytes": 2075
+    },
+    {
+      "file": "docs/porsche-portable-delivery.json",
+      "sha256": "b0a8e9001efbccb69d45326b0f17fb20c055b3ecc3690e2730ba27232e7a0346",
+      "bytes": 2546
+    },
+    {
+      "file": "docs/porsche-studio/reproduction-check.json",
+      "sha256": "f8d316e4374a9cf80ca9c57b264256d16f1a48f7a65c1ad5f93aeb48a0f3d546",
+      "bytes": 1029
+    }
+  ],
+  "native_captures": [
+    {
+      "file": "screenshots/porsche-native-front.png",
+      "sha256": "92fb604b934648c7fb6bd38a89fa03169f85f42fba9c4c702407fe6d040698c5",
+      "bytes": 1944991
+    },
+    {
+      "file": "screenshots/porsche-native-live-cockpit.png",
+      "sha256": "a38b686cd30bcfb0d5aec6a2d000daa77fe002a95c38ac1414b3cc5bbfdd4e34",
+      "bytes": 1209167
+    },
+    {
+      "file": "screenshots/porsche-native-steering-centre.png",
+      "sha256": "54cd36bed39491d9d079d45bb3340488dcc63120b528a12d17f95e583231c637",
+      "bytes": 1163848
+    },
+    {
+      "file": "screenshots/porsche-native-steering-negative.png",
+      "sha256": "21bd4b6ec6271139d36ee0c4548d05c3161240b603e52c135415715b224ab1b0",
+      "bytes": 1154862
+    },
+    {
+      "file": "screenshots/porsche-native-steering-positive.png",
+      "sha256": "76f781657f533d3dda2fbd1bf202c1ad6deb3732fd7dbf29ddd011066b01274d",
+      "bytes": 1157723
+    }
+  ],
+  "studio_captures": [
+    {
+      "view": "front",
+      "file": "screenshots\\porsche-studio\\front.png",
+      "sha256": "826bb8fc10b12c6466ff6d0d8eaea05ae44d71039bb01597d2c6e4bd74fb07a3"
+    },
+    {
+      "view": "rear",
+      "file": "screenshots\\porsche-studio\\rear.png",
+      "sha256": "6477ecdd5da0ead49df61e57b6386d4c3444b3373c9b709b9a9dfd36914e6b8c"
+    },
+    {
+      "view": "side",
+      "file": "screenshots\\porsche-studio\\side.png",
+      "sha256": "3f83d687bcd0ea8d8b5618013ffb65428966b8726fc9b223a7b3d87cdec6da15"
+    },
+    {
+      "view": "wheel",
+      "file": "screenshots\\porsche-studio\\wheel.png",
+      "sha256": "16a2e5641e583211c2c3d01a544e3355428677a9be663d51dad8c5d8954125f4"
+    }
+  ],
+  "visual_review": "Actual model front, rear, side, wheel and native cockpit inspected. Approved white body/red wheels and graphics, dark aero, yellow brakes, detailed cabin and steering marker retained. Studio views are Blender Cycles renders, not game screenshots.",
+  "limits": [
+    "Finite articulation and asset checks do not establish continuous whole-car collision clearance.",
+    "Studio lighting does not establish native-game frame rate or exact Forza visual parity.",
+    "The earlier steering-marker review is a historical baseline; current executable and capture hashes are recorded here."
+  ]
+}

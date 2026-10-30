@@ -1,0 +1,36 @@
+{
+  "packet_id": "PKT-gt3rs-studio-neutral-v2",
+  "from": "photography-director",
+  "to": "visual-qa",
+  "job": "Review the actual current GT3 RS asset under neutral commercial studio lighting.",
+  "decisions": [
+    {
+      "key": "craft_state.photography",
+      "value": {
+        "camera": "Moderately compressed automotive perspective; 65 mm front/rear, 70 mm side, 75 mm wheel detail.",
+        "focus": "Depth of field disabled so relevant geometry and finish remain readable.",
+        "lighting": "Camera-relative neutral D65-white area lights; overhead key, approximately 2:1 key/fill emitter-radiance ratio, narrow lower-power rim and narrow front fill.",
+        "color": "White paint and red wheel/graphics colors remain unchanged; no product color grading.",
+        "materials": "Preserve the actual GLB factors, maps, geometry and rig. Adjust light-card size/direction to inspect carbon and glazing without broad white reflections.",
+        "composition": "Read silhouette and white/red design first, then aero and wheel detail. Large neutral floor avoids visible plane edges."
+      },
+      "rationale": "The first lighting setup produced broad specular reflections that hid dark carbon and headlamp detail."
+    }
+  ],
+  "evidence": [
+    "studies/studio-lighting-v1/front.png",
+    "studies/studio-lighting-v1/rear.png",
+    "reports/current-studio-review.json"
+  ],
+  "confidence": 0.85,
+  "hard_vetoes": [],
+  "soft_warnings": [
+    "Studio appearance is not a native-game rendering or performance proof."
+  ],
+  "unresolved": [
+    "Inspect all four updated views for washed-out dark trim, glare, geometry fit and readable finish."
+  ],
+  "recommended_next": [
+    "Render the front view, inspect it, then complete the matching rear, side and wheel views."
+  ]
+}

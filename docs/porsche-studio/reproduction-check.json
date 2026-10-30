@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "portable_asset_sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+  "script_sha256": "5e510a564c26064ef8e1edd3f4ac84b0737cde869bbd0cb7042bd25c182544b4",
+  "reference_front_sha256": "826bb8fc10b12c6466ff6d0d8eaea05ae44d71039bb01597d2c6e4bd74fb07a3",
+  "reproduced_front_sha256": "784985863d518df3d70eae550c46ec7418b563fd75ba6d272d93972f875feb6d",
+  "byte_identical": false,
+  "reproduced_file": "renders\\repository-studio-front.png",
+  "scope": "Actual background Blender execution of the repository reproduction script against its bundled portable asset; one front view. Other views share the recorded camera/light reader.",
+  "pixel_difference": {
+    "mean_absolute_channel_codes": [
+      4.340277777777778e-05,
+      3.134645061728395e-05,
+      4.099151234567901e-05
+    ],
+    "maximum_channel_codes": 1
+  },
+  "note": "Actual script execution succeeded and both images were visually inspected. PNG hashes differ; bitwise reproduction is not claimed."
+}

@@ -1,0 +1,60 @@
+{
+  "portable_exports": [
+    {
+      "level": "hero",
+      "file": "assets\\porsche\\portable\\exports\\Porsche_911_GT3RS_Development.glb",
+      "sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+      "bytes": 54749496,
+      "triangles": 695220
+    },
+    {
+      "level": "near",
+      "file": "assets\\porsche\\portable\\exports\\Porsche_911_GT3RS_LOD1.glb",
+      "sha256": "b4f44436c3eca6a26d178567e27bf77eb88131f94663a924c7e00dd09fe8ca3d",
+      "bytes": 18053680,
+      "triangles": 292878
+    },
+    {
+      "level": "far",
+      "file": "assets\\porsche\\portable\\exports\\Porsche_911_GT3RS_LOD2.glb",
+      "sha256": "49c8d9da6b3b9f578f80b7ef0d8e6ebd988830346025ecb82e65100e5dd6d20b",
+      "bytes": 12020876,
+      "triangles": 209478
+    }
+  ],
+  "manifest": {
+    "file": "assets\\porsche\\portable\\exports\\gt3rs-lods.json",
+    "sha256": "772733a8c371e4d6662b9de514efcf6525f8d3550888e1a85a86a57e779ff7a0"
+  },
+  "studio": {
+    "asset_sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+    "captures": [
+      {
+        "view": "front",
+        "file": "screenshots\\porsche-studio\\front.png",
+        "sha256": "826bb8fc10b12c6466ff6d0d8eaea05ae44d71039bb01597d2c6e4bd74fb07a3"
+      },
+      {
+        "view": "rear",
+        "file": "screenshots\\porsche-studio\\rear.png",
+        "sha256": "6477ecdd5da0ead49df61e57b6386d4c3444b3373c9b709b9a9dfd36914e6b8c"
+      },
+      {
+        "view": "side",
+        "file": "screenshots\\porsche-studio\\side.png",
+        "sha256": "3f83d687bcd0ea8d8b5618013ffb65428966b8726fc9b223a7b3d87cdec6da15"
+      },
+      {
+        "view": "wheel",
+        "file": "screenshots\\porsche-studio\\wheel.png",
+        "sha256": "16a2e5641e583211c2c3d01a544e3355428677a9be663d51dad8c5d8954125f4"
+      }
+    ],
+    "raw_report": "docs/porsche-studio/authoring-render-report.json",
+    "raw_report_sha256": "0cbb1e15f4db484bf53be04026e16260f44d830c3462e9fe6c6884f5f261b625",
+    "render_script_sha256": "e9ef7eeb8edbe20572cb9d3a63a1929a779b212f0cec434831010c6900502bf8",
+    "scope": "Studio renders of the actual portable GLB geometry/materials. This is a Blender material/shape review, not a native game screenshot or a frame-rate result."
+  },
+  "native_runtime_assets_unchanged": true,
+  "scope": "Byte-identical copies of the already validated portable exports. Studio images render the actual portable Hero geometry and materials; they are not native game screenshots."
+}
