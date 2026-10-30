@@ -1,7 +1,9 @@
 """Preserve the Porsche glTF while splitting primitives for raylib's 16-bit indices.
 
 Images become shared external files. Original vertex attributes, targets,
-hierarchy, material definitions and triangle winding are retained. numpy is an
+hierarchy, material definitions and triangle winding are retained. The native
+rig metadata/header owns complete materials; stock-loader GLBs use untextured
+placeholders to avoid uploading duplicate textures before native rebinding. numpy is an
 offline build dependency only; generated game assets require no Python runtime.
 """
 from pathlib import Path
@@ -77,7 +79,10 @@ def convert(path,out):
     # Bufferless animation/skin structures are absent in this authored rig.
     assert not g.get('animations') and not g.get('skins')
     level='hero' if 'DetailCandidate' in path.name or 'Development' in path.name else 'near' if 'LOD1' in path.name else 'far'
-    output=out/f'gt3rs_{level}.glb';encoded=write_glb(output,result,data)
+    output=out/f'gt3rs_{level}.glb'
+    loader=copy.deepcopy(result)
+    loader['materials']=[{'name':m.get('name',''),'pbrMetallicRoughness':{'baseColorFactor':[1,1,1,1],'metallicFactor':0,'roughnessFactor':1}} for m in result['materials']]
+    encoded=write_glb(output,loader,data)
     parents,worlds=world_matrices(result);bindings=[];morph_blob=bytearray();morphs=[]
     for ni,node in enumerate(result['nodes']):
         if 'mesh' not in node:continue
@@ -96,7 +101,7 @@ def convert(path,out):
                     record['targets'].append(row)
                 morphs.append(record)
     (out/f'gt3rs_{level}_morphs.bin').write_bytes(morph_blob)
-    metadata={'level':level,'source_sha256':digest(original),'runtime_sha256':digest(encoded),'triangles':triangles,'raylib_meshes':len(bindings),'additional_primitives':split,'maximum_vertices_per_primitive':max_vertices,
+    metadata={'level':level,'source_sha256':digest(original),'runtime_sha256':digest(encoded),'deferred_native_materials':True,'triangles':triangles,'raylib_meshes':len(bindings),'additional_primitives':split,'maximum_vertices_per_primitive':max_vertices,
         'nodes':[{'name':n.get('name',''),'parent':parents.get(i,-1),'local':matrix(n).flatten(order='F').tolist(),'world':worlds[i].flatten(order='F').tolist(),'extras':n.get('extras',{})} for i,n in enumerate(result['nodes'])],
         'bindings':bindings,'materials':result['materials'],'images':result.get('images',[]),'textures':result.get('textures',[]),'morphs':morphs}
     (out/f'gt3rs_{level}_rig.json').write_text(json.dumps(metadata,indent=2),encoding='utf-8');print(json.dumps({k:metadata[k] for k in ['level','source_sha256','runtime_sha256','triangles','raylib_meshes','additional_primitives','maximum_vertices_per_primitive']}),flush=True)

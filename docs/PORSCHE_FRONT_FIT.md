@@ -1,5 +1,12 @@
 # Porsche front assembly revision
 
+This records the front-fit baseline delivered in `990db89` and the subsequent
+cockpit build in `038cef9`. The current steering-marker revision changes the
+rim material, retains the full Hero rim in the distance variants, and defers
+texture loading to the native cache. Its current counts, asset hashes, tests
+and executable are recorded in [the steering-marker review](PORSCHE_STEERING_MARKER.md).
+The front wheel, body and mechanism surfaces remain exactly those audited here.
+
 The front wheels previously crossed the body and suspension at some steering
 and travel extremes. The revised source fits the front carrier alignment,
 wishbone castings, curved tie rods, damper seats, spring morphs and mounting
@@ -10,7 +17,7 @@ Original tire dimensions, nominal wheel centres and the existing steering and
 ±50 mm suspension command ranges are retained. The revised front alignment and
 brackets are authored game geometry, not Porsche CAD or OEM suspension settings.
 
-Validation for the exact published hashes is recorded in
+Validation for the baseline hashes is recorded in
 `porsche-front-fit-review.json`:
 
 - 135 front wheel/mechanism poses clear at each of Hero, Near and Far: 405 in total.

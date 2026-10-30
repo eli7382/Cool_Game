@@ -22,8 +22,14 @@ def indices(g,blob,p):
     return values(g,blob,p['indices']).ravel() if 'indices' in p else np.arange(g['accessors'][p['attributes']['POSITION']]['count'])
 def check(source,runtime):
     original,a,ab=load(source);encoded,b,bb=load(runtime)
-    for field in ['asset','nodes','scenes','scene','materials','textures','samplers','extensionsUsed','extensionsRequired']:
+    for field in ['asset','nodes','scenes','scene','textures','samplers','extensionsUsed','extensionsRequired']:
         assert a.get(field)==b.get(field),f'{field} changed'
+    # Material values/maps are owned by the native shader. The stock GLB loader
+    # must see no texture references, avoiding transient duplicate GPU uploads.
+    meta=json.loads(runtime.with_name(runtime.stem+'_rig.json').read_text())
+    assert meta['deferred_native_materials'] and meta['materials']==a['materials']
+    placeholders=[{'name':m.get('name',''),'pbrMetallicRoughness':{'baseColorFactor':[1,1,1,1],'metallicFactor':0,'roughnessFactor':1}} for m in a['materials']]
+    assert b['materials']==placeholders,'Stock loader must receive untextured placeholders'
     assert len(a['meshes'])==len(b['meshes']);triangles=0;chunks=0;targets=0;maximum_vertices=0
     for am,bm in zip(a['meshes'],b['meshes']):
         assert {k:v for k,v in am.items() if k!='primitives'}=={k:v for k,v in bm.items() if k!='primitives'}
@@ -53,7 +59,7 @@ def check(source,runtime):
     for original_image,native_image in zip(a['images'],b['images']):
         view=a['bufferViews'][original_image['bufferView']];start=view.get('byteOffset',0)
         assert sha(ab[start:start+view['byteLength']])==sha((runtime.parent/native_image['uri']).read_bytes()),'Texture bytes changed'
-    return {'source_sha256':sha(original),'runtime_sha256':sha(encoded),'triangles_compared':triangles,'primitives_checked':chunks,'morph_targets_checked':targets,'embedded_images_verified':len(a['images']),'maximum_vertices_per_primitive':maximum_vertices,'attributes_targets_winding_hierarchy_materials_images_retained':True}
+    return {'source_sha256':sha(original),'runtime_sha256':sha(encoded),'triangles_compared':triangles,'primitives_checked':chunks,'morph_targets_checked':targets,'embedded_images_verified':len(a['images']),'maximum_vertices_per_primitive':maximum_vertices,'attributes_targets_winding_hierarchy_materials_images_retained':True,'full_materials_retained_in_native_metadata':True,'stock_loader_texture_references':0}
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);args=p.parse_args();rows=[]
     for level,suffix in [('hero','Development'),('near','LOD1'),('far','LOD2')]:

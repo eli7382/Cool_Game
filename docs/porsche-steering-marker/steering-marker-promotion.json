@@ -1,0 +1,153 @@
+{
+  "promoted": true,
+  "files": [
+    {
+      "file": "Porsche_911_GT3RS_Development.blend",
+      "before_sha256": "0a5b81643255842b81b252b5df0a044bf7118c4eb3c785d5ee29cb094ad0cbd0",
+      "sha256": "a88ae165747e7746dd000e8a311cb1857d7c0682e621a5d846605d5b36d84030"
+    },
+    {
+      "file": "exports\\Porsche_911_GT3RS_Development.glb",
+      "before_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
+      "sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913"
+    },
+    {
+      "file": "Porsche_911_GT3RS_DetailCandidate.blend",
+      "before_sha256": "0a5b81643255842b81b252b5df0a044bf7118c4eb3c785d5ee29cb094ad0cbd0",
+      "sha256": "e228da349c7bd21973791c214196522c89671c0feb8e5563cabe5bbb1745b321"
+    },
+    {
+      "file": "exports\\Porsche_911_GT3RS_DetailCandidate.glb",
+      "before_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
+      "sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913"
+    },
+    {
+      "file": "studies\\runtime-lods\\Porsche_911_GT3RS_LOD1.blend",
+      "before_sha256": "e6ccab3a003919bbb5a2297faf028b4c89e22602c489ad6d315fa5bd5cf9f236",
+      "sha256": "9aaab520c497158fa1357f078c32a39b5b2ac21305b082b5db6f8499d93f254e"
+    },
+    {
+      "file": "exports\\Porsche_911_GT3RS_LOD1.glb",
+      "before_sha256": "a72102853b261a0b759127a99b8d4905bd5b6ef01c5e7800d55d85731d413e1d",
+      "sha256": "b4f44436c3eca6a26d178567e27bf77eb88131f94663a924c7e00dd09fe8ca3d"
+    },
+    {
+      "file": "studies\\runtime-lods\\Porsche_911_GT3RS_LOD2.blend",
+      "before_sha256": "5cee0991fd19599f4122ff73c5b0f1f5884eeee274a2972634ca7bbe872b0667",
+      "sha256": "d2133e02370b791b8a99052832542ee2dc47c85b7376efad03692327abb3bbaa"
+    },
+    {
+      "file": "exports\\Porsche_911_GT3RS_LOD2.glb",
+      "before_sha256": "7fead8dde40a4e6c918ae927ee719daed5547b8de0b3c4c253370f061de954c9",
+      "sha256": "49c8d9da6b3b9f578f80b7ef0d8e6ebd988830346025ecb82e65100e5dd6d20b"
+    },
+    {
+      "file": "reports\\lod1-audit.json",
+      "before_sha256": "63b48a75adb344c6482744bc46272a49394a8e032bf374438da4944b9ebff727",
+      "sha256": "7ee63b2f745406e76e969cc28238b672f439b85e3fe3f5d082171692694fe65b"
+    },
+    {
+      "file": "reports\\lod1-suspension.json",
+      "before_sha256": "293a184603da96aa4c961a839b487fe91817141226baed2b26e84179a267628a",
+      "sha256": "024c5718d9f27f3d45c58c8e73829834791bca47dd176be53690d0fa6b5f22a8"
+    },
+    {
+      "file": "reports\\lod1-exterior_carbon.json",
+      "before_sha256": "bf49f8357991a615da45f9475766b1ea3a4b4823e169fcee36fcacd1038451ae",
+      "sha256": "8302fc24d188a1959ca7e50a55af559257ad0b348d1a2bd6a1597a36db60c905"
+    },
+    {
+      "file": "reports\\lod1-grille.json",
+      "before_sha256": "aeadf39fba366cb4d789d2944836f88d448ec5527f8b8828baa4408ecdc4b744",
+      "sha256": "6aba9baafb5d732974fb34142428b34dd0e2b0c084363dbf985267d6c5bc5184"
+    },
+    {
+      "file": "reports\\lod1-tachometer.json",
+      "before_sha256": "85ae421e0ef51097ea9484018a845933728fa8a4529837fbc5ac8173c347ab48",
+      "sha256": "3c49072f1c535d900d4aa8bd853188f78ef64a3338d7ab37f72f07c838c81a15"
+    },
+    {
+      "file": "reports\\lod1-chrono.json",
+      "before_sha256": "1ad681f33bc63aea86e8684eaad0c50035fd69bf732eefe21a93829aa39da3b0",
+      "sha256": "9913bc32ba29fd9d32fd64d5b4a9b7168170c2454e5dcc473b5f55f95c0eb82f"
+    },
+    {
+      "file": "reports\\lod1-headlamps.json",
+      "before_sha256": "21d8641a8fc0a1c8e3b819c687459795ead0acf450e0d079d081c526b64f787a",
+      "sha256": "d45ba89890c7cf62eeba9770ca02f0e7316a9e1bae8c294fe72df1a75612e0dc"
+    },
+    {
+      "file": "reports\\lod1-wheels.json",
+      "before_sha256": "5d7e6842e84e962effe5dcb75c628c5541fbbb8256ab91488a6a6a5635449c74",
+      "sha256": "0a4f488a9037f3141c8325499754c97834290a592c0bcccd560f677123945a8f"
+    },
+    {
+      "file": "reports\\lod1-forged_wheels.json",
+      "before_sha256": "8939eab20b490c0d0de4360a49748d4f4381f92eca995d09e0c7ab5f3f8aaa2a",
+      "sha256": "85a3363ba421f725acca3cc11dcf059a257c9c510b9756a9ce32793fed5cee1b"
+    },
+    {
+      "file": "reports\\lod1-mirrors.json",
+      "before_sha256": "29b21dfb967553ab7836ce21de22864d53d153f425fb71d5bff4eb7c296557fc",
+      "sha256": "ad3adfec6edd57a98243a1e96a13588595a2576a38ec2dd488f39d745d82f8a9"
+    },
+    {
+      "file": "reports\\lod2-audit.json",
+      "before_sha256": "847b44976b537f6de01cca6fa194366f83e92dfd0d488f0cd23cae7fdf3d0194",
+      "sha256": "763bf97980bbb2237234e6e1571053b9270988e1b7a2e97d23ad394a8463af8a"
+    },
+    {
+      "file": "reports\\lod2-suspension.json",
+      "before_sha256": "2f808d32d0557d9c0f0069f21e56bc53dbda2c137d72be87adac0976b4e99688",
+      "sha256": "f840e08addc3a39aa3b753026238950d31e22cdbffe3c11e69f5b5070d579e07"
+    },
+    {
+      "file": "reports\\lod2-exterior_carbon.json",
+      "before_sha256": "72e0eadc5a9708f7186036e39370f793962b00a132207c6d87c96d2e656fc596",
+      "sha256": "67ff953b23bdcd964e78e1ed979154f4e1eea570ef05effaa05641bcd77bdc65"
+    },
+    {
+      "file": "reports\\lod2-grille.json",
+      "before_sha256": "991ed78f9fe56bb288fe9d6aeebdc6baeb43c45af00ea1d13c3ba630e99fed1c",
+      "sha256": "d7cc1ba6222346044a58c708d4c94dc254f332499dcc49200ba307bfff02d2cc"
+    },
+    {
+      "file": "reports\\lod2-tachometer.json",
+      "before_sha256": "47b46523968c457d895e45bc20d39154d34bd7994c07c41f15ab46035ffffa19",
+      "sha256": "fbb8e092a2e9cd465eff45ac3fcaf686dead041708ef1ac7592046c674ab291a"
+    },
+    {
+      "file": "reports\\lod2-chrono.json",
+      "before_sha256": "3525efef74447be8d6da9cd860b685dcccb631040d4b00a628a8973791ee7e12",
+      "sha256": "0c1133ed9f66d0bae87b0570ca0eec4210833953a785a8ae03c3bcd90b777eae"
+    },
+    {
+      "file": "reports\\lod2-headlamps.json",
+      "before_sha256": "29e3e620b35cd8531d8ccd388d4cb40a92ca049d6710eccc6a234bc659858ad7",
+      "sha256": "6eb2e6e80ad1bc8b7520a2ae11153a2e3f7cfa68048bc3f17604ca3a1891ebfb"
+    },
+    {
+      "file": "reports\\lod2-wheels.json",
+      "before_sha256": "40f7495342aff3c062d85e2c2a3f89168888c8209cadb934cfd9573bf9aef039",
+      "sha256": "d087d91244ad27cd4676674c77524cefa45f4baab6c3427233489086b2c5ccf2"
+    },
+    {
+      "file": "reports\\lod2-forged_wheels.json",
+      "before_sha256": "01609d0643388032d9f66792ab7e6310103b1de20fa4d934757071176cf8b1da",
+      "sha256": "07c7b50bf4919509046335b7b65e1953bef3bcdeafc4ea818b54f6cfa91c7cd2"
+    },
+    {
+      "file": "reports\\lod2-mirrors.json",
+      "before_sha256": "e5b0759be96710fd996fc4599ab5284a749b4bf82ab961b80fdf7eda304cfbc9",
+      "sha256": "e1067c702d37bf2cfe499759bbdeef83c01bce996c8c4061be6ab77ecb8f90ec"
+    }
+  ],
+  "native_checks": 155,
+  "motion_poses": 138,
+  "culling_image_pairs": 36,
+  "backup": "studies\\baseline-before-steering-marker",
+  "complete": false,
+  "limits": [
+    "Finite motion/visual checks; final Forza parity and current frame time are not established"
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "hero_sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+  "variants": {
+    "hero": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+    "near": "b4f44436c3eca6a26d178567e27bf77eb88131f94663a924c7e00dd09fe8ca3d",
+    "far": "49c8d9da6b3b9f578f80b7ef0d8e6ebd988830346025ecb82e65100e5dd6d20b"
+  },
+  "results": [
+    {
+      "level": "near",
+      "material": "Carrara white | physical clearcoat",
+      "unique_points": 17811,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "near",
+      "material": "Carbon | 2x2 twill under clear resin",
+      "unique_points": 1476,
+      "maximum_position_error_m": 0,
+      "maximum_normal_angle_degrees": 0
+    },
+    {
+      "level": "near",
+      "material": "Red GT3 RS graphics",
+      "unique_points": 10252,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "near",
+      "material": "GT3 RS white lettering",
+      "unique_points": 8395,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "near",
+      "material": "Glazing | thin laminated green glass",
+      "unique_points": 2198,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "near",
+      "material": "Headlamp | clear optical cover",
+      "unique_points": 420,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "near",
+      "material": "Mirror | silvered glass L",
+      "unique_points": 52,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "near",
+      "material": "Mirror | silvered glass R",
+      "unique_points": 52,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "near",
+      "material": "Mirror | silvered glass Interior",
+      "unique_points": 16,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "far",
+      "material": "Carrara white | physical clearcoat",
+      "unique_points": 17811,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "far",
+      "material": "Carbon | 2x2 twill under clear resin",
+      "unique_points": 1476,
+      "maximum_position_error_m": 0,
+      "maximum_normal_angle_degrees": 0
+    },
+    {
+      "level": "far",
+      "material": "Red GT3 RS graphics",
+      "unique_points": 10252,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "far",
+      "material": "GT3 RS white lettering",
+      "unique_points": 8395,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "far",
+      "material": "Glazing | thin laminated green glass",
+      "unique_points": 2198,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "far",
+      "material": "Headlamp | clear optical cover",
+      "unique_points": 420,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "far",
+      "material": "Mirror | silvered glass L",
+      "unique_points": 52,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "far",
+      "material": "Mirror | silvered glass R",
+      "unique_points": 52,
+      "maximum_position_error_m": 0
+    },
+    {
+      "level": "far",
+      "material": "Mirror | silvered glass Interior",
+      "unique_points": 16,
+      "maximum_position_error_m": 0
+    }
+  ],
+  "limits": [
+    "Protected surface positions only; does not certify final material appearance or every simplified part"
+  ]
+}

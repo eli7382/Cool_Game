@@ -1,0 +1,94 @@
+{
+  "passed": true,
+  "levels": [
+    {
+      "level": "Development",
+      "runtime_sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+      "source_blend_sha256": "a88ae165747e7746dd000e8a311cb1857d7c0682e621a5d846605d5b36d84030",
+      "donor_sha256": "a12811d58ddd44d5ee8ac058c1c1864033d8e2c8e19e44a4124356ef49d090ed",
+      "parts": [
+        {
+          "part": "TwiXeR_992_steer_3_TwiXeR_992_carpet.002_0",
+          "triangles": 2566,
+          "maximum_position_error_m": 0.0,
+          "maximum_normal_vector_error": 0.0,
+          "maximum_uv_error": 1.9073486328125e-06
+        },
+        {
+          "part": "SteeringWheel_CentreMarker",
+          "triangles": 150,
+          "maximum_position_error_m": 0.0,
+          "maximum_normal_vector_error": 0.0,
+          "maximum_uv_error": 1.9073486328125e-06
+        }
+      ]
+    },
+    {
+      "level": "DetailCandidate",
+      "runtime_sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+      "source_blend_sha256": "e228da349c7bd21973791c214196522c89671c0feb8e5563cabe5bbb1745b321",
+      "donor_sha256": "a12811d58ddd44d5ee8ac058c1c1864033d8e2c8e19e44a4124356ef49d090ed",
+      "parts": [
+        {
+          "part": "TwiXeR_992_steer_3_TwiXeR_992_carpet.002_0",
+          "triangles": 2566,
+          "maximum_position_error_m": 0.0,
+          "maximum_normal_vector_error": 0.0,
+          "maximum_uv_error": 1.9073486328125e-06
+        },
+        {
+          "part": "SteeringWheel_CentreMarker",
+          "triangles": 150,
+          "maximum_position_error_m": 0.0,
+          "maximum_normal_vector_error": 0.0,
+          "maximum_uv_error": 1.9073486328125e-06
+        }
+      ]
+    },
+    {
+      "level": "LOD1",
+      "runtime_sha256": "b4f44436c3eca6a26d178567e27bf77eb88131f94663a924c7e00dd09fe8ca3d",
+      "source_blend_sha256": "9aaab520c497158fa1357f078c32a39b5b2ac21305b082b5db6f8499d93f254e",
+      "donor_sha256": "4129b8780e764b975fd39571e27b66c32db50bb6bf7b05c88888d3b889c8c234",
+      "parts": [
+        {
+          "part": "TwiXeR_992_steer_3_TwiXeR_992_carpet.002_0",
+          "triangles": 2566,
+          "maximum_position_error_m": 0.0,
+          "maximum_normal_vector_error": 0.0,
+          "maximum_uv_error": 0.0
+        },
+        {
+          "part": "SteeringWheel_CentreMarker",
+          "triangles": 150,
+          "maximum_position_error_m": 0.0,
+          "maximum_normal_vector_error": 0.0,
+          "maximum_uv_error": 0.0
+        }
+      ]
+    },
+    {
+      "level": "LOD2",
+      "runtime_sha256": "49c8d9da6b3b9f578f80b7ef0d8e6ebd988830346025ecb82e65100e5dd6d20b",
+      "source_blend_sha256": "d2133e02370b791b8a99052832542ee2dc47c85b7376efad03692327abb3bbaa",
+      "donor_sha256": "3781645feeb88721148257ecd11b455832d597a08aa9aefe1be4e014bb488db1",
+      "parts": [
+        {
+          "part": "TwiXeR_992_steer_3_TwiXeR_992_carpet.002_0",
+          "triangles": 2566,
+          "maximum_position_error_m": 0.0,
+          "maximum_normal_vector_error": 0.0,
+          "maximum_uv_error": 0.0
+        },
+        {
+          "part": "SteeringWheel_CentreMarker",
+          "triangles": 150,
+          "maximum_position_error_m": 0.0,
+          "maximum_normal_vector_error": 0.0,
+          "maximum_uv_error": 0.0
+        }
+      ]
+    }
+  ],
+  "scope": "Actual Blender exports compared by cyclic triangle correspondence: positions, winding, custom normals, UVs and inlay base colour. Other source objects have separate exact fingerprint checks; native materials/poses need game validation."
+}

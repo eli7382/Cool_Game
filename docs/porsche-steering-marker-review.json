@@ -1,0 +1,230 @@
+{
+  "implemented": true,
+  "baseline_commit": "038cef913395edefdd298b2d735689c40de7c522",
+  "levels": [
+    {
+      "level": "hero",
+      "source_export_sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+      "native_sha256": "75f9468d777a708c17a5ffac3a9792bf26c7a4d243a620c989fd1300c1956b0c",
+      "triangles": 695220,
+      "native_primitives": 313,
+      "marker_triangles": 150,
+      "marker_width_m": 0.01056992867961526
+    },
+    {
+      "level": "near",
+      "source_export_sha256": "b4f44436c3eca6a26d178567e27bf77eb88131f94663a924c7e00dd09fe8ca3d",
+      "native_sha256": "d94043bd839cfea44bd16443096c8f2a6bae33b0b159758950ab962b70356900",
+      "triangles": 292878,
+      "native_primitives": 315,
+      "marker_triangles": 150,
+      "marker_width_m": 0.01056992867961526
+    },
+    {
+      "level": "far",
+      "source_export_sha256": "49c8d9da6b3b9f578f80b7ef0d8e6ebd988830346025ecb82e65100e5dd6d20b",
+      "native_sha256": "e995321d66d3a5dccbc7b47fe5d085eb09326f3d362887a281be1ee799bbf7aa",
+      "triangles": 209478,
+      "native_primitives": 314,
+      "marker_triangles": 150,
+      "marker_width_m": 0.01056992867961526
+    }
+  ],
+  "source_package": {
+    "source_sha256": "a88ae165747e7746dd000e8a311cb1857d7c0682e621a5d846605d5b36d84030",
+    "package_sha256": "587f63bb0278920b62ea7e5d2ddd35fb6966f349d666e8cf69988a97715e6ff5",
+    "bytes": 68946284,
+    "used_images_packed": 52,
+    "editable_meshes": 1066,
+    "scope": "Editable source, packed used images/fonts and existing crown material group; runtime controls are implemented by the game rig."
+  },
+  "native_checks": 155,
+  "native_steering_poses": 69,
+  "maximum_native_hub_axial_drift_m": 1.67638e-07,
+  "maximum_native_hub_radial_drift_m": 2.97187e-07,
+  "additional_marker_motion_poses": 138,
+  "detail_switch_cases": 15,
+  "culling_image_pairs": 36,
+  "mirror_target_pairs": 54,
+  "stock_loader_texture_references": 0,
+  "source_materials_and_image_bytes_retained": true,
+  "executable_sha256": "47b01c97069cc4a711d2465d6053c077887bcc383de262a80be847da4b0c8b86",
+  "code_hashes": {
+    "src/breakwater/porsche_native.cpp": "a432a225482835a5e2baf847567c92e7baafae0457577308c62c68583280fed9",
+    "src/breakwater/porsche_asset_data.hpp": "d55e4ed5691645a3e7000416fe3bef7623a9b2f2f769f153edec3f21c04e2f9d",
+    "src/breakwater/porsche_displays.cpp": "a238631dec90c78ec7d3b5dc4e7d906753dae3443d662f4b7e600d0779a7ecdd",
+    "scripts/prepare_porsche_assets.py": "0373cdbb0351aa0ee71c3a489747269811988a1225bf95705f5cb1cdb63ae557",
+    "tests/check_porsche_assets.py": "8bbe97025400de6a1bf3cc9f41bcb9b7556f030f9d671c0083d05d1dd34a92f3"
+  },
+  "captures": [
+    {
+      "file": "screenshots\\porsche-native-front.png",
+      "sha256": "9bf125aab2e1446147d9f1c25ea41a49c6d3eba6e4d05f6c76838133cbe9f2eb"
+    },
+    {
+      "file": "screenshots\\porsche-native-live-cockpit.png",
+      "sha256": "ea05cf87503b00bdfe4450d77e29f82285c20bfd8adcb9187dac92b6b417a06f"
+    },
+    {
+      "file": "screenshots\\porsche-native-steering-centre.png",
+      "sha256": "94f6bc59fe60e0d76315cece04f48071e7f9d43606fe1e995043092800ff1ca1"
+    },
+    {
+      "file": "screenshots\\porsche-native-steering-negative.png",
+      "sha256": "5ecc9ba5e09372f8f69c3f776a615efa24846839be30516486a1e3c350f22e30"
+    },
+    {
+      "file": "screenshots\\porsche-native-steering-positive.png",
+      "sha256": "0cb38ee0089250d1eb16bb395d905d2eb7c3fc1e09689fb6f99979751d9cd2fb"
+    }
+  ],
+  "before": {
+    "file": "screenshots\\porsche-steering-before-marker.png",
+    "sha256": "ac90a3f08620f7b28df783d3c4fc9cd13c6709d905d288b5207fbd7b4621f0b9",
+    "commit": "038cef9"
+  },
+  "evidence": [
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-export-scope.json",
+      "sha256": "93c82d10642134196dc167514f24dc42dee458c30645a3e408407bf08670b58c"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-source-correspondence.json",
+      "sha256": "04bd207d20bed3af74b38e3b927761ed22e290e9f3daa0da7a4c3de40196b190"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-motion.json",
+      "sha256": "ed59f4326b3cb36e89c0c327c1bae4bb7210c12eff4addf93f33f4b379627cc9"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-source-package.json",
+      "sha256": "aead9a6ce5cf0486697fd163ccb77f2e3423be774dec683a1f45fe17462f9f76"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-promotion.json",
+      "sha256": "14f97bb4df2095e22418d578799c357b175158dc669d232fbb093d4cc476b41a"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\lod-runtime.json",
+      "sha256": "773dd28b27b6139075d0b47f72db50037834d16dfa687b1745a5631b303dd438"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\lod-protected-surfaces.json",
+      "sha256": "47e3751d45d1381763003f18e8d95d2fb2c9e2ab2c47dca49d9d5a46477bf111"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-audit-Development.json",
+      "sha256": "bd98299dd199c511e93b460716e80bccc3e9dd77d06f39762219ebf80474da6d"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-audit-DetailCandidate.json",
+      "sha256": "e678279be3e3a528e601a3fd8741a9d170dee5bfd3f1dc6528fdd9f26ef7ba43"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-audit-LOD1.json",
+      "sha256": "106c39dbcb3c364ddffa95c4bf5ea02d84f908c0500147f2dfd87c381b868b43"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-audit-LOD2.json",
+      "sha256": "93f9cd1d2646499fb8bb58a9e75181980316f6b51420adad68f612f639b86ac1"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-authoring-Development.json",
+      "sha256": "48d912a5223b4922f6ec5d611ecf1fd867178b72304e2e4149e02be0bcc9eac5"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-authoring-DetailCandidate.json",
+      "sha256": "20f0bd3efa6985970e8a0533a4296c15ab3afec9c4257ce57c9d293991257e50"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-authoring-LOD1.json",
+      "sha256": "8ac03de0efadc040c1a8b2a8012f454b6d7c44d8421167c0c52358c17171b91c"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\steering-marker-authoring-LOD2.json",
+      "sha256": "4c0df768e51b0b53c02a95179c652c834adec90a298d0e9fd9d2b34fb152a4b6"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\porsche-marker-qa-resources.json",
+      "sha256": "f3906143155a8d184af040b2d0989ea41ef4a8c94b9e5ee47345b19555528992"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\porsche-marker-culling-resources.json",
+      "sha256": "f166e2748b1f3396a6b454901826586360936a56bdedc0afd1870b25fae2460d"
+    },
+    {
+      "file": "docs\\porsche-steering-marker\\porsche-marker-performance-resources.json",
+      "sha256": "ce3259c21b5091deec3b005012c2610f0d37bde3ee9b74c6e82d94d21b72b1eb"
+    }
+  ],
+  "performance": {
+    "file": "docs/porsche-native-performance.json",
+    "sha256": "74cdcbc73b2ea4c016b3ee28fb8744c94eb48fe8d3613f8a1420667c15243065",
+    "renderer": "NVIDIA GeForce RTX 3050 Laptop GPU/PCIe/SSE2",
+    "resolution": [
+      1280,
+      720
+    ],
+    "warmup_frames": 24,
+    "sample_frames_per_case": 96,
+    "cases": [
+      {
+        "case": "low-chase-ao-off",
+        "mean_frame_ms": 53.3549375,
+        "p95_frame_ms": 76.54455,
+        "mean_gpu_ms": 32.1248747
+      },
+      {
+        "case": "low-chase-ao-on",
+        "mean_frame_ms": 73.0530052,
+        "p95_frame_ms": 94.960525,
+        "mean_gpu_ms": 57.1341227
+      },
+      {
+        "case": "low-cockpit-ao-on",
+        "mean_frame_ms": 95.4388042,
+        "p95_frame_ms": 159.508975,
+        "mean_gpu_ms": 63.7249067
+      },
+      {
+        "case": "low-cockpit-ao-off",
+        "mean_frame_ms": 64.1306229,
+        "p95_frame_ms": 110.524275,
+        "mean_gpu_ms": 33.314656
+      },
+      {
+        "case": "high-chase-ao-on",
+        "mean_frame_ms": 116.373036,
+        "p95_frame_ms": 184.0773,
+        "mean_gpu_ms": 82.57808
+      },
+      {
+        "case": "high-chase-ao-off",
+        "mean_frame_ms": 81.3774833,
+        "p95_frame_ms": 121.033575,
+        "mean_gpu_ms": 40.4979307
+      },
+      {
+        "case": "high-cockpit-ao-off",
+        "mean_frame_ms": 62.7624865,
+        "p95_frame_ms": 99.31175,
+        "mean_gpu_ms": 40.1741547
+      },
+      {
+        "case": "high-cockpit-ao-on",
+        "mean_frame_ms": 97.4233708,
+        "p95_frame_ms": 163.2262,
+        "mean_gpu_ms": 66.091328
+      }
+    ]
+  },
+  "visual_review": "Native centre and both steering-direction captures inspected. Yellow band is flush with the existing rim crown and rotates with the wheel; white/red exterior design retained.",
+  "reference": "https://newsroom.porsche.com/en/2022/products/porsche-911-gt3-rs-world-premiere-29177.html",
+  "limits": [
+    "Finite source, motion, native and image coverage; not whole-car continuous collision clearance",
+    "Source-fitted visual joints and game controls, not OEM CAD or validated Porsche tire forces",
+    "Hidden-window instrumented frame times include flush/query overhead and depend on this machine; visible play and other hardware are separate",
+    "Final Forza-level visual parity remains unproven"
+  ],
+  "complete": false
+}

@@ -131,10 +131,12 @@ bool LoadLevel(int level){
     else if(level==1){nodes=porsche_data::NearNodes;data.bindings=porsche_data::NearBindings;data.surfaces=porsche_data::NearSurfaces;data.springs=porsche_data::NearSprings;data.morphBindings=porsche_data::NearMorphs;}
     else{nodes=porsche_data::FarNodes;data.bindings=porsche_data::FarBindings;data.surfaces=porsche_data::FarSurfaces;data.springs=porsche_data::FarSprings;data.morphBindings=porsche_data::FarMorphs;}
     if(data.model.meshCount!=static_cast<int>(data.bindings.size()))throw std::runtime_error("Porsche native mesh order/count mismatch");
-    // raylib's stock glTF loader creates separate GPU textures per material and
-    // splits ORM channels. Rebind original shared images and own them centrally.
+    // Prepared GLBs carry untextured placeholders. Full source materials are in
+    // the generated header; each original image is uploaded once in Texture().
+    // Keep cleanup for a legacy asset, but reject it before rendering.
     std::unordered_set<unsigned int> freed;
     for(int i=0;i<data.model.materialCount;++i)for(int j=0;j<12;++j){const auto texture=data.model.materials[i].maps[j].texture;if(texture.id&&texture.id!=rlGetTextureIdDefault()&&freed.insert(texture.id).second)UnloadTexture(texture);data.model.materials[i].maps[j].texture={};}
+    if(!freed.empty())throw std::runtime_error("Porsche asset must defer texture loading to the shared native cache");
     for(std::size_t i=0;i<data.surfaces.size();++i){const auto& s=data.surfaces[i];auto& material=data.model.materials[i+1];material.shader=porscheShader;
         material.maps[MATERIAL_MAP_DIFFUSE].texture=s.albedo.path?Texture(s.albedo.path):Texture2D{rlGetTextureIdDefault(),1,1,1,PIXELFORMAT_UNCOMPRESSED_R8G8B8A8};
         material.maps[MATERIAL_MAP_METALNESS].texture=Texture(s.orm.path);
@@ -1191,7 +1193,7 @@ bool RunPorscheQA(){
             maximumRest=std::max(maximumRest,meshRest);
             if(rig.DescendsFrom(node,pivot))++wheels;
         }
-        check(wheels==13,"all-wheel-surfaces-bound");
+        check(wheels==14,"all-wheel-surfaces-bound-including-centering-inlay");
         for(int k=-11;k<=11;++k){PorscheControls controls;controls.steering=k*.05f;rig.Pose(controls);++poses;
             for(std::size_t i=0;i<level.bindings.size();++i){const int node=level.bindings[i].node;if(!rig.DescendsFrom(node,pivot))continue;const Matrix delta=rig.MeshDelta(node);const auto& mesh=level.model.meshes[i];
                 for(int n=0;n<mesh.vertexCount;++n){const Vector3 point{mesh.vertices[n*3],mesh.vertices[n*3+1],mesh.vertices[n*3+2]},a=Sub(point,centre),b=Sub(Vector3Transform(point,delta),centre);const double az=Vector3DotProduct(a,axis),bz=Vector3DotProduct(b,axis);

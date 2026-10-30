@@ -1,0 +1,12 @@
+{
+  "level": "LOD1",
+  "source_sha256": "e6ccab3a003919bbb5a2297faf028b4c89e22602c489ad6d315fa5bd5cf9f236",
+  "candidate_sha256": "9aaab520c497158fa1357f078c32a39b5b2ac21305b082b5db6f8499d93f254e",
+  "unrelated_objects_exactly_preserved": 916,
+  "rim_shape": "Original Hero rim positions/topology/encoded normals retained; crown-band material group, with the runtime exporter exposing the group as its named inlay mesh",
+  "marker_source_polygons": 150,
+  "marker_triangles": 150,
+  "marker_parent": "SteeringWheel_Pivot",
+  "production_changed": false,
+  "promotion_allowed": false
+}

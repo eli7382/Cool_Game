@@ -1,0 +1,8 @@
+{
+  "source_sha256": "a88ae165747e7746dd000e8a311cb1857d7c0682e621a5d846605d5b36d84030",
+  "package_sha256": "587f63bb0278920b62ea7e5d2ddd35fb6966f349d666e8cf69988a97715e6ff5",
+  "bytes": 68946284,
+  "used_images_packed": 52,
+  "editable_meshes": 1066,
+  "scope": "Editable source, packed used images/fonts and existing crown material group; runtime controls are implemented by the game rig."
+}

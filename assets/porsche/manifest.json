@@ -1,32 +1,35 @@
 {
   "format": 1,
   "source": "Porsche GT3 RS by Black Snow / CC BY 4.0; adapted white/red articulated model",
-  "generator_sha256": "60a70e0754a524ea02fe7d3f2de1331796beb97c0caa62c748702a5847bc1c00",
+  "generator_sha256": "0373cdbb0351aa0ee71c3a489747269811988a1225bf95705f5cb1cdb63ae557",
   "levels": [
     {
       "level": "hero",
-      "source_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
-      "runtime_sha256": "06adedf69d0524c1e58ec91f2af3aea5b3f0c4f165e13a6f67a1de8a44dc4bef",
+      "source_sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+      "runtime_sha256": "75f9468d777a708c17a5ffac3a9792bf26c7a4d243a620c989fd1300c1956b0c",
+      "deferred_native_materials": true,
       "triangles": 695220,
-      "raylib_meshes": 312,
+      "raylib_meshes": 313,
       "additional_primitives": 1,
       "maximum_vertices_per_primitive": 60000
     },
     {
       "level": "near",
-      "source_sha256": "a72102853b261a0b759127a99b8d4905bd5b6ef01c5e7800d55d85731d413e1d",
-      "runtime_sha256": "6b0077040540d76c411d799c510416081e17761024173c0ef5243f8d759c9906",
-      "triangles": 291248,
-      "raylib_meshes": 314,
+      "source_sha256": "b4f44436c3eca6a26d178567e27bf77eb88131f94663a924c7e00dd09fe8ca3d",
+      "runtime_sha256": "d94043bd839cfea44bd16443096c8f2a6bae33b0b159758950ab962b70356900",
+      "deferred_native_materials": true,
+      "triangles": 292878,
+      "raylib_meshes": 315,
       "additional_primitives": 0,
       "maximum_vertices_per_primitive": 27961
     },
     {
       "level": "far",
-      "source_sha256": "7fead8dde40a4e6c918ae927ee719daed5547b8de0b3c4c253370f061de954c9",
-      "runtime_sha256": "28510330850f568c8b17fb3119ef2ecd4135fa5b07b5ed53268a207d350ccc7c",
-      "triangles": 207196,
-      "raylib_meshes": 313,
+      "source_sha256": "49c8d9da6b3b9f578f80b7ef0d8e6ebd988830346025ecb82e65100e5dd6d20b",
+      "runtime_sha256": "e995321d66d3a5dccbc7b47fe5d085eb09326f3d362887a281be1ee799bbf7aa",
+      "deferred_native_materials": true,
+      "triangles": 209478,
+      "raylib_meshes": 314,
       "additional_primitives": 0,
       "maximum_vertices_per_primitive": 14658
     }

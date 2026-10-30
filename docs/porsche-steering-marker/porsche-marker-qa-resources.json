@@ -1,0 +1,8 @@
+{
+  "mode": "qa",
+  "exit_code": 0,
+  "minimum_system_commit_free_bytes": 38804115456,
+  "peak_process_private_bytes": 2271084544,
+  "peak_process_working_bytes": 630722560,
+  "executable": "C:\\Users\\yoavi\\OneDrive\\Documents\\ChatGPT\\3d models\\Cool_Game\\build-native\\ninja\\bin\\game.exe"
+}

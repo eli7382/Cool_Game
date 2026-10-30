@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "levels": [
+    {
+      "level": "Development",
+      "sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
+      "poses": 46,
+      "drawn_vertices": 250,
+      "steering_surfaces": 14,
+      "maximum_axial_drift_m": 4.4486831371481905e-9,
+      "maximum_radial_drift_m": 6.293827581327349e-8,
+      "maximum_rigid_error_m": 6.595388503301703e-8,
+      "return_to_centre_error_m": 0,
+      "negative_control_error_m": 0.391069176284281
+    },
+    {
+      "level": "LOD1",
+      "sha256": "b4f44436c3eca6a26d178567e27bf77eb88131f94663a924c7e00dd09fe8ca3d",
+      "poses": 46,
+      "drawn_vertices": 250,
+      "steering_surfaces": 14,
+      "maximum_axial_drift_m": 4.4486831371481905e-9,
+      "maximum_radial_drift_m": 6.293827581327349e-8,
+      "maximum_rigid_error_m": 6.595388503301703e-8,
+      "return_to_centre_error_m": 0,
+      "negative_control_error_m": 0.391069176284281
+    },
+    {
+      "level": "LOD2",
+      "sha256": "49c8d9da6b3b9f578f80b7ef0d8e6ebd988830346025ecb82e65100e5dd6d20b",
+      "poses": 46,
+      "drawn_vertices": 250,
+      "steering_surfaces": 14,
+      "maximum_axial_drift_m": 4.4486831371481905e-9,
+      "maximum_radial_drift_m": 6.293827581327349e-8,
+      "maximum_rigid_error_m": 6.595388503301703e-8,
+      "return_to_centre_error_m": 0,
+      "negative_control_error_m": 0.391069176284281
+    }
+  ],
+  "adapter_sha256": "76f5529578b241437dd8caae428a8e8cbf80183f4bf3c9acd3ce2c9a501eba3f",
+  "test_sha256": "7d67ecd8f5128c867f42eafbcb1ffcda3c42afa1c95fcae63988c6e73a79c415",
+  "scope": "Actual indexed marker vertices through 46 full-range poses per level, transformed host roots, centre return and a static-parent negative control. Native renderer and source correspondence remain separate checks."
+}

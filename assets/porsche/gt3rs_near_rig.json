@@ -1,9 +1,10 @@
 {
   "level": "near",
-  "source_sha256": "a72102853b261a0b759127a99b8d4905bd5b6ef01c5e7800d55d85731d413e1d",
-  "runtime_sha256": "6b0077040540d76c411d799c510416081e17761024173c0ef5243f8d759c9906",
-  "triangles": 291248,
-  "raylib_meshes": 314,
+  "source_sha256": "b4f44436c3eca6a26d178567e27bf77eb88131f94663a924c7e00dd09fe8ca3d",
+  "runtime_sha256": "d94043bd839cfea44bd16443096c8f2a6bae33b0b159758950ab962b70356900",
+  "deferred_native_materials": true,
+  "triangles": 292878,
+  "raylib_meshes": 315,
   "additional_primitives": 0,
   "maximum_vertices_per_primitive": 27961,
   "nodes": [
@@ -11150,7 +11151,8 @@
       ],
       "extras": {
         "reference_part": "TwiXeR_992_steer_3",
-        "reference_object": "TwiXeR_992_steer_3_TwiXeR_992_carpet.002_0"
+        "reference_object": "TwiXeR_992_steer_3_TwiXeR_992_carpet.002_0",
+        "lod_preserve_geometry": true
       }
     },
     {
@@ -21362,8 +21364,55 @@
         "front_cooling_revision": "Fitted diamond protective screen and metre-scaled recessed radiator fins",
         "tire_lettering_revision": "Sidewall-conforming molded lettering; 2.5 mm radial ring clearance and 0.08 mm base relief plus retained glyph extrusion",
         "runtime_lod": 1,
-        "derived_from_export_sha256": "342f312fa29ab5c6bac75197c3c889dbcad583365286bdc307fd4a27a34c2bb9",
+        "derived_from_export_sha256": "6853f9d3978d891ffc87b63605a501b68960fbbbbf019934fc1b05ff832d7913",
         "lod_purpose": "Near gameplay"
+      }
+    },
+    {
+      "name": "SteeringWheel_CentreMarker",
+      "parent": 266,
+      "local": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.9997552425142209,
+        0.022123632193514764,
+        0.0,
+        0.0,
+        -0.022123632193514764,
+        0.9997552425142209,
+        0.0,
+        -0.0012673570308834314,
+        0.0015521168243139982,
+        -0.0001705221220618114,
+        1.0
+      ],
+      "world": [
+        -1.0000003553748873,
+        5.842099918497271e-08,
+        -3.1115308818702547e-07,
+        0.0,
+        -5.152286372916948e-08,
+        0.9396925863232222,
+        0.3420202655833797,
+        0.0,
+        3.1236941583781435e-07,
+        0.34202027344556307,
+        -0.9396929416111288,
+        0.0,
+        0.34519813822513934,
+        0.7523455640516571,
+        0.22608631923974845,
+        1.0
+      ],
+      "extras": {
+        "assembly": "SteeringWheel_Pivot",
+        "centering_marker": true,
+        "lod_preserve_geometry": true,
+        "source_geometry": "Existing crown-band faces retained from the Hero rim",
+        "marker_triangles": 150
       }
     }
   ],
@@ -22231,7 +22280,7 @@
     {
       "node": 260,
       "material": 49,
-      "vertices": 1308
+      "vertices": 2528
     },
     {
       "node": 261,
@@ -22937,6 +22986,11 @@
       "node": 496,
       "material": 70,
       "vertices": 80
+    },
+    {
+      "node": 501,
+      "material": 108,
+      "vertices": 250
     }
   ],
   "materials": [
@@ -24894,6 +24948,41 @@
         ],
         "metallicFactor": 0.10000000149011612,
         "roughnessFactor": 0.7893537282943726
+      }
+    },
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_sheen": {
+          "sheenColorFactor": [
+            0.07247999999999999,
+            0.052079999999999994,
+            0.00768
+          ],
+          "sheenRoughnessFactor": 0.8500000238418579
+        }
+      },
+      "extras": {
+        "surface_lod_roughness": 0.9000042080879211,
+        "surface_lod_metallic": 0.0,
+        "surface_lod_mean_color": [
+          0.604,
+          0.434,
+          0.064
+        ],
+        "lod_prefiltered_role": "RaceTex",
+        "centering_marker": true
+      },
+      "name": "Cockpit | yellow Race-Tex centering inlay",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.604,
+          0.434,
+          0.064,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0.9000042080879211
       }
     }
   ],
