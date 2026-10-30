@@ -9,7 +9,7 @@ namespace bw {
 namespace {
 constexpr Color background{5,6,7,255},ink{233,237,242,255},muted{146,155,167,255},red{239,84,75,255};
 constexpr int widths[]{2048,768,1536,768},heights[]{640,320,512,180};
-struct Displays {std::array<RenderTexture2D,4> target{};std::string key;long long bucket{-1};unsigned int revision{};};
+struct Displays {std::array<RenderTexture2D,4> target{};std::string key;long long bucket{-1};unsigned int revision{};bool powered{};};
 std::array<Displays,2> displays;
 Font regular{},bold{};
 bool ready{};
@@ -23,18 +23,45 @@ void Text(float x,float y,const std::string& value,float size=36,Color color=ink
 }
 std::string Number(float value,int places=1){char text[32];std::snprintf(text,sizeof(text),"%.*f",places,value);return text;}
 std::string Time(int tenths){char text[24];std::snprintf(text,sizeof(text),"%02d:%02d.%d",tenths/600,tenths/10%60,tenths%10);return text;}
+void EllipseArc(Vector2 centre,float rx,float ry,float start,float end,float thickness,Color color){
+    const int pieces=std::max(2,static_cast<int>(std::ceil((end-start)/3)));
+    auto point=[&](float angle){const float radians=angle*DEG2RAD;return Vector2{centre.x+rx*std::cos(radians),centre.y+ry*std::sin(radians)};};
+    Vector2 previous=point(start);
+    for(int i=1;i<=pieces;++i){const auto next=point(start+(end-start)*i/pieces);DrawLineEx(previous,next,thickness,color);previous=next;}
+}
+void TyreDial(Vector2 centre,float temperature,float wear){
+    const float life=1-std::clamp(wear,0.f,1.f);
+    for(int i=0;i<9;++i){
+        const float start=135+i*30+3,end=start+24;
+        EllipseArc(centre,100,113,start,end,11,{39,53,67,255});
+        const float fill=std::clamp(life*9-i,0.f,1.f);
+        if(fill>0)EllipseArc(centre,100,113,start,start+24*fill,11,{136,182,221,255});
+    }
+    EllipseArc(centre,109,123,135,405,2,{63,79,94,255});
+    const float marker=138+264*life;
+    EllipseArc(centre,100,113,marker-2,marker+2,12,ink);
+    Text(centre.x,centre.y-39,Number(temperature,0)+" \xC2\xB0" "C",60,ink,true,1);
+    Text(centre.x,centre.y+39,"LIFE "+Number(life*100,0)+"%",25,muted,false,1);
+}
 void DrawDisplay(int kind,const PorscheDisplayState& s){
-    ClearBackground(background);
+    // Ignition-dependent LCDs go dark in a parked car. The standalone
+    // Sport Chrono stopwatch retains its independent battery-backed readout.
+    ClearBackground(!s.powered&&kind<3?BLACK:background);
+    if(!s.powered&&kind<3)return;
     const std::string speed=std::to_string(s.speedKmh),gear=s.selection=='D'?std::to_string(s.gear):std::string(1,s.selection);
     if(kind==0){
-        for(float x:{30.0f,1280.0f}){Text(x,75,"TRACK",44,ink,true);DrawRectangle(x,143,690,2,{76,84,94,255});}
-        const std::string front=Number(s.temperatures[0])+" / "+Number(s.temperatures[1])+" C",rear=Number(s.temperatures[2])+" / "+Number(s.temperatures[3])+" C";
-        const std::array<std::string,6> labels{"TYRES  F","TYRES  R","WEAR  F / R","LONGITUDINAL","LATERAL","NORMAL LOAD"};
-        const std::array<std::string,6> values{front,rear,Number((s.wear[0]+s.wear[1])*50,0)+" / "+Number((s.wear[2]+s.wear[3])*50,0)+" %",Number(s.longitudinalG,2)+" g",Number(s.lateralG,2)+" g",Number(s.normalG,2)+" g"};
-        for(int i=0;i<6;++i){const float x=i<3?30:1280,y=215+(i%3)*125;Text(x,y,labels[i],31,muted);Text(x+690,y+42,values[i],42,ink,true,2);}
+        // Reference-led four-dial silhouette on the two real side panels.
+        // This page shows game tyre telemetry, not unimplemented PASM settings.
+        Text(110,35,"Tyres",46,ink,true);Text(1400,35,"Tyres",46,ink,true);
+        constexpr Vector2 centres[]{{400,220},{1580,220},{460,455},{1640,455}}; // FL, FR, RL, RR
+        for(int i=0;i<4;++i)TyreDial(centres[i],s.temperatures[i],s.wear[i]);
+        Text(140,196,"Front",42,ink,true);Text(200,431,"Rear",42,ink,true);
+        Text(1750,196,"Front",42,ink,true);Text(1810,431,"Rear",42,ink,true);
+        Text(110,597,"LEFT",29,muted);Text(1490,597,"RIGHT",29,muted);
     }else if(kind==1){
-        Text(300,18,speed,172,ink,true,1);Text(300,215,"km/h",46,ink,false,1);Text(535,215,gear,54,ink,true,1);
-        for(int i=0;i<4;++i){const char c="PRND"[i];Text(690,24+65*i,std::string(1,c),48,c==s.selection?red:Color{125,135,146,255},true,1);}
+        Text(300,18,speed,172,ink,true,1);Text(300,215,"km/h",46,ink,false,1);
+        if(s.selection=='D'){Text(690,45,gear,118,ink,true,1);Text(690,200,"D",45,muted,false,1);}
+        else for(int i=0;i<4;++i){const char c="PRND"[i];Text(690,24+65*i,std::string(1,c),48,c==s.selection?red:Color{125,135,146,255},true,1);}
     }else if(kind==2){
         Text(50,28,"GT3 RS",58,ink,true);Text(1480,43,"DYNAMICS",35,red,false,2);DrawRectangle(50,112,1430,3,{110,36,44,255});
         Text(50,148,speed,135,ink,true);Text(55,320,"km/h",36,muted);Text(530,168,gear,110,ink,true);
@@ -80,9 +107,9 @@ void PreparePorscheDisplays(bool force){
     for(int slot=0;slot<2;++slot){const Vehicle& v=*cars[slot];if(!v.isPorsche||(!force&&Vector3Distance(v.p,g.camera.position)>65))continue;
         auto& d=displays[slot];const auto state=PorscheDisplayTelemetry(v,slot==0&&g.vehicle==VehicleKind::Car);const auto key=state.Key();
         const long long bucket=static_cast<long long>(Clock(v)*10);
-        if(!force&&(!d.key.empty()&&(d.key==key||d.bucket==bucket)))continue;if(!Ensure(d))continue;
+        if(!force&&!d.key.empty()&&d.powered==state.powered&&(d.key==key||d.bucket==bucket))continue;if(!Ensure(d))continue;
         for(int i=0;i<4;++i){BeginTextureMode(d.target[i]);DrawDisplay(i,state);EndTextureMode();GenTextureMipmaps(&d.target[i].texture);SetTextureFilter(d.target[i].texture,TEXTURE_FILTER_TRILINEAR);}
-        d.key=key;d.bucket=bucket;++d.revision;
+        d.key=key;d.bucket=bucket;d.powered=state.powered;++d.revision;
     }
     rlSetMatrixProjection(savedProjection);rlSetMatrixModelview(savedModelview);
 }

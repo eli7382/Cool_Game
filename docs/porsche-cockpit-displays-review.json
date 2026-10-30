@@ -1,0 +1,78 @@
+{
+  "implemented": true,
+  "native_checks": 155,
+  "corner_pixel_test": {
+    "passed": true,
+    "corner_order": [
+      "FL",
+      "FR",
+      "RL",
+      "RR"
+    ],
+    "changed_pixels": [
+      3550,
+      3550,
+      3550,
+      3550
+    ],
+    "pixels_changed_outside_expected_instrument": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "unpowered_lit_pixels": 0,
+    "immediate_power_on": true,
+    "scope": "GPU tyre telemetry isolation and ignition-dependent LCD power transitions; custom tyre page inspired by the reference four-dial silhouette, not OEM PASM artwork or calibration"
+  },
+  "culling_image_pairs": 36,
+  "geometry_unchanged_from_commit": "990db89",
+  "asset_hashes": {
+    "hero": "06adedf69d0524c1e58ec91f2af3aea5b3f0c4f165e13a6f67a1de8a44dc4bef",
+    "near": "6b0077040540d76c411d799c510416081e17761024173c0ef5243f8d759c9906",
+    "far": "28510330850f568c8b17fb3119ef2ecd4135fa5b07b5ed53268a207d350ccc7c"
+  },
+  "renderer_sha256": "a238631dec90c78ec7d3b5dc4e7d906753dae3443d662f4b7e600d0779a7ecdd",
+  "controller_and_qa_sha256": "dc91ba2a21a3c2085f010c7aa5c847566d723b08111db0733e7c12bff7a3fd6c",
+  "executable_sha256": "8c671e26d178d5b4640188e3c646c83d07a4b97de53cb8ea33b24883d1bbf68c",
+  "before": {
+    "commit": "990db89",
+    "file": "screenshots\\porsche-cockpit-before-dials.png",
+    "sha256": "2897451e7cc9fbe9e33b1602d8e752f6faf2db40af764e8487d3f1e37b67b271"
+  },
+  "after": [
+    {
+      "file": "screenshots/porsche-native-live-cockpit.png",
+      "sha256": "d1a178bd21e510baeb58deb509f609046362553aae2e413c9e2e94c929e2bc94"
+    },
+    {
+      "file": "screenshots/porsche-display-0-driving.png",
+      "sha256": "b50dd9b4ea4ae53baeb51cd66b6bf013c278dfe228d47b19fbbc3ba2ea4e92c8"
+    },
+    {
+      "file": "screenshots/porsche-display-1-driving.png",
+      "sha256": "a6224c9353ee5238a1e60b16a2396788bf4297c9f984c209aba5fd8533b727e6"
+    },
+    {
+      "file": "screenshots/porsche-unpowered-display-0.png",
+      "sha256": "8a2b3bee1495c79197a797c321ece2784dd8d816500e0e0e5d700bccaf764b4d"
+    },
+    {
+      "file": "screenshots/porsche-unpowered-display-1.png",
+      "sha256": "1dd9c73210836889f57f4a96b633adbcb93c691cecf28573719dd1d531501812"
+    },
+    {
+      "file": "screenshots/porsche-unpowered-display-2.png",
+      "sha256": "7f3ba95b30532007aa22e47feee493364eeef38b07ccb18486f62d1ccc628d96"
+    }
+  ],
+  "reference": "https://newsroom.porsche.com/en/2022/products/porsche-911-gt3-rs-world-premiere-29177.html",
+  "visual_review": "Four segmented circular readouts sit on the two modeled side displays; compact current gear and D indication occupy the central lower LCD. Native cockpit and flat GPU targets inspected. Parked main LCDs contain zero lit pixels.",
+  "limits": [
+    "The tyre telemetry page is authored game artwork inspired by the reference instrument silhouette, not OEM PASM controls",
+    "The independent Sport Chrono readout continues while parked; battery simulation is not implemented",
+    "No new manufacturer photographs or image pixels are included in the asset",
+    "Finite image/state checks do not prove final Forza visual parity or frame rate"
+  ],
+  "complete": false
+}

@@ -29,7 +29,7 @@
       "suspension_poses": 65
     }
   ],
-  "native_checks": 152,
+  "native_checks": 155,
   "native_suspension_poses": 195,
   "native_culling_image_pairs": 36,
   "tire_body_poses_clear": 165,
@@ -44,25 +44,25 @@
     "editable_meshes": 1066,
     "scope": "Packed images and fonts in an editable Blender source; game control constraints are implemented by the runtime rig code, not Blender animation keyframes."
   },
-  "executable_sha256": "f6d4a2cc88cc0e4c616bb4015a37b2b7c1cce55ffb5442ccba402679e3386a43",
-  "native_controller_sha256": "5c22fb523e62da73b05381157b2ec611f571fa1bc6f988ed4a6c21336e4b2464",
+  "executable_sha256": "8c671e26d178d5b4640188e3c646c83d07a4b97de53cb8ea33b24883d1bbf68c",
+  "native_controller_sha256": "dc91ba2a21a3c2085f010c7aa5c847566d723b08111db0733e7c12bff7a3fd6c",
   "asset_header_sha256": "8f8a9378a2ec8cdfa3d2999089c301cf2d49cff5c28ad52808b47e3934faea4d",
   "captures": [
     {
       "file": "screenshots\\porsche-front-fit-front.png",
-      "sha256": "8c4a8eb2b9742f7129e3126c39013299606b5ff7894736cdc40298bad8e8bbbf"
+      "sha256": "afcc916ba5b63936cafff5ab63d58227a6283602cd51ffd311b9a240cce7a0a7"
     },
     {
       "file": "screenshots\\porsche-front-fit-cockpit.png",
-      "sha256": "2897451e7cc9fbe9e33b1602d8e752f6faf2db40af764e8487d3f1e37b67b271"
+      "sha256": "d1a178bd21e510baeb58deb509f609046362553aae2e413c9e2e94c929e2bc94"
     },
     {
       "file": "screenshots\\porsche-front-fit-rest.png",
-      "sha256": "0a8a12dc23eefaff5edc4b07937df50cd6c3cf5aa3ebf00b730c12d52bd5153c"
+      "sha256": "e857cb0fcb8742969e8c7a09c561f5011f5dd9f71e6cdaedc590d632b504f5f5"
     },
     {
       "file": "screenshots\\porsche-front-fit-cross.png",
-      "sha256": "1eabb94c0c655ee3b78d238ec23876f7a66f9e42ca78c853a69978347886de46"
+      "sha256": "8c00cccd296079c7c82b701945a25968cd69e58cf116368a069a8765b5b03caa"
     }
   ],
   "evidence": [
@@ -132,7 +132,7 @@
     },
     {
       "file": "docs\\porsche-front-fit\\porsche-native-qa.json",
-      "sha256": "8faf432b4be3d7c3534d6baa801ce0002c5c02864b3ad8dd38a2ddbe40a5694c"
+      "sha256": "83c45953b9007738c7c706aaa4c38f1aacef22e09b950559d62194536260b4cc"
     },
     {
       "file": "docs\\porsche-front-fit\\porsche-native-suspension-qa.json",
@@ -144,7 +144,7 @@
     },
     {
       "file": "docs\\porsche-front-fit\\porsche-native-culling-qa.json",
-      "sha256": "6e61854aa4e7e4d0cb0a3667eade3c093a82da0153d19e3d6afc117232f1b04b"
+      "sha256": "ba86ab5885e305b31fe9badb0639ab7f892ebc1b798855a7013d79bc42ca209f"
     }
   ],
   "limits": [

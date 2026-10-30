@@ -20,7 +20,7 @@ Validation for the exact published hashes is recorded in
   cases retain controls, and protected exterior surfaces agree across levels.
 - Native conversion retains all 1,193,664 triangles, attributes, morphs,
   hierarchy, materials and image bytes across the three exports.
-- The rebuilt game passes 152 hidden checks, including 195 native suspension
+- The rebuilt game passes 155 hidden checks, including 195 native suspension
   poses. Steering-wheel hub drift remains below 0.0003 mm across 69 poses.
 - 36 native culling image pairs and 54 mirror-target comparisons show no
   missing rendering. Native front, cockpit and mechanism captures were reviewed.

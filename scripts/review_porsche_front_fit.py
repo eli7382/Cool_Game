@@ -5,7 +5,8 @@ root=Path(__file__).resolve().parents[1]
 ap=argparse.ArgumentParser();ap.add_argument('--source',type=Path,default=root.parent/'Porsche_911');opt=ap.parse_args();source=opt.source.resolve()
 read=lambda p:json.loads(p.read_text(encoding='utf-8-sig'));sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 qa=read(root/'docs/porsche-native-qa.json');culling=read(root/'docs/porsche-native-culling-qa.json');conversion=read(root/'docs/porsche-asset-validation.json')
-assert qa['passed'] and qa['checks']==152 and qa['failures']==0
+# The front-fit baseline has 152 checks; later additions must also pass.
+assert qa['passed'] and qa['checks']>=152 and qa['failures']==0
 assert culling['passed'] and culling['image_pairs']==36 and culling['mirror_target_differing_pairs']==0
 assert conversion['passed']
 out=root/'docs/porsche-front-fit';out.mkdir(exist_ok=True);evidence=[];levels=[]

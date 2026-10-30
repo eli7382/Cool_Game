@@ -2,16 +2,20 @@
 
 The front assembly is now refitted coherently across all three detail levels.
 The selected wheel/mechanism sweep clears 135 poses at each level; the Hero
-tire/body sweep clears 165 poses. The current executable passes 152 hidden
+tire/body sweep clears 165 poses. The current executable passes 155 hidden
 checks. The editable Blender source and matching Windows executable accompany
 the assets. See `PORSCHE_FRONT_FIT.md` and `porsche-front-fit-review.json` for
 the hash-bound evidence and finite-test limits. Earlier timing and geometry
 records below describe their recorded revisions.
 
+The native cockpit now uses circular live tyre instruments, a compact central
+gear readout and ignition-dependent main LCDs. See `PORSCHE_COCKPIT_DISPLAYS.md`
+for matched views, individual-corner pixel checks and power-transition evidence.
+
 Building sun shadows now reuse unchanged depth targets, with exact state
 invalidation for moving doors and sluices. Low-speed Porsche braking also
 holds a stopped car on a slope when the available brake force and tire grip
-permit it. The hidden native regression passes 152 checks, including fresh
+permit it. The hidden native regression passes 155 checks, including fresh
 versus cached depth comparisons and steered brake-hold/release cases. See
 `PORSCHE_BUILDING_CACHE_AND_BRAKES.md` for scope, evidence and comparison controls.
 

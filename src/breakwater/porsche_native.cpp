@@ -1363,6 +1363,39 @@ bool RunPorscheQA(){
     check(isolated&&pixelHash(PorscheDisplayTexture(g.car,1))!=pixelHash(PorscheDisplayTexture(g.extraCar,1)),"parked-and-occupied-cars-have-independent-display-targets");
     std::swap(g.car,g.extraCar);PreparePorscheDisplays(true);check(PorscheDisplayTelemetry(g.car,true).chronoTenths==234&&PorscheDisplayTelemetry(g.extraCar,false).chronoTenths==753,"vehicle-swap-keeps-each-stopwatch-with-its-car");g.extraCar=savedExtra;
     g.car=initial;
+    // Change one physical tyre at a time and inspect the actual GPU image.
+    // A crossed corner mapping or global redraw artifact must not pass just
+    // because the display's total hash changes.
+    const Vehicle displayCar=g.car;const auto displayMode=g.vehicle;
+    g.car.tireTemperatureC.fill(35);g.car.tireWear.fill(0);PreparePorscheDisplays(true);
+    Image tyreBaseline=LoadImageFromTexture(PorscheDisplayTexture(g.car,0));ImageFlipVertical(&tyreBaseline);
+    constexpr Rectangle tyreRegions[]{{270,80,260,280},{1450,80,260,280},{330,315,260,280},{1510,315,260,280}};
+    constexpr int gameTyreSlots[]{3,2,1,0};std::array<int,4> changedTyrePixels{},outsideTyrePixels{};bool isolatedGauges=tyreBaseline.data;
+    for(int corner=0;corner<4&&tyreBaseline.data;++corner){
+        g.car.tireTemperatureC.fill(35);g.car.tireWear.fill(0);g.car.tireTemperatureC[gameTyreSlots[corner]]=95;g.car.tireWear[gameTyreSlots[corner]]=.45f;PreparePorscheDisplays(true);
+        Image image=LoadImageFromTexture(PorscheDisplayTexture(g.car,0));ImageFlipVertical(&image);isolatedGauges=isolatedGauges&&image.data;
+        if(image.data)for(int y=0;y<image.height;++y)for(int x=0;x<image.width;++x){
+            const Color a=GetImageColor(tyreBaseline,x,y),b=GetImageColor(image,x,y);
+            if(a.r==b.r&&a.g==b.g&&a.b==b.b)continue;
+            ++changedTyrePixels[corner];if(!CheckCollisionPointRec({x+.5f,y+.5f},tyreRegions[corner]))++outsideTyrePixels[corner];
+        }
+        isolatedGauges=isolatedGauges&&changedTyrePixels[corner]>50&&outsideTyrePixels[corner]==0;UnloadImage(image);
+    }
+    UnloadImage(tyreBaseline);check(isolatedGauges,"each-live-tyre-updates-only-its-correct-circular-instrument");
+    const auto beforePowerOff=PorscheDisplayRevision(g.car);g.vehicle=VehicleKind::Foot;PreparePorscheDisplays();
+    bool darkScreens=PorscheDisplayRevision(g.car)==beforePowerOff+1;int unpoweredLitPixels=0;
+    for(int kind=0;kind<3;++kind){Image image=LoadImageFromTexture(PorscheDisplayTexture(g.car,kind));darkScreens=darkScreens&&image.data;
+        if(image.data)for(int y=0;y<image.height;++y)for(int x=0;x<image.width;++x){const auto c=GetImageColor(image,x,y);if(c.r||c.g||c.b)++unpoweredLitPixels;}
+        UnloadImage(image);darkScreens=ExportPorscheDisplay(g.car,kind,TextFormat("screenshots/porsche-unpowered-display-%d.png",kind))&&darkScreens;
+    }
+    check(darkScreens&&unpoweredLitPixels==0,"parked-cluster-tach-and-PCM-go-dark-without-a-display-tick-delay");
+    const auto beforePowerOn=PorscheDisplayRevision(g.car);g.vehicle=displayMode;PreparePorscheDisplays();
+    const bool immediatePowerOn=PorscheDisplayRevision(g.car)==beforePowerOn+1;
+    check(immediatePowerOn,"entering-the-car-restores-live-displays-within-the-same-tick");
+    std::ofstream instrumentEvidence("docs/porsche-cluster-artwork-qa.json");instrumentEvidence<<"{\"passed\":"<<((isolatedGauges&&darkScreens&&unpoweredLitPixels==0&&immediatePowerOn)?"true":"false")<<",\"corner_order\":[\"FL\",\"FR\",\"RL\",\"RR\"],\"changed_pixels\":[";
+    for(int i=0;i<4;++i)instrumentEvidence<<(i?",":"")<<changedTyrePixels[i];instrumentEvidence<<"],\"pixels_changed_outside_expected_instrument\":[";
+    for(int i=0;i<4;++i)instrumentEvidence<<(i?",":"")<<outsideTyrePixels[i];instrumentEvidence<<"],\"unpowered_lit_pixels\":"<<unpoweredLitPixels<<",\"immediate_power_on\":"<<(immediatePowerOn?"true":"false")<<",\"scope\":\"GPU tyre telemetry isolation and ignition-dependent LCD power transitions; custom tyre page inspired by the reference four-dial silhouette, not OEM PASM artwork or calibration\"}\n";
+    g.car=displayCar;g.vehicle=displayMode;PreparePorscheDisplays(true);
     // Observe the actual game scene in all three render targets. Markers are
     // geometry behind the vehicle, not pixels composited into a mirror image.
     g.cameraDistance=g.cameraActualDistance=1.8f;g.cameraInitialized=false;UpdateCamera();const Camera3D mirrorEye=g.camera;const Matrix beforeProjection=rlGetMatrixProjection(),beforeModelview=rlGetMatrixModelview();PreparePorscheDisplays(true);PreparePorscheMirrors(true);
